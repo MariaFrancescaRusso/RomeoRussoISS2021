@@ -114,11 +114,11 @@ Qactor maitrereq context ctxRobotReq 	{/* Provides a user GUI; Forwards robotCmd
 ~//requirements: move RBR avoiding abstacles, ask to fridge ~
 Qactor robotreq context ctxRobotReq 	{/* Moves the robot and avoid obstacles; Handle robotCmd and answer; Forwards ask to fridgereq and fail to maitrereq */}
 
-~//requirements: expose, answer ~
+~//requirements: expose, answer~
 Qactor fridgereq context ctxRobotReq 	{/* Handle ask and consult; Forwards answer to robotreq and expose to maitrereq */}
 
 ## Test Plain
-Test that the dispatcher works
+~Test that the dispatcher works~
 
 ## Problem analysis
 The main goal of problem analysis can be summarized as follows:
@@ -132,4 +132,54 @@ In the context of SCRUM, one or more of these steps will be redone in the sprint
 --------------------------------------------------------------
 In our scenario:
 
-1. The system is distribuited. To model it, we choose to use the **QAk-indrastracture** meta-model, developed and provided by our company, because it provides a built-in ~message-driven~ tecnology. In a first moment using the QAk we work just locally; to support the distribuited features we can introduce the **MQTT** and **web** tecnology and we must provide the **CoAP** support to the fridge comunications. 
+
+1. **Systema generale**
+   1.	understand the (technical) problems posed by the requirements;
+   The system is distribuited.
+   2.	identify the best tools/libraries/supports etc. necessary and/or useful for building the system;
+   To model it, we choose to use the **QAk-infrastracture** meta-model, developed and provided by our software-house/custumer, because it provides a built-in ~message-driven~ tecnology. In a first moment using the QAk we work just locally; to support the distribuited features we can introduce the **MQTT** and **web** tecnology and we must provide the **CoAP** support to the fridge comunications. 
+   3.	clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process;
+   **we must provide the **CoAP** support to the fridge comunications.**
+   4.	define a logical architecture of the system and a first working prototype to show to the customer at the end of our first sprint.
+
+2. **Robot**
+   1.	understand the (technical) problems posed by the requirements;
+      Per soddisfare il requisito 'avoid the impact with the mobile obstacles' possiamo pensare di utilizzare (eventi per gestire) i dati raccolti da un sensore, che può essere reppresentato da un sonar (sia nel robot fisico che in quello virtuale). La gestione del sonar è fornita delle librerie della software house.
+   2.	identify the best tools/libraries/supports etc. necessary and/or useful for building the system;
+   	**Utilizzo del suo framework** per la gestione del robot.
+   3.	clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process;
+   4.	define a logical architecture of the system and a first working prototype to show to the customer at the end of our first sprint.
+      nel prossimo sprint valuteremo l idea di rendere il sonar un attore indipendente dal robot.
+      robot come componente proattivo/reattivo (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')
+
+3. **Maitre**
+   1.	understand the (technical) problems posed by the requirements;
+   **valutare utilizzo di console**
+   2.	identify the best tools/libraries/supports etc. necessary and/or useful for building the system;
+	**iterfaccia sviluppabile sia web-oriented che come app android**
+   3.	clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process;
+   4.	define a logical architecture of the system and a first working prototype to show to the customer at the end of our first sprint.
+
+4. **Fridge**
+   1.	understand the (technical) problems posed by the requirements;
+   2.	identify the best tools/libraries/supports etc. necessary and/or useful for building the system;
+	possibilità di **utilizzare android per IoT** / oppure **interfaccia web**
+   3.	clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process;
+   4.	define a logical architecture of the system and a first working prototype to show to the customer at the end of our first sprint.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
