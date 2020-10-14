@@ -42,7 +42,7 @@ Domande:
 
 3. The software running on **maitreNode** must allow **Maitre de Salle** to:
 - send the commands to **RBR** to execute tasks or to stop and reactive them.
-- known and to show the objects related to each resources (smart and non-smart), so he must be able to comunicate with **fridge**.
+- known and to show the objects related to each resources (smart and non-smart), so he must be able to comunicate with **fridge** too.
 
 4. The software running on **robotNode** must be able to:
 - execute the **task** associated to command received by the **maitre's smartphone**. 
@@ -137,32 +137,34 @@ In the context of SCRUM, one or more of these steps will be redone in the sprint
 --------------------------------------------------------------
 In our scenario:
 
-
 1. **General System**
    The system is distribuited. To model it, we choose to use the **QAk-infrastracture** meta-model, developed and provided by our company, because it provides a built-in ~message-driven~ tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, we can introduce the **MQTT** and **web** tecnology and we must provide the **CoAP** support to the fridge comunications. 
 
-2. **Robot**
-      
+2. **Robot** (controlla librerie e inserire nel v4)
+	Il robot per eseguire i task deve essere in grado di raggiungere tutti gli obiettivi (frigo, tavolo, lavastoviglie, dispensa) con cui interaggire. Essendo questi elementi fissi nella stanza una soluzione può essere il **mappaggio della stanza** all'avvio del robot.
+	Il mappaggio può essere implementato tramite le librerie ... fornite della software house.	
+	
+	Robot come componente proattivo/reattivo (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')
+
+	Per soddisfare il requisito 'avoid the impact with the mobile obstacles' possiamo pensare di utilizzare (eventi per gestire) i dati raccolti da un sensore, che può essere reppresentato da un sonar (sia nel robot fisico che in quello virtuale). 
+	La gestione del sonar è fornita delle librerie .... della software house.
+	Nel prossimo sprint valuteremo l idea di rendere il sonar un attore indipendente dal robot.
+	
+	The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot- facade. 
 
 3. **Maitre**
-	
+	**valutare utilizzo di console**
+	**interfaccia sviluppabile sia web-oriented che come app android**
+
+	Possibilità di gestire lo stato degli oggetti non smart per mezzo di attori dedicati a ciascun oggetto all'interno del contesto del maitre.
+
+	Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart.
+
+	Potremmo prevedere un attore XY in grado di ricevere i warning dal robot in qualsiasi momento.
+
+	Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema.
 
 4. **Fridge**
-	
+   	Possibilità di **utilizzare android per IoT** / oppure **interfaccia web**
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  	Possibilità di popolarlo all'avvio del sistema.
