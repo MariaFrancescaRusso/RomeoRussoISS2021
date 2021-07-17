@@ -1,6 +1,4 @@
 (struttura interazione comportamento)
-Domande:
-1) chiedere se è necessario controllare l'ordine di esecuzione dei task.
 
 ## Glossario:
 ~***room*** = It's an environment in which the interactions between the elements happen. When system starts no people is in it, besides the maitre.~
@@ -58,11 +56,7 @@ Domande:
 
 
 ## A first model of the system Architecture
- ___________________
-|					|
-|					|
-|					|
-|___________________|
+~Inserire rappresentazione~
 
 Comportamento:
 	torna a posizione iniziale
@@ -122,7 +116,7 @@ Qactor robotreq context ctxRobotReq 	{/* Moves the robot and avoid obstacles; Ha
 ~//requirements: expose, answer~
 Qactor fridgereq context ctxRobotReq 	{/* Handle ask and consult; Forwards answer to robotreq and expose to maitrereq */}
 
-## Test Plain
+## Test Plan
 ~Test that the dispatcher works~
 
 ## Problem analysis
@@ -138,10 +132,10 @@ In the context of SCRUM, one or more of these steps will be redone in the sprint
 In our scenario:
 
 1. **General System**
-   The system is distribuited. To model it, we choose to use the **QAk-infrastracture** meta-model, developed and provided by our company, because it provides a built-in ~message-driven~ tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, we can introduce the **MQTT** and **web** tecnology and we must provide the **CoAP** support to the fridge comunications. 
+   The system is distribuited. To model it, it's available the **QAk-infrastracture** meta-model, developed and provided by our company. This meta-model provides a built-in message-driven tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, the **MQTT** and **web** tecnologies are introduced and it's required the **CoAP** support to the fridge comunications. 
 
-2. **Robot** (controlla librerie e inserire nel v4)
-	Il robot per eseguire i task deve essere in grado di raggiungere tutti gli obiettivi (frigo, tavolo, lavastoviglie, dispensa) con cui interaggire. Essendo questi elementi fissi nella stanza una soluzione può essere il **mappaggio della stanza** all'avvio del robot.
+2. **Robot** (controlla librerie)
+	Il robot per eseguire i task deve essere in grado di raggiungere tutti gli obiettivi (frigo, tavolo, lavastoviglie, dispensa) con cui interagire. Essendo questi elementi fissi nella stanza una soluzione può essere il **mappaggio della stanza** all'avvio del robot.
 	Il mappaggio può essere implementato tramite le librerie ... fornite della software house.	
 	
 	Robot come componente proattivo/reattivo (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')
@@ -150,7 +144,7 @@ In our scenario:
 	La gestione del sonar è fornita delle librerie .... della software house.
 	Nel prossimo sprint valuteremo l idea di rendere il sonar un attore indipendente dal robot.
 	
-	The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot- facade. 
+	The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot-facade. 
 
 3. **Maitre**
 	**valutare utilizzo di console**
@@ -165,6 +159,6 @@ In our scenario:
 	Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema.
 
 4. **Fridge**
-   	Possibilità di **utilizzare android per IoT** / oppure **interfaccia web**
+   Possibilità di **utilizzare android per IoT** / oppure **interfaccia web**
 
   	Possibilità di popolarlo all'avvio del sistema.
