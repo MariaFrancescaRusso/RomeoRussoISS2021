@@ -90,7 +90,7 @@ Comunication Fridge - RBR answer:answer(Y) Y(Y=[yes,no]) {
 	command answer after receiving command ask(food-code) from RBR
 }
 
-## Requirement tracibility
+## Requirement traceability
 [achievied from the requirement analysis]
 Using a meta-model written in a machine-understandble language, like QActor, we can obtain a rappresentation of the system architecture that describes the associations between requirements and the running elements (rappresented by the actors).
 

@@ -1,0 +1,210 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<link rel="stylesheet" type="text/css" href="./utils/style.css">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<base href=".">
+<title>RomeoRussoStandingBuffetService</title>
+</head>
+
+<body>
+
+<div id="top">
+<h1>STANDING BUFFET SERVICE | Ingengeria dei Sistemi Software</h1>
+</div>
+
+<div class="body">
+
+<h2>Introduction</h2>
+
+Taking care of/that: <bc>"there is no code without a project, no project without problem analysis and no problem without requirements"</bc>; this document presents a "possible" solution to/for/at the problem/requirements done by the customer.
+
+<h2 id="req_text">Requirements</h2>
+
+<div class="remark">
+Below it's "shown" the <a href="./utils/tf/TemaFinaleBo19.html" target="_black">requirements text</a> provided by the customer.<br>
+<iframe src="./utils/tf/TemaFinaleBo19.html" title="Requirements text">
+<a href="./utils/tf/TemaFinaleBo19.html" target="_black">Requirements Text Link</a>
+</iframe>
+</div>
+
+<h2>Requirement analysis</h2>
+
+<h3>Glossary</h3>
+
+By.the interaction?/Talking with the customer, here there is/it's exposed a (lil/essential) <b>glossary</b> about the meaning of the names and of the verbs included in the <a href="#req_text">requirements text</a> given by the customer.
+<br><br>
+<table>
+<tr>
+	<td class="title"><ks>room</ks></td>
+	<td>It's an environment in which the interactions between the elements happen. When system starts no people is in it, besides the <ks>Maitre de Salle</ks>.</td>
+</tr>
+<tr>
+	<td class="title"><ks>Maitre de Salle</ks></td>
+	<td>Person who manages the <ks>room</ks> and its elements.</td>
+</tr>
+<tr>
+	<td class="title"><ks>maitre's smartphone</ks></td>
+	<td>Smartphone application or a user-GUI in a browser used by <ks>Maitre de Salle</ks>.</td>
+</tr>
+<tr>
+	<td class="title"><ks>fridge</ks></td>
+	<td>It's a smart device, having knowledge base on his storage, and a "Internet Thing". It's embedded into a wall of the <ks>room</ks> and it's filled with a proper set of items.</td>
+</tr>
+<tr>
+	<td class="title"><ks>pantry</ks></td>
+	<td>It's a non-smart resource embedded into a wall of the <ks>room</ks> and it's filled with a proper set of items.</td>
+</tr>
+<tr>
+	<td class="title"><ks>dishwasher</ks></td>
+	<td>It's a non-smart resource embedded into a wall of the <ks>room</ks> and it's empty when system starts.</td>
+</tr>
+<tr>
+	<td class="title"><ks>table</ks></td>
+	<td>It's a non-smart resource put in the center of the <ks>room</ks>.</td>
+</tr>
+<tr>
+	<td class="title"><ks>RBR - <i>Room Butler Robot</i></ks></td>
+	<td>It's a <ks>DDR</ks> able to work as a Room Butler. It can be a real or a virtual robot.</td>
+</tr>
+<tr>
+	<td class="title"><ks>DDR - <i>Differential Drive Robot</i></ks></td>
+	<td></td>
+</tr>
+<tr>
+	<td class="title"><ks>RH - <i>Robot Home</i></ks></td>
+	<td>It's the position in the <ks>room</ks> where the <ks>RBR</ks> boots up and where he comes back after every <ks>task</ks>.</td>
+</tr>
+<tr>
+	<td class="title"><ks>task</ks></td>
+	<td>There are three possible tasks: <ks>Prepare the room</ks>, <ks>Add food</ks> and <ks>Cleare the room</ks>.</td>
+</tr>
+<tr>
+	<td class="title"><ks>Prepare the room</ks></td>
+	<td>This task consists in putting on the <ks>table</ks> dishes taken from the <ks>pantry</ks> and food taken from the <ks>fridge</ks>. The set of items to put on the table is fixed and it's properly described somewhere.</td>
+</tr>
+<tr>
+	<td class="title"><ks>Add food</ks></td>
+	<td>This task consists in putting on the <ks>table</ks> some specific food taken from the <ks>fridge</ks> if it exists.</td>
+</tr>
+<tr>
+	<td class="title"><ks>food-code</ks></td>
+	<td>Univoque code associated to a specific food.</td>
+</tr>
+<tr>
+	<td class="title"><ks>Clear the room</ks></td>
+	<td>This task consists in putting in the <ks>dishwasher</ks> and in the <ks>fridge</ks> respectively dishes and non-consumed food taken from the <ks>table</ks>.</td>
+</tr>
+</table>
+
+<h3>Requirements analysis</h3>
+
+Once we have understood the main concepts set by the <a href="#req_text">requirements text</a> given by the customer, it's now possible to analyze them (with top-down approach, doing/like a zooming on the system: structure - interactions - behavior).
+<br><br>
+<table>
+<tr>
+	<td>The software system is a distribuited system composed by three main entities:
+	<ul>
+		<li><ks>RBR</ks>, running on its own **robotNode**;</li>
+		<li><ks>maitre's smartphone</ks>, running on a **maitreNode**;</li>
+		<li><ks>fridge</ks>, running on a **fridgeNode**. </li>
+	</ul>
+	</td>
+	<td><img src="./utils/img/threeEntities.png" alt="three entities"></td>
+</tr>
+<tr>
+	<td>The software running on **maitreNode** must allow <ks>Maitre de Salle</ks> to:
+	<ul>
+		<li>send the commands to <ks>RBR</ks> to execute tasks or to stop and reactive them;</li>
+		<li>known and to show the objects related to each resources (smart and non-smart), so he must be able to comunicate with <ks>fridge</ks> too.</li>
+	</ul>
+	</td>
+	<td rowspan="3"><img src="./utils/img/entitiesRel.png" alt="relationships between entities"></td>
+</tr>
+<tr>
+	<td>The software running on **robotNode** must be able to:
+	<ul>
+		<li>execute the <ks>task</ks> associated to command received by the <ks>maitre's smartphone</ks>;</li>
+		<li>stop/reactive a running <ks>task</ks> when it's required by the <ks>maitre's smartphone</ks>;</li>
+		<li>ask to <ks>fridge</ks> if it contains a specific food defined by a <ks>food-code</ks> and to receive the answer;</li>
+		<li>send a warning to the <ks>maitre's smartphone</ks> when the <ks>fridge</ks> doesn't contain the food required;</li>
+		<li>return to his <ks>RH</ks> at the end of every <ks>task</ks>;</li>
+		<li>avoid the impact with mobile obstacles.</li>
+	</ul>
+	</td>
+</tr>
+<tr>
+	<td>The software running on **fridgeNode** must be able to:
+		<ul>
+		<li>answer to the <ks>maitre's smartphone</ks>, via CoAP, with his content when it's required.</li>
+		<li>answer to the <ks>RBR</ks>, via CoAP, when it asks if it contains a specific food.</li>
+		</ul>
+	</td>
+</tr>
+</table>
+
+<h3>A first model of the system architecture</h3>
+
+In part
+
+<table>
+<tr>
+<td></td>
+<td></td>
+</tr>
+</table>
+
+<h3>Requirements traceability</h3>
+
+<h3>A first set of functional Test Plans</h3>
+
+</div>
+
+<h2>Problem analysis</h2>
+
+
+<h2>Test plans</h2> 
+
+
+<h2>Project</h2> 
+
+
+
+<h2>Testing</h2> 
+ 
+
+<h2>Deployment</h2> 
+
+ 
+<h2>Maintenance</h2> 
+
+<br><br>
+<div class="endpage">
+By Romeo Stefano (stefano.romeo@studio.unibo.it) and Russo Maria (maria.russo10@studio.unibo.it)
+<!--By<br>Romeo Stefano (stefano.romeo@studio.unibo.it)<br>and<br>Russo Maria (maria.russo10@studio.unibo.it)<br>-->
+<!--<img src="./utils/img/emiglio.png" alt="mbot" width="5%" height="5%">-->
+</div>
+
+<div>elementi utili:</div>
+<table>
+<tr>
+	<td></td>
+	<td></td>
+</tr>
+</table>
+
+<ol>
+<li></li>
+<li></li>
+</ol>
+
+<ul>
+<li></li>
+<li></li>
+</ul>
+
+</body>
+</html>
