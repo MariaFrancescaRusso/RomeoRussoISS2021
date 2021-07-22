@@ -40,15 +40,15 @@ By.the interaction?/Talking with the customer, here there is/it's exposed a (lil
 <table>
 <tr>
 	<td class="title"><ks>room</ks></td>
-	<td>It's an environment in which the interactions between the elements happen. When system starts no people is in it, besides the <ks>Maitre de Salle</ks>.</td>
+	<td>It's an environment in which the interactions between the elements happen. When system starts no people is in it, besides the <ks>Maître de Salle</ks>.</td>
 </tr>
 <tr>
-	<td class="title"><ks>Maitre de Salle</ks></td>
+	<td class="title"><ks>Maître de Salle</ks></td>
 	<td>Person who manages the <ks>room</ks> and its elements.</td>
 </tr>
 <tr>
-	<td class="title"><ks>maitre's smartphone</ks></td>
-	<td>Smartphone application or a user-GUI in a browser used by <ks>Maitre de Salle</ks>.</td>
+	<td class="title"><ks>maître's smartphone</ks></td>
+	<td>Smartphone application or a user-GUI in a browser used by <ks>Maître de Salle</ks>.</td>
 </tr>
 <tr>
 	<td class="title"><ks>fridge</ks></td>
@@ -109,14 +109,14 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 	<td>The software system is a distribuited system composed by three main entities:
 	<ul>
 		<li><ks>RBR</ks>, running on its own **robotNode**;</li>
-		<li><ks>maitre's smartphone</ks>, running on a **maitreNode**;</li>
+		<li><ks>maître's smartphone</ks>, running on a **maitreNode**;</li>
 		<li><ks>fridge</ks>, running on a **fridgeNode**. </li>
 	</ul>
 	</td>
 	<td><img src="./utils/img/threeEntities.png" alt="three entities"></td>
 </tr>
 <tr>
-	<td>The software running on **maitreNode** must allow <ks>Maitre de Salle</ks> to:
+	<td>The software running on **maitreNode** must allow <ks>Maître de Salle</ks> to:
 	<ul>
 		<li>send the commands to <ks>RBR</ks> to execute tasks or to stop and reactive them;</li>
 		<li>known and to show the objects related to each resources (smart and non-smart), so he must be able to comunicate with <ks>fridge</ks> too.</li>
@@ -127,10 +127,10 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 <tr>
 	<td>The software running on **robotNode** must be able to:
 	<ul>
-		<li>execute the <ks>task</ks> associated to command received by the <ks>maitre's smartphone</ks>;</li>
-		<li>stop/reactive a running <ks>task</ks> when it's required by the <ks>maitre's smartphone</ks>;</li>
+		<li>execute the <ks>task</ks> associated to command received by the <ks>maître's smartphone</ks>;</li>
+		<li>stop/reactive a running <ks>task</ks> when it's required by the <ks>maître's smartphone</ks>;</li>
 		<li>ask to <ks>fridge</ks> if it contains a specific food defined by a <ks>food-code</ks> and to receive the answer;</li>
-		<li>send a warning to the <ks>maitre's smartphone</ks> when the <ks>fridge</ks> doesn't contain the food required;</li>
+		<li>send a warning to the <ks>maître's smartphone</ks> when the <ks>fridge</ks> doesn't contain the food required;</li>
 		<li>return to his <ks>RH</ks> at the end of every <ks>task</ks>;</li>
 		<li>avoid the impact with mobile obstacles.</li>
 	</ul>
@@ -139,7 +139,7 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 <tr>
 	<td>The software running on **fridgeNode** must be able to:
 		<ul>
-		<li>answer to the <ks>maitre's smartphone</ks>, via CoAP, with his content when it's required.</li>
+		<li>answer to the <ks>maître's smartphone</ks>, via CoAP, with his content when it's required.</li>
 		<li>answer to the <ks>RBR</ks>, via CoAP, when it asks if it contains a specific food.</li>
 		</ul>
 	</td>
@@ -148,18 +148,64 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 
 <h3>A first model of the system architecture</h3>
 
-In part
-
+In particular, from this analysis and from the command names provided by the requirements text, we can realize a first model of the system architecture that is an initial representation of this system.
+<br><br>
 <table>
 <tr>
-<td></td>
-<td></td>
+<td>Comportamento:
+	- torna a posizione iniziale
+	- é in grado di eseguire i task senza collisioni 
+	- si ferma e riparte se riceve i comandi da parte del maître</td>
+<td rowspan="4"><img src="./utils/img/modelFromReqAnalysis.png" alt="Representation of the system from Requirements Analysis"></td>
+</tr>
+<tr>
+<td><pre>Comunication Maitre - RBR robotCmd : robotCmd(X) X=[**addFood(foodCode)**, clear, prepare, stop, restart]{
+	command Task (prepare addfood(food-code) clear) 
+	command handle (stop/restart)
+	task ("Prepare the room" "Add food" "Clear the room")
+}
+
+Comunication Maitre - Fridge/Maitre : **consultCmd** {  
+	command consult (ROOM)
+	(Maitre knowns the state of non-smart elements, and asks to the smart devices to know their state)	
+}
+</pre></td>
+</tr>
+<tr>
+<td><pre>Comunication RBR - Maitre fail:fail(m) {
+	report of failure after receiving answer(no) from Fridge (if there isn't food=food-code in the fridge)
+}
+
+Comunication RBR - Fridge ask:ask(foodCode) {
+	command ask(food-code) after receiving command addfood(food-code) from Maitre
+}
+</pre></td>
+</tr>
+<tr>
+<td><pre>Comunication Fridge -  Maitre expose : expose(state) {
+	command expose after receiving command consult from Maitre
+}
+
+Comunication Fridge - RBR answer:answer(Y) Y(Y=[yes,no]) {
+	command answer after receiving command ask(food-code) from RBR
+}
+</pre></td>
 </tr>
 </table>
 
 <h3>Requirements traceability</h3>
 
+[achievied from the requirement analysis]
+Using a meta-model written in a machine-understandble language, like QActor, we can obtain a representation of the system architecture that describes the associations between requirements and the running elements (represented by the actors).
+
+<a href="./Analisi.qak" target="_black">representation of a system architecture</a><br>
+<iframe src="./Analisi.qak" title="sysArchRepr">
+<a href="./Analisi.qak" target="_black">representation of a system architecture</a>
+</iframe>
+
 <h3>A first set of functional Test Plans</h3>
+
+
 
 </div>
 
@@ -181,6 +227,7 @@ In part
  
 <h2>Maintenance</h2> 
 
+</div>
 <br><br>
 <div class="endpage">
 By Romeo Stefano (stefano.romeo@studio.unibo.it) and Russo Maria (maria.russo10@studio.unibo.it)
