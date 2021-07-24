@@ -167,11 +167,6 @@ div.endpage {
 	color:white
 }
 
-
-img {
-	border: 1.5px solid #d5f2ed;
-}
-
 table, th, td {
 	border-collapse: collapse;
 	border: 1px solid black;
@@ -185,6 +180,11 @@ td.title {
 	width: 20%;
 }
 
+td.image {
+	width: 50%;
+	text-align: center;
+}
+
 ol, ul, li {
 	margin: 0;
 	margin-left: 10px;
@@ -192,7 +192,16 @@ ol, ul, li {
 	padding-bottom: 5px;
 }
 
+ul {
+	type: disc;
+}
+
 iframe {
 	border: none;
 	width: 100%;
+}
+
+img {
+	border: 1.5px solid #d5f2ed;
+	width: 50%;
 }

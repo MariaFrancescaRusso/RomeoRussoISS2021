@@ -108,24 +108,24 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 <tr>
 	<td>The software system is a distribuited system composed by three main entities:
 	<ul>
-		<li><ks>RBR</ks>, running on its own **robotNode**;</li>
-		<li><ks>maître's smartphone</ks>, running on a **maitreNode**;</li>
-		<li><ks>fridge</ks>, running on a **fridgeNode**. </li>
+		<li><ks>RBR</ks>, running on its own <kc>robotNode</kc>;</li>
+		<li><ks>maître's smartphone</ks>, running on a <kc>maitreNode</kc>;</li>
+		<li><ks>fridge</ks>, running on a <kc>fridgeNode</kc>. </li>
 	</ul>
 	</td>
-	<td><img src="./utils/img/threeEntities.png" alt="three entities"></td>
+	<td class="image"><img src="./utils/img/threeEntities.png" alt="three entities"></td>
 </tr>
 <tr>
-	<td>The software running on **maitreNode** must allow <ks>Maître de Salle</ks> to:
+	<td>The software running on <kc>maitreNode</kc> must allow <ks>Maître de Salle</ks> to:
 	<ul>
 		<li>send the commands to <ks>RBR</ks> to execute tasks or to stop and reactive them;</li>
 		<li>known and to show the objects related to each resources (smart and non-smart), so he must be able to comunicate with <ks>fridge</ks> too.</li>
 	</ul>
 	</td>
-	<td rowspan="3"><img src="./utils/img/entitiesRel.png" alt="relationships between entities"></td>
+	<td class="image" rowspan="3"><img src="./utils/img/entitiesRel.png" alt="relationships between entities"></td>
 </tr>
 <tr>
-	<td>The software running on **robotNode** must be able to:
+	<td>The software running on <kc>robotNode</kc> must be able to:
 	<ul>
 		<li>execute the <ks>task</ks> associated to command received by the <ks>maître's smartphone</ks>;</li>
 		<li>stop/reactive a running <ks>task</ks> when it's required by the <ks>maître's smartphone</ks>;</li>
@@ -137,9 +137,9 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 	</td>
 </tr>
 <tr>
-	<td>The software running on **fridgeNode** must be able to:
+	<td>The software running on <kc>fridgeNode</kc> must be able to:
 		<ul>
-		<li>answer to the <ks>maître's smartphone</ks>, via CoAP, with his content when it's required.</li>
+		<li>answer to the <ks>maître's smartphone</ks>, via CoAP, with his content when it's required;</li>
 		<li>answer to the <ks>RBR</ks>, via CoAP, when it asks if it contains a specific food.</li>
 		</ul>
 	</td>
@@ -152,11 +152,15 @@ In particular, from this analysis and from the command names provided by the req
 <br><br>
 <table>
 <tr>
+<th>Interaction between entities, written in natural language, using words provided by the requirements text</th>
+<th>First representation/model of the system</th>
+</tr>
+<tr>
 <td>Comportamento:
 	- torna a posizione iniziale
 	- é in grado di eseguire i task senza collisioni 
 	- si ferma e riparte se riceve i comandi da parte del maître</td>
-<td rowspan="4"><img src="./utils/img/modelFromReqAnalysis.png" alt="Representation of the system from Requirements Analysis"></td>
+<td class="image" rowspan="4"><img src="./utils/img/modelFromReqAnalysis.png" alt="Representation of the system from Requirements Analysis"></td>
 </tr>
 <tr>
 <td><pre>Comunication Maitre - RBR robotCmd : robotCmd(X) X=[**addFood(foodCode)**, clear, prepare, stop, restart]{
@@ -193,6 +197,26 @@ Comunication Fridge - RBR answer:answer(Y) Y(Y=[yes,no]) {
 </tr>
 </table>
 
+<h3>A first set of functional Test Plans</h3>
+
+<h4>Scenario</h4>
+
+<ol>
+<li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> is empty.</li>
+<li>The <ks>Maître de Salle</ks> sends the command <em>prepare</em> (for the task <ks>Prepare the room</ks>) to the <ks>RBR</ks> and wait. When <ks>RBR</ks> ends to do the task, he returns to its <ks>RH</ks>.(DOBBIAMO SCRIVERE ANCHE COSA FA IL TASK???)</li>
+<li>(PARLIAMO DEL PARTY?? TIPO CHE COMINCIA E CI SONO PERSONE CHE RAPPRESENTANO DEGLI OSTACOLI PER RBR)The <ks>Maître de Salle</ks> can sends at any time to <ks>RBR</ks>the command <em>addFood(food-code)</em> (for the task <ks>Add food</ks>). <ks>RBR</ks> ask to <ks>fridge</ks> if it has the <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP (DOBBIAMO DIRE NEL GLOSSARIO COS'È???), with command <em>answer</em>. If the <ks>fridge</ks> doesn't contain the <ks>food-code</ks>, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the task end then returns to its <ks>RH</ks>.</li>
+<li>(BISOGNA DIRE "ALLA FINE DEL SERVIZIO???") The <ks>Maître de Salle</ks> sends to <ks>RBR</ks> the command <em>clear</em> (for the task <ks>Clear the room</ks>) and wait. When <ks>RBR</ks> ends to do the task, he returns to its <ks>RH</ks>.</li>
+<li>In every moment/At every time of the service:
+<ul>
+<li>the <ks>Maître de Salle</ks> can use command <em>consult</em> to know the state of each element in the room. In this case, the <ks>fridge</ks> answers via CoAP, using the command <em>expose</em>, to show its content.</li></li>
+<li>the <ks>Maître de Salle</ks> can use the command <em>stop</em> or <em>reactive</em> to stop or restart an activated task.</li>
+<li>The <ks>RBR</ks> must <em>avoid</em> the obstacle.</li>
+</ul></ol>
+
+<h4>Test Plans</h4>
+
+It's necessary to test 
+
 <h3>Requirements traceability</h3>
 
 [achievied from the requirement analysis]
@@ -202,10 +226,6 @@ Using a meta-model written in a machine-understandble language, like QActor, we 
 <iframe src="./Analisi.qak" title="sysArchRepr">
 <a href="./Analisi.qak" target="_black">representation of a system architecture</a>
 </iframe>
-
-<h3>A first set of functional Test Plans</h3>
-
-
 
 </div>
 
