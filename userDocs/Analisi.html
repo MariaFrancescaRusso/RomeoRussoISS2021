@@ -20,7 +20,7 @@
 
 <h2>Introduction</h2>
 
-Keeping in mind the motto: <bc>"there is no code without a project, no project without problem analysis and no problem without requirements"</bc>, this document presents a possible solution to the requirements provided by the customer, achieved in three main phase: requirements analysis, problem analysis and a design phase.
+Keeping in mind the motto: <bc>"there is no code without a project, no project without problem analysis and no problem without requirements"</bc>, this document presents a possible solution to the requirements provided by the customer, achieved (WITH A TOP-DOWN APPROACH???????????????) in three main phase: requirements analysis, problem analysis and a design phase.
 
 <h2 id="req_text">Requirements</h2>
 
@@ -100,7 +100,7 @@ By the interaction with the customer, here it's exposed a essential <b>glossary<
 
 <h3>Requirements analysis</h3>
 
-Once we have understood the main concepts set by the <a href="#req_text">requirements text</a> given by the customer, it's now possible to analyze them (with top-down approach, doing/like a zooming on the system: structure - interactions - behavior).
+Once we have understood the main concepts set by the <a href=#req_text>requirements text</a> given by the customer, it's now possible to analyze them (WITH A TOP-DOWN APPROACH?????????).
 <br><br>
 <table>
 <tr>
@@ -130,7 +130,7 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 		<li>ask to <ks>fridge</ks> if it contains a specific food defined by a <ks>food-code</ks> and to receive the answer;</li>
 		<li>send a warning to the <ks>maître's smartphone</ks> when the <ks>fridge</ks> doesn't contain the food required;</li>
 		<li>return to his <ks>RH</ks> at the end of every <ks>task</ks>;</li>
-		<li>avoid the impact with mobile obstacles.</li>
+		<li>avoid the impact with obstacles.</li>
 	</ul>
 	</td>
 </tr>
@@ -138,7 +138,7 @@ Once we have understood the main concepts set by the <a href="#req_text">require
 	<td>The software running on <kc>fridgeNode</kc> must be able to:
 		<ul>
 		<li>answer to the <ks>maître's smartphone</ks>, via CoAP, with his content when it's required;</li>
-		<li>answer to the <ks>RBR</ks>, via CoAP, when it asks if it contains a specific food.</li>
+		<li>answer to the <ks>RBR</ks>, via CoAP, when it asks if it contains a specific food defined by a <ks>food-code</ks>.</li>
 		</ul>
 	</td>
 </tr>
