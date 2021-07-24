@@ -20,12 +20,12 @@
 
 <h2>Introduction</h2>
 
-Taking care of/that: <bc>"there is no code without a project, no project without problem analysis and no problem without requirements"</bc>; this document presents a "possible" solution to/for/at the problem/requirements done by the customer.
+Keeping in mind the motto: <bc>"there is no code without a project, no project without problem analysis and no problem without requirements"</bc>, this document presents a possible solution to the requirements provided by the customer, achieved in three main phase: requirements analysis, problem analysis and a design phase.
 
 <h2 id="req_text">Requirements</h2>
 
 <div class="remark">
-Below it's "shown" the <a href="./utils/tf/TemaFinaleBo19.html" target="_black">requirements text</a> provided by the customer.<br>
+Below it's shown the <a href="./utils/tf/TemaFinaleBo19.html" target="_black">requirements text</a> provided by the customer.<br>
 <iframe src="./utils/tf/TemaFinaleBo19.html" title="Requirements text"><a href="./utils/tf/TemaFinaleBo19.html" target="_black">Requirements Text Link</a></iframe>
 </div>
 
@@ -33,32 +33,32 @@ Below it's "shown" the <a href="./utils/tf/TemaFinaleBo19.html" target="_black">
 
 <h3>Glossary</h3>
 
-By.the interaction?/Talking with the customer, here there is/it's exposed a (lil/essential) <b>glossary</b> about the meaning of the names and of the verbs included in the <a href="#req_text">requirements text</a> given by the customer.
+By the interaction with the customer, here it's exposed a essential <b>glossary</b> about the meaning of the names and of the verbs included in the <a href="#req_text">requirements text</a> given by the customer.
 <br><br>
 <table>
 <tr>
 	<td class="title"><ks>room</ks></td>
-	<td>It's an environment in which the interactions between the elements happen. When system starts no people is in it, besides the <ks>Maître de Salle</ks>.</td>
+	<td>It's an environment equipped with a set of smart and non-smart resources and in which the interactions between these elements happen. These resources are: a <ks>pantry</ks>, a <ks>dishwasher</ks> and a <ks>fridge</ks>, that are all embedded into the wall of the room; a <ks>table</ks>, that is placed in the center of the room; an <ks>RBR</ks>. When system starts no people is in it, besides the <ks>Maître de Salle</ks>.</td>
 </tr>
 <tr>
 	<td class="title"><ks>Maître de Salle</ks></td>
-	<td>Person who manages the <ks>room</ks> and its elements.</td>
+	<td>Person who manages the <ks>room</ks> and its elements, using the <ks>maître's smartphone</ks>.</td>
 </tr>
 <tr>
 	<td class="title"><ks>maître's smartphone</ks></td>
-	<td>Smartphone application or a user-GUI in a browser used by <ks>Maître de Salle</ks>.</td>
+	<td>Smartphone application or a user-GUI in a browser used by <ks>Maître de Salle</ks> to interact with smart resources in the <ks>room</ks> (<ks>fridge</ks> and <ks>RBR</ks>).</td>
 </tr>
 <tr>
 	<td class="title"><ks>fridge</ks></td>
-	<td>It's a smart device, having knowledge base on his storage, and a "Internet Thing". It's embedded into a wall of the <ks>room</ks> and it's filled with a proper set of items.</td>
+	<td>It's a smart device, having knowledge base on his storage, and an "Internet Thing". It's embedded into the wall of the <ks>room</ks> and it's filled with a proper set of items when system starts. It must be able to comunicate, via CoAP, with <ks>maître's smartphone</ks> and <ks>RBR</ks>.</td>
 </tr>
 <tr>
 	<td class="title"><ks>pantry</ks></td>
-	<td>It's a non-smart resource embedded into a wall of the <ks>room</ks> and it's filled with a proper set of items.</td>
+	<td>It's a non-smart resource embedded into the wall of the <ks>room</ks> and it's filled with a proper set of items when system starts.</td>
 </tr>
 <tr>
 	<td class="title"><ks>dishwasher</ks></td>
-	<td>It's a non-smart resource embedded into a wall of the <ks>room</ks> and it's empty when system starts.</td>
+	<td>It's a non-smart resource embedded into the wall of the <ks>room</ks> and it's empty when system starts.</td>
 </tr>
 <tr>
 	<td class="title"><ks>table</ks></td>
