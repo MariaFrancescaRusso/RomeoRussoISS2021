@@ -202,6 +202,13 @@ iframe {
 }
 
 img {
-	border: 1.5px solid #d5f2ed;
-	width: 50%;
+/*	border: 1.5px solid #d5f2ed;*/
+	border: none;
+	width: 70%;
+}
+
+img.photo{
+	width: 5%;
+	height: 5%;
+	border: none;
 }
