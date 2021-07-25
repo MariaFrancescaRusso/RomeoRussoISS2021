@@ -181,8 +181,12 @@ td.title {
 }
 
 td.image {
-	width: 50%;
+	width: 30%;
 	text-align: center;
+}
+
+td.scenario {
+	width: 35%;
 }
 
 ol, ul, li {
@@ -204,7 +208,7 @@ iframe {
 img {
 /*	border: 1.5px solid #d5f2ed;*/
 	border: none;
-	width: 70%;
+	width: 100%;
 }
 
 img.photo{
