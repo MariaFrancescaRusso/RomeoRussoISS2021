@@ -169,15 +169,24 @@ At every time of the service:
 It's necessary to make some test plans that must be verified for the correct working of the final system, according to the requirements provided by the customer. Below it's reported a first planning of tests.
 <br><br>
 <ol>
-<li>at the start of the system, the <ks>RBR</ks> is positioned on (the cell of???) its <ks>RH</ks>. (BISOGNA TESTARE LO STATO ANCHE DEGLI ALTRI ELEMENTI DELLA STRANZA??????)</li>
-<li></li>
-<li></li>
-<li></li>
-<li>all the communications between entities runs/works;</li>
+<li>At the start of the system, it's necessary to verify that the <ks>RBR</ks> is positioned on (the cell of???) its <ks>RH</ks>. (BISOGNA TESTARE LO STATO ANCHE DEGLI ALTRI ELEMENTI DELLA STRANZA??????)</li>
+<li>Tests of: the communications between entities (maitre-RBR); the path (EFFETTUATO)/carried out by the <ks>RBR</ks> that must be the one expected to execute/perform the <ks>task</ks> required by the <ks>Maître de Salle</ks>; (same as in step '1').</li>
+<li>Tests of: (same as in step '2') the communications between entities (// and viceversa, RBR-fridge and viceversa); // if possible (if the fridge contains the food required); (same as in step '1').</li>
+<li>Tests of: (same as in step '2' and '1').</li>
+<li>Tests of the content/state(?????? È NECESSARIO???) of each element in the room and of all the communications between entities.</li>
+<li>Test on the functionality (????????) of the <ks>RBR</ks> to avoid all the possible obstacles.</li>
 </ol>
-
-Test sulla posizione del robot all'interno della stanza
+<hr>
+<ul>
+<li>Test(S??) of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>.</li>
+<li>Test(S??) of all the communications between entities (maitre - RBR, maitre - fridge, RBR - fridge and each vice versa).</li>
+<li>Test(S??) of the path (EFFETTUATO)/carried out by the <ks>RBR</ks> that must be the one expected to execute/perform the <ks>task</ks> required by the <ks>Maître de Salle</ks>.</li>
+<li>(QUESTO PUò ANDAR BENE???)Test of the state of the robot to verify its reaction when it receives command stop or reactive (E PER SAPERE COSA STA FACENDO? MA QUESTO E CIÒ CHE FACCIAMO PER SAPERE SE IL PERCORSO EFFETTUATO DA RBR SIA QUELLO GIUSTO! QUINDI TEST NON NECESSARIO????????)</li>
+<li>Test on the functionality (????????) of the <ks>RBR</ks> to avoid all the possible obstacles.</li>
+Test sulla posizione del robot all'interno della stanza <br>
 Test sugli stati delle entità ad ogni transizione del sistema.
+</ul>
+
 
 <h4>Scenario and Test Plans</h4>
 
@@ -273,8 +282,6 @@ Comunication Fridge - RBR answer:answer(Y) Y(Y=[yes,no]) {
 </tr>
 </table>
 
-</div>
-
 <h2>Problem analysis</h2>
 
 <h3>Requirements traceability</h3>
@@ -287,7 +294,49 @@ Using a meta-model written in a machine-understandble language, like QActor, we 
 <a href="./Analisi.qak" target="_black">representation of a system architecture</a>
 </iframe>
 
+<h3>Problem analysis</h3>
 
+The main goal of problem analysis can be summarized as follows:
+<ol>
+<li>understand the (technical) problems posed by the requirements;</li>
+<li>identify the best tools/libraries/supports etc. necessary and/or useful for building the system;</li>
+<li>clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process;</li>
+<li>define a logical architecture of the system and a first working prototype to show to the customer at the end of our first sprint.</li>
+</ol>
+In the context of SCRUM, one or more of these steps will be redone in the sprint-review meetings. 
+
+<hr>
+In our scenario:
+<ol>
+<li><dl>
+	<dt>**General System**</dt>
+	<dd>The system is distribuited. To model it, it's available the **QAk-infrastracture** meta-model, developed and provided by our company. This meta-model provides a built-in message-driven tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, the **MQTT** and **web** tecnologies are introduced and it's required the **CoAP** support to the fridge comunications.</dd>
+</dl></li>
+<li><dl>
+	<dt>**Robot** (controlla librerie)</dt>
+	<dd>Il robot per eseguire i task deve essere in grado di raggiungere tutti gli obiettivi (frigo, tavolo, lavastoviglie, dispensa) con cui interagire. Essendo questi elementi fissi nella stanza una soluzione può essere il **mappaggio della stanza** all'avvio del robot.</dd>
+	<dd>Il mappaggio può essere implementato tramite le librerie ... fornite della software house.</dd>
+	<dd>Robot come componente proattivo/reattivo (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
+	<dd>Per soddisfare il requisito 'avoid the impact with the mobile obstacles' possiamo pensare di utilizzare (eventi per gestire) i dati raccolti da un sensore, che può essere reppresentato da un sonar (sia nel robot fisico che in quello virtuale). </dd>
+	<dd>La gestione del sonar è fornita delle librerie .... della software house.</dd>
+	<dd>Nel prossimo sprint valuteremo l idea di rendere il sonar un attore indipendente dal robot.</dd>
+	<dd>The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot-facade. </dd>
+</dl></li>
+<li><dl>
+	<dt>**Maitre**</dt>
+	<dt>**valutare utilizzo di console**</dt>
+	<dt>**interfaccia sviluppabile sia web-oriented che come app android**</dt>
+	<dd>Possibilità di gestire lo stato degli oggetti non smart per mezzo di attori dedicati a ciascun oggetto all'interno del contesto del maitre.</dd>
+	<dd>Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart.</dd>
+	<dd>Potremmo prevedere un attore XY in grado di ricevere i warning dal robot in qualsiasi momento.</dd>
+	<dd>Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema.</dd>
+</dl></li>
+<li><dl>
+	<dt>**Fridge**</dt>
+	<dd>Possibilità di **utilizzare android per IoT** / oppure **interfaccia web**</dd>
+	<dd>Possibilità di popolarlo all'avvio del sistema.</dd>
+</dl></li>
+</ol>
 
 <h2>Test plans</h2> 
 
@@ -331,6 +380,11 @@ Unordered List:
 <li></li>
 <li></li>
 </ul>
+Definition list:
+<dl>
+<dt></dt>
+<dd></dd>
+</dl>
 Link:
 <a href="" target="_black"></a>
 Image:
