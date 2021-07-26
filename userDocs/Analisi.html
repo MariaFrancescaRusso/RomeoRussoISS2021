@@ -188,46 +188,40 @@ Test sugli stati delle entità ad ogni transizione del sistema.
 </ul>
 
 
-<h4>Scenario and Test Plans</h4>
+<h4>Scenario</h4>
 
-Here, it's illustrated a possible scenario of the system and a first planning of tests, that must be verified for the correct working of the final system, according to the requirements provided by the customer.
+Here, it's illustrated a possible scenario of the system.
 <br><br>
 <table>
 <tr>
 <th>Steps in the scenario</th>
 <th>Simplified representation of each step</th>
-<th>Test Plans for each step</th>
 </tr>
 <tr>
-	<td class="scenario"><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> is empty.</li></ol></td>
-	<td class="image"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
-	<td>For this step, it's necessary to verify/test/check that/if the <ks>RBR</ks> is positioned on (the cell of???) its <ks>RH</ks>. (BISOGNA TESTARE LO STATO ANCHE DEGLI ALTRI ELEMENTI DELLA STRANZA??????)</td>
+	<td><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> is empty.</li></ol></td>
+	<td class="imageScenario"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
 </tr>
 <tr>
-	<td class="scenario"><ol start="2"><li>The <ks>Maître de Salle</ks> sends the command <em>prepare</em> (for the <ks>task</ks> <ks>Prepare the room</ks>) to the <ks>RBR</ks> and wait. The <ks>RBR</ks> executes the <ks>task</ks> related to the command and at the end he returns to its <ks>RH</ks>.</li></ol></td>
-	<td class="image"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
-	<td>For this step, it's necessary to verify/test/check that/if </td>
+	<td><ol start="2"><li>The <ks>Maître de Salle</ks> sends the command <em>prepare</em> (for the <ks>task</ks> <ks>Prepare the room</ks>) to the <ks>RBR</ks> and wait. The <ks>RBR</ks> executes the <ks>task</ks> related to the command and at the end he returns to its <ks>RH</ks>.</li></ol></td>
+	<td class="imageScenario"><img src="./utils/img/ScenarioPrepare.png" alt="Scenario 'Prepare the room'"></td>
 </tr>
 <tr>
-	<td class="scenario"><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can sends at any time to <ks>RBR</ks> the command <em>addFood (food-code)</em> (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks to <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with command <em>answer</em>. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
-	<td class="image"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
-	<td>For this step, it's necessary to verify/test/check that/if </td>
+	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can sends at any time to <ks>RBR</ks> the command <em>addFood (food-code)</em> (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks to <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with command <em>answer</em>. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
+	<td class="imageScenario"><img src="./utils/img/ScenarioAddFood.png" alt="Scenario 'Add food'"></td>
 </tr>
 <tr>
-	<td class="scenario"><ol start="4"><li>At the end of the party the <ks>room</ks> is empty again, beside the <ks>Maître de Salle</ks>. The <ks>Maître de Salle</ks> sends to <ks>RBR</ks> the command <em>clear</em> (for the <ks>task</ks> <ks>Clear the room</ks>) and wait. The <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
-	<td class="image"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
-	<td>For this step, it's necessary to verify/test/check that/if </td>
+	<td><ol start="4"><li>At the end of the party the <ks>room</ks> is empty again, beside the <ks>Maître de Salle</ks>. The <ks>Maître de Salle</ks> sends to <ks>RBR</ks> the command <em>clear</em> (for the <ks>task</ks> <ks>Clear the room</ks>) and wait. The <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
+	<td class="imageScenario"><img src="./utils/img/ScenarioClear.png" alt="Scenario 'Clear the room'"></td>
 </tr>
 <tr>
-	<td class="scenario">At every time of the service:
+	<td>At every time of the service:
 	<ul>
 		<li>the <ks>Maître de Salle</ks> can use command <em>consult</em> to know the state of each element in the <ks>room</ks>. In this case, the <ks>fridge</ks> answers via CoAP, using the command <em>expose</em>, to show its content.</li>
 		<li>the <ks>Maître de Salle</ks> can use the command <em>stop</em> or <em>reactive</em> to stop or restart an activated <ks>task</ks>.</li>
 		<li>The <ks>RBR</ks> must <em>avoid</em> the obstacles.</li>
 	</ul>
 	</td>
-	<td class="image"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
-	<td>For this step, it's necessary to verify/test/check that/if </td>
+	<td class="imageScenario"><img src="./utils/img/ScenarioConsult.png" alt="Scenario Consult"></td>
 </tr>
 </table>
 

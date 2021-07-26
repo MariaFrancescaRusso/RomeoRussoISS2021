@@ -185,8 +185,9 @@ td.image {
 	text-align: center;
 }
 
-td.scenario {
-	width: 35%;
+td.imageScenario {
+	width: 20%;
+	text-align: center;
 }
 
 ol, ul, li {
