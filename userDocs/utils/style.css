@@ -75,6 +75,7 @@ tt {
 	color: #006600;
 }
 
+/*for commands*/
 em {
 	font-family: "Arial";
 	font-size: 80%;
@@ -84,6 +85,7 @@ em {
 	color: #1632cc;
 }
 
+/*highlighted words in red*/
 bc {
 	font-family: "Arial";
 	font-size: 90%;
@@ -92,6 +94,7 @@ bc {
 	background-color: #fcf8c7;
 }
 
+/*for key words*/
 ks {
 	font-family: "Arial";
 	font-weight: bold;
@@ -160,6 +163,7 @@ div.imagedesc {
 	width: 85%;
 	margin: auto;
 }
+
 div.endpage {
 	background-color:rgba(86, 56, 253, 0.9);
 	width:100%;

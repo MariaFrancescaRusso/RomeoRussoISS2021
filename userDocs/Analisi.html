@@ -22,18 +22,18 @@
 
 Keeping in mind the motto: <bc>"there is no code without a project, no project without problem analysis and no problem without requirements"</bc>, this document presents a possible solution to the requirements provided by the customer, achieved with a top-down approach in three main phase: requirements analysis, problem analysis and a design phase.
 
-<h2 id="req_text">Requirements</h2>
+<h2>Requirements</h2>
 
 <div class="remark">
-Below it's shown the <a href="./utils/tf/TemaFinaleBo19.html" target="_black">requirements text</a> provided by the customer.<br>
-<iframe src="./utils/tf/TemaFinaleBo19.html" title="Requirements text"><a href="./utils/tf/TemaFinaleBo19.html" target="_black">Requirements Text Link</a></iframe>
+Below it's shown the <a href="./utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> provided by the customer.<br>
+<iframe src="./utils/tf/TemaFinaleBo19.html" title="Requirements text"><a href="./utils/tf/TemaFinaleBo19.html" target="_blank">Requirements Text Link</a></iframe>
 </div>
 
 <h2>Requirement analysis</h2>
 
 <h3>Glossary</h3>
 
-By the interaction with the customer, here it's exposed a essential glossary about the meaning of the names and of the verbs included in the <a href="#req_text">requirements text</a> given by the customer.
+By the interaction with the customer, here it's exposed an essential glossary about the meaning of the names and of the verbs included in the <a href="./utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> given by the customer.
 <br><br>
 <table>
 <tr>
@@ -66,11 +66,11 @@ By the interaction with the customer, here it's exposed a essential glossary abo
 </tr>
 <tr>
 	<td class="title"><ks>RBR - <i>Room Butler Robot</i></ks></td>
-	<td>It's a <ks>DDR</ks> able to work as a Room Butler: it must be able to comunicate with <ks>maître's smartphone</ks> and <ks>fridge</ks> and to walk around the <ks>room</ks> to execute the <ks>task</ks>, avoiding the fixed and mobile obstacles. When system starts and when it's not executing any <ks>task</ks>, it must be in the <ks>RH</ks> position.</td>
+	<td>It's a <ks>DDR</ks> able to work as a Room Butler: it must be able to comunicate with <ks>maître's smartphone</ks> and <ks>fridge</ks> and to walk around the <ks>room</ks> to execute the <ks>task</ks>, avoiding the fixed and mobile obstacles. When system starts and after it completed a <ks>task</ks>, it must wait new commands in the <ks>RH</ks> position.</td>
 </tr>
 <tr>
 	<td class="title"><ks>DDR - <i>Differential Drive Robot</i></ks></td>
-	<td>The customer provided all the documentation about this topic: the documentation about the basicRobot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_black">basicrobot2021.html</a>), that can be implemented as a virtual robot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_black">VirtualRobot2021.html</a>) or as a real robot, that can be an mbot (at <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_black">MBot2020.html</a>) or a nano robot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_black">LabNanoRobot.html</a>).</td>
+	<td>The customer provided all the documentation about this topic: the documentation about the basicRobot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), that can be implemented as a virtual robot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) or as a real robot, that can be an mbot (at <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or a nano robot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).</td>
 </tr>
 <tr>
 	<td class="title"><ks>RH - <i>Robot Home</i></ks></td>
@@ -82,11 +82,11 @@ By the interaction with the customer, here it's exposed a essential glossary abo
 </tr>
 <tr>
 	<td class="title"><ks>Prepare the room</ks></td>
-	<td>This task consists in putting on the <ks>table</ks> dishes taken from the <ks>pantry</ks> and food taken from the <ks>fridge</ks>. The set of items to put on the table is fixed and it's properly described somewhere.</td>
+	<td>This <ks>task</ks> consists in putting on the <ks>table</ks> dishes taken from the <ks>pantry</ks> and food taken from the <ks>fridge</ks>. The set of items to put on the <ks>table</ks> is fixed and it's properly described somewhere.</td>
 </tr>
 <tr>
 	<td class="title"><ks>Add food</ks></td>
-	<td>This task consists in putting on the <ks>table</ks> some specific food (defined by a <ks>food-code</ks>) taken from the <ks>fridge</ks> if it exists.</td>
+	<td>This <ks>task</ks> consists in putting on the <ks>table</ks> some specific food (defined by a <ks>food-code</ks>) taken from the <ks>fridge</ks> if it exists.</td>
 </tr>
 <tr>
 	<td class="title"><ks>food-code</ks></td>
@@ -94,13 +94,13 @@ By the interaction with the customer, here it's exposed a essential glossary abo
 </tr>
 <tr>
 	<td class="title"><ks>Clear the room</ks></td>
-	<td>This task consists in putting in the <ks>dishwasher</ks> and in the <ks>fridge</ks> respectively dishes and non-consumed food taken from the <ks>table</ks>.</td>
+	<td>This <ks>task</ks> consists in putting in the <ks>fridge</ks> and in the <ks>dishwasher</ks> respectively non-consumed food and dishes taken from the <ks>table</ks>.</td>
 </tr>
 </table>
 
 <h3>Requirements analysis</h3>
 
-Once we have understood the main concepts set by the <a href=#req_text>requirements text</a> given by the customer, it's now possible to analyze them.
+Once we have understood the main concepts set by the <a href="./utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> given by the customer, it's now possible to analyze them.
 <br><br>
 <table>
 <tr>
@@ -108,7 +108,7 @@ Once we have understood the main concepts set by the <a href=#req_text>requireme
 	<ul>
 		<li><ks>RBR</ks>, running on its own <kc>robotNode</kc>;</li>
 		<li><ks>maître's smartphone</ks>, running on a <kc>maitreNode</kc>;</li>
-		<li><ks>fridge</ks>, running on a <kc>fridgeNode</kc>. </li>
+		<li><ks>fridge</ks>, running on a <kc>fridgeNode</kc>.</li>
 	</ul>
 	</td>
 	<td class="image"><img src="./utils/img/threeEntities.png" alt="Three entities"></td>
@@ -116,7 +116,7 @@ Once we have understood the main concepts set by the <a href=#req_text>requireme
 <tr>
 	<td>The software running on <kc>maitreNode</kc> must allow <ks>Maître de Salle</ks> to:
 	<ul>
-		<li>send the commands to <ks>RBR</ks> to execute tasks or to stop and reactive them;</li>
+		<li>send the commands to <ks>RBR</ks> to execute <ks>tasks</ks> or to stop and reactive them;</li>
 		<li>known and to show the objects related to each resources (smart and non-smart), so he must be able to comunicate with <ks>fridge</ks> too.</li>
 	</ul>
 	</td>
@@ -148,48 +148,6 @@ Once we have understood the main concepts set by the <a href=#req_text>requireme
 
 <h4>Scenario</h4>
 
-Here, it's illustrated a possible scenario of the system:
-<br><br>
-<ol>
-	<li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> is empty.</li>
-	<li>The <ks>Maître de Salle</ks> sends the command <em>prepare</em> (for the <ks>task</ks> <ks>Prepare the room</ks>) to the <ks>RBR</ks> and wait. The <ks>RBR</ks> executes the <ks>task</ks> related to the command and at the end he returns to its <ks>RH</ks>.</li>
-	<li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can sends at any time to <ks>RBR</ks> the command <em>addFood (food-code)</em> (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks to <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with command <em>answer</em>. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li>
-	<li>At the end of the party the <ks>room</ks> is empty again, beside the <ks>Maître de Salle</ks>. The <ks>Maître de Salle</ks> sends to <ks>RBR</ks> the command <em>clear</em> (for the <ks>task</ks> <ks>Clear the room</ks>) and wait. The <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li>
-</ol>
-At every time of the service:
-	<ul>
-		<li>the <ks>Maître de Salle</ks> can use command <em>consult</em> to know the state of each element in the <ks>room</ks>. In this case, the <ks>fridge</ks> answers via CoAP, using the command <em>expose</em>, to show its content.</li>
-		<li>the <ks>Maître de Salle</ks> can use the command <em>stop</em> or <em>reactive</em> to stop or restart an activated <ks>task</ks>.</li>
-		<li>The <ks>RBR</ks> must <em>avoid</em> the obstacles.</li>
-	</ul>
-
-
-<h4>Test Plans</h4>
-
-It's necessary to make some test plans that must be verified for the correct working of the final system, according to the requirements provided by the customer. Below it's reported a first planning of tests.
-<br><br>
-<ol>
-<li>At the start of the system, it's necessary to verify that the <ks>RBR</ks> is positioned on (the cell of???) its <ks>RH</ks>. (BISOGNA TESTARE LO STATO ANCHE DEGLI ALTRI ELEMENTI DELLA STRANZA??????)</li>
-<li>Tests of: the communications between entities (maitre-RBR); the path (EFFETTUATO)/carried out by the <ks>RBR</ks> that must be the one expected to execute/perform the <ks>task</ks> required by the <ks>Maître de Salle</ks>; (same as in step '1').</li>
-<li>Tests of: (same as in step '2') the communications between entities (// and viceversa, RBR-fridge and viceversa); // if possible (if the fridge contains the food required); (same as in step '1').</li>
-<li>Tests of: (same as in step '2' and '1').</li>
-<li>Tests of the content/state(?????? È NECESSARIO???) of each element in the room and of all the communications between entities.</li>
-<li>Test on the functionality (????????) of the <ks>RBR</ks> to avoid all the possible obstacles.</li>
-</ol>
-<hr>
-<ul>
-<li>Test(S??) of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>.</li>
-<li>Test(S??) of all the communications between entities (maitre - RBR, maitre - fridge, RBR - fridge and each vice versa).</li>
-<li>Test(S??) of the path (EFFETTUATO)/carried out by the <ks>RBR</ks> that must be the one expected to execute/perform the <ks>task</ks> required by the <ks>Maître de Salle</ks>.</li>
-<li>(QUESTO PUò ANDAR BENE???)Test of the state of the robot to verify its reaction when it receives command stop or reactive (E PER SAPERE COSA STA FACENDO? MA QUESTO E CIÒ CHE FACCIAMO PER SAPERE SE IL PERCORSO EFFETTUATO DA RBR SIA QUELLO GIUSTO! QUINDI TEST NON NECESSARIO????????)</li>
-<li>Test on the functionality (????????) of the <ks>RBR</ks> to avoid all the possible obstacles.</li>
-Test sulla posizione del robot all'interno della stanza <br>
-Test sugli stati delle entità ad ogni transizione del sistema.
-</ul>
-
-
-<h4>Scenario</h4>
-
 Here, it's illustrated a possible scenario of the system.
 <br><br>
 <table>
@@ -199,31 +157,46 @@ Here, it's illustrated a possible scenario of the system.
 </tr>
 <tr>
 	<td><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> is empty.</li></ol></td>
-	<td class="imageScenario"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
+	<td class="image"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
 </tr>
 <tr>
-	<td><ol start="2"><li>The <ks>Maître de Salle</ks> sends the command <em>prepare</em> (for the <ks>task</ks> <ks>Prepare the room</ks>) to the <ks>RBR</ks> and wait. The <ks>RBR</ks> executes the <ks>task</ks> related to the command and at the end he returns to its <ks>RH</ks>.</li></ol></td>
+	<td><ol start="2"><li>The <ks>Maître de Salle</ks> sends the <em>prepare</em> command (for the <ks>task</ks> <ks>Prepare the room</ks>) to the <ks>RBR</ks> and waits. The <ks>RBR</ks> executes the <ks>task</ks> related to the command and at the end he returns to its <ks>RH</ks>.</li></ol></td>
 	<td class="imageScenario"><img src="./utils/img/ScenarioPrepare.png" alt="Scenario 'Prepare the room'"></td>
 </tr>
 <tr>
-	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can sends at any time to <ks>RBR</ks> the command <em>addFood (food-code)</em> (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks to <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with command <em>answer</em>. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
+	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks to <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with <em>answer</em> command. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
 	<td class="imageScenario"><img src="./utils/img/ScenarioAddFood.png" alt="Scenario 'Add food'"></td>
 </tr>
 <tr>
-	<td><ol start="4"><li>At the end of the party the <ks>room</ks> is empty again, beside the <ks>Maître de Salle</ks>. The <ks>Maître de Salle</ks> sends to <ks>RBR</ks> the command <em>clear</em> (for the <ks>task</ks> <ks>Clear the room</ks>) and wait. The <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
+	<td><ol start="4"><li>At the end of the party the <ks>room</ks> is empty again, beside the <ks>Maître de Salle</ks>. The <ks>Maître de Salle</ks> sends to <ks>RBR</ks> the <em>clear</em> command (for the <ks>task</ks> <ks>Clear the room</ks>) and waits. The <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
 	<td class="imageScenario"><img src="./utils/img/ScenarioClear.png" alt="Scenario 'Clear the room'"></td>
 </tr>
 <tr>
-	<td>At every time of the service:
+	<td colspan="2">At every time of the service:
 	<ul>
-		<li>the <ks>Maître de Salle</ks> can use command <em>consult</em> to know the state of each element in the <ks>room</ks>. In this case, the <ks>fridge</ks> answers via CoAP, using the command <em>expose</em>, to show its content.</li>
-		<li>the <ks>Maître de Salle</ks> can use the command <em>stop</em> or <em>reactive</em> to stop or restart an activated <ks>task</ks>.</li>
+		<li>the <ks>Maître de Salle</ks> can use <em>consult</em> command to know the state of each element in the <ks>room</ks>. In this case, the <ks>fridge</ks> answers via CoAP, using the <em>expose</em> command, to show its content.</li>
+		<li>the <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactive</em> command to stop or restart an activated <ks>task</ks>.</li>
 		<li>The <ks>RBR</ks> must <em>avoid</em> the obstacles.</li>
 	</ul>
 	</td>
-	<td class="imageScenario"><img src="./utils/img/ScenarioConsult.png" alt="Scenario Consult"></td>
+<!--	<td class="imageScenario"><img src="./utils/img/ScenarioConsult.png" alt="Scenario Consult"></td>-->
 </tr>
 </table>
+
+<h4>Test Plans</h4>
+
+It's necessary to make some test plans that must be verified for the correct working of the final system, according to the requirements provided by the customer. <br>Below it's reported a first planning of tests:
+<br><br>
+<ul>
+<li>Tests of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>;</li>
+<li>Tests of the states for each element in the <ks>room</ks> at the start and at the end of the service and at the end of each <ks>task</ks>;</li>
+<li>Tests of all the communications between entities;</li>
+<li>Tests of the path carried out by the <ks>RBR</ks> that must be the one expected to execute the <ks>task</ks> required by the <ks>Maître de Salle</ks>;</li>
+<li>Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactive</em> command;</li>
+<li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
+</ul>
+
+<h2>Problem analysis</h2>
 
 <h3>A first model of the system architecture</h3>
 
@@ -276,18 +249,6 @@ Comunication Fridge - RBR answer:answer(Y) Y(Y=[yes,no]) {
 </tr>
 </table>
 
-<h2>Problem analysis</h2>
-
-<h3>Requirements traceability</h3>
-
-[achievied from the requirement analysis]
-Using a meta-model written in a machine-understandble language, like QActor, we can obtain aN UNIVOQUE representation of the system architecture that describes the associations between requirements and the running elements (represented by the actors).
-
-<a href="./Analisi.qak" target="_black">representation of a system architecture</a><br>
-<iframe src="./Analisi.qak" title="sysArchRepr">
-<a href="./Analisi.qak" target="_black">representation of a system architecture</a>
-</iframe>
-
 <h3>Problem analysis</h3>
 
 The main goal of problem analysis can be summarized as follows:
@@ -331,6 +292,16 @@ In our scenario:
 	<dd>Possibilità di popolarlo all'avvio del sistema.</dd>
 </dl></li>
 </ol>
+
+<h3>Requirements traceability</h3>
+
+[achievied from the requirement analysis]
+Using a meta-model written in a machine-understandble language, like QActor, we can obtain aN UNIVOQUE representation of the system architecture that describes the associations between requirements and the running elements (represented by the actors).
+
+<a href="./Analisi.qak" target="_black">representation of a system architecture</a><br>
+<iframe src="./Analisi.qak" title="sysArchRepr">
+<a href="./Analisi.qak" target="_black">representation of a system architecture</a>
+</iframe>
 
 <h2>Test plans</h2> 
 
