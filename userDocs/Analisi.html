@@ -203,6 +203,52 @@ TO DO
 
 <h3>A first model of the system architecture</h3>
 
+From this analysis/the requirements analysis, it's possible to realize a first model of the system architecture that is an initial representation of this system.
+<br><br>
+<table>
+<tr>
+<th>Interaction between entities written in natural language</th>
+</tr>
+<tr>
+<td><pre>Comunication <kc>maitreNode</kc> - <kc>robotNode</kc> robotCmd : robotCmd(X) X=[<em>prepare</em>, <em>addFood(foodCode)</em>, <em>clear</em>, <em>stop</em>, <em>reactive</em>] {
+	command <ks>task</ks> (<em>prepare</em>, <em>addFood(foodCode)</em>, <em>clear</em>)
+		<ks>task</ks> (<ks>Prepare the room</ks>, <ks>Add food</ks>, <ks>Clear the room</ks>)
+	command handle (<em>stop</em>, <em>reactive</em>)
+}
+
+(DOBBIAMO DIRE PERCHE ABBIAMO DECISO CHE È IL SOFTWARE SUL MAITRENODE 
+AD ESSERE A CONOSCENZA DELLO STATO DEGLI ELEMENTI NON SMART!!! 
+AD ESEMPIO, PERCHÈ, QUALORA IN FUTURO DIVENTASSERO ANCHE QUESTI ELEMENTI RISORSE SMART, 
+ALLORA IN QUESTO MODO SAREBBE PIU FACILE DA IMPLEMENTARE???)
+Comunication <kc>maitreNode</kc> - <kc>fridgeNode</kc>/Maitre <em>consult</em> OR consultCmd OR consultCmd : consultCmd(ROOM) {
+	command <em>consult</em>
+	(<kc>maitreNode</kc> knowns the state of non-smart elements, and asks to the smart devices to know their state)
+}</pre></td>
+</tr>
+<tr>
+<td><pre>Comunication <kc>robotNode</kc> - <kc>maitreNode</kc> fail : fail(m) {
+	report of failure (SAREBBE IL WARNING INDICATO NEI REQUISITI.. SCRIVIAMO WARNING MEGLIO???) 
+	after receiving <em>answer</em>(no) from <kc>fridgeNode</kc> (if there isn't food=<ks>food-code</ks> in the <ks>fridge</ks>)
+}
+
+Comunication <kc>robotNode</kc> - <kc>fridgeNode</kc> ask : ask(<ks>foodCode</ks>) {
+	command ask(<ks>food-code</ks>) after receiving command <em>addfood(food-code)</em> from <kc>maitreNode</kc>
+}</pre></td>
+</tr>
+<tr>
+<td><pre>Comunication <kc>fridgeNode</kc> - <kc>maitreNode</kc> <em>expose</em> : <em>expose</em>(state) {
+	command <em>expose</em> after receiving command <em>consult</em> from <kc>maitreNode</kc>
+}
+
+Comunication <kc>fridgeNode</kc> - <kc>robotNode</kc> <em>answer</em> : <em>answer</em>(Y) Y=[yes,no] {
+	command <em>answer</em> after receiving command ask(<ks>food-code</ks>) from <kc>robotNode</kc>
+}
+</pre></td>
+</tr>
+</table>
+
+<h3>A first model of the system architecture</h3>
+
 In particular, from this analysis and from the command names provided by the requirements text, we can realize a first model of the system architecture that is an initial representation of this system.
 <br><br>
 <table>
@@ -218,21 +264,27 @@ In particular, from this analysis and from the command names provided by the req
 <td class="image" rowspan="4"><img src="./utils/img/modelFromReqAnalysis.png" alt="Representation of the system from Requirements Analysis"></td>
 </tr>
 <tr>
-<td><pre>Comunication Maitre - RBR robotCmd : robotCmd(X) X=[**addFood(foodCode)**, clear, prepare, stop, restart]{
+<td><pre>Comunication Maitre - RBR robotCmd : robotCmd(X) X=[addFood(foodCode), clear, prepare, stop, reactive]{
 	command Task (prepare addfood(food-code) clear) 
-	command handle (stop/restart)
+	command handle (stop/reactive)
 	task ("Prepare the room" "Add food" "Clear the room")
 }
 
 Comunication Maitre - Fridge/Maitre : **consultCmd** {  
 	command consult (ROOM)
-	(Maitre knowns the state of non-smart elements, and asks to the smart devices to know their state)	
+	((DOBBIAMO DIRE PERCHE ABBIAMO DECISO CHE È IL SOFTWARE SUL MAITRENODE 
+	CHE È A CONOSCENZA DELLO STATO DEGLI ELEMENTI NON SMART!!! 
+	AD ESEMPIO PERCHÈ, QUALORA IN FUTURO DIVENTASSERO ANCHE QUESTI ELEMENTI RISORSE SMART, 
+	ALLORA IN QUESTO MODO SAREBBE PIU FACILE DA IMPLEMENTARE???)
+	Maitre knowns the state of non-smart elements, and asks to the smart devices to know their state)	
 }
 </pre></td>
 </tr>
 <tr>
 <td><pre>Comunication RBR - Maitre fail:fail(m) {
-	report of failure after receiving answer(no) from Fridge (if there isn't food=food-code in the fridge)
+	report of failure 
+	(SAREBBE IL WARNING INDICATO NEI REQUISITI.. VA DETTO???) 
+	after receiving answer(no) from Fridge (if there isn't food=food-code in the fridge)
 }
 
 Comunication RBR - Fridge ask:ask(foodCode) {
