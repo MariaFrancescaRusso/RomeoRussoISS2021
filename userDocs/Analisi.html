@@ -62,7 +62,7 @@ By the interaction with the customer, here it's exposed an essential glossary ab
 </tr>
 <tr>
 	<td class="title"><ks>table</ks></td>
-	<td>It's a non-smart resource put in the center of the <ks>room</ks> AND IT'S EMPTY WHEN SYSTEM STARTS.</td>
+	<td>It's a non-smart resource put in the center of the <ks>room</ks> and it's empty when system starts.</td>
 </tr>
 <tr>
 	<td class="title"><ks>RBR - <i>Room Butler Robot</i></ks></td>
@@ -78,7 +78,7 @@ By the interaction with the customer, here it's exposed an essential glossary ab
 </tr>
 <tr>
 	<td class="title"><ks>task</ks></td>
-	<td>It's a task that the <ks>RBR</ks> must execute when required by <ks>Maître de Salle</ks> via <ks>maître's smartphone</ks>. There are three possible tasks, THAT ARE MUTUALLY EXCLUSIVE AND THAT MUST BE EXECUTED IN THIS ORDER: <ks>Prepare the room</ks>, <ks>Add food</ks> and FINALLY <ks>Cleare the room</ks>.</td>
+	<td>it's a task that the <ks>RBR</ks> must execute when required by <ks>Maître de salle</ks> via <ks>maître's smartphone</ks>. there are three possible tasks, that are mutually exclusive and that must be executed in this order: <ks>Prepare the room</ks>, <ks>Add food</ks> and finally <ks>Clear the room</ks>.</td>
 </tr>
 <tr>
 	<td class="title"><ks>Prepare the room</ks></td>
@@ -116,8 +116,8 @@ Once we have understood the main concepts set by the <a href="./utils/tf/TemaFin
 <tr>
 	<td>The software running on <kc>maitreNode</kc> must allow <ks>Maître de Salle</ks> to:
 	<ul>
-		<li>send the commands to <ks>RBR</ks> to execute <ks>tasks</ks> or to stop and reactivate them (ONLY IF THERE ARE ALREADY ACTIVATED <ks>TASKS</ks>);</li>
-		<li>known and to show the objects related to each resources (smart and non-smart)/RESOURCES, SMART (<ks>FRIDGE</ks>) AND NON-SMART(<ks>PANTRY</ks>, <ks>DISHWASHER</ks>, <ks>TABLE</ks>), so he must be able to comunicate with <ks>fridge</ks> too.</li>
+		<li>send the commands to <ks>RBR</ks> to execute <ks>tasks</ks> or to stop and reactivate them (only if there are already activated <ks>tasks</ks>);</li>
+		<li>known and to show the objects related to each resources, smart (<ks>fridge</ks>) and non-smart(<ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>), so he must be able to comunicate with <ks>fridge</ks> too.</li>
 	</ul>
 	</td>
 	<td class="image" rowspan="3"><img src="./utils/img/entitiesRel.png" alt="Relationships between entities"></td>
@@ -156,7 +156,7 @@ Here, it's illustrated a possible scenario of the system.
 <th>Simplified representation of each step</th>
 </tr>
 <tr>
-	<td><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> AND THE <KS>TABLE</KS> ARE/is empty.</li></ol></td>
+	<td><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> and the <ks>table</ks> are empty.</li></ol></td>
 	<td class="image"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
 </tr>
 <tr>
@@ -174,8 +174,8 @@ Here, it's illustrated a possible scenario of the system.
 <tr>
 	<td colspan="2">At every time of the service:
 	<ul>
-		<li>the <ks>Maître de Salle</ks> can use <em>consult</em> command to know the state of each element in the <ks>room</ks> (<ks>FRIDGE</ks>, <ks>PANTRY</ks>, <ks>DISHWASHER</ks>, <ks>TABLE</ks>). In this case, the <ks>fridge</ks> answers via CoAP, using the <em>expose</em> command, to show its content.</li>
-		<li>the <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an ALREADY activated <ks>task</ks>, OTHERWISE THESE COMMANDS HAVE NO EFFECT.</li>
+		<li>the <ks>Maître de Salle</ks> can use <em>consult</em> command to know the state of each element in the <ks>room</ks> (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>). in this case, the <ks>fridge</ks> answers via CoAP, using the <em>expose</em> command, to show its content.</li>
+		<li>the <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an already activated <ks>task</ks>, otherwise these commands have no effect.</li>
 		<li>The <ks>RBR</ks> must <em>avoid</em> the obstacles.</li>
 	</ul>
 	</td>
@@ -184,16 +184,17 @@ Here, it's illustrated a possible scenario of the system.
 
 <h4>Test Plans</h4>
 
-It's necessary to make some test plans that must be verified for the correct working of the final system, according to the requirements provided by the customer. <br>Below it's reported a first planning of tests:
+It's necessary to make some test plans that must be verified for the correct working of the final system, according to the requirements provided by the customer.
+<br>Below it's reported a first planning of tests:
 <br><br>
 <ul>
 <li>Tests of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>;</li>
-<li>Tests of the states for each element (<ks>FRIDGE</ks>, <ks>PANTRY</ks>, <ks>DISHWASHER</ks>, <ks>TABLE</ks>) in the <ks>room</ks> at the start and at the end of the service and at the end of each <ks>task</ks>/AT EVERY TIME DURING THE SERVICE;</li>
+<li>Tests of the states for each element (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>) in the <ks>room</ks> in every moment of the service (start, end, end <ks>task</ks>, <em>consult</em> command);</li>
 <li>Tests of all the communications between entities;</li>
 <li>Tests of the path carried out by the <ks>RBR</ks> that must be the one expected to execute the <ks>task</ks> required by the <ks>Maître de Salle</ks>;</li>
-<li>TESTS OF THE MUTUAL EXCLUSION OF <ks>TASKS</ks> AND OF THEIR ORDER OF EXECUTION;</li>
+<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
 <li>Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactivate</em> command;</li>
-<li>TESTS OF THE <em>STOP</em> AND <em>REACTIVATE</em> COMMANDS THAT CAN BE USED BY <ks>MAÎTRE DE SALLE</ks> ONLY WHEN THERE IS A RUNNING <ks>TASK</ks>;</li>
+<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>;</li>
 <li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
 </ul>
 
@@ -201,6 +202,48 @@ It's necessary to make some test plans that must be verified for the correct wor
 
 <hr>
 TO DO
+<hr>
+
+<h3>Problem analysis</h3>
+
+<ol>
+<li>Identify the main (technical) problems involved by the requirements<br>
+		+	the most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system<br>
+		+	evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process</li>
+<li>Define (a model of) the logical architecture of the system</li>
+<li>Refine the set of functional TestPlan</li>
+<li>In the context of SCRUM:<ul>
+	<li>define a (first) product backlog</li>
+	<li>a possibile set/sequence of SPRINT</li>
+</ul></li>
+</ol>
+<hr>
+<ol><li></li>
+<ol><li>Main (technical) problems involved by the requirements:
+	<ol>
+	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH?</li>
+	<li>stanza: come fa il robot ad evitare gli ostacoli?</li>
+	<li>maître's smartphone: come implementare? userGUI in browser or application?</li>
+	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP?</li>
+	<li>come vanno rappresentate le tre entità principali? cosa utilizzeremo?</li>
+	<li>come gestire la memoria sul contenuto delle risorse (non-smart)?</li>
+	<li>RBR è DDR: il cliente ci fornisce le documentazioni e le tecnologie. come si possono utilizzare? (basicRobot, ...)</li>
+	<li>gestione dei task: devono essere eseguiti in ordine e non possono essere svrapposti. come gestirli?</li>
+	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?)</li>
+	<li>i comandi stop e reactivate possono essere eseguiti solo se il robot sta già eseguendo un task e deve essere eseguito dal maître prima il comando stop ed in seguito reactivate. come gestirli?</li>
+	<li>dare una definizione del sistema --> CHE È DISTRIBUITO LO DICIAMO QUA E NON NEI REQUISITI????????</li>
+	</ol>
+</li>
+<li start="1">Solutions: Most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system:</li>
+	<ol>
+	<li></li>
+	</ol>
+<li start="1">Solutions: Evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process:</li>
+	<ol>
+	<li></li>
+	</ol>
+</ol>
+</ol>
 <hr>
 
 <h3>A first model of the system architecture</h3>
