@@ -1,0 +1,120 @@
+System model
+
+//Scelta tipo messaggi (msg oppure req/resp) o è prematuro ?
+//Come rappresento gli altri elementi ?
+
+//Maitre Fridge
+//In realtà è una req/resp; la risposta è expose
+Dispatch consult:consult(ARG)
+
+//Maitre Robot
+Dispatch prepare:prepare(ARG)
+Dispatch addFood:addFood(foodCode)
+Dispatch clear:clear(ARG)
+
+Dispatch stop:stop(ARG)
+Dispatch reactivate:reactivate(ARG)
+
+//Robot Fridge
+//In realtà è una req/resp: la risposta è answer
+Dispatch askFood:askFood(foodCode)
+
+//Event
+Event warning:warning(ARG)
+
+Context ctxRobot ip [host="localhost" port=8055]
+Context ctxFridge ip [host="localhost" port=8056]
+Context ctxMaitre ip [host="localhost" port=8057]
+
+
+QActor robot context ctxRobot{
+	//Variabile: nome stato in esecuzione
+	//Variabile: valori stato esecuzione
+	//Al riactivate ricarico tutto
+	//Il messaggio prepare lo aspetto solo in questo stato in modo che a regime venga ignorato
+	State s0 initial{
+		println("robot | STARTS and it's placed in ROBOT HOME position")
+	}
+	Transition t0 
+		whenMsg prepare -> exPrepare
+	
+	State wait{
+		println("robot | is placed in ROBOT HOME position and it's waiting for a command")
+	}
+	Transition t1
+	  whenMsg addFood -> exAddFood
+	  whenMsg clear -> exClear
+	  
+	// È il caso di spezzare gli stati exTask in micro azioni? In futuro lo faremo?
+	State exPrepare{
+		println("robot | executing the task PREPARE come back to ROBOT HOME")
+	}
+	//Goto stopped if "stopped" else wait 
+	
+	/*State prepareDone{
+		println("robot | has completed the task Prepare")
+	}
+	Goto wait*/
+	
+
+	State exAddFood{
+		println("robot | executing the task ADDFOOD and come back to ROBOT HOME")
+	}
+	Goto wait
+	
+	State  exClear{
+		println("robot | executing the task CLEAR and come back to ROBOT HOME")
+	}
+	//è il caso di avere uno stato che rappresenti l'impossibilità di raggiungere altri stati
+	
+	//In stopped prima di effettuare lo stop vero e proprio come so a che punto del task ero ?
+	//Salvare il nome attuale del task come variabile all'interno del QActor quando si esce da stopped si legge da lì il task che era in esecuzione
+	//Come retttivo?
+	State stopped{
+		println("robot | stop the task")
+	}
+		//whenMsg rectivate -> 
+}
+
+QActor fridge context ctxFridge{
+	State s0 initial{
+		println("fridge | STARTS and it's embedded with the proper set of food")
+	}
+	Goto wait
+	
+	State wait{
+		println("fridge | is waiting for a command")
+	} 
+	Transition t1 
+		whenMsg consult -> exConsult
+		whenMsg askFood -> exAskFood
+	
+	State exConsult{
+		println("fridge | exposes its content")
+		//invia messaggio di risposta: expose
+	} 
+	Goto wait	
+	
+	State exAskFood {
+		println("fridge | answering about food")
+		//invio messaggio di riposta: answer
+	}
+	Goto wait	
+}
+
+QActor maitre context ctxMaitre{
+	State s0 initial{
+		println("maitre | STARTS")	
+	}
+	Goto wait	
+	
+	State wait{
+		println("maitre | is waiting for a command")
+	}
+		
+	//descrivere il comportamento del nodo: invia i task al robot 
+	// invia stop/reactivate 
+
+	//invia consult al fridge
+	//riceve risposta
+}
