@@ -100,6 +100,8 @@ By the interaction with the customer, here it's exposed an essential glossary ab
 
 <h3>Requirements analysis</h3>
 
+QUI TOGLIEREI LA TABELLA CON LE IMMAGINI E LASCEREI SOLO IL TESTO!!!<br><br>
+
 Once we have understood the main concepts set by the <a href="./utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> given by the customer, it's now possible to analyze them.
 <br><br>
 <table>
@@ -147,6 +149,8 @@ Once we have understood the main concepts set by the <a href="./utils/tf/TemaFin
 <h3>A first set of functional Test Plans</h3>
 
 <h4>Scenario</h4>
+
+QUI AGGIUNGERE UNA TERZA COLONNA DOVE SCRIVERE IL "CODICE"/UTILIZZANDO UN "LINGUAGGIO MACCHINA" IN MODO CHE TUTTO CIÒ CHE ABBIAMO DETTO FINO A MO E QUINDI IL RISULTATO DELL'ANALISI DEI REQUISITI POSSA ESSERE CAPIBILE ANCHE DA UNA MACCHINA!!!
 
 Here, it's illustrated a possible scenario of the system.
 <br><br>
@@ -197,80 +201,6 @@ It's necessary to make some test plans that must be verified for the correct wor
 <li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>;</li>
 <li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
 </ul>
-
-<h2>Problem analysis</h2>
-
-<hr>
-TO DO
-<hr>
-
-<h3>Problem analysis</h3>
-
-<ol>
-<li>Identify the main (technical) problems involved by the requirements<br>
-		+	the most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system<br>
-		+	evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process</li>
-<li>Define (a model of) the logical architecture of the system</li>
-<li>Refine the set of functional TestPlan</li>
-<li>In the context of SCRUM:<ul>
-	<li>define a (first) product backlog</li>
-	<li>a possibile set/sequence of SPRINT</li>
-</ul></li>
-</ol>
-<hr>
-<ol>
-<li><ul><li>Main (technical) problems involved by the requirements:
-	<ol>
-	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH?</li>
-	<li>stanza: come fa il robot ad evitare gli ostacoli?</li>
-	<li>maître's smartphone: come implementare? userGUI in browser or application?</li>
-	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP?</li>
-	<li>come vanno rappresentate le tre entità principali? cosa utilizzeremo?</li>
-	<li>come gestire la memoria sul contenuto delle risorse (non-smart)?</li>
-	<li>RBR è DDR: il cliente ci fornisce le documentazioni e le tecnologie. come si possono utilizzare? (basicRobot, ...)</li>
-	<li>gestione dei task: devono essere eseguiti in ordine e non possono essere svrapposti. come gestirli?</li>
-	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?)</li>
-	<li>i comandi stop e reactivate possono essere eseguiti solo se il robot sta già eseguendo un task e deve essere eseguito dal maître prima il comando stop ed in seguito reactivate. come gestirli?</li>
-	<li>dare una definizione del sistema --> CHE È DISTRIBUITO LO DICIAMO QUA E NON NEI REQUISITI????????</li>
-	</ol>
-	</li>
-	<li>Solutions: Most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system:
-	<ol>
-	<li>mapping della stanza</li>
-	<li>mapping della stanza + sonar</li>
-	<li>web application?</li>
-	<li>HTTP/MQTT, CoAP...</li>
-	<li>Qactors...</li>
-	<li>scelta progettuale?? scegliamo che ad esserne a conoscenza e il maître's smartphone?? o altra soluzione?</li>
-	<li>definire tecnologie fornite dal cliente: basicRobot...</li>
-	<li>gestione dei task: scelta progettuale??</li>
-	<li>nuovo requisito o scelta progettuale? il robot invia risposta fine task a maitre??</li>
-	<li>gestione comandi stop/reactivate: scelta progettuale??</li>
-	<li>sistema distribuito.... </li>
-	</ol>
-	</li>
-	<li>Solutions: Evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process:
-	<ol>
-	<li></li>
-	</ol>
-	</li>
-</ul></li>
-<li>Model of the logical architecture of the system:</li>
-<li>Functional TestPlan:</li>
-<li>In the context of SCRUM:
-	<ul>
-	<li>First product backlog:</li>
-	<ol>
-	<li></li>
-	</ol>
-	<li>Possibile set/sequence of SPRINT:</li>
-	<ol>
-	<li></li>
-	</ol>
-	</ul>
-</li>
-</ol>
-<hr>
 
 <h3>A first model of the system architecture</h3>
 
@@ -367,6 +297,80 @@ Comunication Fridge - RBR answer:answer(Y) Y(Y=[yes,no]) {
 </tr>
 </table>
 
+<h2>Problem analysis</h2>
+
+<hr>
+TO DO
+<hr>
+
+<h3>Problem analysis</h3>
+
+<ol>
+<li>Identify the main (technical) problems involved by the requirements<br>
+		+	the most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system<br>
+		+	evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process</li>
+<li>Define (a model of) the logical architecture of the system</li>
+<li>Refine the set of functional TestPlan</li>
+<li>In the context of SCRUM:<ul>
+	<li>define a (first) product backlog</li>
+	<li>a possibile set/sequence of SPRINT</li>
+</ul></li>
+</ol>
+<hr>
+<ol>
+<li><ul><li>Main (technical) problems involved by the requirements:
+	<ol>
+	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH?</li>
+	<li>stanza: come fa il robot ad evitare gli ostacoli?</li>
+	<li>maître's smartphone: come implementare? userGUI in browser or application?</li>
+	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP?</li>
+	<li>come vanno rappresentate le tre entità principali? cosa utilizzeremo?</li>
+	<li>come gestire la memoria sul contenuto delle risorse (non-smart)?</li>
+	<li>RBR è DDR: il cliente ci fornisce le documentazioni e le tecnologie. come si possono utilizzare? (basicRobot, ...)</li>
+	<li>gestione dei task: devono essere eseguiti in ordine e non possono essere svrapposti. come gestirli?</li>
+	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?)</li>
+	<li>i comandi stop e reactivate possono essere eseguiti solo se il robot sta già eseguendo un task e deve essere eseguito dal maître prima il comando stop ed in seguito reactivate. come gestirli?</li>
+	<li>dare una definizione del sistema --> CHE È DISTRIBUITO LO DICIAMO QUA E NON NEI REQUISITI????????</li>
+	</ol>
+	</li>
+	<li>Solutions: Most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system:
+	<ol>
+	<li>mapping della stanza</li>
+	<li>mapping della stanza + sonar</li>
+	<li>web application?</li>
+	<li>HTTP/MQTT, CoAP...</li>
+	<li>Qactors...</li>
+	<li>scelta progettuale?? scegliamo che ad esserne a conoscenza e il maître's smartphone?? o altra soluzione?</li>
+	<li>definire tecnologie fornite dal cliente: basicRobot...</li>
+	<li>gestione dei task: scelta progettuale??</li>
+	<li>nuovo requisito o scelta progettuale? il robot invia risposta fine task a maitre??</li>
+	<li>gestione comandi stop/reactivate: scelta progettuale??</li>
+	<li>sistema distribuito.... </li>
+	</ol>
+	</li>
+	<li>Solutions: Evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process:
+	<ol>
+	<li></li>
+	</ol>
+	</li>
+</ul></li>
+<li>Model of the logical architecture of the system:</li>
+<li>Functional TestPlan:</li>
+<li>In the context of SCRUM:
+	<ul>
+	<li>First product backlog:</li>
+	<ol>
+	<li></li>
+	</ol>
+	<li>Possibile set/sequence of SPRINT:</li>
+	<ol>
+	<li></li>
+	</ol>
+	</ul>
+</li>
+</ol>
+<hr>
+
 <h3>Problem analysis</h3>
 
 (DAL NUOVO TAMPLATE:)<br>
@@ -428,9 +432,9 @@ In our scenario:
 [achievied from the requirement analysis]
 Using a meta-model written in a machine-understandble language, like QActor, we can obtain aN UNIVOQUE representation of the system architecture that describes the associations between requirements and the running elements (represented by the actors).
 
-<a href="./Analisi.qak" target="_black">representation of a system architecture</a><br>
-<iframe src="./Analisi.qak" title="sysArchRepr">
-<a href="./Analisi.qak" target="_black">representation of a system architecture</a>
+<a href="./Analysis.qak" target="_blank">representation of a system architecture</a><br>
+<iframe src="./Analysis.qak" title="sysArchRepr">
+<a href="./Analysis.qak" target="_blank">representation of a system architecture</a>
 </iframe>
 
 <h2>Test plans</h2> 
@@ -481,7 +485,7 @@ Definition list:
 <dd></dd>
 </dl>
 Link:
-<a href="" target="_black"></a>
+<a href="" target="_blank"></a>
 <br>Image:
 <img src="./utils/img/Nome.png" alt="description">
 <br>Key words:
