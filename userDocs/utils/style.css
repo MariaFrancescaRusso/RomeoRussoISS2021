@@ -191,6 +191,11 @@ td.image {
 	text-align: center;
 }
 
+td.text {
+	width: 50%;
+	text-align: center;
+}
+
 td.imageScenario {
 	width: 20%;
 	text-align: center;
@@ -210,10 +215,14 @@ ul {
 iframe {
 	border: none;
 	width: 100%;
+	height: 345px;
+}
+
+iframe.qak {
+	height: 1500px;
 }
 
 img {
-/*	border: 1.5px solid #d5f2ed;*/
 	border: none;
 	width: 100%;
 }
