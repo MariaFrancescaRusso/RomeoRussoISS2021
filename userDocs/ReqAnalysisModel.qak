@@ -1,120 +1,196 @@
-System model
+System standingbuffetservice
 
-//Scelta tipo messaggi (msg oppure req/resp) o è prematuro ?
-//Come rappresento gli altri elementi ?
+//TODO io ho messo ARG a tutti gli argomenti causa conflitti?
+//TODO i nomi delle transizioni devono essere distinti (ad es esempio il nome t0 può essere usato in attori diversi?)
+//TODO Inserire il concetto di resource manager per le risorse non smart ?
 
-//Maitre Fridge
-//In realtà è una req/resp; la risposta è expose
-Dispatch consult:consult(ARG)
+//Maitre-Fridge
+Request consult:consult(ARG)
+Reply expose:expose(STATE)
 
-//Maitre Robot
+//Maitre-RBR
 Dispatch prepare:prepare(ARG)
-Dispatch addFood:addFood(foodCode)
+Dispatch addFood:addFood(food_code)
 Dispatch clear:clear(ARG)
 
 Dispatch stop:stop(ARG)
 Dispatch reactivate:reactivate(ARG)
 
-//Robot Fridge
-//In realtà è una req/resp: la risposta è answer
-Dispatch askFood:askFood(foodCode)
+Dispatch warning:warning(ARG)
 
-//Event
-Event warning:warning(ARG)
+//RBR-Fridge
+Request askFood:askFood(food_code)
+Reply answer:answer(food_presence)
 
-Context ctxRobot ip [host="localhost" port=8055]
+Context ctxRBR ip [host="localhost" port=8055]
 Context ctxFridge ip [host="localhost" port=8056]
 Context ctxMaitre ip [host="localhost" port=8057]
 
 
-QActor robot context ctxRobot{
+QActor rbr context ctxRBR {
 	//Variabile: nome stato in esecuzione
 	//Variabile: valori stato esecuzione
-	//Al riactivate ricarico tutto
+	//Al reactivate ricarico tutto
 	//Il messaggio prepare lo aspetto solo in questo stato in modo che a regime venga ignorato
-	State s0 initial{
-		println("robot | STARTS and it's placed in ROBOT HOME position")
+	State s0 initial {
+		println ("RBR | STARTS and it's placed in RH position")
 	}
-	Transition t0 
+	Transition t0
 		whenMsg prepare -> exPrepare
-	
-	State wait{
-		println("robot | is placed in ROBOT HOME position and it's waiting for a command")
-	}
-	Transition t1
-	  whenMsg addFood -> exAddFood
-	  whenMsg clear -> exClear
-	  
+		  
 	// È il caso di spezzare gli stati exTask in micro azioni? In futuro lo faremo?
-	State exPrepare{
-		println("robot | executing the task PREPARE come back to ROBOT HOME")
-	}
-	//Goto stopped if "stopped" else wait 
-	
-	/*State prepareDone{
-		println("robot | has completed the task Prepare")
-	}
-	Goto wait*/
-	
-
-	State exAddFood{
-		println("robot | executing the task ADDFOOD and come back to ROBOT HOME")
+	State exPrepare {
+		delay 5000
+		println ("RBR | executing task 'Prepare the room':")
+		println ("RBR | going to pantry...")
+		println ("RBR | ...reached pantry. Going to table...")
+		println ("RBR | ...reached table. Going to fridge...")
+		println ("RBR | ...reached fridge. Going to table...")
+		println ("RBR | ...reached table. Coming back to RH...")
+		println ("RBR | ...reached RH. Finished executing task")
+		//println ("RBR | executing the task 'Prepare the room' and comes back to RH")
 	}
 	Goto wait
 	
-	State  exClear{
-		println("robot | executing the task CLEAR and come back to ROBOT HOME")
+	State wait {
+		println ("RBR | is placed in RH position and it's waiting for a command")
+	}
+	Transition t1
+		whenMsg addFood -> checkFood
+		whenMsg clear -> exClear
+	  
+	State checkFood {
+		//TODO: send msg askFood(food_code) to fridge
+		println ("RBR | asked to fridge if it contains the food_code")
+	}
+	Transition t2 
+		whenReply answer -> fail //TODO: if "no" else exAddFood
+
+	State fail {
+		//TODO: send msg warning to maitre
+		println ("RBR | send warning to maitre")
+	}
+	Goto wait
+
+	State exAddFood {
+		delay 5000
+		println ("RBR | executing task 'Add food':")
+		println ("RBR | going to fridge...")
+		println ("RBR | ...reached fridge. Going to table...")
+		println ("RBR | ...reached table. Coming back to RH...")
+		println ("RBR | ...reached RH. Finished executing task")
+		//println ("RBR | executing the task 'Add food' and comes back to RH")
+	}
+	Goto wait
+	
+	State exClear {
+		delay 5000
+		println ("RBR | executing task 'Clear the room':")
+		println ("RBR | going to table...")
+		println ("RBR | ...reached table. Going to frdge...")
+		println ("RBR | ...reached fridge. Going to table...")
+		println ("RBR | ...reached table. Going to dishwasher...")
+		println ("RBR | ...reached dishwasher. Coming back to RH...")
+		println ("RBR | ...reached RH. Finished executing task")
+		//println ("RBR | executing the task 'Clear the room' and comes back to RH")
 	}
 	//è il caso di avere uno stato che rappresenti l'impossibilità di raggiungere altri stati
 	
 	//In stopped prima di effettuare lo stop vero e proprio come so a che punto del task ero ?
 	//Salvare il nome attuale del task come variabile all'interno del QActor quando si esce da stopped si legge da lì il task che era in esecuzione
-	//Come retttivo?
-	State stopped{
-		println("robot | stop the task")
-	}
-		//whenMsg rectivate -> 
+	//TODO	State stopped{
+		//println("ROBOT | stop the task")
+	//}
+		//TODO whenMsg rectivate -> 
+		
+	//TODO: ricezione msg stop e poi reactive se task attivo
 }
 
-QActor fridge context ctxFridge{
-	State s0 initial{
-		println("fridge | STARTS and it's embedded with the proper set of food")
+QActor fridge context ctxFridge {
+	State s0 initial {
+		println ("FRIDGE | STARTS and it's embedded with the proper set of food")
 	}
 	Goto wait
 	
-	State wait{
-		println("fridge | is waiting for a command")
+	State wait {
+		println ("FRIDGE | is waiting for a command")
 	} 
 	Transition t1 
-		whenMsg consult -> exConsult
-		whenMsg askFood -> exAskFood
-	
-	State exConsult{
-		println("fridge | exposes its content")
-		//invia messaggio di risposta: expose
-	} 
-	Goto wait	
-	
-	State exAskFood {
-		println("fridge | answering about food")
-		//invio messaggio di riposta: answer
+		whenRequest askFood -> answerFood
+		whenRequest consult -> exposeState
+
+	State answerFood {
+		//TODO: gestisci random number e stringa
+		[# 
+			var random = random[0,1] 
+			var answerStr = null
+		#]
+		println ("FRIDGE | searching food_code...")
+		//TODO: gestisci if else in kotlin
+		[# 
+			if (answer <= 0.5)
+			{
+				println ("FRIDGE | ...food not found")
+				answerStr = no
+			}
+			else {
+				println ("FRIDGE | ...found food")
+				answerStr = yes
+			}
+		#]
+		//TODO: send reply answer to RBR
+		//TODO creare lo stato da esporre o inviare stringa vuota?
+		replyTo askFood with answer:answer()
+		println ("FRIDGE | answered to RBR about food")
 	}
-	Goto wait	
+	Goto wait
+	
+	State exposeState {
+		//TODO crare lo stato da esporre o inviare stringa vuota?
+		replyTo consult with expose:expose()
+		println ("FRIDGE | exposed content to maitre")
+	} 
+	Goto wait		
 }
 
-QActor maitre context ctxMaitre{
-	State s0 initial{
-		println("maitre | STARTS")	
-	}
-	Goto wait	
-	
-	State wait{
-		println("maitre | is waiting for a command")
-	}
-		
-	//descrivere il comportamento del nodo: invia i task al robot 
-	// invia stop/reactivate 
+// The maitre is described as a mock client, it's early to represent his full proactive behaviour
+QActor maitre context ctxMaitre {
+	State s0 initial {
+		println ("MAITRE | STARTS")
 
-	//invia consult al fridge
-	//riceve risposta
+		//inserisco un argomento a caso per giusto per inviare il messaggio
+		forward rbr -m prepare : prepare(0)
+		println ("MAITRE | send prepare command to RBR")
+		delay 1000
+		//TODO creare un food con ID 1
+		forward rbr -m addFood : addFood(1)
+		println ("MAITRE | send addFood(food_cood) command to RBR")	
+	}
+	Transition t1
+		whenMsg warning -> s2
+		//TODO: gestire non warning!! devo sapere che RBR è tornato nella RH. come? timer?
+	
+	State s2 {
+		println ("MAITRE | received warning from RBR: ${payloadArg(0)}")
+	}
+	
+	State s3 {
+		forward rbr -m stop : stop(0)
+		delay 3000
+		
+		forward rbr -m reactivate : reactivate(0)
+		delay 2000
+		//TODO consult lo rivolgo al frigo o ad un gestore di risorse ?
+		 request fridge -m consult : consult(0) 
+	}
+	Transition t2
+		whenReply expose -> final	
+	
+	State final {
+		//TODO cambiare fridge con resource manager?
+		println ("MAITRE | received expose from fridge: ${payloadArg(0)}")
+		forward rbr -m clear : clear(0)
+	}
+	
+	//TODO invia stop/reactivate 
 }
