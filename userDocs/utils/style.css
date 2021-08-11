@@ -196,6 +196,11 @@ td.imageScenario {
 	text-align: center;
 }
 
+td.imageSchema {
+	width: 40%;
+	text-align: center;
+}
+
 td.text {
 	text-align: center;
 }
@@ -214,11 +219,11 @@ ul {
 iframe {
 	border: none;
 	width: 100%;
-	height: 345px;
+	height: 347px;
 }
 
 iframe.qak {
-	height: 500px;
+	height: 700px;
 }
 
 img {

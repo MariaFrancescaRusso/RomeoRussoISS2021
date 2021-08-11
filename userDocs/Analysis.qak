@@ -18,3 +18,34 @@ Qactor robotreq context ctxRobotReq 	{/* Moves the robot and avoid obstacles; Ha
 
 ~//requirements: expose, answer~
 Qactor fridgereq context ctxRobotReq 	{/* Handle ask and consult; Forwards answer to robotreq and expose to maitrereq */}
+
+System standingbuffetservice
+
+/*3 main entities: RBR, maitre (that indicates the maitre's smartphone), fridge*/
+init {
+	RBR in RH;
+	maitre in room;
+	fridge, pantry: full;
+	dishwasher, table: empty;
+}
+
+/* possible commands between entities: */
+maitre to RBR : robotCmd [prepare, addFood(food-code), clear, stop, reactivate]
+RBR to fridge : askFood(food-code)
+fridge to RBR : answer
+RBR to maitre : warning
+maitre to all/fridge : consult
+fridge to maitre : expose
+
+/* 1° step: maitre send prepare command to RBR
+	2° step: maitre can sand addFood(food-code) or clear command to RBR
+				during this step the maitre can also send consult command (to fridge) or stop command to RBR (only if RBR is running a task)
+	3° step:
+				if maitre had send addFood(food-code) command to RBR --> RBR send askFood(food-code) command to fridge
+				if maitre had send stop command to RBR --> maitre can send reactivate command to RBR --> step 2
+				if maitre had send consult command (to fridge) --> fridge send expose command to maitre, (have to decide the handle of how to know the state of other elements in the room
+				if maitre had send clear command to RBR --> END OF SYSTEM (after RBR had executed the task)
+	4° step: if RBR had send askFood(food-code) command to fridge --> fridge send answer command to RBR
+	5° step: if fridge had send answer command to RBR --> RBR can send warning command to maitre --> step 2*/
+
+
