@@ -201,8 +201,28 @@ It's necessary to make some test plans that must be verified for the correct wor
 
 <h3>A first model of the system architecture</h3>
 
-Using a meta-model written in a machine-understandable language, like QActor, we can obtain an univoque representation of the system architecture that describes <i>the associations between requirements and the running elements (represented by the actors)</i>/what it's said in the requirements analysis. Here, the three entities are represented by three actors and the nodes where they run are three context.<br>
+From the requirements analysis, using a meta-model written in a machine-understandable language, like QActor, it's possible to obtain an univoque representation of the system architecture. In , the three main entities are represented by three actors and the nodes where they run are three context.<br>
 Then, it's possible to realize a first model of this system architecture that is an initial representation of this system.
+
+<br>
+QActors: modeling language that should help application designer in defining working models of distributed systems based on actors that behave as Finite State Machines. 
+The QActor metamodel does not envisage any explicit receive operation, since the behavior is modeled as a Moore state machine in which state transitions are triggered by messaged and events.
+<br>
+A QA-System is a collection of active entities (QActors) each working in a computational node (Context).<br>
+QActors interact by using Messages of different types (Dispatch, Request,...) and Events.
+In the QActor metamodel, a message is intended as information sent in asynchronous way by some source to some specific destination.
+For asynchronous transmission we intend that the messages can be 'buffered' by the infrastructure, while the 'unbuffered' transmission is said to be synchronous.
+In the QActor metamodel, an event is intended as information emitted by some source without any explicit destination.
+Events whose identifier start with the prefix local_ are not propagated outside the context in which they are generated.<br>
+Each context owns a set QActors that can interact with components (actors or 'aliens') working on a different node, by means of the following protcols:
+TCP : on the port specified by the Context
+CoAP : on the port specified by the Context
+MQTT : using the broker specified in the mqttBroker declaration.
+Each QActor works in a context that provides support for sending-receiving messages on the network, by means of several types of protocols.<br>
+
+A QAkactor named qa working in a context named ctxqa can be accessed as a CoAP resource with URI-path ctxqa/qa. and works as a (CoAP) observable resource.
+The current state of the resource can be stored as a String in the variable ActorResourceRep, by using the operation updateResource of the QAkactor language.
+
 
 <br><br>
 <table>
@@ -211,12 +231,20 @@ Then, it's possible to realize a first model of this system architecture that is
 <th>A possible graphic representation</th>
 </tr>
 <tr>
-<td class="text"><a href="./ReqAnalysisModel.qak" target="_blank">ReqAnalysisModel.qak</a><br><pre><iframe class="qak" src="./ReqAnalysisModel.qak" title="ReqAnalysisModel">Model of Requirements Analysis</iframe></pre></td>
-<td class="imageSchema" rowspan="4">
-<img src="./utils/img/QActorLegend.png" alt="Legend of the representations of the system from Requirements Analysis"><br>
-<img src="./utils/img/QActorMaitre.png" alt="Representation of the system (QActor maitre) from Requirements Analysis"><br>
-<img src="./utils/img/QActorRBR.png" alt="Representation of the system (QActor RBR) from Requirements Analysis"><br>
-<img src="./utils/img/QActorFridge.png" alt="Representation of the system (QActor fridge) from Requirements Analysis">
+<td class="text" rowspan="3"><a href="./ReqAnalysisModel.qak" target="_blank">ReqAnalysisModel.qak</a><br><pre><iframe class="qak" src="./ReqAnalysisModel.qak" title="ReqAnalysisModel">Model of Requirements Analysis</iframe></pre></td>
+<td class="imageSchema">
+<img src="./utils/img/FirstModelFromReqAnalysis.png" alt="Representations of the system from Requirements Analysis"><br>
+</td>
+</tr>
+<tr>
+<th>Moore state machine</th>
+</tr>
+<tr>
+<td class="imageSchema">
+<img src="./utils/img/QActorLegend.png" alt="Legend of the representations of the behaviors of the QActors"><br>
+<img src="./utils/img/QActorMaitre.png" alt="Representation of the behavior of QActor maitre, modeled as a Moore state machine"><br>
+<img src="./utils/img/QActorRBR.png" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine"><br>
+<img src="./utils/img/QActorFridge.png" alt="Representation of the behavior of QActor fridge, modeled as a Moore state machine">
 </td>
 </tr>
 </table>
