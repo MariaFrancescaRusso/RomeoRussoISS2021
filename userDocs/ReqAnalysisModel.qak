@@ -1,16 +1,14 @@
 System standingbuffetservice
 
-//TODO io ho messo ARG a tutti gli argomenti causa conflitti?
-//TODO i nomi delle transizioni devono essere distinti (ad es esempio il nome t0 può essere usato in attori diversi?)
 //TODO Inserire il concetto di resource manager per le risorse non smart ?
 
 //Maitre-Fridge
 Request consult:consult(ARG)
-Reply expose:expose(STATE)
+Reply expose:expose(STATUS)
 
 //Maitre-RBR
 Dispatch prepare:prepare(ARG)
-Dispatch addFood:addFood(food_code)
+Dispatch addFood:addFood(FOOD_CODE)
 Dispatch clear:clear(ARG)
 
 Dispatch stop:stop(ARG)
@@ -19,28 +17,22 @@ Dispatch reactivate:reactivate(ARG)
 Dispatch warning:warning(ARG)
 
 //RBR-Fridge
-Request askFood:askFood(food_code)
-Reply answer:answer(food_presence)
+Request askFood:askFood(FOOD_CODE)
+Reply answer:answer(FOOD_PRESENCE)
 
 Context ctxRBR ip [host="localhost" port=8055]
 Context ctxFridge ip [host="localhost" port=8056]
 Context ctxMaitre ip [host="localhost" port=8057]
 
-
 QActor rbr context ctxRBR {
-	//Variabile: nome stato in esecuzione
-	//Variabile: valori stato esecuzione
-	//Al reactivate ricarico tutto
-	//Il messaggio prepare lo aspetto solo in questo stato in modo che a regime venga ignorato
+	
 	State s0 initial {
 		println ("RBR | STARTS and it's placed in RH position")
 	}
 	Transition t0
 		whenMsg prepare -> exPrepare
 		  
-	// È il caso di spezzare gli stati exTask in micro azioni? In futuro lo faremo?
 	State exPrepare {
-		delay 5000
 		println ("RBR | executing task 'Prepare the room':")
 		println ("RBR | going to pantry...")
 		println ("RBR | ...reached pantry. Going to table...")
@@ -48,106 +40,90 @@ QActor rbr context ctxRBR {
 		println ("RBR | ...reached fridge. Going to table...")
 		println ("RBR | ...reached table. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
-		//println ("RBR | executing the task 'Prepare the room' and comes back to RH")
 	}
 	Goto wait
 	
 	State wait {
-		println ("RBR | is placed in RH position and it's waiting for a command")
+		println ("RBR | is placed in RH position and it's waiting for a command...")
 	}
 	Transition t1
 		whenMsg addFood -> checkFood
 		whenMsg clear -> exClear
 	  
 	State checkFood {
-		//TODO: send msg askFood(food_code) to fridge
-		println ("RBR | asked to fridge if it contains the food_code")
+		[# FOOD_CODE = payloadArg(0) #]
+		request fridge -m askFood:askFood($FOOD_CODE)
+		println ("RBR | asked to fridge if it contains the food required")
 	}
-	Transition t2 
-		whenReply answer -> fail //TODO: if "no" else exAddFood
+	Transition t2
+		whenReply answer -> handleReply
+		
+	State handleReply {
+		[# FOOD_PRESENCE = payloadArg(0) #]
+	}
+	Goto fail if [# FOOD_PRESENCE == "no" #] else exAddFood
 
 	State fail {
-		//TODO: send msg warning to maitre
+		forward maitre -m warning:warning(0)
 		println ("RBR | send warning to maitre")
 	}
 	Goto wait
 
 	State exAddFood {
-		delay 5000
 		println ("RBR | executing task 'Add food':")
 		println ("RBR | going to fridge...")
 		println ("RBR | ...reached fridge. Going to table...")
 		println ("RBR | ...reached table. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
-		//println ("RBR | executing the task 'Add food' and comes back to RH")
 	}
 	Goto wait
 	
 	State exClear {
-		delay 5000
 		println ("RBR | executing task 'Clear the room':")
 		println ("RBR | going to table...")
-		println ("RBR | ...reached table. Going to frdge...")
+		println ("RBR | ...reached table. Going to fridge...")
 		println ("RBR | ...reached fridge. Going to table...")
 		println ("RBR | ...reached table. Going to dishwasher...")
 		println ("RBR | ...reached dishwasher. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
-		//println ("RBR | executing the task 'Clear the room' and comes back to RH")
 	}
-	//è il caso di avere uno stato che rappresenti l'impossibilità di raggiungere altri stati
 	
+	//TODO: ricezione msg stop che sposta in stato stopped da cui ascolto reactivate
 	//In stopped prima di effettuare lo stop vero e proprio come so a che punto del task ero ?
-	//Salvare il nome attuale del task come variabile all'interno del QActor quando si esce da stopped si legge da lì il task che era in esecuzione
-	//TODO	State stopped{
+
+	/*State stopped{
 		//println("ROBOT | stop the task")
-	//}
-		//TODO whenMsg rectivate -> 
-		
-	//TODO: ricezione msg stop e poi reactive se task attivo
+	//Ogni volta che eseguo un task lo salvo su una variabile del QActor; 
+	//prima di uscire da stopped si legge da lì il task che era in esecuzione		
+	}
+	Transaction t3
+		whenMsg reactivate -> $nomeStato 
+	 */
 }
 
 QActor fridge context ctxFridge {
+	
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food")
 	}
 	Goto wait
 	
 	State wait {
-		println ("FRIDGE | is waiting for a command")
+		println ("FRIDGE | is waiting for a command...")
 	} 
 	Transition t1 
 		whenRequest askFood -> answerFood
 		whenRequest consult -> exposeState
 
 	State answerFood {
-		//TODO: gestisci random number e stringa
-		[# 
-			var random = random[0,1] 
-			var answerStr = null
-		#]
-		println ("FRIDGE | searching food_code...")
-		//TODO: gestisci if else in kotlin
-		[# 
-			if (answer <= 0.5)
-			{
-				println ("FRIDGE | ...food not found")
-				answerStr = no
-			}
-			else {
-				println ("FRIDGE | ...found food")
-				answerStr = yes
-			}
-		#]
-		//TODO: send reply answer to RBR
-		//TODO creare lo stato da esporre o inviare stringa vuota?
-		replyTo askFood with answer:answer()
+		println ("FRIDGE | searching food_code...")		
+		replyTo askFood with answer:answer($FOOD_PRESENCE)
 		println ("FRIDGE | answered to RBR about food")
 	}
 	Goto wait
 	
 	State exposeState {
-		//TODO crare lo stato da esporre o inviare stringa vuota?
-		replyTo consult with expose:expose()
+		replyTo consult with expose:expose($STATUS)
 		println ("FRIDGE | exposed content to maitre")
 	} 
 	Goto wait		
@@ -155,42 +131,39 @@ QActor fridge context ctxFridge {
 
 // The maitre is described as a mock client, it's early to represent his full proactive behaviour
 QActor maitre context ctxMaitre {
+	
 	State s0 initial {
 		println ("MAITRE | STARTS")
 
-		//inserisco un argomento a caso per giusto per inviare il messaggio
 		forward rbr -m prepare : prepare(0)
 		println ("MAITRE | send prepare command to RBR")
-		delay 1000
-		//TODO creare un food con ID 1
-		forward rbr -m addFood : addFood(1)
-		println ("MAITRE | send addFood(food_cood) command to RBR")	
+		
+		forward rbr -m addFood : addFood(1500)
+		println ("MAITRE | send addFood(food_code) command to RBR")	
 	}
-	Transition t1
+	Transition t1 whenTime 5000
 		whenMsg warning -> s2
 		//TODO: gestire non warning!! devo sapere che RBR è tornato nella RH. come? timer?
 	
 	State s2 {
 		println ("MAITRE | received warning from RBR: ${payloadArg(0)}")
 	}
-	
+	//TODO invia stop/reactivate 
 	State s3 {
-		forward rbr -m stop : stop(0)
-		delay 3000
+		/*forward rbr -m stop : stop(0)
+		delay 1000
 		
 		forward rbr -m reactivate : reactivate(0)
-		delay 2000
+		delay 3000*/
 		//TODO consult lo rivolgo al frigo o ad un gestore di risorse ?
-		 request fridge -m consult : consult(0) 
+		request fridge -m consult : consult(0) 
 	}
 	Transition t2
-		whenReply expose -> final	
+		whenReply expose -> s4	
 	
-	State final {
+	State s4 {
 		//TODO cambiare fridge con resource manager?
 		println ("MAITRE | received expose from fridge: ${payloadArg(0)}")
 		forward rbr -m clear : clear(0)
 	}
-	
-	//TODO invia stop/reactivate 
 }
