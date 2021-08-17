@@ -197,7 +197,7 @@ td.imageScenario {
 }
 
 td.imageSchema {
-	width: 40%;
+	width: 50%;
 	text-align: center;
 }
 
@@ -223,7 +223,7 @@ iframe {
 }
 
 iframe.qak {
-	height: 700px;
+	height: 1000px;
 }
 
 img {
