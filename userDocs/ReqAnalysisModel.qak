@@ -2,11 +2,12 @@ System standingbuffetservice
 
 // In the following model it's reported a first prototype of the system described by the requirements. 
 // In particular are described the main interactions and the main behaviors between the main system components. 
-// Cause some requirements are too advanced in this step we don't support the complete features: 
+// Cause some requirements are too advanced in this step the complete features are supported: 
 // the stop/reactivate feature is just described as a dispatcher but is still not working cause none state read that message; 
-// also the 'consult' task is still not complete cause we would manage the state information of smart and non smart elements, but in this representation we are just handle the fridge state information.
+// also the 'consult' task is still not complete cause the state information of smart and non smart elements should be managed, but in this representation it's just handled the fridge state information.
 // The maitre is described as a mock client, it's early to represent his full proactive behavior that depend from a GUI.
 
+//FIXME arguments dont't work
 //Maitre-Fridge
 Request consult:consult(ARG)
 Reply expose:expose(STATUS)
@@ -30,6 +31,7 @@ Context ctxFridge ip [host="localhost" port=8056]
 Context ctxMaitre ip [host="localhost" port=8057]
 
 QActor rbr context ctxRBR {
+	[# var FOOD_PRESENCE = false #]	
 	
 	State s0 initial {
 		println ("RBR | STARTS and it's placed in RH position")
@@ -56,7 +58,7 @@ QActor rbr context ctxRBR {
 		whenMsg clear -> exClear
 	  
 	State checkFood {
-		[# FOOD_CODE = payloadArg(0) #]
+		[# var FOOD_CODE = payloadArg(0) #]
 		request fridge -m askFood:askFood($FOOD_CODE)
 		println ("RBR | asked to fridge if it contains the food required")
 	}
@@ -64,9 +66,9 @@ QActor rbr context ctxRBR {
 		whenReply answer -> handleReply
 		
 	State handleReply {
-		[# FOOD_PRESENCE = payloadArg(0) #]
+	[# var FOOD_PRESENCE = payloadArg(0).toBoolean() #]	
 	}
-	Goto fail if [# FOOD_PRESENCE == "no" #] else exAddFood
+	Goto fail if [# FOOD_PRESENCE == false #] else exAddFood
 
 	State fail {
 		forward maitre -m warning:warning(0)
@@ -92,21 +94,14 @@ QActor rbr context ctxRBR {
 		println ("RBR | ...reached dishwasher. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
 	}
-	
-	//TODOStop ricezione msg stop che sposta in stato stopped da cui ascolto reactivate
-	//In stopped prima di effettuare lo stop vero e proprio come so a che punto del task ero ?
-
-	/*State stopped{
-		//println("ROBOT | stop the task")
-	//Ogni volta che eseguo un task lo salvo su una variabile del QActor; 
-	//prima di uscire da stopped si legge da lì il task che era in esecuzione		
-	}
-	Transaction t3
-		whenMsg reactivate -> $nomeStato 
-	 */
 }
 
 QActor fridge context ctxFridge {
+	//TODO sistemare messaggi 
+	[# 
+		var FOOD_PRESENCE = false
+		var STATUS = "Frigo vuoto"
+	#]
 	
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food")
@@ -135,10 +130,11 @@ QActor fridge context ctxFridge {
 }
 
 QActor maitre context ctxMaitre {
-	
-	State s0 initial {
-		println ("MAITRE | STARTS")
 
+	State s0 initial {
+		delay 5000
+		println ("MAITRE | STARTS")
+		
 		forward rbr -m prepare : prepare(0)
 		println ("MAITRE | send prepare command to RBR")
 		
@@ -148,30 +144,21 @@ QActor maitre context ctxMaitre {
 	Transition t1 
 		whenTime 5000 -> s3
 		whenMsg warning -> s2
-		//FIXME: gestire non warning!! devo sapere che RBR è tornato nella RH. come? Timer?
-		//FIXED con TIMER
-	
+		//FIXME: È opportuno parlare del timer nell'introduzione; è opportuno scriverlo meglio nel codice Es varibile = duration AddFood (è possibile farlo?)? 
+			
 	State s2 {
 		println ("MAITRE | received warning from RBR: ${payloadArg(0)}")
 	}
 	Goto s3
 	
-	//TODOStop invia stop/reactivate
 	 
 	State s3 {
-		/*forward rbr -m stop : stop(0)
-		delay 1000
-		
-		forward rbr -m reactivate : reactivate(0)
-		delay 3000*/
-		//TODOFridge consult lo rivolgo al frigo o ad un gestore di risorse ?
 		request fridge -m consult : consult(0) 
 	}
 	Transition t2
 		whenReply expose -> s4	
 	
 	State s4 {
-		//TODOFridge cambiare fridge con resource manager?
 		println ("MAITRE | received expose from fridge: ${payloadArg(0)}")
 		forward rbr -m clear : clear(0)
 	}
