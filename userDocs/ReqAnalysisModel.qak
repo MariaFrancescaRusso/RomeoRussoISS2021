@@ -1,6 +1,11 @@
 System standingbuffetservice
 
-//TODO Inserire il concetto di resource manager per le risorse non smart ?
+// In the following model it's reported a first prototype of the system described by the requirements. 
+// In particular are described the main interactions and the main behaviors between the main system components. 
+// Cause some requirements are too advanced in this step we don't support the complete features: 
+// the stop/reactivate feature is just described as a dispatcher but is still not working cause none state read that message; 
+// also the 'consult' task is still not complete cause we would manage the state information of smart and non smart elements, but in this representation we are just handle the fridge state information.
+// The maitre is described as a mock client, it's early to represent his full proactive behavior that depend from a GUI.
 
 //Maitre-Fridge
 Request consult:consult(ARG)
@@ -88,7 +93,7 @@ QActor rbr context ctxRBR {
 		println ("RBR | ...reached RH. Finished executing task")
 	}
 	
-	//TODO: ricezione msg stop che sposta in stato stopped da cui ascolto reactivate
+	//TODOStop ricezione msg stop che sposta in stato stopped da cui ascolto reactivate
 	//In stopped prima di effettuare lo stop vero e proprio come so a che punto del task ero ?
 
 	/*State stopped{
@@ -129,7 +134,6 @@ QActor fridge context ctxFridge {
 	Goto wait		
 }
 
-// The maitre is described as a mock client, it's early to represent his full proactive behaviour
 QActor maitre context ctxMaitre {
 	
 	State s0 initial {
@@ -141,28 +145,33 @@ QActor maitre context ctxMaitre {
 		forward rbr -m addFood : addFood(1500)
 		println ("MAITRE | send addFood(food_code) command to RBR")	
 	}
-	Transition t1 whenTime 5000
+	Transition t1 
+		whenTime 5000 -> s3
 		whenMsg warning -> s2
-		//TODO: gestire non warning!! devo sapere che RBR è tornato nella RH. come? timer?
+		//FIXME: gestire non warning!! devo sapere che RBR è tornato nella RH. come? Timer?
+		//FIXED con TIMER
 	
 	State s2 {
 		println ("MAITRE | received warning from RBR: ${payloadArg(0)}")
 	}
-	//TODO invia stop/reactivate 
+	Goto s3
+	
+	//TODOStop invia stop/reactivate
+	 
 	State s3 {
 		/*forward rbr -m stop : stop(0)
 		delay 1000
 		
 		forward rbr -m reactivate : reactivate(0)
 		delay 3000*/
-		//TODO consult lo rivolgo al frigo o ad un gestore di risorse ?
+		//TODOFridge consult lo rivolgo al frigo o ad un gestore di risorse ?
 		request fridge -m consult : consult(0) 
 	}
 	Transition t2
 		whenReply expose -> s4	
 	
 	State s4 {
-		//TODO cambiare fridge con resource manager?
+		//TODOFridge cambiare fridge con resource manager?
 		println ("MAITRE | received expose from fridge: ${payloadArg(0)}")
 		forward rbr -m clear : clear(0)
 	}
