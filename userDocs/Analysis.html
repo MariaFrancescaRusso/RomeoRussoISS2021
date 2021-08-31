@@ -201,29 +201,14 @@ It's necessary to make some test plans that must be verified for the correct wor
 
 <h3>A first model of the system architecture</h3>
 
-From the requirements analysis, using a meta-model written in a machine-understandable language, like QActor, it's possible to obtain an univoque representation of the system architecture. In , the three main entities are represented by three actors and the nodes where they run are three context.<br>
-Then, it's possible to realize a first model of this system architecture that is an initial representation of this system.
-
-<br>
-QActors: modeling language that should help application designer in defining working models of distributed systems based on actors that behave as Finite State Machines. 
-The QActor metamodel does not envisage any explicit receive operation, since the behavior is modeled as a Moore state machine in which state transitions are triggered by messaged and events.
-<br>
-A QA-System is a collection of active entities (QActors) each working in a computational node (Context).<br>
-QActors interact by using Messages of different types (Dispatch, Request,...) and Events.
-In the QActor metamodel, a message is intended as information sent in asynchronous way by some source to some specific destination.
-For asynchronous transmission we intend that the messages can be 'buffered' by the infrastructure, while the 'unbuffered' transmission is said to be synchronous.
-In the QActor metamodel, an event is intended as information emitted by some source without any explicit destination.
-Events whose identifier start with the prefix local_ are not propagated outside the context in which they are generated.<br>
-Each context owns a set QActors that can interact with components (actors or 'aliens') working on a different node, by means of the following protcols:
-TCP : on the port specified by the Context
-CoAP : on the port specified by the Context
-MQTT : using the broker specified in the mqttBroker declaration.
-Each QActor works in a context that provides support for sending-receiving messages on the network, by means of several types of protocols.<br>
-
-A QAkactor named qa working in a context named ctxqa can be accessed as a CoAP resource with URI-path ctxqa/qa. and works as a (CoAP) observable resource.
-The current state of the resource can be stored as a String in the variable ActorResourceRep, by using the operation updateResource of the QAkactor language.
-
-
+From the requirements analysis, it's possible to obtain a first model, that is an univoque initial representation of the system architecture, using a meta-model written in a machine-understandable language, like QActor, that describes the main interactions and behaviors between the main system components. In particular, the three main entities are represented by three actors (QActors, that behave as Finite State Machines and work as a CoAP observable resources) and the nodes where they run are represented by contexts.
+<br><br>
+Making this, there were been found some problems, that will be addressed and solved next in the problem analysis:
+<ul>
+	<li>the stop/reactivate feature is just described as a dispatcher but is still not working cause none state reads that message; </li>
+	<li>the consult feature is still not completed cause it's necessary to manage the state information of smart and non smart elements, but in this representation it's handled only the fridge state information.</li>
+</ul>
+Furthermore, the maitre is described here as a mock client, because it's early, in the requirements analysis, to represent his full proactive behavior that depend from a GUI.
 <br><br>
 <table>
 <tr>
@@ -251,13 +236,9 @@ The current state of the resource can be stored as a String in the variable Acto
 
 <h2>Problem analysis</h2>
 
-<hr>
-TO DO
-<hr>
-
-<h3>Problem analysis</h3>
-
-<ol>
+<dl>
+<dt>What To Do:</dt>
+<dd><ol>
 <li>Identify the main (technical) problems involved by the requirements<br>
 		+	the most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system<br>
 		+	evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process</li>
@@ -267,8 +248,15 @@ TO DO
 	<li>define a (first) product backlog</li>
 	<li>a possibile set/sequence of SPRINT</li>
 </ul></li>
-</ol>
-<hr>
+</ol></dd>
+</dl>
+
+<h3>(1) Identification of the problem and the corresponding solution</h3>
+
+Identify the main (technical) problems involved by the requirements<br>
+		+	the most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system<br>
+		+	evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process <br><br>
+
 <ol>
 <li><ul><li>Main (technical) problems involved by the requirements:
 	<ol>
@@ -306,47 +294,8 @@ TO DO
 	</ol>
 	</li>
 </ul></li>
-<li>Model of the logical architecture of the system:</li>
-<li>Functional TestPlan:</li>
-<li>In the context of SCRUM:
-	<ul>
-	<li>First product backlog:</li>
-	<ol>
-	<li></li>
-	</ol>
-	<li>Possibile set/sequence of SPRINT:</li>
-	<ol>
-	<li></li>
-	</ol>
-	</ul>
-</li>
 </ol>
-<hr>
 
-<h3>Problem analysis</h3>
-
-(DAL NUOVO TAMPLATE:)<br>
-	Problem analysis<br>
-	MAIN GOALS:<br>
-	- identify the main problems involved by the requirements and the most appropriate (software) technologies to adopt<br>
-	- evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system<br>
-	- define (a model of) the logical architecture of the system<br>
-	- refine the set of functional TestPlan<br>
-	- (with reference to SCRUM) define a (first) product backlog and a possibile set/sequence of SPRINT<br>
-	WARNING: expressions like 'we have chosen to ...', 'I decided ...', etc. are forbidden here. Rather, this section should include sentences like 'this (aspect of the) problem implies that ...' or 'the usage of this (legacy) component requires that ...', etc.<br><br>
-
-(DA VECCHIO CORSO:)<br>
-
-The main goal of problem analysis can be summarized as follows:
-<ol>
-<li>understand the (technical) problems posed by the requirements;</li>
-<li>identify the best tools/libraries/supports etc. necessary and/or useful for building the system;</li>
-<li>clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process;</li>
-<li>define a logical architecture of the system and a first working prototype to show to the customer at the end of our first sprint.</li>
-</ol>
-In the context of SCRUM, one or more of these steps will be redone in the sprint-review meetings. 
-
-<hr>
 In our scenario:
 <ol>
 <li><dl>
@@ -378,6 +327,48 @@ In our scenario:
 	<dd>Possibilità di popolarlo all'avvio del sistema.</dd>
 </dl></li>
 </ol>
+
+<h3>(2) Model of system's logical architecture</h3>
+Define (a model of) the logical architecture of the system
+
+<ol start="2">
+<li>Model of the logical architecture of the system:</li>
+</ol>
+
+<h3>(3) Test Plan</h3>
+Refine the set of functional TestPlan
+
+<ol start="3">
+<li>Functional TestPlan:</li>
+</ol>
+
+<h3>(4) SCRUM context</h3>
+
+In the context of SCRUM:<ul>
+	<li>define a (first) product backlog</li>
+	<li>a possibile set/sequence of SPRINT</li>
+</ul>
+
+<ol start="4">
+<li>In the context of SCRUM:
+	<ul>
+	<li>First product backlog:</li>
+	<ol>
+	<li></li>
+	</ol>
+	<li>Possibile set/sequence of SPRINT:</li>
+	<ol>
+	<li></li>
+	</ol>
+	</ul>
+</li>
+</ol>
+
+<h4>Product Backlog</h4>
+define a (first) product backlog
+
+<h4>first SPRINT sequence</h4>
+a possibile set/sequence of SPRINT
 
 <h2>Test plans</h2> 
 
