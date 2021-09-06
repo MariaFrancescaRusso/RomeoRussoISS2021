@@ -1,38 +1,34 @@
 System standingbuffetservice
 
-// In the following model it's reported a first prototype of the system described by the requirements. 
-// In particular are described the main interactions and the main behaviors between the main system components. 
-// Cause some requirements are too advanced in this step the complete features are supported: 
-// the stop/reactivate feature is just described as a dispatcher but is still not working cause none state read that message; 
-// also the 'consult' task is still not complete cause the state information of smart and non smart elements should be managed, but in this representation it's just handled the fridge state information.
-// The maitre is described as a mock client, it's early to represent his full proactive behavior that depend from a GUI.
+//Maitre-RBR
+Dispatch prepare:prepare(ARG)//void
+Dispatch addFood:addFood(FOODE_CODE) //FOODE_CODE = int
+Dispatch clear:clear(ARG)//void
 
-//FIXME arguments dont't work
+Dispatch stop:stop(ARG)//void
+Dispatch reactivate:reactivate(ARG)//void
+
+Dispatch warning:warning(ARG)//void
+
 //Maitre-Fridge
 Request consult:consult(ARG)
-Reply expose:expose(STATUS)
-
-//Maitre-RBR
-Dispatch prepare:prepare(ARG)
-Dispatch addFood:addFood(FOOD_CODE)
-Dispatch clear:clear(ARG)
-
-Dispatch stop:stop(ARG)
-Dispatch reactivate:reactivate(ARG)
-
-Dispatch warning:warning(ARG)
+Reply expose:expose(ARG) 	//ARG = {Lisit(food; food-code )}
 
 //RBR-Fridge
-Request askFood:askFood(FOOD_CODE)
-Reply answer:answer(FOOD_PRESENCE)
+Request askFood:askFood(FOODE_CODE)//FOODE_CODE = int 
+Reply answer:answer(ARG)	// ARG= true/false
 
-Context ctxRBR ip [host="localhost" port=8055]
-Context ctxFridge ip [host="localhost" port=8056]
-Context ctxMaitre ip [host="localhost" port=8057]
+//Context ctxSystem ip [host="localhost" port=8040]
+ 
+Context ctxRBR ip [host="localhost" port=8050]
+Context ctxFridge ip [host="127.0.0.1" port=8060]  
+Context ctxMaitre ip [host="192.168.43.157" port=8070]
 
-QActor rbr context ctxRBR {
-	[# var FOOD_PRESENCE = false #]	
-	
+QActor rbr context ctxRBR{
+	[# 	var FOOD_PRESENCE = false 
+		var FOOD_CODE = "null"
+	#]	
+
 	State s0 initial {
 		println ("RBR | STARTS and it's placed in RH position")
 	}
@@ -56,22 +52,27 @@ QActor rbr context ctxRBR {
 	Transition t1
 		whenMsg addFood -> checkFood
 		whenMsg clear -> exClear
-	  
+
+	
 	State checkFood {
-		[# var FOOD_CODE = payloadArg(0) #]
-		request fridge -m askFood:askFood($FOOD_CODE)
-		println ("RBR | asked to fridge if it contains the food required")
+		onMsg( addFood:addFood(ARG) ) {
+	 		[# FOOD_CODE = payloadArg(0) #]
+	 		println ("RBR | asking fridge food-code = $FOOD_CODE ")
+ 		}
+
+ 		request fridge -m askFood : askFood($FOOD_CODE)
+ 		println ("RBR | asked fridge if it contains the food required")
 	}
 	Transition t2
 		whenReply answer -> handleReply
 		
 	State handleReply {
-	[# var FOOD_PRESENCE = payloadArg(0).toBoolean() #]	
+	[# FOOD_PRESENCE = payloadArg(0).toBoolean() #]	
 	}
 	Goto fail if [# FOOD_PRESENCE == false #] else exAddFood
 
 	State fail {
-		forward maitre -m warning:warning(0)
+		forward maitre -m warning:warning(w)
 		println ("RBR | send warning to maitre")
 	}
 	Goto wait
@@ -80,7 +81,7 @@ QActor rbr context ctxRBR {
 		println ("RBR | executing task 'Add food':")
 		println ("RBR | going to fridge...")
 		println ("RBR | ...reached fridge. Going to table...")
-		println ("RBR | ...reached table. Coming back to RH...")
+		println ("RR | ...reached table. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
 	}
 	Goto wait
@@ -93,14 +94,16 @@ QActor rbr context ctxRBR {
 		println ("RBR | ...reached table. Going to dishwasher...")
 		println ("RBR | ...reached dishwasher. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
+		terminate 0
 	}
 }
 
-QActor fridge context ctxFridge {
+QActor fridge context ctxFridge{
+	//TODO frigo comunica in COAPs
 	//TODO sistemare messaggi 
-	[# 
-		var FOOD_PRESENCE = false
-		var STATUS = "Frigo vuoto"
+	//TODO inserire una struttura dati che rappresenti gli oggetti contenuti; anche vuota ?
+	[#	var FOOD_PRESENCE = false
+		var STATUS = "Vuoto"
 	#]
 	
 	State s0 initial {
@@ -116,7 +119,12 @@ QActor fridge context ctxFridge {
 		whenRequest consult -> exposeState
 
 	State answerFood {
-		println ("FRIDGE | searching food_code...")		
+		[# var FOOD_CODE = " " #]
+		onMsg( askFood:askFood(ARG) ) {
+	 		[# FOOD_CODE = payloadArg(0) #]
+ 		}
+		println ("FRIDGE | searching food_code $FOOD_CODE...")		
+		//TODO simulare il controllo che contenga food ?
 		replyTo askFood with answer:answer($FOOD_PRESENCE)
 		println ("FRIDGE | answered to RBR about food")
 	}
@@ -129,10 +137,10 @@ QActor fridge context ctxFridge {
 	Goto wait		
 }
 
-QActor maitre context ctxMaitre {
+QActor maitre context ctxMaitre{
 
 	State s0 initial {
-		delay 5000
+		delay 2000
 		println ("MAITRE | STARTS")
 		
 		forward rbr -m prepare : prepare(0)
@@ -142,24 +150,29 @@ QActor maitre context ctxMaitre {
 		println ("MAITRE | send addFood(food_code) command to RBR")	
 	}
 	Transition t1 
-		whenTime 5000 -> s3
+		whenTime 3000 -> s3
 		whenMsg warning -> s2
-		//FIXME: È opportuno parlare del timer nell'introduzione; è opportuno scriverlo meglio nel codice Es varibile = duration AddFood (è possibile farlo?)? 
+		//TODO: È opportuno parlare del timer nell'introduzione; è opportuno scriverlo meglio nel codice Es varibile = duration AddFood (è possibile farlo?)? 
 			
 	State s2 {
-		println ("MAITRE | received warning from RBR: ${payloadArg(0)}")
+		println ("MAITRE | received warning from RBR")
 	}
 	Goto s3
-	
 	 
 	State s3 {
+		println ("MAITRE | send consult command to Fridge")	
 		request fridge -m consult : consult(0) 
 	}
 	Transition t2
 		whenReply expose -> s4	
 	
 	State s4 {
-		println ("MAITRE | received expose from fridge: ${payloadArg(0)}")
+		[# var ansExpose = " " #]
+		onMsg( expose:expose(ARG) ) {
+	 		[# ansExpose= payloadArg(0) #]
+ 		}
+		println ("MAITRE | received expose from fridge: $ansExpose")
+
 		forward rbr -m clear : clear(0)
 	}
 }
