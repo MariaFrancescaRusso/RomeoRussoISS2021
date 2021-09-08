@@ -128,7 +128,7 @@ Once we have understood the main concepts set by the <a href="./utils/tf/TemaFin
 	<ul>
 		<li>execute the <ks>task</ks> associated to command received by the <ks>maître's smartphone</ks>;</li>
 		<li>stop/reactivate a running <ks>task</ks> when it's required by the <ks>maître's smartphone</ks>;</li>
-		<li>ask to <ks>fridge</ks> if it contains a specific food defined by a <ks>food-code</ks> and to receive the answer;</li>
+		<li>ask <ks>fridge</ks> if it contains a specific food defined by a <ks>food-code</ks> and to receive the answer;</li>
 		<li>send a warning to the <ks>maître's smartphone</ks> when the <ks>fridge</ks> doesn't contain the food required;</li>
 		<li>return to his <ks>RH</ks> at the end of every <ks>task</ks>;</li>
 		<li>avoid the impact with obstacles.</li>
@@ -138,8 +138,8 @@ Once we have understood the main concepts set by the <a href="./utils/tf/TemaFin
 <tr>
 	<td>The software running on <kc>fridgeNode</kc> must be able to:
 		<ul>
-		<li>answer to the <ks>maître's smartphone</ks>, via CoAP, with his content when it's required;</li>
-		<li>answer to the <ks>RBR</ks>, via CoAP, when it asks if it contains a specific food defined by a <ks>food-code</ks>.</li>
+		<li>answer to the <ks>maître's smartphone</ks>, via CoAP (so it must know the destination URI), with his content when it's required;</li>
+		<li>answer to the <ks>RBR</ks>, via CoAP (so it must know the destination URI), when it asks if it contains a specific food defined by a <ks>food-code</ks>.</li>
 		</ul>
 	</td>
 </tr>
@@ -165,7 +165,7 @@ Here, it's illustrated a possible scenario of the system.
 	<td class="imageScenario"><img src="./utils/img/ScenarioPrepare.png" alt="Scenario 'Prepare the room'"></td>
 </tr>
 <tr>
-	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks to <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with <em>answer</em> command. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
+	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with <em>answer</em> command. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
 	<td class="imageScenario"><img src="./utils/img/ScenarioAddFood.png" alt="Scenario 'Add food'"></td>
 </tr>
 <tr>
@@ -251,66 +251,38 @@ Furthermore, the maitre is described here as a mock client, because it's early, 
 </ol></dd>
 </dl>
 
-<h3>(1) Identification of the problem and the corresponding solution</h3>
+<h3>Identification of the problem and the corresponding solution</h3>
 
-Identify the main (technical) problems involved by the requirements<br>
-		+	the most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system<br>
-		+	evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process <br><br>
-
-<ol>
-<li><ul><li>Main (technical) problems involved by the requirements:
-	<ol>
-	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH?</li>
-	<li>stanza: come fa il robot ad evitare gli ostacoli?</li>
-	<li>maître's smartphone: come implementare? userGUI in browser or application?</li>
-	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP?</li>
-	<li>come vanno rappresentate le tre entità principali? cosa utilizzeremo?</li>
-	<li>come gestire la memoria sul contenuto delle risorse (non-smart)?</li>
-	<li>RBR è DDR: il cliente ci fornisce le documentazioni e le tecnologie. come si possono utilizzare? (basicRobot, ...)</li>
-	<li>gestione dei task: devono essere eseguiti in ordine e non possono essere svrapposti. come gestirli?</li>
-	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?)</li>
-	<li>i comandi stop e reactivate possono essere eseguiti solo se il robot sta già eseguendo un task e deve essere eseguito dal maître prima il comando stop ed in seguito reactivate. come gestirli?</li>
-	<li>dare una definizione del sistema --> CHE È DISTRIBUITO LO DICIAMO QUA E NON NEI REQUISITI????????</li>
-	</ol>
-	</li>
-	<li>Solutions: Most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system:
-	<ol>
-	<li>mapping della stanza</li>
-	<li>mapping della stanza + sonar</li>
-	<li>web application?</li>
-	<li>HTTP/MQTT, CoAP...</li>
-	<li>Qactors...</li>
-	<li>scelta progettuale?? scegliamo che ad esserne a conoscenza e il maître's smartphone?? o altra soluzione?</li>
-	<li>definire tecnologie fornite dal cliente: basicRobot...</li>
-	<li>gestione dei task: scelta progettuale??</li>
-	<li>nuovo requisito o scelta progettuale? il robot invia risposta fine task a maitre??</li>
-	<li>gestione comandi stop/reactivate: scelta progettuale??</li>
-	<li>sistema distribuito.... </li>
-	</ol>
-	</li>
-	<li>Solutions: Evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process:
-	<ol>
-	<li></li>
-	</ol>
-	</li>
-</ul></li>
-</ol>
-
-In our scenario:
+Starting from the requirements analysis, it's now necessary to found the problem (involved by the requirements) and to solve them, establishing the most appropriate technologies necessary for building the system.
+<br><br>
 <ol>
 <li><dl>
-	<dt>**General System**</dt>
-	<dd>The system is distribuited. To model it, it's available the **QAk-infrastracture** meta-model, developed and provided by our company. This meta-model provides a built-in message-driven tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, the **MQTT** and **web** tecnologies are introduced and it's required the **CoAP** support to the fridge comunications.</dd>
+	<dt>General System</dt>
+	<dd>The system is distribuited. To model it, it's available the **QAk-infrastracture** meta-model, developed and provided by our company/the customer. This meta-model provides a built-in message-driven tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, the **MQTT** and **web** tecnologies are introduced and it's required the **CoAP** support to the fridge comunications.</dd>
+<br><ul>
+	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH e gli altri elementi nella stanza? (conoscenza della stanza) --> mapping della stanza</li>
+	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP? --> HTTP/MQTT, CoAP...</li>
+	<li>come vanno rappresentate le tre entità principali? cosa utilizzeremo? --> Qactors... "it.unibo..qak21.basicrobot-1.0.jar"</li>
+	<li>come gestire la memoria sul contenuto delle risorse (non-smart)? (come gestirne lo stato per il comando consult) --> scelta progettuale?? scegliamo che ad esserne a conoscenza e il maître's smartphone?? o altra soluzione? utilizzo di un gestore di risorse non smart che faccia da intermediario e che sia CoAP observable?? Possibilità di gestire lo stato degli oggetti non smart per mezzo di attori dedicati a ciascun oggetto all'interno del contesto del maitre?? Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart?? Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema??</li>
+	<li>dare una definizione del sistema --> CHE È DISTRIBUITO LO DICIAMO QUA E NON NEI REQUISITI???????? --> sistema distribuito....</li>
+</ul>
 </dl></li>
 <li><dl>
-	<dt>**Robot** (controlla librerie)</dt>
-	<dd>Il robot per eseguire i task deve essere in grado di raggiungere tutti gli obiettivi (frigo, tavolo, lavastoviglie, dispensa) con cui interagire. Essendo questi elementi fissi nella stanza una soluzione può essere il **mappaggio della stanza** all'avvio del robot.</dd>
-	<dd>Il mappaggio può essere implementato tramite le librerie ... fornite della software house.</dd>
+	<dt>Robot</dt>
+	<dd>Il robot per eseguire i task deve essere in grado di raggiungere tutti gli obiettivi (frigo, tavolo, lavastoviglie, dispensa) con cui interagire. Essendo questi elementi fissi nella stanza, una soluzione può essere il **mappaggio della stanza** all'avvio del robot.</dd>
+	<dd>Il mappaggio può essere implementato tramite le librerie "IssActorKotlinRobotSupport-2.0.jar" fornite della software house.</dd>
 	<dd>Robot come componente proattivo/reattivo (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
-	<dd>Per soddisfare il requisito 'avoid the impact with the mobile obstacles' possiamo pensare di utilizzare (eventi per gestire) i dati raccolti da un sensore, che può essere reppresentato da un sonar (sia nel robot fisico che in quello virtuale). </dd>
-	<dd>La gestione del sonar è fornita delle librerie .... della software house.</dd>
-	<dd>Nel prossimo sprint valuteremo l idea di rendere il sonar un attore indipendente dal robot.</dd>
+	<dd>Per soddisfare il requisito 'avoid the impact with the mobile obstacles' possiamo pensare di utilizzare (eventi per gestire) i dati raccolti da un sensore, che può essere reppresentato da un sonar (sia nel robot fisico che in quello virtuale).</dd>
+	<dd>La gestione del sonar è fornita delle librerie "it.unibo.qak21.basicrobot-1.0.jar" della software house.</dd>
+	<dd>Nel prossimo sprint valuteremo l'idea di rendere il sonar un attore indipendente dal robot.</dd>
 	<dd>The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot-facade. </dd>
+<br><ul>
+	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH? --> mapping della stanza</li>
+	<li>stanza: come fa il robot ad evitare gli ostacoli? --> mapping della stanza + sonar</li>
+	<li>RBR è DDR: il cliente ci fornisce le documentazioni e le tecnologie. come si possono utilizzare? (basicRobot, ...) --> definire tecnologie fornite dal cliente: basicRobot...</li>
+	<li>gestione dei task: devono essere eseguiti in ordine e non possono essere svrapposti. come gestirli? --> gestione dei task: scelta progettuale??</li>
+	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?) --> nuovo requisito o scelta progettuale? il robot invia risposta fine task a maitre??</li>
+</ul>
 </dl></li>
 <li><dl>
 	<dt>**Maitre**</dt>
@@ -320,12 +292,30 @@ In our scenario:
 	<dd>Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart.</dd>
 	<dd>Potremmo prevedere un attore XY in grado di ricevere i warning dal robot in qualsiasi momento.</dd>
 	<dd>Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema.</dd>
+<br><ul>
+	<li>maître's smartphone: come implementare? userGUI in browser or application? --> web application?</li>
+	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?) --> nuovo requisito o scelta progettuale? il robot invia risposta fine task a maitre??</li>
+	<li>i comandi stop e reactivate possono essere eseguiti solo se il robot sta già eseguendo un task e deve essere eseguito dal maître prima il comando stop ed in seguito reactivate. come gestirli? --> gestione comandi stop/reactivate: scelta progettuale??</li>
+</ul>
 </dl></li>
 <li><dl>
 	<dt>**Fridge**</dt>
 	<dd>Possibilità di **utilizzare android per IoT** / oppure **interfaccia web**</dd>
 	<dd>Possibilità di popolarlo all'avvio del sistema.</dd>
+<br><ul>
+	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP? --> HTTP/MQTT, CoAP...</li>
+</ul>
 </dl></li>
+</ol>
+
+<ol>
+<li><ul>
+	<li>Solutions: Evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process:
+	<ol>
+	<li></li>
+	</ol>
+	</li>
+</ul></li>
 </ol>
 
 <h3>(2) Model of system's logical architecture</h3>

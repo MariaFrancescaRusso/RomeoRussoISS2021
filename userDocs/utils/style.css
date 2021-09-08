@@ -216,6 +216,10 @@ ul {
 	type: disc;
 }
 
+dt {
+	font-weight: bold;
+}
+
 iframe {
 	border: none;
 	width: 100%;
