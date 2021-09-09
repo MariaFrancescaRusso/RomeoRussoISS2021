@@ -22,6 +22,11 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						delay(2000) 
 						println("MAITRE | STARTS")
+					}
+					 transition( edgeName="goto",targetState="sendPrepare", cond=doswitch() )
+				}	 
+				state("sendPrepare") { //this:State
+					action { //it:State
 						forward("prepare", "prepare(0)" ,"rbr" ) 
 						println("MAITRE | send prepare command to RBR")
 					}
@@ -58,7 +63,13 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 ansExpose= payloadArg(0)  
 						}
 						println("MAITRE | received expose from fridge: $ansExpose")
+					}
+					 transition( edgeName="goto",targetState="sendClear", cond=doswitch() )
+				}	 
+				state("sendClear") { //this:State
+					action { //it:State
 						forward("clear", "clear(0)" ,"rbr" ) 
+						terminate(0)
 					}
 				}	 
 			}

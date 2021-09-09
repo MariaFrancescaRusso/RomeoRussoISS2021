@@ -143,10 +143,11 @@ QActor maitre context ctxMaitre{
 	State s0 initial {
 		delay 2000
 		println ("MAITRE | STARTS")
-		
+	}Goto sendPrepare
+	
+	State sendPrepare{
 		forward rbr -m prepare : prepare(0)
-		println ("MAITRE | send prepare command to RBR")
-		
+		println ("MAITRE | send prepare command to RBR")		
 	}
 	Goto sendAddFood
 	
@@ -176,7 +177,10 @@ QActor maitre context ctxMaitre{
 	 		[# ansExpose= payloadArg(0) #]
  		}
 		println ("MAITRE | received expose from fridge: $ansExpose")
-
+	}Goto sendClear
+	
+	State sendClear{
 		forward rbr -m clear : clear(0)
+		terminate 0
 	}
 }
