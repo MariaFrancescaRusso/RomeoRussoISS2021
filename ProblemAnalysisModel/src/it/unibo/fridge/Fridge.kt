@@ -29,25 +29,25 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("FRIDGE | is waiting for a command...")
 					}
-					 transition(edgeName="t14",targetState="answerFood",cond=whenRequest("askFood"))
-					transition(edgeName="t15",targetState="exposeState",cond=whenRequest("consult"))
+					 transition(edgeName="t14",targetState="answerFood",cond=whenDispatch("askFood"))
+					transition(edgeName="t15",targetState="exposeState",cond=whenDispatch("consult"))
 				}	 
 				state("answerFood") { //this:State
 					action { //it:State
-						 var FOOD_CODE = " "  
+						 var FOOD_CODE = -1  
 						if( checkMsgContent( Term.createTerm("askFood(FOODE_CODE)"), Term.createTerm("askFood(ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 FOOD_CODE = payloadArg(0)  
+								 FOOD_CODE = payloadArg(0).toInt()  
 						}
 						println("FRIDGE | searching food_code $FOOD_CODE...")
-						answer("askFood", "answer", "answer($FOOD_PRESENCE)"   )  
+						forward("answer", "answer($FOOD_PRESENCE)" ,"rbr" ) 
 						println("FRIDGE | answered to RBR about food")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						answer("consult", "expose", "expose($STATUS)"   )  
+						forward("expose", "expose($STATUS)" ,"maitre" ) 
 						println("FRIDGE | exposed content to maitre")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )

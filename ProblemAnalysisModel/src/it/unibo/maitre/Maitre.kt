@@ -16,6 +16,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		 var AddFoodtime = 3000L  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -26,7 +27,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						forward("addFood", "addFood(1500)" ,"rbr" ) 
 						println("MAITRE | send addFood(food_code) command to RBR")
 						stateTimer = TimerActor("timer_s0", 
-							scope, context!!, "local_tout_maitre_s0", 3000.toLong() )
+							scope, context!!, "local_tout_maitre_s0", AddFoodtime )
 					}
 					 transition(edgeName="t16",targetState="s3",cond=whenTimeout("local_tout_maitre_s0"))   
 					transition(edgeName="t17",targetState="s2",cond=whenDispatch("warning"))
@@ -39,10 +40,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("s3") { //this:State
 					action { //it:State
+						forward("consult", "consult(0)" ,"fridge" ) 
 						println("MAITRE | send consult command to Fridge")
-						request("consult", "consult(0)" ,"fridge" )  
 					}
-					 transition(edgeName="t28",targetState="s4",cond=whenReply("expose"))
+					 transition(edgeName="t28",targetState="s4",cond=whenDispatch("expose"))
 				}	 
 				state("s4") { //this:State
 					action { //it:State

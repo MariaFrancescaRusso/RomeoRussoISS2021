@@ -10,24 +10,23 @@ Dispatch reactivate:reactivate(ARG)//void
 
 Dispatch warning:warning(ARG)//void
 
+//By requirements the fridge must answer via COAP, so it's necessary to use a dispatch
 //Maitre-Fridge
-Request consult:consult(ARG)
-Reply expose:expose(ARG) 	//ARG = {Lisit(food; food-code )}
+Dispatch consult:consult(ARG)//void
+Dispatch expose:expose(ARG)//For now it's just a string
 
 //RBR-Fridge
-Request askFood:askFood(FOODE_CODE)//FOODE_CODE = int 
-Reply answer:answer(ARG)	// ARG= true/false
+Dispatch askFood:askFood(FOODE_CODE)//FOODE_CODE = int 
+Dispatch answer:answer(ARG)	// ARG= true/false
 
 //Context ctxSystem ip [host="localhost" port=8040]
  
 Context ctxRBR ip [host="localhost" port=8050]
 Context ctxFridge ip [host="127.0.0.1" port=8060]  
-Context ctxMaitre ip [host="192.168.43.157" port=8070]
+Context ctxMaitre ip [host="192.168.1.211" port=8070]
 
-QActor rbr context ctxRBR{
-	[# 	var FOOD_PRESENCE = false 
-		var FOOD_CODE = "null"
-	#]	
+QActor rbr context ctxRBR {
+	[# 	var FOOD_PRESENCE = false #]	
 
 	State s0 initial {
 		println ("RBR | STARTS and it's placed in RH position")
@@ -42,7 +41,7 @@ QActor rbr context ctxRBR{
 		println ("RBR | ...reached table. Going to fridge...")
 		println ("RBR | ...reached fridge. Going to table...")
 		println ("RBR | ...reached table. Coming back to RH...")
-		println ("RBR | ...reached RH. Finished executing task")
+		println ("RBR | ...reached RH. Finished executing task") 
 	}
 	Goto wait
 	
@@ -55,19 +54,23 @@ QActor rbr context ctxRBR{
 
 	
 	State checkFood {
+		[# var FOOD_CODE = -1 #]
 		onMsg( addFood:addFood(ARG) ) {
-	 		[# FOOD_CODE = payloadArg(0) #]
-	 		println ("RBR | asking fridge food-code = $FOOD_CODE ")
+	 		[# FOOD_CODE = payloadArg(0).toInt() #]
  		}
 
- 		request fridge -m askFood : askFood($FOOD_CODE)
- 		println ("RBR | asked fridge if it contains the food required")
+ 		forward fridge -m askFood : askFood($FOOD_CODE)
+ 		println ("RBR | asked fridge if it contains the food with food-code = $FOOD_CODE")
 	}
 	Transition t2
-		whenReply answer -> handleReply
+		whenMsg answer -> handleReply
 		
 	State handleReply {
-	[# FOOD_PRESENCE = payloadArg(0).toBoolean() #]	
+		[# var FOOD_PRESENCE = false #]	
+		onMsg( answer:answer(ARG) ) {
+	 		[# FOOD_PRESENCE = payloadArg(0).toBoolean() #]
+ 		}
+		println ("RBR | received answer from fridge: $FOOD_PRESENCE")
 	}
 	Goto fail if [# FOOD_PRESENCE == false #] else exAddFood
 
@@ -99,9 +102,7 @@ QActor rbr context ctxRBR{
 }
 
 QActor fridge context ctxFridge{
-	//TODO frigo comunica in COAPs
 	//TODO sistemare messaggi 
-	//TODO inserire una struttura dati che rappresenti gli oggetti contenuti; anche vuota ?
 	[#	var FOOD_PRESENCE = false
 		var STATUS = "Vuoto"
 	#]
@@ -115,30 +116,30 @@ QActor fridge context ctxFridge{
 		println ("FRIDGE | is waiting for a command...")
 	} 
 	Transition t1 
-		whenRequest askFood -> answerFood
-		whenRequest consult -> exposeState
+		whenMsg askFood -> answerFood
+		whenMsg consult -> exposeState
 
 	State answerFood {
-		[# var FOOD_CODE = " " #]
+		[# var FOOD_CODE = -1 #]
 		onMsg( askFood:askFood(ARG) ) {
-	 		[# FOOD_CODE = payloadArg(0) #]
+	 		[# FOOD_CODE = payloadArg(0).toInt() #]
  		}
 		println ("FRIDGE | searching food_code $FOOD_CODE...")		
-		//TODO simulare il controllo che contenga food ?
-		replyTo askFood with answer:answer($FOOD_PRESENCE)
+		forward rbr -m answer:answer($FOOD_PRESENCE)
 		println ("FRIDGE | answered to RBR about food")
 	}
 	Goto wait
 	
 	State exposeState {
-		replyTo consult with expose:expose($STATUS)
+		forward maitre -m expose:expose($STATUS)
 		println ("FRIDGE | exposed content to maitre")
 	} 
 	Goto wait		
 }
 
 QActor maitre context ctxMaitre{
-
+	[# var AddFoodtime = 3000L #]
+	
 	State s0 initial {
 		delay 2000
 		println ("MAITRE | STARTS")
@@ -150,21 +151,20 @@ QActor maitre context ctxMaitre{
 		println ("MAITRE | send addFood(food_code) command to RBR")	
 	}
 	Transition t1 
-		whenTime 3000 -> s3
+		whenTimeVar AddFoodtime -> s3 //time waiting for warning otherwise the food is present
 		whenMsg warning -> s2
-		//TODO: È opportuno parlare del timer nell'introduzione; è opportuno scriverlo meglio nel codice Es varibile = duration AddFood (è possibile farlo?)? 
 			
 	State s2 {
 		println ("MAITRE | received warning from RBR")
 	}
 	Goto s3
 	 
-	State s3 {
-		println ("MAITRE | send consult command to Fridge")	
-		request fridge -m consult : consult(0) 
+	State s3 {	
+		forward fridge -m consult : consult(0)
+		println ("MAITRE | send consult command to Fridge")
 	}
 	Transition t2
-		whenReply expose -> s4	
+		whenMsg expose -> s4
 	
 	State s4 {
 		[# var ansExpose = " " #]

@@ -16,8 +16,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 	var FOOD_PRESENCE = false 
-				var FOOD_CODE = "null"
+		 	var FOOD_PRESENCE = false  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -46,19 +45,24 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("checkFood") { //this:State
 					action { //it:State
+						 var FOOD_CODE = -1  
 						if( checkMsgContent( Term.createTerm("addFood(FOODE_CODE)"), Term.createTerm("addFood(ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 FOOD_CODE = payloadArg(0)  
-								println("RBR | asking fridge food-code = $FOOD_CODE ")
+								 FOOD_CODE = payloadArg(0).toInt()  
 						}
-						request("askFood", "askFood($FOOD_CODE)" ,"fridge" )  
-						println("RBR | asked fridge if it contains the food required")
+						forward("askFood", "askFood($FOOD_CODE)" ,"fridge" ) 
+						println("RBR | asked fridge if it contains the food with food-code = $FOOD_CODE")
 					}
-					 transition(edgeName="t23",targetState="handleReply",cond=whenReply("answer"))
+					 transition(edgeName="t23",targetState="handleReply",cond=whenDispatch("answer"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
-						 FOOD_PRESENCE = payloadArg(0).toBoolean()  
+						 var FOOD_PRESENCE = false  
+						if( checkMsgContent( Term.createTerm("answer(ARG)"), Term.createTerm("answer(ARG)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 FOOD_PRESENCE = payloadArg(0).toBoolean()  
+						}
+						println("RBR | received answer from fridge: $FOOD_PRESENCE")
 					}
 					 transition( edgeName="goto",targetState="fail", cond=doswitchGuarded({ FOOD_PRESENCE == false  
 					}) )
