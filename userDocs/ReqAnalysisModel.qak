@@ -147,26 +147,30 @@ QActor maitre context ctxMaitre{
 		forward rbr -m prepare : prepare(0)
 		println ("MAITRE | send prepare command to RBR")
 		
+	}
+	Goto sendAddFood
+	
+	State sendAddFood {
 		forward rbr -m addFood : addFood(1500)
 		println ("MAITRE | send addFood(food_code) command to RBR")	
 	}
 	Transition t1 
-		whenTimeVar AddFoodtime -> s3 //time waiting for warning otherwise the food is present
-		whenMsg warning -> s2
+		whenTimeVar AddFoodtime -> sendConsult //time waiting for warning otherwise the food is present
+		whenMsg warning -> handleWarning
 			
-	State s2 {
+	State handleWarning {
 		println ("MAITRE | received warning from RBR")
 	}
-	Goto s3
+	Goto sendConsult
 	 
-	State s3 {	
+	State sendConsult{	
 		forward fridge -m consult : consult(0)
 		println ("MAITRE | send consult command to Fridge")
 	}
 	Transition t2
-		whenMsg expose -> s4
+		whenMsg expose -> handleExpose
 	
-	State s4 {
+	State handleExpose {
 		[# var ansExpose = " " #]
 		onMsg( expose:expose(ARG) ) {
 	 		[# ansExpose= payloadArg(0) #]

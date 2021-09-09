@@ -24,28 +24,33 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("MAITRE | STARTS")
 						forward("prepare", "prepare(0)" ,"rbr" ) 
 						println("MAITRE | send prepare command to RBR")
+					}
+					 transition( edgeName="goto",targetState="sendAddFood", cond=doswitch() )
+				}	 
+				state("sendAddFood") { //this:State
+					action { //it:State
 						forward("addFood", "addFood(1500)" ,"rbr" ) 
 						println("MAITRE | send addFood(food_code) command to RBR")
-						stateTimer = TimerActor("timer_s0", 
-							scope, context!!, "local_tout_maitre_s0", AddFoodtime )
+						stateTimer = TimerActor("timer_sendAddFood", 
+							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t16",targetState="s3",cond=whenTimeout("local_tout_maitre_s0"))   
-					transition(edgeName="t17",targetState="s2",cond=whenDispatch("warning"))
+					 transition(edgeName="t16",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					transition(edgeName="t17",targetState="handleWarning",cond=whenDispatch("warning"))
 				}	 
-				state("s2") { //this:State
+				state("handleWarning") { //this:State
 					action { //it:State
 						println("MAITRE | received warning from RBR")
 					}
-					 transition( edgeName="goto",targetState="s3", cond=doswitch() )
+					 transition( edgeName="goto",targetState="sendConsult", cond=doswitch() )
 				}	 
-				state("s3") { //this:State
+				state("sendConsult") { //this:State
 					action { //it:State
 						forward("consult", "consult(0)" ,"fridge" ) 
 						println("MAITRE | send consult command to Fridge")
 					}
-					 transition(edgeName="t28",targetState="s4",cond=whenDispatch("expose"))
+					 transition(edgeName="t28",targetState="handleExpose",cond=whenDispatch("expose"))
 				}	 
-				state("s4") { //this:State
+				state("handleExpose") { //this:State
 					action { //it:State
 						 var ansExpose = " "  
 						if( checkMsgContent( Term.createTerm("expose(ARG)"), Term.createTerm("expose(ARG)"), 
