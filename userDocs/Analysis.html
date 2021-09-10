@@ -253,12 +253,15 @@ Furthermore, the maitre is described here as a mock client, because it's early, 
 
 <h3>Identification of the problem and the corresponding solution</h3>
 
-Starting from the requirements analysis, it's now necessary to found the problem (involved by the requirements) and to solve them, establishing the most appropriate technologies necessary for building the system.
+Starting from the requirements analysis, it's now necessary to found the problems (involved by the requirements) and to solve them, establishing the most appropriate technologies necessary for building the system.
 <br><br>
 <ol>
 <li><dl>
 	<dt>General System</dt>
-	<dd>The system is distribuited. To model it, it's available the **QAk-infrastracture** meta-model, developed and provided by our company/the customer. This meta-model provides a built-in message-driven tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, the **MQTT** and **web** tecnologies are introduced and it's required the **CoAP** support to the fridge comunications.</dd>
+	<dd>The system is distribuited. To model it, it's available the QAk-infrastracture meta-model. This meta-model provides a built-in message-driven tecnology. (In a first moment using the QAk we work just locally.) To support the distribuited features, the MQTT and web tecnologies are introduced and it's required the CoAP support to the fridge comunications.<dd>
+
+	<dd><br>The system is distribuited. To model it, it's available the **QAk-infrastracture** meta-model, developed and provided by our company/the customer. This meta-model provides a built-in message-driven tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, the **MQTT** and **web** tecnologies are introduced and it's required the **CoAP** support to the fridge comunications.</dd>
+
 <br><ul>
 	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH e gli altri elementi nella stanza? (conoscenza della stanza) --> mapping della stanza</li>
 	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP? --> HTTP/MQTT, CoAP...</li>
@@ -273,7 +276,7 @@ Starting from the requirements analysis, it's now necessary to found the problem
 	<dd>Il mappaggio può essere implementato tramite le librerie "IssActorKotlinRobotSupport-2.0.jar" fornite della software house.</dd>
 	<dd>Robot come componente proattivo/reattivo (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
 	<dd>Per soddisfare il requisito 'avoid the impact with the mobile obstacles' possiamo pensare di utilizzare (eventi per gestire) i dati raccolti da un sensore, che può essere reppresentato da un sonar (sia nel robot fisico che in quello virtuale).</dd>
-	<dd>La gestione del sonar è fornita delle librerie "it.unibo.qak21.basicrobot-1.0.jar" della software house.</dd>
+	<dd>La gestione del sonar è fornita delle librerie "it.unibo.qak21.basicrobot-1.0.jar" della software house/del customer.</dd>
 	<dd>Nel prossimo sprint valuteremo l'idea di rendere il sonar un attore indipendente dal robot.</dd>
 	<dd>The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot-facade. </dd>
 <br><ul>
