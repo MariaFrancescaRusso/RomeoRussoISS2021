@@ -258,17 +258,23 @@ Starting from the requirements analysis, it's now necessary to found the problem
 <ol>
 <li><dl>
 	<dt>General System</dt>
-	<dd>The system is distribuited. To model it, it's available the QAk-infrastracture meta-model. This meta-model provides a built-in message-driven tecnology. (In a first moment using the QAk we work just locally.) To support the distribuited features, the MQTT and web tecnologies are introduced and it's required the CoAP support to the fridge comunications.<dd>
-
-	<dd><br>The system is distribuited. To model it, it's available the **QAk-infrastracture** meta-model, developed and provided by our company/the customer. This meta-model provides a built-in message-driven tecnology. In a first moment using the QAk we work just locally. To support the distribuited features, the **MQTT** and **web** tecnologies are introduced and it's required the **CoAP** support to the fridge comunications.</dd>
-
-<br><ul>
-	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH e gli altri elementi nella stanza? (conoscenza della stanza) --> mapping della stanza</li>
-	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP? --> HTTP/MQTT, CoAP...</li>
-	<li>come vanno rappresentate le tre entità principali? cosa utilizzeremo? --> Qactors... "it.unibo..qak21.basicrobot-1.0.jar"</li>
-	<li>come gestire la memoria sul contenuto delle risorse (non-smart)? (come gestirne lo stato per il comando consult) --> scelta progettuale?? scegliamo che ad esserne a conoscenza e il maître's smartphone?? o altra soluzione? utilizzo di un gestore di risorse non smart che faccia da intermediario e che sia CoAP observable?? Possibilità di gestire lo stato degli oggetti non smart per mezzo di attori dedicati a ciascun oggetto all'interno del contesto del maitre?? Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart?? Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema??</li>
-	<li>dare una definizione del sistema --> CHE È DISTRIBUITO LO DICIAMO QUA E NON NEI REQUISITI???????? --> sistema distribuito....</li>
-</ul>
+	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, so the system is distribuited. To model it, it's available the QAk-infrastracture, provided by the "it.unibo.qakactor-2.4.jar" library, developed by the company. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using QActor meta-model.<br>
+	To support the distribuited communications, it's possible to use the TCP, MQTT and/or CoAP protocols; the last one, by requirements, must be used by the fridge to communicate with the other two main components. In particular, MQTT is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while CoAP is a protocol for point-to-point comunications among different nodes on the same network. CoAP supports also the "observe mechanism" where a node it's view as a resource (CoAP) with its own state observed by other CoAP clients.<br>
+	In the room there are also non-smart resources, whose states should be managed by the system software. This could be done in different way:
+	<ul>
+		<li>using a resource manager who manages the state of each non-smart resource;</li>
+		<li>using a resource manager (CoAP observable??) as an intermediate/intermediary between the maitre and the other resources (smart and non) whose status it wants to know (via consult command). In this way, the resource manager will know the states of non-smart resources and it will communicate with fridge to know its state;</li>
+		<li>creating different actors one for each resource/managing the state of each non-smart element using dedicated actors (in maitre context?);</li>
+		<li>using a mixed approach: different actors collect the state informations for each resource; the resource manager works as an interface between these actors and the system;</li>
+		<li>storing the state of each non-smart element on maitre node/context.</li>
+	</ul>
+	(dobbiamo dire cosa scegliamo e perchè rappresenta la soluzione migliore!!)(Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart??)<br>
+	Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set; this could be done loading the informations from a file, a DB and/or providing the maitre with a configuration tool.<br>
+	(dobbiamo fare una scelta, indicando i motivi! Possiamo dire che questa scelta può essere definita durante la progettazione)<br>
+	
+	<br><br>(To know where the elements (are) in the room are situated, it's available a support/tool witch/that is able/allow (RBR) to map the room: the available library/framework is IssActorKotlinRobotSupport-2.0.jar.)
+	
+	<br><br>The CoAP protocol, by requirements, must be used by the fridge to communicate with the other two main components/The requirements specify that the fridge must comunicate via CoAP; this can be easily obtained, with the QAK framework, sending a normal dispatch to another actor running on another context. The software running on the fridge context should comunicate via dispatch (CoAP) with the actors running on other contexts.</dd>
 </dl></li>
 <li><dl>
 	<dt>Robot</dt>
