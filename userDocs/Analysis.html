@@ -258,9 +258,9 @@ Starting from the requirements analysis, it's now necessary to found the problem
 <ol>
 <li><dl>
 	<dt>General System</dt>
-	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, so the system is distribuited. To model it, it's available the QAk-infrastracture, provided by the "it.unibo.qakactor-2.4.jar" library, developed by the company. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using QActor meta-model.<br>
-	To support the distribuited communications, it's possible to use the TCP, MQTT and/or CoAP protocols; the last one, by requirements, must be used by the fridge to communicate with the other two main components. In particular, MQTT is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while CoAP is a protocol for point-to-point comunications among different nodes on the same network. CoAP supports also the "observe mechanism" where a node it's view as a resource (CoAP) with its own state observed by other CoAP clients.<br>
-	In the room there are also non-smart resources, whose states should be managed by the system software. This could be done in different way:
+	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, so the system is distribuited. To model it, it's available the QAk-infrastracture, provided by the "it.unibo.qakactor-2.4.jar" library, developed by the company. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using QActor meta-model.</dd>
+	<dd>To support the distribuited communications, it's possible to use the TCP, MQTT and/or CoAP protocols; the last one, by requirements, must be used by the fridge to communicate with the other two main components. In particular, MQTT is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while CoAP is a protocol for point-to-point comunications among different nodes on the same network. CoAP supports also the "observe mechanism" where a node it's view as a resource (CoAP) with its own state observed by other CoAP clients.</dd>
+	<dd>In the room there are also non-smart resources, whose states should be managed by the system software. This could be done in different way:
 	<ul>
 		<li>using a resource manager who manages the state of each non-smart resource;</li>
 		<li>using a resource manager (CoAP observable??) as an intermediate/intermediary between the maitre and the other resources (smart and non) whose status it wants to know (via consult command). In this way, the resource manager will know the states of non-smart resources and it will communicate with fridge to know its state;</li>
@@ -268,52 +268,52 @@ Starting from the requirements analysis, it's now necessary to found the problem
 		<li>using a mixed approach: different actors collect the state informations for each resource; the resource manager works as an interface between these actors and the system;</li>
 		<li>storing the state of each non-smart element on maitre node/context.</li>
 	</ul>
-	(dobbiamo dire cosa scegliamo e perchè rappresenta la soluzione migliore!!)(Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart??)<br>
-	Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set; this could be done loading the informations from a file, a DB and/or providing the maitre with a configuration tool.<br>
-	(dobbiamo fare una scelta, indicando i motivi! Possiamo dire che questa scelta può essere definita durante la progettazione)<br>
-	
-	<br><br>(To know where the elements (are) in the room are situated, it's available a support/tool witch/that is able/allow (RBR) to map the room: the available library/framework is IssActorKotlinRobotSupport-2.0.jar.)
-	
-	<br><br>The CoAP protocol, by requirements, must be used by the fridge to communicate with the other two main components/The requirements specify that the fridge must comunicate via CoAP; this can be easily obtained, with the QAK framework, sending a normal dispatch to another actor running on another context. The software running on the fridge context should comunicate via dispatch (CoAP) with the actors running on other contexts.</dd>
+	(dobbiamo dire cosa scegliamo e perchè rappresenta la soluzione migliore!!)(Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart??)</dd>
+	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set; this could be done loading the informations from a file, a DB and/or providing the maitre with a configuration tool.<br>
+	(dobbiamo fare una scelta, indicando i motivi! Possiamo dire che questa scelta può essere definita durante la progettazione)</dd>
 </dl></li>
 <li><dl>
-	<dt>Robot</dt>
-	<dd>Il robot per eseguire i task deve essere in grado di raggiungere tutti gli obiettivi (frigo, tavolo, lavastoviglie, dispensa) con cui interagire. Essendo questi elementi fissi nella stanza, una soluzione può essere il **mappaggio della stanza** all'avvio del robot.</dd>
-	<dd>Il mappaggio può essere implementato tramite le librerie "IssActorKotlinRobotSupport-2.0.jar" fornite della software house.</dd>
-	<dd>Robot come componente proattivo/reattivo (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
-	<dd>Per soddisfare il requisito 'avoid the impact with the mobile obstacles' possiamo pensare di utilizzare (eventi per gestire) i dati raccolti da un sensore, che può essere reppresentato da un sonar (sia nel robot fisico che in quello virtuale).</dd>
-	<dd>La gestione del sonar è fornita delle librerie "it.unibo.qak21.basicrobot-1.0.jar" della software house/del customer.</dd>
-	<dd>Nel prossimo sprint valuteremo l'idea di rendere il sonar un attore indipendente dal robot.</dd>
-	<dd>The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot-facade. </dd>
+	<dt>RBR</dt>
+	<dd>
+	<br>(RBR è DDR: il cliente ci fornisce le documentazioni e le tecnologie. come si possono utilizzare? (basicRobot, ...) --> definire tecnologie fornite dal cliente: basicRobot...)</dd>
+	<dd>(??) The robot component represents the control part of the system. To make such a control independent form the particular type of robot to move (virtual, real-mbot, real-nano, etc.) it is opportune to introduce a resource robotSupport.kt working as a robot-facade. (??? forse spiegata bene ~ nel glossario)
+	<br>(Lo mettiamo noi a disposizione o c'è già? Cosa intendiamo con control part of the system? E alla fine è davvero lui o il maitre?)</dd>
+	<dd>To know where the elements (are) in the room are situated, it's available a support/tool witch/that is able/allow (RBR) to map the room: the available library/framework is IssActorKotlinRobotSupport-2.0.jar.</dd>
+	<dd>To execute the tasks, the RBR must be able to reach every element (in the room) with which he has to interact (fridge, dishwasher, pantry, table). These elements are fixed in the room, so to manage this "problem" may be sufficent a mapped model/mapping of the room at robot boot. The mapping "feature" can be implemented using/through the "IssActorKotlinRobotSupport-2.0.jar" library provided by the software house/the company/the costumer.</dd>
+	<dd>The robot/RBR it's both a proactive (**inserire esempi proattivi**) and a reactive (react to: command received from maitre; to event received from sonar to avoid the impact with obstacles) element/component. (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
+	<dd>To meet/satisfy the requirement 'avoid the impact with obstacles', it's possible to use (eventi per gestire) the data collected from a sensors **inserire nome sensore**;/, in the software system it/that can be rapresented by a sonar (sia nel robot fisico che in quello virtuale). The sonar handling it's provided by the company/costumer library "it.unibo.qak21.basicrobot-1.0.jar".</dd>
+	<dd>In the next sprint it will be possible to consider the idea of making the sonar an indipendent actor from the robot.</dd>
+
 <br><ul>
-	<li>stanza: come fa il robot a sapere dove andare? e dove si trova la sua RH? --> mapping della stanza</li>
-	<li>stanza: come fa il robot ad evitare gli ostacoli? --> mapping della stanza + sonar</li>
-	<li>RBR è DDR: il cliente ci fornisce le documentazioni e le tecnologie. come si possono utilizzare? (basicRobot, ...) --> definire tecnologie fornite dal cliente: basicRobot...</li>
 	<li>gestione dei task: devono essere eseguiti in ordine e non possono essere svrapposti. come gestirli? --> gestione dei task: scelta progettuale??</li>
 	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?) --> nuovo requisito o scelta progettuale? il robot invia risposta fine task a maitre??</li>
-</ul>
+	</ul>
 </dl></li>
 <li><dl>
-	<dt>**Maitre**</dt>
-	<dt>**valutare utilizzo di console**</dt>
-	<dt>**interfaccia sviluppabile sia web-oriented che come app android**</dt>
-	<dd>Possibilità di gestire lo stato degli oggetti non smart per mezzo di attori dedicati a ciascun oggetto all'interno del contesto del maitre.</dd>
-	<dd>Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart.</dd>
-	<dd>Potremmo prevedere un attore XY in grado di ricevere i warning dal robot in qualsiasi momento.</dd>
-	<dd>Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema.</dd>
+	<dt>Maitre</dt>
+	<dd>(?? --> da sistemare!!!) The software running on the maitre node must provide a GUI to make (??) the user to interact with the system. By requirement the maitre must be able to use this software from his smartphone; so it must have a GUI and a native app (android\IOS) or a webapp running in a mobile browser. This software is the main interaction source with the human user so it's may present some tool of configuration of the other components (? forse.. funzionalità aggiuntiva).
+	<br>(valutare utilizzo di console) (interfaccia sviluppabile sia web-oriented che come app android) (Possibilità di sfruttare la libreria per la GUI che ha prodotto lui --> Se non ricordo male il prof aveva detto di aver messo una libreria di supporto alla GUI: Non ho trovato nulla di già fatto qua ci sono delle traccie --> file:///home/gnuff/issLab2021/webspring.intro/userDocs/LabSpringUsageIntro2021.html e /home/gnuff/Scrivania/issLab2021/webspring.demo/) (maître's smartphone: come implementare? userGUI in browser or application? --> web application?)</dd>
+	<dd>
+	<br>(Potremmo prevedere un attore XY in grado di ricevere i warning dal robot in qualsiasi momento. (forse più avanti?))</dd>
+	<dd>
+	<br>(Possibilità di gestire lo stato degli oggetti non smart per mezzo di attori dedicati a ciascun oggetto all'interno del contesto del maitre. --> ne abbiamo parlato nel sistema generale) (Possibilità di inserire un support per configurare dispositivi ora non smart che in futuro possono essere smart.)</dd>
+	<dd>
+	<br>(Possibilità di configurare la stanza e gli oggetti non smart all'avvio del sistema. --> già nella descrizione generale)</dd>
+
 <br><ul>
-	<li>maître's smartphone: come implementare? userGUI in browser or application? --> web application?</li>
 	<li>gestione dei task: il maître come fa a sapere che il robot abbia finito il suo task? lo "vede"? o il robot comunicherà al maître di aver finito il task una volta tornato alla sua RH? (come fa con il warning --> questo sarà un messaggio/risposta o un evento?) --> nuovo requisito o scelta progettuale? il robot invia risposta fine task a maitre??</li>
 	<li>i comandi stop e reactivate possono essere eseguiti solo se il robot sta già eseguendo un task e deve essere eseguito dal maître prima il comando stop ed in seguito reactivate. come gestirli? --> gestione comandi stop/reactivate: scelta progettuale??</li>
 </ul>
 </dl></li>
 <li><dl>
-	<dt>**Fridge**</dt>
-	<dd>Possibilità di **utilizzare android per IoT** / oppure **interfaccia web**</dd>
-	<dd>Possibilità di popolarlo all'avvio del sistema.</dd>
-<br><ul>
-	<li>come fare interagire/comunicare tra loro i vari componenti (smart) della stanza? e le comunicazioni da frigo via CoAP? --> HTTP/MQTT, CoAP...</li>
-</ul>
+	<dt>Fridge</dt>
+	<dd>The CoAP protocol, by requirements, must be used by the fridge to communicate with the other two main components/The requirements specify that the fridge must comunicate via CoAP; this can be easily obtained, with the QAK framework, sending a normal dispatch to another actor running on another context. The software running on the fridge context should comunicate via dispatch (CoAP) with the actors running on other contexts.</dd>
+	<dd>
+	<br>(Possibilità di utilizzare android per IoT oppure interfaccia web (direi QAK e boh --> no il proff voleva/sembrava preferire che sia quella del maitre che quella del frigo fossero applicazione web --> dal punto di vista visivo direi per quanto riguarda il frigo --> credo debba avere comunque una sua interfaccia.. domani leggiamo meglio!)</dd>
+	<dd>
+	<br>(Possibilità di popolarlo all'avvio del sistema.)</dd>
+	<dd>
+	<br>(Come rappresentare lo stato del frigo? o è troppo presto?)</dd>
 </dl></li>
 </ol>
 
