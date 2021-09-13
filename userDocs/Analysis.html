@@ -253,14 +253,14 @@ Furthermore, the maitre is described here as a mock client, because it's early, 
 
 <h3>Identification of the problems and the corresponding solutions</h3>
 
-Starting from the requirements analysis, it's now necessary to found the main problems involved by the requirements and to solve them, establishing the most appropriate technologies necessary for building the system.
+Starting from the requirements analysis, it's now necessary to found the main problems (and abstraction gap) involved by the requirements and to solve them, establishing the most appropriate technologies necessary for building the system.
 <br><br>
 <ol>
 <li><dl>
 	<dt>General System</dt>
 	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, therefore the system is distribuited. To model it, it's available the QAk-infrastracture, provided by the "it.unibo.qakactor-2.4.jar" library, developed by the company. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using QActor meta-model.</dd>
 	<dd>To support the distribuited communications, it's possible to use the TCP, MQTT and/or CoAP protocols; the last one, by requirements, must be used by the fridge to communicate with the other two main components. In particular, MQTT is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while CoAP is a protocol for point-to-point comunications among different nodes on the same network. CoAP supports also the "observe mechanism" where the node state is seen as a resource (CoAP) observed by other CoAP clients.</dd>
-	<dd>In the room there are non-smart resources, whose states should be managed by the software system. This could be done in different ways:
+	<dd>In the room there are non-smart resources, whose states should be managed by the software system. (<- abstraction gap? -> solution:) This could be done in different ways:
 	<ul>
 		<li>using a resource manager (CoAP observable) (concentrato?) which manages the state of each non-smart resource and which communicates with maitre when it wants to know their states;</li>
 		<li>using a resource manager (CoAP observable) (in maitre context) (distribuito?) as an intermediary between the maitre and the other resources (smart and non-smart) whose status it wants to know (via consult command). In this way, the resource manager will know the states of non-smart resources and it will communicate with fridge to know its state;</li>
@@ -268,13 +268,13 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 		<li>using a resource manager (CoAP observable) (in maitre context) (distribuito?) as an intermediary between the maitre and the other resources (smart and non-smart) whose status it wants to know (via consult command). In this way, the resource manager will communicate with fridge and other non-smart actors (in maitre context, one for each non-smart resource) to know their states;</li>
 	</ul>
 	(dobbiamo dire cosa scegliamo e perchè rappresenta la soluzione migliore (pro e contro)!)</dd>
-	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set; this could be done loading the informations from a file, a DB and/or providing the maitre with a configuration tool.<br>
+	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set; (<-abstraction gap? -> solution:) this could be done loading the informations from a file, a DB and/or providing the maitre with a configuration tool.<br>
 	(dobbiamo fare una scelta, indicando i motivi! Possiamo dire che questa scelta può essere definita durante la progettazione)</dd>
 </dl></li>
 <li><dl>
 	<dt>RBR</dt>
 	<dd>To allow RBR to move, the customer provides a library "it.unibo.qak21.basicRobot-1.0.jar". In particular, this framework provides the basicRobot (link?) and its possible implementations: virtual robot (link?), on its own WEnv (Web Environment), or real robot, that can be mbot (link?) or nano robot (link?).</dd>
-	<dd>To execute the tasks, the RBR must be able to reach every element in the room with which he has to interact (fridge, dishwasher, pantry, table) and also it must be able to return on its RH. Therefore, to know where the elements and the RH are situated in the room, it's available a support, IssActorKotlinRobotSupport-2.0.jar, which allows RBR, at its boot, to create a map of the room or to load an existing one.</dd>
+	<dd>To execute the tasks, the RBR must be able to reach every element in the room with which he has to interact (fridge, dishwasher, pantry, table) and also it must be able to return on its RH. Therefore, to know where the elements and the RH are situated in the room (<- abstraction gap? -> solution:), it's available a support, IssActorKotlinRobotSupport-2.0.jar, which allows RBR, at its boot, to create a map of the room or to load an existing one.</dd>
 	<dd>To be able to map the room and to satisfy the requirement "avoid the impact with obstacles", it's possible to use data collected from a sensor, which communicates through events with the RBR. This sensor can be rapresented, in the software system, by a sonar (in both virtual and real robot), whose library "it.unibo.qak21.basicrobot-1.0.jar" is provided by the customer.</dd>
 
 	<dd>The RBR it's both a proactive, because (perchè è proattivo?), and a reactive element, because it reacts to the commands received from maitre and to events received from sonar to avoid the impact with obstacles. (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
@@ -333,17 +333,7 @@ In the context of SCRUM:<ul>
 	<ul>
 	<li>First product backlog:</li>
 	<ol>
-	<li>planning</li>
-	<li>move on virtual</li>
-	<li>sonar</li>
-	<li>mapping</li>
-	<li>prepare the room task</li>
-	<li>add food task</li>
-	<li>clear task</li>
-	<li>rbr avoid obstacles</li>
-	<li>consult</li>
-	<li>gui matre</li>
-	<li>real rbr</li>
+	<li></li>
 	</ol>
 	<li>Possibile set/sequence of SPRINT:</li>
 	<ol>
@@ -354,10 +344,62 @@ In the context of SCRUM:<ul>
 </ol>
 
 <h4>Product Backlog</h4>
-define a (first) product backlog
+
+A first Product Backlog can be:
+<ol>
+	<li>planning</li>
+	<li>RBR moving</li>
+	<li>prepare the room task</li>
+	<li>add food task</li>
+	<li>clear task</li>
+	<li>sonar</li>
+	<li>mapping</li>
+	<li>rbr avoid obstacles</li>
+	<li>managing resources (actors + state manager??)</li>
+	<li>consult</li>
+	<li>stop/reactivate</li>
+	<li>gui matre's smartphone software</li>
+</ol>
 
 <h4>first SPRINT sequence</h4>
-a possibile set/sequence of SPRINT
+
+A possibile set/sequence of SPRINT can be:
+<dl>
+<dt>SPRINT 0</dt>
+<dd><ol>
+	<li>Planning: insert an initial map representation and use of Planner</li>
+	<li>Integration of Basic Robot for the RBR</li>
+	<li>Prepare the room task</li>
+	<li>Add Food task</li>
+	<li>Clear the room task</li>
+	<li>Tests</li>
+</ol></dd>
+<dt>SPRINT 1</dt>
+<dd><ol>
+	<li>Sonar</li>
+	<li>Mapping</li>
+	<li>Avoid the obstacles requirement</li>
+	<li>Tests</li>
+</ol></dd>
+<dt>SPRINT 2</dt>
+<dd><ol>
+	<li>Resources representation: an actor for each non-smart resource + State Manager??</li>
+	<li>Consult</li>
+	<li>Tests</li>
+</ol></dd>
+<dt>SPRINT 3</dt>
+<dd><ol>
+	<li>Stop/Reactivate</li>
+	<li>Tests</li>
+</ol></dd>
+<dt>SPRINT 4</dt>
+<dd><ol>
+	<li>gui matre's smartphone software</li>
+	<li>Tests</li>
+</ol></dd>
+<dt></dt>
+<dd></dd>
+</dl>
 
 <h2>Test plans</h2> 
 
