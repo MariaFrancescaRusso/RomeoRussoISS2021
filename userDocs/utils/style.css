@@ -213,7 +213,7 @@ ol, ul, li {
 }
 
 ul {
-	type: disc;
+	list-style-type: disc;
 }
 
 dt {
@@ -227,7 +227,7 @@ iframe {
 }
 
 iframe.qak {
-	height: 1300px;
+	height: 1210px;
 }
 
 img {

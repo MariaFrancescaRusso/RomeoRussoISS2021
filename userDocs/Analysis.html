@@ -212,7 +212,7 @@ Furthermore, the maitre is described here as a mock client, because it's early, 
 <br><br>
 <table>
 <tr>
-<th>Requirements analysis architecture model/Machine understandable architecture model</th>
+<th>Machine understandable architecture model</th>
 <th>A possible graphic representation</th>
 </tr>
 <tr>
@@ -253,21 +253,109 @@ Furthermore, the maitre is described here as a mock client, because it's early, 
 
 <h3>Identification of the problems and the corresponding solutions</h3>
 
-Starting from the requirements analysis, it's now necessary to found the main problems (and abstraction gap) involved by the requirements and to solve them, establishing the most appropriate technologies necessary for building the system.
+Starting from the requirements analysis, it's now necessary to found the main problems and abstraction gap involved by the requirements and to solve them, establishing the most appropriate technologies necessary for building the system.
 <br><br>
 <ol>
 <li><dl>
 	<dt>General System</dt>
-	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, therefore the system is distribuited. To model it, it's available the QAk-infrastracture, provided by the "it.unibo.qakactor-2.4.jar" library, developed by the company. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using QActor meta-model.</dd>
-	<dd>To support the distribuited communications, it's possible to use the TCP, MQTT and/or CoAP protocols; the last one, by requirements, must be used by the fridge to communicate with the other two main components. In particular, MQTT is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while CoAP is a protocol for point-to-point comunications among different nodes on the same network. CoAP supports also the "observe mechanism" where the node state is seen as a resource (CoAP) observed by other CoAP clients.</dd>
-	<dd>In the room there are non-smart resources, whose states should be managed by the software system. (<- abstraction gap? -> solution:) This could be done in different ways:
-	<ul>
-		<li>using a resource manager (CoAP observable) (concentrato?) which manages the state of each non-smart resource and which communicates with maitre when it wants to know their states;</li>
-		<li>using a resource manager (CoAP observable) (in maitre context) (distribuito?) as an intermediary between the maitre and the other resources (smart and non-smart) whose status it wants to know (via consult command). In this way, the resource manager will know the states of non-smart resources and it will communicate with fridge to know its state;</li>
-		<li>managing the state of each non-smart resource using dedicated actors (in maitre context);</li>
-		<li>using a resource manager (CoAP observable) (in maitre context) (distribuito?) as an intermediary between the maitre and the other resources (smart and non-smart) whose status it wants to know (via consult command). In this way, the resource manager will communicate with fridge and other non-smart actors (in maitre context, one for each non-smart resource) to know their states;</li>
-	</ul>
-	(dobbiamo dire cosa scegliamo e perchè rappresenta la soluzione migliore (pro e contro)!)</dd>
+	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, therefore the system is distribuited. To model it, it's available the QAk-infrastracture, provided by the "it.unibo.qakactor-2.4.jar" library. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using QActor meta-model.</dd><br>
+	<dd>To support the distribuited communications, it's possible to use the TCP, MQTT and/or CoAP protocols; the last one, by requirements, must be used by the fridge to communicate with the other two main components. In particular, MQTT is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while CoAP is a protocol for point-to-point comunications among different nodes on the same network. CoAP supports also the "observe mechanism" where the node state is seen as a resource (CoAP) observed by other CoAP clients.</dd><br>
+	<dd>In the room there are non-smart resources, whose states should be managed by the software system. This could be done in different ways, listed below.<br><br>
+	<table>
+	<tr>
+		<td><ol><li>Using a resource manager actor (RM) which manages the state of each non-smart resource. It receives the consult command from maitre and answers it exposing the state of each non-smart resource. Moreover, when the rbr executes the tasks, it interacts with the resource manager to change the state of each non-smart resource.
+		<dl>
+			<dt>Pro:</dt>
+			<dd><ul>
+				<li>easy to implement;</li>
+				<li>easy for maitre to obtain the state of each resource, sending consult command to RM and fridge.</li>
+			</ul></dd>
+			<dt>Cons:</dt>
+			<dd><ul>
+				<li>The RM has to manage the state for every non-smart resource and this can result a concectually intricate operation when it must update a resource state at request of RBR.</li>
+			</ul></dd>
+		</dl>
+		</li></ul></td>
+		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type1_model.png" alt="ResourcesStatusManagement_type1_model"></td>
+	</tr>
+	<tr>
+		<td><ol start="2"><li>Using a resource manager which manages the state of each resource (smart and non-smart). It works as an intermediary between the maitre (which sends it the consult command to know the state of each resource) or the rbr (which interacts with it to change the state of each resource, during the execution of each task) and the other resources. In this way, the resource manager will know the states of non-smart resources and it will communicate with fridge to know its state.
+		<dl>
+			<dt>Pro:</dt>
+			<dd><ul>
+				<li>easy to implement;</li>
+				<li>easy for maitre to obtain the state of each resource, only sending consult command to RM;</li>
+				<li>RM is the only component that manages the resources and this brings to a cleaner architecture.</li>
+			</ul></dd>
+			<dt>Cons:</dt>
+			<dd><ul>
+				<li>The RM has to manage the state for every non-smart resource and this can result a concectually intricate operation when it must update a resource state at request of RBR;</li>
+				<li>When RBR wants to change the state of the fridge there is one more step: the RBR must communicate with RM, which communicates to fridge the desired change.</li>
+			</ul></dd>
+		</dl>
+		</li></ul></td>
+		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type2_model.png" alt="ResourcesStatusManagement_type2_model"></td>
+	</tr>
+	<tr>
+		<td><ol start="3"><li>Managing the state of each non-smart resource using dedicated actors. In this way, the maitre, to know the state of each resource (smart and non-smart) sends to each actor the consult command. At the same way, when the rbr executes the tasks, it interacts with each actor to change the state of each resource.
+		<dl>
+			<dt>PRO</dt>
+			<dd><ul>
+				<li>easy to implement;</li>
+				<li>RBR can communicate directly with the resource actor of which it wants to change the state.</li>
+			</ul></dd>
+			<dt>CONS</dt>
+			<dd><ul>
+				<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
+				<li>the maitre has to send a consult command for each resource actor and to wait for each reply.</li>
+			</ul></dd>
+		</dl>
+		</li></ul></td>
+		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type3_model.png" alt="ResourcesStatusManagement_type3_model"></td>
+	</tr>
+	<tr>
+		<td><ol start="4"><li>Managing the state of each non-smart resource using dedicated actors and using a resource manager which manages the state of each resource (smart and non-smart). It works as an intermediary between the maitre (which sends it the consult command to know the state of each resource) or the rbr (which interacts with it to change the state of each resource, during the execution of each task) and the other resources actors. In this way, the resource manager will communicate with fridge and the other non-smart resource actors to know their states.
+		<dl>
+			<dt>PRO</dt>
+			<dd><ul>
+				<li>easy to implement;</li>
+				<li>the maitre delegates the RM for the manage of all the resources;</li>
+				<li>the rbr delegates the RM for the state change of each resource.</li>
+			</ul></dd>
+			<dt>CONS</dt>
+			<dd><ul>
+				<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
+				<li>the RM has to send a consult command for each resource actor and to wait for each reply; then it must communicate the result to maitre;</li>
+				<li>the RM must communicate with each resource actor when RBR requires for a state change;</li>
+				<li>the RM works only as an intermediary from maitre or RBR and resource actors. It does the work of maitre and RBR adding a step; so it results not useful.</li>
+			</ul></dd>
+		</dl>
+		</li></ul></td>
+		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type4_model.png" alt="ResourcesStatusManagement_type4_model"></td>
+	</tr>
+	<tr>
+	<td><ol start="5"><li>Managing the state of each non-smart resource using dedicated actors and using a resource manager which manages the state of each resource (smart and non-smart). At system start, there is a registration protocol where each resource try to subscribe it-self to RM; so to make the system more dynamic and ready at future resource add. The RM works as an intermediary between the maitre (which sends it the consult command to know the state of each resource) or the rbr (which interacts with it to change the state of each resource, during the execution of each task) and the other resources actors. In this way, the resource manager will communicate with fridge and the other non-smart resource actors to know their states.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>easy to implement;</li>
+				<li>the maitre delegates the RM for the manage of all the resources;</li>
+				<li>the rbr delegates the RM for the state change of each resource;</li>
+				<li>the presence of a registration protocol makes the system more dynamic and ready at future resource add.</li>
+		</ul></dd>
+		<dt>CONS</dt>
+			<dd><ul>
+				<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
+				<li>the RM has to send a consult command for each resource actor and to wait for each reply; then it must communicate the result to maitre;</li>
+				<li>the RM must communicate with each resource actor when RBR requires for a state change.</li>
+			</ul></dd>
+	</dl>
+	</li></ul></td>
+	<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type5_model.png" alt="ResourcesStatusManagement_type5_model"></td>
+	</tr>
+	</table>
+	SOLUZIONE SCELTA!
+	</dd><br>
 	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set; (<-abstraction gap? -> solution:) this could be done loading the informations from a file, a DB and/or providing the maitre with a configuration tool.<br>
 	(dobbiamo fare una scelta, indicando i motivi! Possiamo dire che questa scelta può essere definita durante la progettazione)</dd>
 </dl></li>
@@ -295,16 +383,6 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<dt>Fridge</dt>
 	<dd>The requirements specify that the fridge must comunicate through CoAP protocol. This can be easily obtained, with the QAK framework, sending a normal dispatch to another actor running on another context. The software running on the fridge context should comunicate via dispatch (CoAP) with the actors running on other contexts.</dd>
 </dl></li>
-</ol>
-
-<ol>
-<li><ul>
-	<li>Solutions: Evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process:
-	<ol>
-	<li></li>
-	</ol>
-	</li>
-</ul></li>
 </ol>
 
 <h3>(2) Model of system's logical architecture</h3>
@@ -359,6 +437,8 @@ A first Product Backlog can be:
 	<li>consult</li>
 	<li>stop/reactivate</li>
 	<li>gui matre's smartphone software</li>
+	<li>Deployment</li>
+	<li>Maintenance</li>
 </ol>
 
 <h4>first SPRINT sequence</h4>
