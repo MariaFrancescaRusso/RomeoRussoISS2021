@@ -13,7 +13,7 @@
 <body>
 
 <div id="top">
-<h1>STANDING BUFFET SERVICE | Ingengeria dei Sistemi Software</h1>
+<h1>STANDING BUFFET SERVICE | Ingegneria dei Sistemi Software</h1>
 </div>
 
 <div class="body">
@@ -30,7 +30,7 @@ Below it's shown the <a href="./utils/tf/TemaFinaleBo19.html" target="_blank">re
 <iframe src="./utils/tf/TemaFinaleBo19.html" title="Requirements text"><a href="./utils/tf/TemaFinaleBo19.html" target="_blank">Requirements Text Link</a></iframe>
 </div>
 
-<h2>Requirement analysis</h2>
+<h2>Requirement Analysis</h2>
 
 <h3>Glossary</h3>
 
@@ -51,7 +51,7 @@ By the interaction with the customer, here it's exposed an essential glossary ab
 </tr>
 <tr>
 	<td class="title"><ks>fridge</ks></td>
-	<td>It's a smart device, having knowledge base on his storage, and an "Internet Thing". It's embedded into the wall of the <ks>room</ks> and it's filled with a proper set of items when system starts. It must be able to comunicate, via CoAP, with <ks>maître's smartphone</ks> and <ks>RBR</ks>.</td>
+	<td>It's a smart device, having knowledge base on his storage, and an "Internet Thing". It's embedded into the wall of the <ks>room</ks> and it's filled with a proper set of items when system starts. It must be able to comunicate, via <tt>CoAP</tt>, with <ks>maître's smartphone</ks> and <ks>RBR</ks>.</td>
 </tr>
 <tr>
 	<td class="title"><ks>pantry</ks></td>
@@ -71,7 +71,7 @@ By the interaction with the customer, here it's exposed an essential glossary ab
 </tr>
 <tr>
 	<td class="title"><ks>DDR - <i>Differential Drive Robot</i></ks></td>
-	<td>The customer provided all the documentation about this topic: the documentation about the basicRobot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), that can be implemented as a virtual robot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) or as a real robot, that can be an mbot (at <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or a nano robot (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).</td>
+	<td>The customer provided all the documentation about this topic: the documentation about the <tt>basicRobot</tt> (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), that can be implemented as a <tt>virtual robot</tt> (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) or as a real robot, that can be an <tt>mbot</tt> (at <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or a <tt>nano robot</tt> (at <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).</td>
 </tr>
 <tr>
 	<td class="title"><ks>RH - <i>Robot Home</i></ks></td>
@@ -99,7 +99,7 @@ By the interaction with the customer, here it's exposed an essential glossary ab
 </tr>
 </table>
 
-<h3>Requirements analysis</h3>
+<h3>Requirements Analysis</h3>
 
 Once we have understood the main concepts set by the <a href="./utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> given by the customer, it's now possible to analyze them.
 <br><br>
@@ -138,14 +138,14 @@ Once we have understood the main concepts set by the <a href="./utils/tf/TemaFin
 <tr>
 	<td>The software running on <kc>fridgeNode</kc> must be able to:
 		<ul>
-		<li>answer to the <ks>maître's smartphone</ks>, via CoAP (so it must know the destination URI), with his content when it's required;</li>
-		<li>answer to the <ks>RBR</ks>, via CoAP (so it must know the destination URI), when it asks if it contains a specific food defined by a <ks>food-code</ks>.</li>
+		<li>answer to the <ks>maître's smartphone</ks>, via <tt>CoAP</tt> (so it must know the destination URI), with his content when it's required;</li>
+		<li>answer to the <ks>RBR</ks>, via <tt>CoAP</tt> (so it must know the destination URI), when it asks if it contains a specific food defined by a <ks>food-code</ks>.</li>
 		</ul>
 	</td>
 </tr>
 </table>
 
-<h3>A first set of functional Test Plans</h3>
+<h3>A First Set of Functional Test Plans</h3>
 
 <h4>Scenario</h4>
 
@@ -153,8 +153,8 @@ Here, it's illustrated a possible scenario of the system.
 <br><br>
 <table>
 <tr>
-<th>Steps in the scenario</th>
-<th>Simplified representation of each step</th>
+<th>Steps in the Scenario</th>
+<th>Simplified Representation of Each Step</th>
 </tr>
 <tr>
 	<td><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> and the <ks>table</ks> are empty.</li></ol></td>
@@ -165,7 +165,7 @@ Here, it's illustrated a possible scenario of the system.
 	<td class="imageScenario"><img src="./utils/img/ScenarioPrepare.png" alt="Scenario 'Prepare the room'"></td>
 </tr>
 <tr>
-	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via CoAP, with <em>answer</em> command. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
+	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via <tt>CoAP</tt>, with <em>answer</em> command. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
 	<td class="imageScenario"><img src="./utils/img/ScenarioAddFood.png" alt="Scenario 'Add food'"></td>
 </tr>
 <tr>
@@ -175,7 +175,7 @@ Here, it's illustrated a possible scenario of the system.
 <tr>
 	<td colspan="2">At every time of the service:
 	<ul>
-		<li>The <ks>Maître de Salle</ks> can use <em>consult</em> command to know the state of each element in the <ks>room</ks> (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>). In this case, the <ks>fridge</ks> answers via CoAP, using the <em>expose</em> command, to show its content.</li>
+		<li>The <ks>Maître de Salle</ks> can use <em>consult</em> command to know the state of each element in the <ks>room</ks> (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>). In this case, the <ks>fridge</ks> answers via <tt>CoAP</tt>, using the <em>expose</em> command, to show its content.</li>
 		<li>The <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an already activated <ks>task</ks>, otherwise these commands have no effect.</li>
 		<li>The <ks>RBR</ks> must <em>avoid</em> the obstacles.</li>
 	</ul>
@@ -199,21 +199,21 @@ It's necessary to make some test plans that must be verified for the correct wor
 <li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
 </ul>
 
-<h3>A first model of the system architecture</h3>
+<h3>A First Model of the System Architecture</h3>
 
-From the requirements analysis, it's possible to obtain a first model, that is an univoque initial representation of the system architecture, using a meta-model written in a machine-understandable language, like QActor, that describes the main interactions and behaviors between the main system components. In particular, the three main entities are represented by three actors (QActors, that behave as Finite State Machines and work as a CoAP observable resources) and the nodes where they run are represented by contexts.
+From the requirements analysis, it's possible to obtain a first model, that is an initial representation of the system architecture, using a meta-model written in a machine-understandable language, like <tt>QActor</tt>, that describes the main interactions and behaviors between the main system components. In particular, the three main entities (<ks>RBR</ks>, <ks>maître's smartphone</ks>, <ks>fridge</ks>) are represented by three actors (QActors, that behave as <tt>Finite State Machines</tt> and work as <tt>CoAP</tt> observable resources) (<k>rbr</k>, <k>maitre</k>, <k>fridge</k>) and the nodes (<kc>robotNode</kc>, <kc>maitreNode</kc>, <kc>fridgeNode</kc>) where they run are represented by contexts (<k>ctxRBR</k>, <k>ctxMaitre</k>, <k>ctxFridge</k>).
 <br><br>
 Making this, there were been found some problems, that will be addressed and solved next in the problem analysis:
 <ul>
-	<li>the stop/reactivate feature is just described as a dispatcher but is still not working cause none state reads that message; </li>
-	<li>the consult feature is still not completed cause it's necessary to manage the state information of smart and non smart elements, but in this representation it's handled only the fridge state information.</li>
+	<li>the <em>stop</em>/<em>reactivate</em> feature is just described as a <ko>dispatcher</ko> but is still not working cause none state reads that message;</li>
+	<li>the <em>consult</em> feature is still not completed cause it's necessary to manage the state information of smart and non-smart elements, but in this representation it's handled only the <ks>fridge</ks> state information.</li>
 </ul>
-Furthermore, the maitre is described here as a mock client, because it's early, in the requirements analysis, to represent his full proactive behavior that depend from a GUI.
+Furthermore, the <ks>maitre</ks> is described here as a <tt>mock client</tt>, because it's early, in the requirements analysis, to represent his full proactive behavior that depend from a GUI.
 <br><br>
 <table>
 <tr>
-<th>Machine understandable architecture model</th>
-<th>A possible graphic representation</th>
+<th>Machine Understandable Architecture Model</th>
+<th>A Possible Graphic Representation</th>
 </tr>
 <tr>
 <td class="text" rowspan="3"><a href="./ReqAnalysisModel.qak" target="_blank">ReqAnalysisModel.qak</a><br><pre><iframe class="qak" src="./ReqAnalysisModel.qak" title="ReqAnalysisModel">Model of Requirements Analysis</iframe></pre></td>
@@ -234,7 +234,7 @@ Furthermore, the maitre is described here as a mock client, because it's early, 
 </tr>
 </table>
 
-<h2>Problem analysis</h2>
+<h2>Problem Analysis</h2>
 
 <dl>
 <dt>What To Do:</dt>
@@ -251,103 +251,103 @@ Furthermore, the maitre is described here as a mock client, because it's early, 
 </ol></dd>
 </dl>
 
-<h3>Identification of the problems and the corresponding solutions</h3>
+<h3>Identification of the Problems and the Corresponding Solutions</h3>
 
 Starting from the requirements analysis, it's now necessary to found the main problems and abstraction gap involved by the requirements and to solve them, establishing the most appropriate technologies necessary for building the system.
 <br><br>
 <ol>
 <li><dl>
 	<dt>General System</dt>
-	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, therefore the system is distribuited. To model it, it's available the QAk-infrastracture, provided by the "it.unibo.qakactor-2.4.jar" library. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using QActor meta-model.</dd><br>
-	<dd>To support the distribuited communications, it's possible to use the TCP, MQTT and/or CoAP protocols; the last one, by requirements, must be used by the fridge to communicate with the other two main components. In particular, MQTT is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while CoAP is a protocol for point-to-point comunications among different nodes on the same network. CoAP supports also the "observe mechanism" where the node state is seen as a resource (CoAP) observed by other CoAP clients.</dd><br>
-	<dd>In the room there are non-smart resources, whose states should be managed by the software system. This could be done in different ways, listed below.<br><br>
+	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, therefore the system is distribuited. To model it, it's available the <tt>Qak-infrastracture</tt>, provided by the <m>it.unibo.qakactor-2.4.jar</m> library. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using <tt>QActor</tt> meta-model.</dd><br>
+	<dd>To support the distribuited communications, it's possible to use the <tt>TCP</tt>, <tt>MQTT</tt> and/or <tt>CoAP</tt> protocols; the last one, by requirements, must be used by the <k>fridge</k> to communicate with the other two main components. In particular, <tt>MQTT</tt> is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while <tt>CoAP</tt> is a protocol for point-to-point comunications among different nodes on the same network. <tt>CoAP</tt> supports also the <i>observe mechanism</i> where the node state is seen as a resource (<tt>CoAP</tt>) observed by other <tt>CoAP</tt> clients.</dd><br>
+	<dd>In the <ks>room</ks> there are non-smart resources, whose states should be managed by the software system. This could be done in different ways, listed below.<br><br>
 	<table>
 	<tr>
-		<td><ol><li>Using a resource manager actor (RM) which manages the state of each non-smart resource. It receives the consult command from maitre and answers it exposing the state of each non-smart resource. Moreover, when the rbr executes the tasks, it interacts with the resource manager to change the state of each non-smart resource.
+		<td><ol><li>Using a resource manager actor (<k>rm</k>) which manages the state of each non-smart resource. It receives the <em>consult</em> command from <k>maitre</k> and answers it <em>exposing</em> the state of each non-smart resource. Moreover, when the <k>rbr</k> executes the <ks>tasks</ks>, it interacts with the <k>rm</k> to change the state of each non-smart resource.
 		<dl>
 			<dt>Pro:</dt>
 			<dd><ul>
 				<li>easy to implement;</li>
-				<li>easy for maitre to obtain the state of each resource, sending consult command to RM and fridge.</li>
+				<li>easy for <k>maitre</k> to obtain the state of each resource, sending <em>consult</em> command to <k>rm</k> and <k>fridge</k>.</li>
 			</ul></dd>
 			<dt>Cons:</dt>
 			<dd><ul>
-				<li>The RM has to manage the state for every non-smart resource and this can result a concectually intricate operation when it must update a resource state at request of RBR.</li>
+				<li>The <k>rm</k> has to manage the state for every non-smart resource and this can result a concectually intricate operation when it must update a resource state at request of <k>rbr</k>.</li>
 			</ul></dd>
 		</dl>
 		</li></ul></td>
 		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type1_model.png" alt="ResourcesStatusManagement_type1_model"></td>
 	</tr>
 	<tr>
-		<td><ol start="2"><li>Using a resource manager which manages the state of each resource (smart and non-smart). It works as an intermediary between the maitre (which sends it the consult command to know the state of each resource) or the rbr (which interacts with it to change the state of each resource, during the execution of each task) and the other resources. In this way, the resource manager will know the states of non-smart resources and it will communicate with fridge to know its state.
+		<td><ol start="2"><li>Using a resource manager actor (<k>rm</k>) which manages the state of each resource (smart and non-smart). It works as an intermediary between the <k>maitre</k> (which sends it the <em>consult</em> command to know the state of each resource) or the <k>rbr</k> (which interacts with it to change the state of each resource, during the execution of each <ks>task</ks>) and the other resources. In this way, the <k>rm</k> will know the states of non-smart resources and it will communicate with <k>fridge</k> to know its state.
 		<dl>
 			<dt>Pro:</dt>
 			<dd><ul>
 				<li>easy to implement;</li>
-				<li>easy for maitre to obtain the state of each resource, only sending consult command to RM;</li>
-				<li>RM is the only component that manages the resources and this brings to a cleaner architecture.</li>
+				<li>easy for <k>maitre</k> to obtain the state of each resource, only sending <em>consult</em> command to the <k>rm</rm>;</li>
+				<li><k>rm</k> is the only component that manages the resources and this brings to a cleaner architecture.</li>
 			</ul></dd>
 			<dt>Cons:</dt>
 			<dd><ul>
-				<li>The RM has to manage the state for every non-smart resource and this can result a concectually intricate operation when it must update a resource state at request of RBR;</li>
-				<li>When RBR wants to change the state of the fridge there is one more step: the RBR must communicate with RM, which communicates to fridge the desired change.</li>
+				<li>The <k>rm</k> has to manage the state for every non-smart resource and this can result a concectually intricate operation when it must update a resource state at request of <k>rbr</k>;</li>
+				<li>When <k>rbr</k> wants to change the state of the <k>fridge</k> there is one more step: the <k>rbr</k> must communicate with <k>rm</k>, which communicates to <k>fridge</k> the desired change.</li>
 			</ul></dd>
 		</dl>
 		</li></ul></td>
 		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type2_model.png" alt="ResourcesStatusManagement_type2_model"></td>
 	</tr>
 	<tr>
-		<td><ol start="3"><li>Managing the state of each non-smart resource using dedicated actors. In this way, the maitre, to know the state of each resource (smart and non-smart) sends to each actor the consult command. At the same way, when the rbr executes the tasks, it interacts with each actor to change the state of each resource.
+		<td><ol start="3"><li>Managing the state of each non-smart resource using dedicated actors. In this way, the <k>maitre</k>, to know the state of each resource (smart and non-smart) sends to each actor the <em>consult</em> command. At the same way, when the <k>rbr</k> executes the <ks>tasks</ks>, it interacts with each actor to change the state of each resource.
 		<dl>
 			<dt>PRO</dt>
 			<dd><ul>
 				<li>easy to implement;</li>
-				<li>RBR can communicate directly with the resource actor of which it wants to change the state.</li>
+				<li><k>rbr</k> can communicate directly with the resource actor of which it wants to change the state.</li>
 			</ul></dd>
 			<dt>CONS</dt>
 			<dd><ul>
 				<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
-				<li>the maitre has to send a consult command for each resource actor and to wait for each reply.</li>
+				<li>the <k>maitre</k> has to send a <em>consult</em> command for each resource actor and to wait for each reply.</li>
 			</ul></dd>
 		</dl>
 		</li></ul></td>
 		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type3_model.png" alt="ResourcesStatusManagement_type3_model"></td>
 	</tr>
 	<tr>
-		<td><ol start="4"><li>Managing the state of each non-smart resource using dedicated actors and using a resource manager which manages the state of each resource (smart and non-smart). It works as an intermediary between the maitre (which sends it the consult command to know the state of each resource) or the rbr (which interacts with it to change the state of each resource, during the execution of each task) and the other resources actors. In this way, the resource manager will communicate with fridge and the other non-smart resource actors to know their states.
+		<td><ol start="4"><li>Managing the state of each non-smart resource using dedicated actors and using a resource manager actor (<k>rm</k>) which manages the state of each resource (smart and non-smart). It works as an intermediary between the <k>maitre</k> (which sends it the <em>consult</em> command to know the state of each resource) or the <k>rbr</k> (which interacts with it to change the state of each resource, during the execution of each <ks>task</ks>) and the other resources actors. In this way, the <k>rm</k> will communicate with <k>fridge</k> and the other non-smart resource actors to know their states.
 		<dl>
 			<dt>PRO</dt>
 			<dd><ul>
 				<li>easy to implement;</li>
-				<li>the maitre delegates the RM for the manage of all the resources;</li>
-				<li>the rbr delegates the RM for the state change of each resource.</li>
+				<li>the <k>maitre</k> delegates the <k>rm</k> for the manage of all the resources;</li>
+				<li>the <k>rbr</k> delegates the <k>rm</k> for the state change of each resource.</li>
 			</ul></dd>
 			<dt>CONS</dt>
 			<dd><ul>
 				<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
-				<li>the RM has to send a consult command for each resource actor and to wait for each reply; then it must communicate the result to maitre;</li>
-				<li>the RM must communicate with each resource actor when RBR requires for a state change;</li>
-				<li>the RM works only as an intermediary from maitre or RBR and resource actors. It does the work of maitre and RBR adding a step; so it results not useful.</li>
+				<li>the <k>rm</k> has to send a <em>consult</em> command for each resource actor and to wait for each reply; then it must communicate the result to <k>maitre</k>;</li>
+				<li>the <k>rm</k> must communicate with each resource actor when <k>rbr</k> requires for a state change;</li>
+				<li>the <k>rm</k> works only as an intermediary from <k>maitre</k> or <k>rbr</k> and resource actors. It does the work of <k>maitre</k> and <k>rbr</k> adding a step; so it results not useful.</li>
 			</ul></dd>
 		</dl>
 		</li></ul></td>
 		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type4_model.png" alt="ResourcesStatusManagement_type4_model"></td>
 	</tr>
 	<tr>
-	<td><ol start="5"><li>Managing the state of each non-smart resource using dedicated actors and using a resource manager which manages the state of each resource (smart and non-smart). At system start, there is a registration protocol where each resource try to subscribe it-self to RM; so to make the system more dynamic and ready at future resource add. The RM works as an intermediary between the maitre (which sends it the consult command to know the state of each resource) or the rbr (which interacts with it to change the state of each resource, during the execution of each task) and the other resources actors. In this way, the resource manager will communicate with fridge and the other non-smart resource actors to know their states.
+	<td><ol start="5"><li>Managing the state of each non-smart resource using dedicated actors and using a resource manager actor (<k>rm</k>) which manages the state of each resource (smart and non-smart). At system start, there is a registration protocol where each resource try to subscribe it-self to <k>rm</k>; so to make the system more dynamic and ready at future resource add. The <k>rm</k> works as an intermediary between the <k>maitre</k> (which sends it the <em>consult</em> command to know the state of each resource) or the <k>rbr</k> (which interacts with it to change the state of each resource, during the execution of each <ks>task</ks>) and the other resources actors. In this way, the <k>rm</k> will communicate with <k>fridge</k> and the other non-smart resource actors to know their states.
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
 				<li>easy to implement;</li>
-				<li>the maitre delegates the RM for the manage of all the resources;</li>
-				<li>the rbr delegates the RM for the state change of each resource;</li>
+				<li>the <k>maitre</k> delegates the <k>rm</k> for the manage of all the resources;</li>
+				<li>the <k>rbr</k> delegates the <k>rm</k> for the state change of each resource;</li>
 				<li>the presence of a registration protocol makes the system more dynamic and ready at future resource add.</li>
 		</ul></dd>
 		<dt>CONS</dt>
 			<dd><ul>
 				<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
-				<li>the RM has to send a consult command for each resource actor and to wait for each reply; then it must communicate the result to maitre;</li>
-				<li>the RM must communicate with each resource actor when RBR requires for a state change.</li>
+				<li>the <k>rm</k> has to send a <em>consult</em> command for each resource actor and to wait for each reply; then it must communicate the result to <k>maitre</k>;</li>
+				<li>the <k>rm</k> must communicate with each resource actor when <k>rbr</k> requires for a state change.</li>
 			</ul></dd>
 	</dl>
 	</li></ul></td>
@@ -356,16 +356,88 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	</table>
 	SOLUZIONE SCELTA!
 	</dd><br>
-	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set; (<-abstraction gap? -> solution:) this could be done loading the informations from a file, a DB and/or providing the maitre with a configuration tool.<br>
+	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set. This could be done loading the informations from: / To manage the state persistence and it's representation it's possibile to use different approaches:
+	<table>
+	<tr>
+	<td><ol><li>A text file.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>simple system; easy to create mock initial state; easy to create mock state on the fly</li>
+		</ul></dd>
+		<dt>CONS</dt>
+			<dd><ul>
+				<li>a parser must be implemented</li>
+			</ul></dd>
+	</dl>
+	</li></ul></td>
+	</tr>
+	<tr>
+	<td><ol><li>A DB.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>it's classic approach to the persistence; data structured; possibility to use a well knwown patter; easy to create mock state on the fly</li>
+		</ul></dd>
+		<dt>CONS</dt>
+			<dd><ul>
+				<li>need to install a database server and to implement manually the database access.</li>
+			</ul></dd>
+	</dl>
+	</li></ul></td>
+	</tr>
+	<tr>
+	<td><ol><li>Providing the maitre with a configuration tool.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li></li>
+		</ul></dd>
+		<dt>CONS</dt>
+			<dd><ul>
+				<li></li>
+			</ul></dd>
+	</dl>
+	</li></ul></td>
+	</tr>
+	<tr>
+	<td><ol><li>Variable in the code.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>easy to implement;</li>
+		</ul></dd>
+		<dt>CONS</dt>
+			<dd><ul>
+				<li>not easy to create mock state on the fly </li>
+			</ul></dd>
+	</dl>
+	</li></ul></td>
+	</tr>
+	<tr>
+	<td><ol><li>Prolog
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>system able to manage a knowledge base already built-in the qak architecture; easy to create mock state on the fly.</li>
+		</ul></dd>
+		<dt>CONS</dt>
+			<dd><ul>
+				<li></li>
+			</ul></dd>
+	</dl>
+	</li></ul></td>
+	</tr>
+	</table>
 	(dobbiamo fare una scelta, indicando i motivi! Possiamo dire che questa scelta può essere definita durante la progettazione)</dd>
 </dl></li>
 <li><dl>
 	<dt>RBR</dt>
-	<dd>To allow RBR to move, the customer provides a library "it.unibo.qak21.basicRobot-1.0.jar". In particular, this framework provides the basicRobot (link?) and its possible implementations: virtual robot (link?), on its own WEnv (Web Environment), or real robot, that can be mbot (link?) or nano robot (link?).</dd>
-	<dd>To execute the tasks, the RBR must be able to reach every element in the room with which he has to interact (fridge, dishwasher, pantry, table) and also it must be able to return on its RH. Therefore, to know where the elements and the RH are situated in the room (<- abstraction gap? -> solution:), it's available a support, IssActorKotlinRobotSupport-2.0.jar, which allows RBR, at its boot, to create a map of the room or to load an existing one.</dd>
-	<dd>To be able to map the room and to satisfy the requirement "avoid the impact with obstacles", it's possible to use data collected from a sensor, which communicates through events with the RBR. This sensor can be rapresented, in the software system, by a sonar (in both virtual and real robot), whose library "it.unibo.qak21.basicrobot-1.0.jar" is provided by the customer.</dd>
+	<dd>To allow <k>rbr</k> to move, the customer provides a library <m>it.unibo.qak21.basicrobot-1.0.jar</m>. In particular, this framework provides the <tt>basicRobot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>) and its possible implementations: <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>), on its own <tt>WEnv</tt> (Web Environment), or real robot, that can be <tt>mbot</tt> (<a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).</dd><br>
+	<dd>To execute the <ks>tasks</ks>, the <k>rbr</k> must be able to reach every element in the <ks>room</ks> with which he has to interact (<ks>fridge</ks>, <ks>dishwasher</ks>, <ks>pantry</ks>, <ks>table</ks>) and also it must be able to return on its <ks>RH</ks>. Therefore, to know where the elements and the <ks>RH</ks> are situated in the <ks>room</ks> (<- abstraction gap? -> solution:), it's available a support, <m>IssActorKotlinRobotSupport-2.0.jar</m>, which allows <k>rbr</k>, at its boot, to create a map of the <ks>room</ks> or to load an existing one.</dd><br>
+	<dd>To be able to map the <ks>room</ks> and to satisfy the requirement <i><em>avoid</em> the impact with obstacles</i>, it's possible to use data collected from a sensor, which communicates through <ko>events</ko> with the <k>rbr</k>. This sensor can be rapresented, in the software system, by a sonar (in both virtual and real robot), whose library <m>it.unibo.qak21.basicrobot-1.0.jar</m> is provided by the customer.</dd>
 
-	<dd>The RBR it's both a proactive, because (perchè è proattivo?), and a reactive element, because it reacts to the commands received from maitre and to events received from sonar to avoid the impact with obstacles. (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
+	<dd>The <k>rbr</k> it's both a proactive, because (perchè è proattivo?), and a reactive element, because it reacts to the commands received from <k>maitre</k> and to <ko>events</ko> received from sonar to <em>avoid</em> the impact with obstacles. (riceve ed esegue i comandi, reagisce agli eventi (prodotti dall'attore sonar) per soddisfare il requisito 'avoid the impact with the mobile obstacles')</dd>
 
 <br><ul>
 	<li>i comandi stop e reactivate possono essere eseguiti solo se il robot sta già eseguendo un task e deve essere eseguito dal maître prima il comando stop ed in seguito reactivate. Come fa il robot a gestire questi comandi mentre sta eseguendo un task?</li>
@@ -375,13 +447,13 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 <li><dl>
 	<dt>Maitre</dt>
 	<dd></dd>
-	<dd>The software running on the maitre's smartphone must provide an user interface to allow the user (maitre) to interact with the system. This software may be a native (android or IOS) or a web application running on a mobile browser.
+	<dd>The software running on the <ks>maitre's smartphone</ks> must provide an user interface to allow the user (<k>Maître de Salle</k>) to interact with the system. This software may be a native (android or IOS) or a web application running on a mobile browser.
 	
 	<br>(Dopo un'interazione col cliente/Dopo una attenta valutazione dei mezzi disponibili per progettare questo software, è risultato più opportuno l'utilizzo di una web application, in quanto risulta uno strumento più versatile)</dd>
 </dl></li>
 <li><dl>
 	<dt>Fridge</dt>
-	<dd>The requirements specify that the fridge must comunicate through CoAP protocol. This can be easily obtained, with the QAK framework, sending a normal dispatch to another actor running on another context. The software running on the fridge context should comunicate via dispatch (CoAP) with the actors running on other contexts.</dd>
+	<dd>The requirements specify that the <k>fridge</k> must comunicate through <tt>CoAP</tt> protocol. This can be easily obtained, with the <tt>Qak framework</tt>, sending a normal <ko>dispatch</ko> to another actor running on another context. The software running on the fridge context (<k>ctxFridge</k>) should comunicate via <ko>dispatch</ko> (<tt>CoAP</tt>) with the actors running on other contexts.</dd>
 </dl></li>
 </ol>
 
@@ -391,6 +463,8 @@ Define (a model of) the logical architecture of the system
 <ol start="2">
 <li>Model of the logical architecture of the system:</li>
 </ol>
+
+<img src="./utils/img/ModelFromProblemAnalysis.png" alt="Logical Architecture System Model from Problem Analysis">
 
 <h3>(3) Test Plan</h3>
 Refine the set of functional TestPlan

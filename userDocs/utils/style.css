@@ -69,13 +69,14 @@ h5 {
 	color: #ff1010;
 }
 
+/*for utilities*/
 tt {
 	font-family: "Arial";
 	font-size: 90%;
 	color: #006600;
 }
 
-/*for commands*/
+/*for commands (and command verbs)*/
 em {
 	font-family: "Arial";
 	font-size: 80%;
@@ -110,7 +111,7 @@ kc {
 	font-size: 90%;
 }
 
-/*for "code"*/
+/*for code*/
 pre {
 	font-family: "Consolas";
 	font-size: 85%;
@@ -119,14 +120,24 @@ pre {
 	padding: 5px;
 }
 
+/*for libraries*/
 m {
 	font-family: "Helvetica";
 	line-height: 100%;
-	font-size: 75%;
+	font-size: 80%;
+	color: #4b0082;
 }
 
+/*for actors and contexts*/
 k {
 	color: #990000;
+	font-weight: bold;
+	font-size: 90%;
+}
+
+/*for messages*/
+ko {
+	color: #d2691e;
 	font-weight: bold;
 	font-size: 90%;
 }
