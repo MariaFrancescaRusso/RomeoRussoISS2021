@@ -298,7 +298,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type2_model.png" alt="ResourcesStatusManagement_type2_model"></td>
 	</tr>
 	<tr>
-		<td><a name="sol3"></a><ol start="3"><li>Managing the state of each non-smart resource using dedicated actors. In this way, the <k>maitre</k>, to know the state of each resource (smart and non-smart) sends to each actor the <em>consult</em> command. At the same way, when the <k>rbr</k> executes the <ks>tasks</ks>, it interacts with each actor to change the state of each resource.
+		<td><a name="sol3_msr"></a><ol start="3"><li>Managing the state of each non-smart resource using dedicated actors. In this way, the <k>maitre</k>, to know the state of each resource (smart and non-smart) sends to each actor the <em>consult</em> command. At the same way, when the <k>rbr</k> executes the <ks>tasks</ks>, it interacts with each actor to change the state of each resource.
 		<dl>
 			<dt>PRO</dt>
 			<dd><ul>
@@ -345,17 +345,17 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 				<li>the presence of a registration protocol makes the system more dynamic and ready at future resource add.</li>
 		</ul></dd>
 		<dt>CONS</dt>
-			<dd><ul>
-				<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
-				<li>the <k>rm</k> has to send a <em>consult</em> command for each resource actor and to wait for each reply; then it must communicate the result to <k>maitre</k>;</li>
-				<li>the <k>rm</k> must communicate with each resource actor when <k>rbr</k> requires for a state change.</li>
-			</ul></dd>
+		<dd><ul>
+			<li>because of the simplicity of non-smart resources, their representation through actors could result a computational resources waste;</li>
+			<li>the <k>rm</k> has to send a <em>consult</em> command for each resource actor and to wait for each reply; then it must communicate the result to <k>maitre</k>;</li>
+			<li>the <k>rm</k> must communicate with each resource actor when <k>rbr</k> requires for a state change.</li>
+		</ul></dd>
 	</dl>
 	</li></ol></td>
 	<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type5_model.png" alt="ResourcesStatusManagement_type5_model"></td>
 	</tr>
 	</table><br>
-	Therefore, exposed some possible solutions, the most appropriate seems to be the <a href="./Analysis.html#sol3">number 3</a>, because it makes the most of the message communication system and allows to extend the functioning of the actors if the resources they represent, in future, assume a more advanced behavior.</dd>
+	Therefore, exposed some possible solutions, the most appropriate seems to be the <a href="./Analysis.html#sol3_msr">number 3</a>, because it makes the most of the message communication system and allows to extend the functioning of the actors if the resources they represent, in future, assume a more advanced behavior.</dd>
 	<br>
 	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set. So to manage the state persistence and its representation it's possibile to use different approaches.
 	<br><br>
@@ -368,15 +368,15 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 				<li>easy to implement.</li>
 		</ul></dd>
 		<dt>CONS</dt>
-			<dd><ul>
-				<li>the rosources state is fixed in the code and this isn't a good practice, because it makes the code dirty;</li>
-				<li>difficult to create mock states for testing.</li>
-			</ul></dd>
+		<dd><ul>
+			<li>the resources state is fixed in the code and this isn't a good practice, because it makes the code dirty;</li>
+			<li>difficult to create mock states for testing.</li>
+		</ul></dd>
 	</dl>
 	</li></ol></td>
 	</tr>
 	<tr>
-	<td><ol start="2"><li>Using a text file for each resource (smart and non-smart), where to read and write data of the state of each resource.
+	<td><ol start="2"><li>Using a text file for each resource (smart and non-smart), where to read (<k>(?)</k>and write) data of the state of each resource.
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
@@ -384,14 +384,14 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 				<li>easy to create mock states for testing.</li>
 		</ul></dd>
 		<dt>CONS</dt>
-			<dd><ul>
-				<li>it's necessary to introduce the read (load the resource state) and write (save the resource state) from text file functionality to implement this solution.</li>
-			</ul></dd>
+		<dd><ul>
+			<li>it's necessary to introduce the read (load the resource state) (<k>(?)</k>and write (save the resource state)) from text file functionality to implement this solution.</li>
+		</ul></dd>
 	</dl>
 	</li></ol></td>
 	</tr>
 	<tr>
-	<td><ol start="3"><li>Availing the Prolog functionality make available by the Qak technology. <k>SPIEGARE COSA FA E COME SI USA!!!</k> In this way, the resource initial state is represented by a file like a text file.
+	<td><a name="sol3_isr"></a><ol start="3"><li>Availing the <tt>Prolog</tt> functionality make available by the <tt>Qak-infrastracture</tt>. In this way, the resource initial state is represented by <tt>facts</tt> in a <tt>prolog</tt> file (one for each resource actor) and can be obtained through specific methods in this file.
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
@@ -400,72 +400,54 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 				<li><k>(?)</k>system able to manage a knowledge base already built-in the qak architecture.</li>
 		</ul></dd>
 		<dt>CONS</dt>
-			<dd><ul>
-				<li><k>(?)</k>it's necessary to introduce the ... functionality to implement this solution.</li>
-			</ul></dd>
+		<dd><ul>
+			<li><k>(?)</k>it's necessary to introduce/integrate the ... functionality to implement this solution.</li>
+		</ul></dd>
 	</dl>
 	</li></ol></td>
 	</tr>
 	<tr>
-	<td><ol start="4"><li>Managing the state persistence through a database (DB). <k>SPIEGARE MEGLIO?</k>
+	<td><ol start="4"><li>Managing the state persistence through a <tt>database (DB)</tt>. <k>SPIEGARE MEGLIO?</k>
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
 				<li>separation between code and data; so to have a more clean code;</li>
 				<li>easy to create mock states for testing;</li>
-				<li><k>(?)</k>it is a classic approach to the persistence; data structured; possibility to use a well knwown patter</li>
+				<li><k>(?)</k>it is a classic approach to the persistence; data structured; possibility to use a well known patter</li>
 		</ul></dd>
 		<dt>CONS</dt>
-			<dd><ul>
-				<li>it's necessary to install a database server and to manually implement the database access.</li>
-			</ul></dd>
-	</dl>
-	</li></ol></td>
-	</tr>
-	</table>
-	(dobbiamo fare una scelta, indicando i motivi! Possiamo dire che questa scelta può essere definita durante la progettazione)</dd>
-	<br>
-	<dd>INIZIALIZZAZIONE DEGLI STATI DELLE RISORSE
-	Said where to memorize the state of each resource, now it's necessary to establish how to load these informations at start of the system.
-	<br><br>
-	<table>
-	<tr>
-	<td><ol><li>Providing the maitre with a configuration tool.
-	<dl>
-		<dt>PRO</dt>
 		<dd><ul>
-				<li></li>
+			<li>it's necessary to install a database server and to manually implement the database access.</li>
 		</ul></dd>
-		<dt>CONS</dt>
-			<dd><ul>
-				<li></li>
-			</ul></dd>
 	</dl>
 	</li></ol></td>
 	</tr>
-	<tr>
-	<td><ol start="5"><li>Providing the maitre with a configuration tool.
-	<dl>
-		<dt>PRO</dt>
-		<dd><ul>
-				<li></li>
-		</ul></dd>
-		<dt>CONS</dt>
-			<dd><ul>
-				<li></li>
-			</ul></dd>
-	</dl>
-	</li></ol></td>
-	</tr>
-	</table>
-	</dd>
+	</table><br>
+	<k>(?)</k>Therefore, exposed some possible solutions, the most appropriate seems to be the <a href="./Analysis.html#sol3_isr">number 3</a>, because it integrates best with the <tt>Qak-infrastructure</tt> and it is easier to manage/and this makes state management easier. <k>(?)</k> and allows to extend the functioning of the actors if the resources they represent, in future, assume a more advanced behavior.</dd>
 	<br>
-	<dd>An other problem could be represented from prepare command/task. In fact, before sending this command, it's necessary to specify how much elements the rbr has to take from the resources and bring to the table, being careful that the number of these elements is less or equal then the available number of elements. To do this, there are many possibilities, like:
+	<dd>Said where to memorize the state of each resource, now it's necessary to establish how to load these informations at start of the system. It can be done:
 	<ol>
-	<li>using fixed values ...;</li>
-	<li>making that the maitre can decide how many elements to insert for the command prepare and so it's useful run a consult command at the start of the system.</li>
+		<li><a name="sol1_pef"></a>creating, in the <tt>prolog</tt> file, (pre-existing) <tt>facts</tt> with a prefixed value for each resource state, which can be load at start of (the system) each resource actor;</li>
+		<li><a name="sol2_arf"></a>providing the <k>maitre</k> with a configuration tool/adding in the maitre software application a configuration tool, so to make possible for the <ks>Maître de Salle</ks>/user (if it want) to insert or change the initial state values for each resource state in the room at the start of the system. This can be done (thanks to the possibility to add or remove a <tt>fact</tt>) removing old <tt>facts</tt> and adding new facts.</li>
 	</ol>
-	Said this, the second solution seems to be the best solution.<dd>
+	For an initial implementation of this system it will be adopted the <a href="./Analysis.html#sol1_pef">first solution</a>, but in future it could be ever "added" the <a href="./Analysis.html#sol2_arf">second solution</a>.</dd>
+	<br>
+	<dd>An other problem could be represented by the update of the state value of each resource. This could be done:
+	<ol>
+		<li>updating and so changing the old state values in the <tt>prolog</tt> file (removing old <tt>facts</tt> and adding the new ones);</li>
+		<li><a name="sol2_usva"></a>loading at start of the system/each actor the/its state value from the/its <tt>prolog</tt> file and saving it in a variable, which will represent the resourse state value and which will update when necessary/required.</li>
+	</ol>
+	The best solution, to be implemented for the realization of this system, seems to be the <a href="./Analysis.html#sol2_usva">second</a>, because <k>(?)</k>in this way the resource state initial value never changes and ..... .</dd>
+	<br>
+	<k>IN MAITRE???</k>
+	<dd>An other problem could be represented from <em>prepare</em> command/<ks>Prepare the room</ks> <ks>task</ks>. In fact, before sending this command, it's necessary to specify how much elements the <k>rbr</k> has to take from the resources ((<k>ACTORS OR RESOURCES???</k>) pantry and fridge) and bring to the table, being careful that the number of these elements is less or equal then the available number of elements. To do this, there are many possibilities, like:
+	<ol>
+	<li><a name="sol1_fpv"></a>using prefixed values for the number of elements in <em>prepare</em> commmand (in the code);</li>
+	<li><a name="sol2_cbp"></a>making that the maitre (<k>ACTOR? or user?</k>) can decide how many elements to insert for the <em>prepare</em> command and, to do this, it's/it could be useful run a <em>consult</em> command at the start of the system, so as to have the updated resources state values which limit the choose of the elements (that must be less or equal then the available number of elements) by maitre.</li>
+	</ol>
+	(Said this,) the <a href="./Analysis.html#sol2_cbp">second solution</a> seems to be the best, because it is predisposed to a possibile future change of the resources initial state, while using the <a href="./Analysis.html#sol1_fpv">first solution</a>, in case of future change of the resources initial state, the code will have to be changed, that is never a good practice.<dd>
+	<br>
+	<dd>A similar problem could be represented from <em>addFood</em> (<k>metto food-code??</k>) command/<ks>Add food</ks> <ks>task</ks>. Here, before sending this command, the maitre must specify which element (food-code) the <k>rbr</k> must require to the <k>fridge</k> and, if possible, take and bring to the table. This can be done making possible for the maitre the choose of this element from/using the set of elements obtained through the <em>consult</em> command runned before the <em>prepare</em> command and used to obtain the resources state values.<dd>
 </dl>
 <dl>
 	<dt>RBR</dt>
@@ -639,6 +621,8 @@ Definition list:
 </dl>
 Link:
 <a href="" target="_blank"></a>
+Link in pagina:
+<a name="link"></a> + <a href="./Analysis.html#link">text</a>
 IFrame:
 <iframe src="./src" title="title">"Link"/Cosa c'è nel frame</iframe>
 <br>Image:
