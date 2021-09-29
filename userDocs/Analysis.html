@@ -448,6 +448,15 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	(Said this,) the <a href="./Analysis.html#sol2_cbp">second solution</a> seems to be the best, because it is predisposed to a possibile future change of the resources initial state, while using the <a href="./Analysis.html#sol1_fpv">first solution</a>, in case of future change of the resources initial state, the code will have to be changed, that is never a good practice.<dd>
 	<br>
 	<dd>A similar problem could be represented from <em>addFood</em> (<k>metto food-code??</k>) command/<ks>Add food</ks> <ks>task</ks>. Here, before sending this command, the maitre must specify which element (food-code) the <k>rbr</k> must require to the <k>fridge</k> and, if possible, take and bring to the table. This can be done making possible for the maitre the choose of this element from/using the set of elements obtained through the <em>consult</em> command runned before the <em>prepare</em> command and used to obtain the resources state values.<dd>
+	<br>
+	<dd>CLEAR?? il maitre potrebbe anche non dover specificare nulla! è l'rbr che dovra interagire col tavolo e vedere quanti piatti ha per portarli nella lavastoviglie e quanto cibo è rimasto sul tavolo (quanto cibo non consumato) da dover rimettere in frigo. Oppure il maitre vede cosa è stato consumato.. e dice lui tramite comando clear cosa prendere (come fa per l'add food)</dd>
+	<br>
+	<dd>COME GESTIRE ASPETTO DEI CIBI CONSUMABILI SUL TAVOLO? lo stato del cibo sul tavolo potrebbe avere un tempo random di consumazione, al termine del quale il cibo risulta consumato e quindi non più disponibile sul tavolo. Questo però nonostante sia una soluzione semplice non è predisposta ad un "miglioramento"/aggiornamento futuro. Un altra soluzione potrebbe essere quella di simulare le persone nella stanza, le quali consumano il cibo sempre in modo random. Un'altra soluzione ancora potrebbe essere quella di far indicare al maitre quando/quali cibi sono stati consumati (in quanto si pensa che il maitre/utente possa vedere la situazione del tavolo)</dd>
+	<br>
+	<dd>STOP/REACTIVATE??</dd>
+	<br>
+	<k>IN RBR???</k>
+	<dd>COME ESEGUIRE I TASK?? O BASTA PARLARE DEL SONAR E DEL TOOL PER MAPPING??? PARLARE DEL FATTO CHE DURANTE L'ESECUZIONE DEI TASK L'RBR DEVE INTERAGIRE CON LE RISORSE PER AGGIORNARNE LO STATO.</dd>
 </dl>
 <dl>
 	<dt>RBR</dt>
