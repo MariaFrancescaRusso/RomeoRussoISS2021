@@ -16,12 +16,14 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-			var FOOD_PRESENCE = false
-				var STATUS = "Vuoto"
+			var Foods = emptyArray<Int>()	 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("FRIDGE | STARTS and it's embedded with the proper set of food")
+						 Foods = arrayOf(1,2,3,4,5) 
+						solve("consult('FridgeInit.pl')","") //set resVar	
+						delay(300) 
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
@@ -29,25 +31,43 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("FRIDGE | is waiting for a command...")
 					}
-					 transition(edgeName="t14",targetState="answerFood",cond=whenDispatch("askFood"))
-					transition(edgeName="t15",targetState="exposeState",cond=whenDispatch("consult"))
+					 transition(edgeName="t113",targetState="answerFood",cond=whenDispatch("askFood"))
+					transition(edgeName="t114",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t115",targetState="getFoodPrepare",cond=whenDispatch("changeState"))
+				}	 
+				state("getFoodPrepare") { //this:State
+					action { //it:State
+						 var Fs = emptyArray<Int>() 
+						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("add(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Fs = payloadArg(0).map{ it.toInt() }.toTypedArray()  
+								println("FRIDGE | add $Fs...")
+						}
+						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("remove(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 	Fs = payloadArg(0).map{ it.toInt() }.toTypedArray()  
+								println("FRIDGE | remove $Fs...")
+						}
+					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("answerFood") { //this:State
 					action { //it:State
-						 var FOOD_CODE = -1  
-						if( checkMsgContent( Term.createTerm("askFood(FOODE_CODE)"), Term.createTerm("askFood(ARG)"), 
+						 var Food_Code = -1 
+								   var FoodPresence = false
+						if( checkMsgContent( Term.createTerm("askFood(FOODE_CODE)"), Term.createTerm("askFood(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 FOOD_CODE = payloadArg(0).toInt()  
+								 Food_Code = payloadArg(0).toInt()  
 						}
-						println("FRIDGE | searching food_code $FOOD_CODE...")
-						forward("answer", "answer($FOOD_PRESENCE)" ,"rbr" ) 
+						println("FRIDGE | searching Food_Code $Food_Code...")
+						forward("answer", "answer($FoodPresence)" ,"rbr" ) 
 						println("FRIDGE | answered to RBR about food")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						forward("expose", "expose($STATUS)" ,"maitre" ) 
+						forward("expose", "expose($Foods)" ,"maitre" ) 
 						println("FRIDGE | exposed content to maitre")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )

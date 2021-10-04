@@ -1,9 +1,10 @@
 %====================================================================================
 % standingbuffetservice description   
 %====================================================================================
-context(ctxrbr, "localhost",  "TCP", "8050").
-context(ctxfridge, "127.0.0.1",  "TCP", "8060").
-context(ctxmaitre, "192.168.1.211",  "TCP", "8070").
- qactor( rbr, ctxrbr, "it.unibo.rbr.Rbr").
-  qactor( fridge, ctxfridge, "it.unibo.fridge.Fridge").
-  qactor( maitre, ctxmaitre, "it.unibo.maitre.Maitre").
+context(ctxsystem, "localhost",  "TCP", "8040").
+ qactor( rbr, ctxsystem, "it.unibo.rbr.Rbr").
+  qactor( maitre, ctxsystem, "it.unibo.maitre.Maitre").
+  qactor( pantry, ctxsystem, "it.unibo.pantry.Pantry").
+  qactor( table, ctxsystem, "it.unibo.table.Table").
+  qactor( dishwasher, ctxsystem, "it.unibo.dishwasher.Dishwasher").
+  qactor( fridge, ctxsystem, "it.unibo.fridge.Fridge").

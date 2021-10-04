@@ -256,7 +256,7 @@ Furthermore, the <ks>maitre</ks> is described here as a <tt>mock client</tt>, be
 Starting from the requirements analysis, it's now necessary to found the main problems and abstraction gap involved by the requirements and to solve them, establishing the most appropriate technologies necessary for building the system.
 <dl>
 	<dt>General System</dt>
-	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, therefore the system is distribuited. To model it, it's available the <tt>Qak-infrastracture</tt>, provided by the <m>it.unibo.qakactor-2.4.jar</m> library. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using <tt>QActor</tt> meta-model.</dd>
+	<dd>In the requirements analysis, there were been identified three main entities that run on different nodes, therefore the system is distribuited. To model it, it's available the <tt>Qak-infrastructure</tt>, provided by the <m>it.unibo.qakactor-2.4.jar</m> library. This framework provides a built-in message-driven tecnology to support the communications between different actors running on different contexts. In this way, it's possible to design the main components of the system using <tt>QActor</tt> meta-model.</dd>
 	<br>
 	<dd>To support the distribuited communications, it's possible to use the <tt>TCP</tt>, <tt>MQTT</tt> and/or <tt>CoAP</tt> protocols; the last one, by requirements, must be used by the <k>fridge</k> to communicate with the other two main components. In particular, <tt>MQTT</tt> is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while <tt>CoAP</tt> is a protocol for point-to-point communications among different nodes on the same network. <tt>CoAP</tt> supports also the <i>observe mechanism</i> where the node state is seen as a resource (<tt>CoAP</tt>) observed by other <tt>CoAP</tt> clients.</dd>
 	<br>
@@ -391,13 +391,13 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	</li></ol></td>
 	</tr>
 	<tr>
-	<td><a name="sol3_isr"></a><ol start="3"><li>Availing the <tt>Prolog</tt> functionality made available by the <tt>Qak-infrastracture</tt>. In this way, the resource initial state is represented by <tt>facts</tt> in a <tt>prolog</tt> file <ko>(?) [(one for each resource actor) and can be obtained through specific methods in this file]</ko>.
+	<td><a name="sol3_isr"></a><ol start="3"><li>Availing the <tt>Prolog</tt> functionality made available by the <tt>Qak-infrastructure</tt>. In this way, the resource initial state is represented by <tt>facts</tt> in a <tt>prolog</tt> file <ko>(?) [(one for each resource actor) and can be obtained through specific methods in this file]</ko>.
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
 				<li>separation between code and data; so to have a more clean code;</li>
 				<li>easy to create mock states for testing;</li>
-				<li>the <tt>Prolog</tt> support is already built-in the <tt>Qak-infrastracture</tt>.</li>
+				<li>the <tt>Prolog</tt> support is already built-in the <tt>Qak-infrastructure</tt>.</li>
 		</ul></dd>
 		<dt hidden="hidden">CONS</dt>
 		<dd hidden="hidden"><ul>
@@ -416,7 +416,12 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	</ol>
 	For an initial implementation of this system it will be adopted the <a href="./Analysis.html#sol1_pef">first solution</a>, but in future it could be ever integrated the <a href="./Analysis.html#sol2_arf">second solution</a>.</dd>
 	<br>
-	<dd>To manage the update of the state value of each resource, the solution adopted is to load at the start of each resource actor its initial state value from the <tt>prolog</tt> file and to save it in a variable, which will represent the resourse state value and which will be updated when necessary.</dd>
+	<dd>To manage the update of the state value of each resource, there are two possible solutions:
+	<ol>
+		<li>to load at the start of each resource actor its initial state value from the <tt>prolog</tt> file and to save it in a variable, which will represent the resource state value and which will be updated when necessary;</li>
+		<li><a name="sol2_uff"></a>to load at the start of each resource actor its initial state value from the <tt>prolog</tt> file and to update it when necessary (removing/adding <tt>facts</tt> with appropriate methods).</li>
+	</ol>
+	The solution adopted is the <a href="./Analysis.html#sol2_uff">second</a>, so as to make the most of the integration between <tt>Prolog</tt> and the <tt>Qak-infrastructure</tt>.</dd>
 	<br>
 	<dd>COME GESTIRE ASPETTO DEI CIBI CONSUMABILI SUL TAVOLO? lo stato del cibo sul tavolo potrebbe avere un tempo random di consumazione, al termine del quale il cibo risulta consumato e quindi non più disponibile sul tavolo. Questo però nonostante sia una soluzione semplice non è predisposta ad un "miglioramento"/aggiornamento futuro. Un altra soluzione potrebbe essere quella di simulare le persone nella stanza, le quali consumano il cibo sempre in modo random. Un'altra soluzione ancora potrebbe essere quella di far indicare al maitre quando/quali cibi sono stati consumati (in quanto si pensa che il maitre/utente possa vedere la situazione del tavolo)</dd>
 </dl>

@@ -16,21 +16,55 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 	var FOOD_PRESENCE = false  
+		 	var FoodPresence = false 
+				var PrepareDish = 0
+				var PrepareFood = emptyArray<Int>()
+				var ClearDish = 0
+				var ClearFood = emptyArray<Int>()
+				var IsMap = false
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("RBR | STARTS and it's placed in RH position")
+						IsMap = true  
+					}
+					 transition( edgeName="goto",targetState="working", cond=doswitchGuarded({ IsMap  
+					}) )
+					transition( edgeName="goto",targetState="mapping", cond=doswitchGuarded({! ( IsMap  
+					) }) )
+				}	 
+				state("mapping") { //this:State
+					action { //it:State
+						println("RBR | initializing planner")
+						println("RBR | start mapping room ")
+						delay(300) 
+						println("RBR | end mapping step")
+						 IsMap = true 
+					}
+					 transition( edgeName="goto",targetState="working", cond=doswitch() )
+				}	 
+				state("working") { //this:State
+					action { //it:State
+						println("RBR | STARTS and it's ready to work")
 					}
 					 transition(edgeName="t00",targetState="exPrepare",cond=whenDispatch("prepare"))
 				}	 
 				state("exPrepare") { //this:State
 					action { //it:State
-						println("RBR | executing task 'Prepare the room':")
+						if( checkMsgContent( Term.createTerm("prepare(X,Y)"), Term.createTerm("prepare(X,Y)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 	PrepareDish = payloadArg(0).toInt()
+												PrepareFood = payloadArg(1).map{ it.toInt() }.toTypedArray()
+						}
+						println("RBR | executing task 'Prepare the room'; DISHES= $PrepareDish; Foods= $PrepareFood:")
 						println("RBR | going to pantry...")
+						forward("changeState", "remove($PrepareDish)" ,"pantry" ) 
 						println("RBR | ...reached pantry. Going to table...")
+						forward("changeState", "addDishes($PrepareDish)" ,"table" ) 
 						println("RBR | ...reached table. Going to fridge...")
+						forward("changeState", "remove($PrepareFood)" ,"fridge" ) 
 						println("RBR | ...reached fridge. Going to table...")
+						forward("changeState", "addFood($PrepareFood)" ,"table" ) 
 						println("RBR | ...reached table. Coming back to RH...")
 						println("RBR | ...reached RH. Finished executing task")
 					}
@@ -45,28 +79,27 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("checkFood") { //this:State
 					action { //it:State
-						 var FOOD_CODE = -1  
+						 var Food_Code = -1  
 						if( checkMsgContent( Term.createTerm("addFood(FOODE_CODE)"), Term.createTerm("addFood(ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 FOOD_CODE = payloadArg(0).toInt()  
+								 Food_Code = payloadArg(0).toInt()  
 						}
-						forward("askFood", "askFood($FOOD_CODE)" ,"fridge" ) 
-						println("RBR | asked fridge if it contains the food with food-code = $FOOD_CODE")
+						forward("askFood", "askFood($Food_Code)" ,"fridge" ) 
+						println("RBR | asked fridge if it contains the food with food-code = $Food_Code")
 					}
 					 transition(edgeName="t23",targetState="handleReply",cond=whenDispatch("answer"))
 				}	 
 				state("handleReply") { //this:State
 					action { //it:State
-						 var FOOD_PRESENCE = false  
-						if( checkMsgContent( Term.createTerm("answer(ARG)"), Term.createTerm("answer(ARG)"), 
+						if( checkMsgContent( Term.createTerm("answer(ARG)"), Term.createTerm("answer(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 FOOD_PRESENCE = payloadArg(0).toBoolean()  
+								 FoodPresence = payloadArg(0).toBoolean()  
 						}
-						println("RBR | received answer from fridge: $FOOD_PRESENCE")
+						println("RBR | received answer from fridge: $FoodPresence")
 					}
-					 transition( edgeName="goto",targetState="fail", cond=doswitchGuarded({ FOOD_PRESENCE == false  
+					 transition( edgeName="goto",targetState="fail", cond=doswitchGuarded({ FoodPresence == false  
 					}) )
-					transition( edgeName="goto",targetState="exAddFood", cond=doswitchGuarded({! ( FOOD_PRESENCE == false  
+					transition( edgeName="goto",targetState="exAddFood", cond=doswitchGuarded({! ( FoodPresence == false  
 					) }) )
 				}	 
 				state("fail") { //this:State
@@ -78,21 +111,27 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("exAddFood") { //this:State
 					action { //it:State
-						println("RBR | executing task 'Add food':")
+						println("RBR | executing task 'Add food'")
 						println("RBR | going to fridge...")
 						println("RBR | ...reached fridge. Going to table...")
-						println("RR | ...reached table. Coming back to RH...")
+						println("RBR | ...reached table. Coming back to RH...")
 						println("RBR | ...reached RH. Finished executing task")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("exClear") { //this:State
 					action { //it:State
+						 	ClearDish = PrepareDish 
+									ClearFood = PrepareFood
 						println("RBR | executing task 'Clear the room':")
 						println("RBR | going to table...")
+						forward("changeState", "removeFood($ClearFood)" ,"table" ) 
 						println("RBR | ...reached table. Going to fridge...")
+						forward("changeState", "add($ClearFood)" ,"fridge" ) 
 						println("RBR | ...reached fridge. Going to table...")
+						forward("changeState", "removeDishes($ClearDish)" ,"table" ) 
 						println("RBR | ...reached table. Going to dishwasher...")
+						forward("changeState", "add($ClearDish)" ,"dishwasher" ) 
 						println("RBR | ...reached dishwasher. Coming back to RH...")
 						println("RBR | ...reached RH. Finished executing task")
 						terminate(0)

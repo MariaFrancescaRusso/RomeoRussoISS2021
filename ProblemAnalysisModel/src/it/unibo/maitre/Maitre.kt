@@ -16,10 +16,17 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var AddFoodtime = 3000L  
+			var AddFoodtime = 3000L 
+				var Nexp = 0
+				var PrepareDish = 0
+				var PrepareFood = emptyArray<Int>()
+				var FoodCode = 0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						 	PrepareDish = 20
+									PrepareFood = arrayOf(1,2,3)
+									FoodCode = 1
 						delay(2000) 
 						println("MAITRE | STARTS")
 					}
@@ -27,20 +34,20 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("sendPrepare") { //this:State
 					action { //it:State
-						forward("prepare", "prepare(0)" ,"rbr" ) 
-						println("MAITRE | send prepare command to RBR")
+						forward("prepare", "prepare($PrepareDish,arrayOf(3,2,1))" ,"rbr" ) 
+						println("MAITRE | send prepare command to RBR: $PrepareDish, $PrepareFood")
 					}
 					 transition( edgeName="goto",targetState="sendAddFood", cond=doswitch() )
 				}	 
 				state("sendAddFood") { //this:State
 					action { //it:State
-						forward("addFood", "addFood(1500)" ,"rbr" ) 
-						println("MAITRE | send addFood(food_code) command to RBR")
+						forward("addFood", "addFood($FoodCode)" ,"rbr" ) 
+						println("MAITRE | send addFood(Food_Code) command to RBR")
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t16",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
-					transition(edgeName="t17",targetState="handleWarning",cond=whenDispatch("warning"))
+					 transition(edgeName="t14",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					transition(edgeName="t15",targetState="handleWarning",cond=whenDispatch("warning"))
 				}	 
 				state("handleWarning") { //this:State
 					action { //it:State
@@ -52,19 +59,36 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						forward("consult", "consult(0)" ,"fridge" ) 
 						println("MAITRE | send consult command to Fridge")
+						forward("consult", "consult(0)" ,"dishwasher" ) 
+						println("MAITRE | send consult command to Dishwasher")
+						forward("consult", "consult(0)" ,"pantry" ) 
+						println("MAITRE | send consult command to Pantry")
+						forward("consult", "consult(0)" ,"table" ) 
+						println("MAITRE | send consult command to Table")
 					}
-					 transition(edgeName="t28",targetState="handleExpose",cond=whenDispatch("expose"))
+					 transition( edgeName="goto",targetState="waitConsult", cond=doswitch() )
+				}	 
+				state("waitConsult") { //this:State
+					action { //it:State
+						println("waiting answer from resource")
+					}
+					 transition(edgeName="t06",targetState="handleExpose",cond=whenDispatch("expose"))
 				}	 
 				state("handleExpose") { //this:State
 					action { //it:State
-						 var ansExpose = " "  
-						if( checkMsgContent( Term.createTerm("expose(ARG)"), Term.createTerm("expose(ARG)"), 
+						  var Sender = currentMsg.msgSender()
+									var AnsExpose = " "
+									Nexp++ 
+						if( checkMsgContent( Term.createTerm("expose(ARG)"), Term.createTerm("expose(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 ansExpose= payloadArg(0)  
+								 AnsExpose= payloadArg(0)  
 						}
-						println("MAITRE | received expose from fridge: $ansExpose")
+						println("MAITRE | status of $Sender: $AnsExpose")
 					}
-					 transition( edgeName="goto",targetState="sendClear", cond=doswitch() )
+					 transition( edgeName="goto",targetState="sendClear", cond=doswitchGuarded({ Nexp == 4  
+					}) )
+					transition( edgeName="goto",targetState="waitConsult", cond=doswitchGuarded({! ( Nexp == 4  
+					) }) )
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State
