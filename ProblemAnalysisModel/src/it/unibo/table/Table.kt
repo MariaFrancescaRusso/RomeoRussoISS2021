@@ -16,8 +16,6 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		  var Dishes = 0
-				var Foods = emptyArray<Int>()
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -30,13 +28,17 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 					action { //it:State
 						println("TABLE| working")
 					}
-					 transition(edgeName="t09",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t010",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t07",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t08",targetState="handleChangeState",cond=whenDispatch("addDishes"))
+					transition(edgeName="t09",targetState="handleChangeState",cond=whenDispatch("removeDishes"))
+					transition(edgeName="t010",targetState="handleChangeState",cond=whenDispatch("addFood"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						println("TABLE| sending state informations")
-						forward("expose", "expose($Dishes,$Foods)" ,"maitre" ) 
+						var State = "b" 
+						println("TABLE | exposed content to maitre")
+						updateResourceRep("State:$State" 
+						)
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
@@ -45,27 +47,27 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 						
 									var Nd= 0
 									var Fs =  emptyArray<Int>()
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("addFood(X)"), 
+						if( checkMsgContent( Term.createTerm("addFood(FOODE_CODE)"), Term.createTerm("addFood(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Fs= payloadArg(0).map{ it.toInt() }.toTypedArray()  
 								println("TABLE| add $Fs...")
 						}
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("removeFood(X)"), 
+						if( checkMsgContent( Term.createTerm("removeFood(X)"), Term.createTerm("removeFood(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 	Fs = payloadArg(0).map{ it.toInt() }.toTypedArray()  
 								println("TABLE| remove $Fs...")
 						}
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("addDishes(X)"), 
+						if( checkMsgContent( Term.createTerm("addDishes(X)"), Term.createTerm("addDishes(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 Nd= payloadArg(0).toInt()  
 								println("TABLE| add $Nd...")
-								 Dishes = Dishes + Nd   
+								 //Dishes = Dishes + Nd   
 						}
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("removeDishes(X)"), 
+						if( checkMsgContent( Term.createTerm("removeDishes(X)"), Term.createTerm("removeDishes(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 	Nd = payloadArg(0).toInt() 
 								println("TABLE| remove $Nd...")
-								 Dishes = Dishes - Nd   
+								 //Dishes = Dishes - Nd   
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

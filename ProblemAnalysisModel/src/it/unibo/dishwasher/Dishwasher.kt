@@ -16,7 +16,6 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var Dishes = 0 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -30,29 +29,30 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("DISHWASHER| working")
 					}
 					 transition(edgeName="t011",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t012",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					transition(edgeName="t012",targetState="handleChangeState",cond=whenDispatch("remove"))
+					transition(edgeName="t013",targetState="handleChangeState",cond=whenDispatch("add"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						println("DISHWASHER | send consult...")
-						forward("expose", "expose($Dishes)" ,"maitre" ) 
+						var State = "d" 
+						println("DISHWASHER | exposed content to maitre")
+						updateResourceRep("State:$State" 
+						)
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("handleChangeState") { //this:State
 					action { //it:State
-						 var Nd = 0	 
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("add(X)"), 
+						 var Nd = ""	 
+						if( checkMsgContent( Term.createTerm("add(X)"), Term.createTerm("add(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Nd= payloadArg(0).toInt()  
+								 Nd= payloadArg(0)  
 								println("DISHWASHER| add $Nd...")
-								 Dishes = Dishes + Nd   
 						}
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("remove(X)"), 
+						if( checkMsgContent( Term.createTerm("remove(X)"), Term.createTerm("remove(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Nd= payloadArg(0).toInt()  
+								 	Nd= payloadArg(0) 
 								println("DISHWASHER| remove $Nd...")
-								 Dishes = Dishes - Nd   
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

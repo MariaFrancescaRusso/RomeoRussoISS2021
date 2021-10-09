@@ -16,12 +16,10 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		 var Dishes = 0  
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("PANTRY| loading initial state ")
-						 Dishes = 50  
 						solve("consult('PantryInit.pl')","") //set resVar	
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
@@ -30,30 +28,33 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("PANTRY| working")
 					}
-					 transition(edgeName="t07",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t08",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t04",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t05",targetState="handleChangeState",cond=whenDispatch("add"))
+					transition(edgeName="t06",targetState="handleChangeState",cond=whenDispatch("remove"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						println("PANTRY| sending state informations")
-						forward("expose", "expose($Dishes)" ,"maitre" ) 
+						var State = "c" 
+						println("PANTRY | exposed content to maitre")
+						updateResourceRep("State:$State" 
+						)
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("handleChangeState") { //this:State
 					action { //it:State
-						 var Nd = 0  
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("add(X)"), 
+						 var Nd = ""  
+						if( checkMsgContent( Term.createTerm("add(X)"), Term.createTerm("add(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Nd= payloadArg(0).toInt()  
+								 	Nd = payloadArg(0)  
 								println("PANTRY | add $Nd...")
-								 Dishes = Dishes + Nd   
+								 //Dishes = Dishes + Nd   
 						}
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("remove(X)"), 
+						if( checkMsgContent( Term.createTerm("remove(X)"), Term.createTerm("remove(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Nd = payloadArg(0).toInt()  
+								 	Nd = payloadArg(0)  
 								println("PANTRY| remove $Nd...")
-								 Dishes = Dishes - Nd   
+								 //Dishes = Dishes - Nd   
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

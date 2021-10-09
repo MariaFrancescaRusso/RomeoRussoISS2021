@@ -16,12 +16,10 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-			var Foods = emptyArray<Int>()	 
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("FRIDGE | STARTS and it's embedded with the proper set of food")
-						 Foods = arrayOf(1,2,3,4,5) 
 						solve("consult('FridgeInit.pl')","") //set resVar	
 						delay(300) 
 					}
@@ -31,44 +29,47 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("FRIDGE | is waiting for a command...")
 					}
-					 transition(edgeName="t113",targetState="answerFood",cond=whenDispatch("askFood"))
-					transition(edgeName="t114",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t115",targetState="getFoodPrepare",cond=whenDispatch("changeState"))
+					 transition(edgeName="t114",targetState="changeFood",cond=whenDispatch("add"))
+					transition(edgeName="t115",targetState="changeFood",cond=whenDispatch("remove"))
+					transition(edgeName="t116",targetState="answerFood",cond=whenDispatch("askFood"))
+					transition(edgeName="t117",targetState="exposeState",cond=whenDispatch("consult"))
 				}	 
-				state("getFoodPrepare") { //this:State
+				state("changeFood") { //this:State
 					action { //it:State
-						 var Fs = emptyArray<Int>() 
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("add(X)"), 
+						 var Food_Code = ""   
+						if( checkMsgContent( Term.createTerm("add(X)"), Term.createTerm("add(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Fs = payloadArg(0).map{ it.toInt() }.toTypedArray()  
-								println("FRIDGE | add $Fs...")
+								 Food_Code = payloadArg(0) 
+								println("FRIDGE | add $Food_Code...")
 						}
-						if( checkMsgContent( Term.createTerm("changeState(X)"), Term.createTerm("remove(X)"), 
+						if( checkMsgContent( Term.createTerm("remove(X)"), Term.createTerm("remove(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Fs = payloadArg(0).map{ it.toInt() }.toTypedArray()  
-								println("FRIDGE | remove $Fs...")
+								 Food_Code = payloadArg(0) 
+								println("FRIDGE | remove $Food_Code...")
 						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("answerFood") { //this:State
 					action { //it:State
-						 var Food_Code = -1 
+						 var Food_Code = "" 
 								   var FoodPresence = false
 						if( checkMsgContent( Term.createTerm("askFood(FOODE_CODE)"), Term.createTerm("askFood(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Food_Code = payloadArg(0).toInt()  
+								 Food_Code = payloadArg(0)  
 						}
 						println("FRIDGE | searching Food_Code $Food_Code...")
-						forward("answer", "answer($FoodPresence)" ,"rbr" ) 
-						println("FRIDGE | answered to RBR about food")
+						updateResourceRep("FoodPresence:$FoodPresence" 
+						)
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						forward("expose", "expose($Foods)" ,"maitre" ) 
+						var State = "a" 
 						println("FRIDGE | exposed content to maitre")
+						updateResourceRep("State:$State" 
+						)
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 

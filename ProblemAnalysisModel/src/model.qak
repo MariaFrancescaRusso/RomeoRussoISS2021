@@ -1,35 +1,55 @@
 System standingbuffetservice
-//TODO 1. Convertire stato in COAP
-//TODO 2. Caricare lo stato (PROLOG) 
-//TODO 3. Gestire Comunicazione expose con COAP
+//TODO 3 Caricare lo stato (PROLOG) 
+//FIXME gestire i messaggi a seconda del mittente
+//FIXME observer getCoapState se non riesci a sfruttare la chiamata a metodo puoi prendere spunto da /home/gnuff/issLab2021/it.unibo.qakDemo/test/it/unibo/qakDemo/CoapObserverForTesting.kt
+// e da /home/gnuff/issLab2021/it.unibo.qak21.basicrobot/test/it/unibo/qak21/basicrobot/TestPlan1.kt
+//TODO studia bene cosa fa l'observer se gli viene passato l'attore
+Event observerfridge:observerfridge(X)
+Event observerpantry:observerpantry(X)
+Event observertable:observertable(X)
+Event observerdishwasher:observerdishwasher(X)
+//Event observer:observer(X)
 
 //Maitre-RBR
 Dispatch prepare:prepare(X,Y)//void
-Dispatch addFood:addFood(FOODE_CODE) //FOODE_CODE = int
+Request addFood:addFood(FOODE_CODE)
 Dispatch clear:clear(ARG)//void
-
+//O sono eventi ??
 Dispatch stop:stop(ARG)//void
 Dispatch reactivate:reactivate(ARG)//void
 
-Dispatch warning:warning(ARG)//void
+Reply warning:warning(ARG)//void
 
-//By requirements the fridge must answer via COAP, so it's necessary to use a dispatch
+//Ho rimosso exopose gestito come dispatcher
 //Maitre-Fridge
 Dispatch consult:consult(ARG)//void
-Dispatch expose:expose(ARG)//For now it's just a string
+
 //RBR-Fridge
-Dispatch askFood:askFood(FOODE_CODE)//FOODE_CODE = int 
+//Dispatch askFood:askFood(FOODE_CODE) 
+//Dispatch answer:answer(ARG)	// ARG= true/false
+Dispatch askFood:askFood(FOODE_CODE) 
 Dispatch answer:answer(ARG)	// ARG= true/false
-
 //RBR-Res
-Dispatch changeState:changeState(X)
+//Dispatch changeState:changeState(X)
+Dispatch add:add(X)
+Dispatch remove:remove(X)
+Dispatch addDishes:addDishes(X)
+Dispatch removeDishes:removeDishes(X)
+Dispatch addFood:addFood(X)
+Dispatch removeFood:removeFood(X)
 
-Context ctxSystem ip [host="localhost" port=8040]
-//Context ctxRBR ip [host="localhost" port=8050]
-//Context ctxFridge ip [host="127.0.0.1" port=8060]  
-//Context ctxMaitre ip [host="192.168.1.211" port=8070]
+//Context ctxsystem ip [host="localhost" port=8040]
+//Context ctxmaitre ip [host="192.168.1.211" port=8070]
+Context ctxrbr ip [host="127.0.0.1" port=8050]
+//Context ctxfridge ip [host="127.0.0.1" port=8060]  
+//Context ctxres ip [host="192.168.1.211" port=8070]
+//Context ctxmaitre ip [host="localhost" port=8070]
+//Context ctxrbr ip [host="localhost" port=8050]
+Context ctxfridge ip [host="localhost" port=8060]  
+Context ctxres ip [host="localhost"  port=8080]
 
-QActor rbr context ctxSystem{
+
+QActor rbr context ctxrbr{
 	[# 	var FoodPresence = false 
 		var PrepareDish = 0
 		var PrepareFood = emptyArray<Int>()
@@ -37,11 +57,16 @@ QActor rbr context ctxSystem{
 		var ClearFood = emptyArray<Int>()
 		var IsMap = false
 	#]	
-	
+		
 //TODO nell'analisi dei requisiti qua attendiamo direttametne prepare è opportuno inserire lo stato e planning work già prima ?
 	State s0 initial {
 		println ("RBR | STARTS and it's placed in RH position")
-		[#IsMap = true #]
+
+		[#
+			IsMap = true  	
+			//util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge").activate(myself)
+		#]
+		
 	}
 	Goto working if [# IsMap #] else mapping
 	
@@ -61,7 +86,6 @@ QActor rbr context ctxSystem{
 		whenMsg prepare -> exPrepare
 	
 	State exPrepare {
-		//FIXME gestire l'insieme di foodcode
 		onMsg( prepare:prepare(X,Y) ) {
 	 		[# 	PrepareDish = payloadArg(0).toInt()
 				PrepareFood = payloadArg(1).map{ it.toInt() }.toTypedArray()
@@ -71,16 +95,16 @@ QActor rbr context ctxSystem{
 		println ("RBR | executing task 'Prepare the room'; DISHES= $PrepareDish; Foods= $PrepareFood:" )
 		println ("RBR | going to pantry...")
 		
-		forward pantry -m changeState : remove($PrepareDish)
+		forward pantry -m remove : remove($PrepareDish)
 		
 		println ("RBR | ...reached pantry. Going to table...")
-		forward table -m changeState : addDishes($PrepareDish)
+		forward table -m addDishes : addDishes($PrepareDish)
 		
 		println ("RBR | ...reached table. Going to fridge...")
-		forward fridge -m changeState : remove($PrepareFood)
+		forward fridge -m remove : remove($PrepareFood)
 		
 		println ("RBR | ...reached fridge. Going to table...")
-		forward table -m changeState : addFood($PrepareFood)
+		forward table -m addFood : addFood($PrepareFood)
 		
 		println ("RBR | ...reached table. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task") 
@@ -93,7 +117,7 @@ QActor rbr context ctxSystem{
 	Transition t1
 		whenMsg addFood -> checkFood
 		whenMsg clear -> exClear
-
+		
 	State checkFood {
 		[# var Food_Code = -1 #]
 		onMsg( addFood:addFood(ARG) ) {
@@ -104,10 +128,10 @@ QActor rbr context ctxSystem{
  		println ("RBR | asked fridge if it contains the food with food-code = $Food_Code")
 	}
 	Transition t2
-		whenMsg answer -> handleReply
+		whenEvent observerfridge -> handleReply
 			
 	State handleReply {
-		onMsg( answer:answer(X) ) {
+		onMsg( observerfridge:observerfridge(X) ) {
 	 		[# FoodPresence = payloadArg(0).toBoolean() #]
  		}
 		println ("RBR | received answer from fridge: $FoodPresence")
@@ -115,7 +139,7 @@ QActor rbr context ctxSystem{
 	Goto fail if [# FoodPresence == false #] else exAddFood
 
 	State fail {
-		forward maitre -m warning:warning(w)
+		replyTo addFood with warning:warning(w)
 		println ("RBR | send warning to maitre")
 	}
 	Goto wait
@@ -136,53 +160,64 @@ QActor rbr context ctxSystem{
 		#]
 		println ("RBR | executing task 'Clear the room':")
 		println ("RBR | going to table...")
-		forward table -m changeState:removeFood($ClearFood)
+		forward table -m removeFood:removeFood($ClearFood)
 		
 		println ("RBR | ...reached table. Going to fridge...")
-		forward fridge -m changeState:add($ClearFood)
+		forward fridge -m add:add($ClearFood)
 		
 		println ("RBR | ...reached fridge. Going to table...")
-		forward table -m changeState:removeDishes($ClearDish)
+		forward table -m removeDishes:removeDishes($ClearDish)
 		
 		println ("RBR | ...reached table. Going to dishwasher...")
-		forward dishwasher -m changeState:add($ClearDish)
+		forward dishwasher -m add:add($ClearDish)
 		println ("RBR | ...reached dishwasher. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
 		terminate 0
 	}
 }
-
-QActor maitre context ctxSystem{
+/* 
+QActor maitre context ctxmaitre{
 	[#	var AddFoodtime = 3000L 
 		var Nexp = 0
 		var PrepareDish = 0
 		var PrepareFood = emptyArray<Int>()
 		var FoodCode = 0
+		
+		val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
+		val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
+		val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
+		val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
+		
 	#]	
 	
 	State s0 initial {
 		[# 	PrepareDish = 20
 			PrepareFood = arrayOf(1,2,3)
 			FoodCode = 1
+			
+			FridgeObserver.activate(myself)
+			TableObserver.activate(myself)
+			PantryObserver.activate(myself)
+			DishwasherObserver.activate(myself)
 		#]
+	
 		delay 2000
 		println ("MAITRE | STARTS")
 	}Goto sendPrepare
 	
 	State sendPrepare {
-//FIXME impostare piatti e cibo
 		forward rbr -m prepare:prepare($PrepareDish, arrayOf(3,2,1))///PrepareDish;PrepareFood
 		println ("MAITRE | send prepare command to RBR: $PrepareDish, $PrepareFood")		
 	}
 	Goto sendAddFood
-	
+		
 	State sendAddFood {
 		forward rbr -m addFood : addFood($FoodCode)
 		println ("MAITRE | send addFood(Food_Code) command to RBR")	
 	}
 	Transition t1 
 		whenTimeVar AddFoodtime -> sendConsult //time waiting for warning otherwise the food is present
-		whenMsg warning -> handleWarning
+		whenReply warning -> handleWarning
 			
 	State handleWarning {
 		println ("MAITRE | received warning from RBR")
@@ -199,32 +234,49 @@ QActor maitre context ctxSystem{
 		forward table -m consult : consult(0)
 		println ("MAITRE | send consult command to Table")
 	}
-	Goto waitConsult
+	Goto waitExpose
 
-	State waitConsult{
+	State waitExpose{
+		delay 500
 		println("waiting answer from resource")
-	}Transition t0 
-	whenMsg expose -> handleExpose
-//FIXME gestire i messaggi a seconda del mittente
+	}
+	Transition t0 
+		whenEvent observerdishwasher-> handleExpose
+		whenEvent observerfridge-> handleExpose
+		whenEvent observerpantry-> handleExpose
+		whenEvent observertable-> handleExpose
+
 	State handleExpose {
 		[#  var Sender = currentMsg.msgSender()
 			var AnsExpose = " "
 			Nexp++ 
 		#]
-		onMsg( expose:expose(X) ) {
+		onMsg( observerdishwasher:observerdishwasher(X) ) {
 	 		[# AnsExpose= payloadArg(0) #]
  		}
+ 		onMsg( observerfridge:observerfridge(X) ) {
+	 		[# AnsExpose= payloadArg(0) #]
+ 		}
+ 		onMsg( observerpantry:observerpantry(X) ) {
+	 		[# AnsExpose= payloadArg(0) #]
+ 		}
+ 		onMsg( observertable:observertable(X) ) {
+	 		[# AnsExpose= payloadArg(0) #]
+ 		}
+ 		
 		println ("MAITRE | status of $Sender: $AnsExpose")
-	}Goto sendClear if [# Nexp == 4 #]
-	else waitConsult
+	}
+	Goto sendClear if [# Nexp == 4 #]
+		else 
+		waitExpose
 	
 	State sendClear{
 		forward rbr -m clear : clear(0)
 		terminate 0
 	}
 }
-//FIXME l'invio dell'expose deve tenere conto di chi invia (on msg expose:mittente)
-QActor pantry context ctxSystem{
+*/
+QActor pantry context ctxres{
 
 	State s0 initial {
 		println ("PANTRY| loading initial state ")
@@ -236,46 +288,61 @@ QActor pantry context ctxSystem{
 	}
 	Transition t0
 	whenMsg consult -> exposeState
-	whenMsg changeState-> handleChangeState
+	whenMsg add-> handleChangeState
+	whenMsg remove -> handleChangeState
 	
 	State exposeState{
-		println ("PANTRY| sending state informations")
-		forward maitre -m expose:expose($Dishes)
+		[#var State = "c"#]
+
+		println ("PANTRY | exposed content to maitre")
+		//TODO[Prolog] operazione di lettura Status
+
+		updateResource[#"State:$State"#]
 	}Goto work
 	
 	State handleChangeState{
-		[# var Nd = 0 #]
-		onMsg( changeState:add(X) ) { 
+		[# var Nd = "" #]
+		
+		onMsg( add:add(X) ) { 
+	 		[# 	Nd = payloadArg(0) #]
 	 		println ("PANTRY | add $Nd...")
-	 		updateResource()
 	 		[# //Dishes = Dishes + Nd  #]
+			//TODO[Prolog] operazione scrittura
  		}
- 		onMsg( changeState:remove(X) ) { 
-			[# 	Nd = payloadArg(0).toInt() #]
+ 		onMsg( remove:remove(X) ) { 
+			[# 	Nd = payloadArg(0) #]
 	 		println ("PANTRY| remove $Nd...")
-	 		updateResource()
 	 		[# //Dishes = Dishes - Nd  #]
+			//TODO[Prolog] operazione scrittura
  		}	
  	}Goto work	
 }
 
-QActor table context ctxSystem{
+QActor table context ctxres{
 	// da decidere come rappresentare il cibo
 	State s0 initial {
 		println ("TABLE| loading initial state ") 
 		solve(consult("TableInit.pl"))
 	}Goto work
 	
+	
 	State work{
 		println ("TABLE| working")
 	}
 	Transition t0
 	whenMsg consult -> exposeState
-	whenMsg changeState -> handleChangeState
+	whenMsg addDishes -> handleChangeState
+	whenMsg removeDishes -> handleChangeState
+	whenMsg addFood -> handleChangeState
 	
-	State exposeState{
-		println ("TABLE| sending state informations")
-		forward maitre -m expose:expose($Dishes,$Foods)
+	
+	State exposeState{	
+		[#var State = "b"#]
+
+		println ("TABLE | exposed content to maitre")
+		//TODO[Prolog] operazione di lettura Status
+
+		updateResource[#"State:$State"#]
 	}Goto work
 	
 	State handleChangeState{
@@ -283,75 +350,77 @@ QActor table context ctxSystem{
 			var Nd= 0
 			var Fs =  emptyArray<Int>()
 		#]
- 		//FIXME gestire food
-		onMsg( changeState:addFood(X) ) { //X valore
+
+		onMsg( addFood:addFood(X) ) { //X valore
 			[# Fs= payloadArg(0).map{ it.toInt() }.toTypedArray() #]
+			//TODO[Prolog] operazione scrittura
 	 		println ("TABLE| add $Fs...")
-	 		updateResource()
  		}
- 		//FIXME gestire food
- 		onMsg( changeState:removeFood(X) ) { //X valore
+
+ 		onMsg( removeFood:removeFood(X) ) { //X valore
 			[# 	Fs = payloadArg(0).map{ it.toInt() }.toTypedArray() #]
+			//TODO[Prolog] operazione scrittura
 	 		println ("TABLE| remove $Fs...")
-	 		updateResource()
 		}
-		onMsg( changeState:addDishes(X) ) { //X valore
+		onMsg( addDishes:addDishes(X) ) { //X valore
 			[# Nd= payloadArg(0).toInt() #]
 	 		println ("TABLE| add $Nd...")
+			//TODO[Prolog] operazione scrittura
 	 		[# //Dishes = Dishes + Nd  #]
-	 		updateResource()
  		}
- 		onMsg( changeState:removeDishes(X) ) { //X valore
+ 		onMsg( removeDishes:removeDishes(X) ) { //X valore
 			[# 	Nd = payloadArg(0).toInt()#]
 			println ("TABLE| remove $Nd...")
+			//TODO[Prolog] operazione scrittura
 			[# //Dishes = Dishes - Nd  #]
-			updateResource()
   		}
 	}Goto work
 }
 
-QActor dishwasher context ctxSystem{
-	[# var Dishes = 0#]
+QActor dishwasher context ctxres{
 	State s0 initial {
 		println ("DISHWASHER| loading initial state ")
 		solve(consult("DishwasherInit.pl"))
 	}Goto work 
-		
+	
 	State work{
 		println ("DISHWASHER| working")
 	}
 	Transition t0
 	whenMsg consult -> exposeState
-	whenMsg changeState-> handleChangeState
+	whenMsg remove-> handleChangeState
+	whenMsg add-> handleChangeState
 	
 	State exposeState{
-		println ("DISHWASHER | send consult...")
-		forward maitre -m expose:expose($Dishes) 
- 		}Goto work
+		[#var State = "d"#]
+
+		println ("DISHWASHER | exposed content to maitre")
+		//TODO[Prolog] operazione di lettura Status
+
+		updateResource[#"State:$State"#]
+ 	}Goto work
 	
 	State handleChangeState{
-		[# var Nd = 0	#]
-		onMsg( changeState:add(X) ) { //X valore
-			[# Nd= payloadArg(0).toInt() #]
+		[# var Nd = ""	#]
+
+		onMsg( add:add(X) ) { //X valore
+			[# Nd= payloadArg(0) #]
 	 		println ("DISHWASHER| add $Nd...")
-			[# //Dishes = Dishes + Nd  #]
-			updateResource()
+	 		
+			//TODO[Prolog] operazione scrittura
  		}
- 		onMsg( changeState:remove(X) ) { //X valore
-			[# 	Nd= payloadArg(0).toInt() #]
+ 		onMsg( remove:remove(X) ) { //X valore
+			[# 	Nd= payloadArg(0)#]
 	 		println ("DISHWASHER| remove $Nd...")
-	 		[# //Dishes = Dishes - Nd  #]
-	 		updateResource()
+			//TODO[Prolog] operazione scrittura
  		}	
 	}Goto work
 }
 
-QActor fridge context ctxSystem{
-//TODO concretizzare operazioni del frigo (ricerca e modifica stato)
-	[#	var Foods = emptyArray<Int>()	#]
+QActor fridge context ctxfridge{
+
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food")
-	[# Foods = arrayOf(1,2,3,4,5)#]
 		solve(consult("FridgeInit.pl"))
 		delay 300
 	}
@@ -361,42 +430,47 @@ QActor fridge context ctxSystem{
 		println ("FRIDGE | is waiting for a command...")
 	} 
 	Transition t1 
+		whenMsg add-> changeFood
+		whenMsg remove -> changeFood
 		whenMsg askFood -> answerFood
 		whenMsg consult -> exposeState
-		whenMsg changeState -> getFoodPrepare
-	
-	State getFoodPrepare{
-		[# var Fs = emptyArray<Int>()#]
- 		//FIXME gestire food
-		onMsg( changeState:add(X) ) { //X valore
-			[# Fs = payloadArg(0).map{ it.toInt() }.toTypedArray() #]
-	 		println ("FRIDGE | add $Fs...")
+
+	State changeFood{			
+		[# var Food_Code = ""  #]
+		
+ 		onMsg( add:add(X) ) { //X 
+			[# Food_Code = payloadArg(0)#]
+	 		println ("FRIDGE | add $Food_Code...")
+			//TODO[Prolog] operazione scrittura
  		}
- 		//FIXME gestire food
- 		onMsg( changeState:remove(X) ) { //X valore
-			[# 	Fs = payloadArg(0).map{ it.toInt() }.toTypedArray() #]
-	 		println ("FRIDGE | remove $Fs...")
+ 		onMsg( remove:remove(X) ) { //X 
+			[# Food_Code = payloadArg(0)#]
+	 		println ("FRIDGE | remove $Food_Code...")
+			//TODO[Prolog] operazione scrittura
  		}
 	}Goto wait
 
 	State answerFood {
-		//TODO con COAP
-		[# var Food_Code = -1 
+		[# var Food_Code = "" 
 		   var FoodPresence = false
-		   #]
+		 #]
 		onMsg( askFood:askFood(X) ) {
-	 		[# Food_Code = payloadArg(0).toInt() #]
+	 		[# Food_Code = payloadArg(0) #]
  		}
-		println ("FRIDGE | searching Food_Code $Food_Code...")		
-		forward rbr -m answer:answer($FoodPresence)
-		println ("FRIDGE | answered to RBR about food")
+		println ("FRIDGE | searching Food_Code $Food_Code...")
+		//TODO[Prolog] operazione di ricerca Food_Code
+
+		updateResource[#"FoodPresence:$FoodPresence"#]		
 	}
 	Goto wait
 	
 	State exposeState {
-		forward maitre -m expose:expose($Foods)
+		[#var State = "a"#]
+
 		println ("FRIDGE | exposed content to maitre")
-		updateResource()
+		//TODO[Prolog] operazione di lettura Status
+		
+		updateResource[#"State:$State"#]
 	} 
 	Goto wait		
 }
