@@ -19,40 +19,63 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("DISHWASHER| loading initial state ")
-						solve("consult('DishwasherInit.pl')","") //set resVar	
+						println("DISHWASHER | STARTS and it's empty...")
+						solve("consult('DishwasherState.pl')","") //set resVar	
+						println("DISHWASHER | loaded initial state")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
-						println("DISHWASHER| working")
+						println("DISHWASHER| working...")
 					}
-					 transition(edgeName="t011",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t012",targetState="handleChangeState",cond=whenDispatch("remove"))
-					transition(edgeName="t013",targetState="handleChangeState",cond=whenDispatch("add"))
+					 transition(edgeName="t015",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t016",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						var State = "d" 
-						println("DISHWASHER | exposed content to maitre")
-						updateResourceRep("State:$State" 
+						solve("getAllEl(Crockery)","") //set resVar	
+						if( currentSolution.isSuccess() ) {println("DISHWASHER | Crockery = ${getCurSol("Crockery")} ")
+						}
+						else
+						{println("DISHWASHER | Error getting dishwasher state/Error consult dishwasher")
+						}
+						updateResourceRep("${getCurSol("Crockery")}" 
 						)
+						println("DISHWASHER | sending state informations/exposed content to maitre/expose...")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("handleChangeState") { //this:State
 					action { //it:State
-						 var Nd = ""	 
-						if( checkMsgContent( Term.createTerm("add(X)"), Term.createTerm("add(X)"), 
+						 var Crockery = ""  
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(add,ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Nd= payloadArg(0)  
-								println("DISHWASHER| add $Nd...")
+								 Crockery = payloadArg(1)  
+								solve("add($Crockery)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("DISHWASHER | added Crockery : $Crockery...")
+								updateResourceRep( "Add Crockery $Crockery with success!"  
+								)
+								}
+								else
+								{println("DISHWASHER | Error adding Crockery : $Crockery...")
+								updateResourceRep( "Fail adding Crockery $Crockery!"  
+								)
+								}
 						}
-						if( checkMsgContent( Term.createTerm("remove(X)"), Term.createTerm("remove(X)"), 
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(remove,ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Nd= payloadArg(0) 
-								println("DISHWASHER| remove $Nd...")
+								 Crockery = payloadArg(1)  
+								solve("remove($Crockery)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("DISHWASHER | removed Crockery : $Crockery...")
+								updateResourceRep( "Remove Crockery $Crockery with success!"  
+								)
+								}
+								else
+								{println("DISHWASHER | Error removing Crockery : $Crockery...")
+								updateResourceRep( "Fail removing Crockery $Crockery!"  
+								)
+								}
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

@@ -19,8 +19,9 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("FRIDGE | STARTS and it's embedded with the proper set of food")
-						solve("consult('FridgeInit.pl')","") //set resVar	
+						println("FRIDGE | STARTS and it's embedded with the proper set of food...")
+						solve("consult('FridgeState.pl')","") //set resVar	
+						println("FRIDGE | loaded initial state")
 						delay(300) 
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
@@ -29,47 +30,80 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("FRIDGE | is waiting for a command...")
 					}
-					 transition(edgeName="t114",targetState="changeFood",cond=whenDispatch("add"))
-					transition(edgeName="t115",targetState="changeFood",cond=whenDispatch("remove"))
-					transition(edgeName="t116",targetState="answerFood",cond=whenDispatch("askFood"))
-					transition(edgeName="t117",targetState="exposeState",cond=whenDispatch("consult"))
-				}	 
-				state("changeFood") { //this:State
-					action { //it:State
-						 var Food_Code = ""   
-						if( checkMsgContent( Term.createTerm("add(X)"), Term.createTerm("add(X)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Food_Code = payloadArg(0) 
-								println("FRIDGE | add $Food_Code...")
-						}
-						if( checkMsgContent( Term.createTerm("remove(X)"), Term.createTerm("remove(X)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Food_Code = payloadArg(0) 
-								println("FRIDGE | remove $Food_Code...")
-						}
-					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+					 transition(edgeName="t117",targetState="answerFood",cond=whenDispatch("askFood"))
+					transition(edgeName="t118",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t119",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("answerFood") { //this:State
 					action { //it:State
-						 var Food_Code = "" 
-								   var FoodPresence = false
-						if( checkMsgContent( Term.createTerm("askFood(FOODE_CODE)"), Term.createTerm("askFood(X)"), 
+						 
+									var FoodCode = ""
+									var FoodPresence = false
+						if( checkMsgContent( Term.createTerm("askFood(FOOD_CODE)"), Term.createTerm("askFood(FOOD_CODE)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Food_Code = payloadArg(0)  
+								 FoodCode = payloadArg(0)  
 						}
-						println("FRIDGE | searching Food_Code $Food_Code...")
-						updateResourceRep("FoodPresence:$FoodPresence" 
+						println("FRIDGE | searching food with Food_Code = $FoodCode...")
+						solve("checkFoodByCode($FoodCode,Food)","") //set resVar	
+						if( currentSolution.isSuccess() ) { FoodPresence = true  
+						println("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol("Food")}")
+						updateResourceRep("$FoodPresence;${getCurSol("Food")}" 
 						)
+						}
+						else
+						{println("FRIDGE | Error searching food : not found existing or available food with Food_Code = $FoodCode...")
+						updateResourceRep("$FoodPresence" 
+						)
+						}
+						println("FRIDGE | answered to RBR about food presence via CoAP")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						var State = "a" 
-						println("FRIDGE | exposed content to maitre")
-						updateResourceRep("State:$State" 
+						solve("getAllEl(Foods)","") //set resVar	
+						if( currentSolution.isSuccess() ) {println("FRIDGE | Foods = ${getCurSol("Foods")} ")
+						}
+						else
+						{println("FRIDGE | Error getting fridge state/Error consult fridge")
+						}
+						updateResourceRep("${getCurSol("Foods")}" 
 						)
+						println("FRIDGE | sending state informations/exposed content to maitre/expose...")
+					}
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+				}	 
+				state("handleChangeState") { //this:State
+					action { //it:State
+						 var Food = ""  
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(add,ARG)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Food = payloadArg(1)  
+								solve("add($Food)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("FRIDGE | added Food : $Food...")
+								updateResourceRep( "Add Food $Food with success!"  
+								)
+								}
+								else
+								{println("FRIDGE | Error adding Food : $Food...")
+								updateResourceRep( "Fail adding Food $Food!"  
+								)
+								}
+						}
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(remove,ARG)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Food = payloadArg(1)  
+								solve("remove($Food)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("FRIDGE | removed Food : $Food...")
+								updateResourceRep( "Remove Food $Food with success!"  
+								)
+								}
+								else
+								{println("FRIDGE | Error removing Food : $Food...")
+								updateResourceRep( "Fail removing Food $Food!"  
+								)
+								}
+						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 

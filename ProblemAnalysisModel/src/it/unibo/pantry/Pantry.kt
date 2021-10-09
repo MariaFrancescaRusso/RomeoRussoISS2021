@@ -19,42 +19,63 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("PANTRY| loading initial state ")
-						solve("consult('PantryInit.pl')","") //set resVar	
+						println("PANTRY | STARTS and it's filled with a proper set of items...")
+						solve("consult('PantryState.pl')","") //set resVar	
+						println("PANTRY | loaded initial state")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
-						println("PANTRY| working")
+						println("PANTRY| working...")
 					}
-					 transition(edgeName="t04",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t05",targetState="handleChangeState",cond=whenDispatch("add"))
-					transition(edgeName="t06",targetState="handleChangeState",cond=whenDispatch("remove"))
+					 transition(edgeName="t011",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t012",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						var State = "c" 
-						println("PANTRY | exposed content to maitre")
-						updateResourceRep("State:$State" 
+						solve("getAllEl(Crockery)","") //set resVar	
+						if( currentSolution.isSuccess() ) {println("PANTRY | Crockery : ${getCurSol("Crockery")}")
+						}
+						else
+						{println("PANTRY | Error getting pantry state/Error consult pantry")
+						}
+						updateResourceRep("${getCurSol("Crockery")}" 
 						)
+						println("PANTRY| sending state informations/exposed content to maitre/expose...")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("handleChangeState") { //this:State
 					action { //it:State
-						 var Nd = ""  
-						if( checkMsgContent( Term.createTerm("add(X)"), Term.createTerm("add(X)"), 
+						 var Crockery = ""  
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(add,ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Nd = payloadArg(0)  
-								println("PANTRY | add $Nd...")
-								 //Dishes = Dishes + Nd   
+								 Crockery = payloadArg(1)  
+								solve("add($Crockery)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("PANTRY | added Crockery : $Crockery...")
+								updateResourceRep( "Add Crockery $Crockery with success!"  
+								)
+								}
+								else
+								{println("PANTRY | Error adding Crockery : $Crockery...")
+								updateResourceRep( "Fail adding Crockery $Crockery!"  
+								)
+								}
 						}
-						if( checkMsgContent( Term.createTerm("remove(X)"), Term.createTerm("remove(X)"), 
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(remove,ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Nd = payloadArg(0)  
-								println("PANTRY| remove $Nd...")
-								 //Dishes = Dishes - Nd   
+								 Crockery = payloadArg(1)  
+								solve("remove($Crockery)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("PANTRY | removed Crockery : $Crockery...")
+								updateResourceRep( "Remove Crockery $Crockery with success!"  
+								)
+								}
+								else
+								{println("PANTRY | Error removing Crockery : $Crockery...")
+								updateResourceRep( "Fail removing Crockery $Crockery!"  
+								)
+								}
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

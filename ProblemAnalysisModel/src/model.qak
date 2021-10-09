@@ -1,83 +1,83 @@
-System standingbuffetservice
-//TODO 3 Caricare lo stato (PROLOG) 
+System standingbuffetservice 
 //FIXME gestire i messaggi a seconda del mittente
 //FIXME observer getCoapState se non riesci a sfruttare la chiamata a metodo puoi prendere spunto da /home/gnuff/issLab2021/it.unibo.qakDemo/test/it/unibo/qakDemo/CoapObserverForTesting.kt
 // e da /home/gnuff/issLab2021/it.unibo.qak21.basicrobot/test/it/unibo/qak21/basicrobot/TestPlan1.kt
 //TODO studia bene cosa fa l'observer se gli viene passato l'attore
+
+//Observer Resources - Maitre/RBR 
 Event observerfridge:observerfridge(X)
 Event observerpantry:observerpantry(X)
 Event observertable:observertable(X)
 Event observerdishwasher:observerdishwasher(X)
 //Event observer:observer(X)
 
-//Maitre-RBR
-Dispatch prepare:prepare(X,Y)//void
+//Maitre - RBR
+Dispatch prepare:prepare(X, Y)
+
 Request addFood:addFood(FOODE_CODE)
-Dispatch clear:clear(ARG)//void
-//O sono eventi ??
-Dispatch stop:stop(ARG)//void
-Dispatch reactivate:reactivate(ARG)//void
+//Dispatch addFood:addFood(FOODE_CODE)	
 
-Reply warning:warning(ARG)//void
+Dispatch clear:clear(X, Y)
 
-//Ho rimosso exopose gestito come dispatcher
-//Maitre-Fridge
-Dispatch consult:consult(ARG)//void
+//Stop e reactivate sono eventi ??
+Dispatch stop:stop(ARG)	//void
+Dispatch reactivate:reactivate(ARG)	//void
 
-//RBR-Fridge
-//Dispatch askFood:askFood(FOODE_CODE) 
-//Dispatch answer:answer(ARG)	// ARG= true/false
-Dispatch askFood:askFood(FOODE_CODE) 
-Dispatch answer:answer(ARG)	// ARG= true/false
-//RBR-Res
-//Dispatch changeState:changeState(X)
-Dispatch add:add(X)
-Dispatch remove:remove(X)
-Dispatch addDishes:addDishes(X)
-Dispatch removeDishes:removeDishes(X)
-Dispatch addFood:addFood(X)
-Dispatch removeFood:removeFood(X)
+Reply warning:warning(ARG)	//void
+//Dispatch warning:warning(ARG)	//void
 
-//Context ctxsystem ip [host="localhost" port=8040]
-//Context ctxmaitre ip [host="192.168.1.211" port=8070]
-Context ctxrbr ip [host="127.0.0.1" port=8050]
-//Context ctxfridge ip [host="127.0.0.1" port=8060]  
-//Context ctxres ip [host="192.168.1.211" port=8070]
-//Context ctxmaitre ip [host="localhost" port=8070]
-//Context ctxrbr ip [host="localhost" port=8050]
-Context ctxfridge ip [host="localhost" port=8060]  
-Context ctxres ip [host="localhost"  port=8080]
+//TODO: Togliere expose!!
+//Maitre - Fridge/Resources
+Dispatch consult:consult(ARG)	//void
+//Dispatch expose:expose(ARG)		// ARG = string for the resource content
+//Dispatch expose:expose(X, Y)	// ARG = string for the resource content
 
+//RBR - Fridge
+Dispatch askFood:askFood(FOOD_CODE) 
+//Dispatch answer:answer(X, ARG)	// X = true/false ; ARG = Food for the FOOD_CODE
 
-QActor rbr context ctxrbr{
-	[# 	var FoodPresence = false 
-		var PrepareDish = 0
-		var PrepareFood = emptyArray<Int>()
-		var ClearDish = 0
-		var ClearFood = emptyArray<Int>()
+//RBR - Res
+Dispatch changeState:changeState(X, ARG)	//X = add/remove ; ARG = state to change
+//Dispatch add:add(ARG)	// ARG = state to change
+//Dispatch remove:remove(ARG)	// ARG = state to change
+
+Context ctxsystem ip [host="localhost" port=8040]
+//Context ctxRBR ip [host="localhost" port=8050]
+//Context ctxFridge ip [host="127.0.0.1" port=8060]  
+//Context ctxMaitre ip [host="192.168.1.211" port=8070]
+
+//QActor rbr context ctxRBR {
+QActor rbr context ctxsystem {
+	[# 	
 		var IsMap = false
+		var PrepareDish = ""
+		var PrepareFood = ""
+		var FoodCode = ""
+		var FoodPresence = false 
+		var Food = ""
+		var ClearDish = ""
+		var ClearFood = ""
 	#]	
-		
+	
 //TODO nell'analisi dei requisiti qua attendiamo direttametne prepare è opportuno inserire lo stato e planning work già prima ?
 	State s0 initial {
-		println ("RBR | STARTS and it's placed in RH position")
-
+		println ("RBR | STARTS and it's placed in RH position...")
+		
 		[#
 			IsMap = true  	
 			//util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge").activate(myself)
-		#]
-		
+		#]		
 	}
 	Goto working if [# IsMap #] else mapping
 	
 	State mapping {
-		println ("RBR | initializing planner")
-		println ("RBR | start mapping room ")
+		println ("RBR | initializing planner...")
+		println ("RBR | start mapping room...")
 		delay 300 
+		[# IsMap = true #]
 		println ("RBR | end mapping step")
-		[# IsMap = true#]
-	
-	}Goto working
+	}
+	Goto working
  
 	State working {
 		println ("RBR | STARTS and it's ready to work")
@@ -86,27 +86,50 @@ QActor rbr context ctxrbr{
 		whenMsg prepare -> exPrepare
 	
 	State exPrepare {
-		onMsg( prepare:prepare(X,Y) ) {
-	 		[# 	PrepareDish = payloadArg(0).toInt()
-				PrepareFood = payloadArg(1).map{ it.toInt() }.toTypedArray()
+		onMsg( prepare : prepare(X,Y) ) {
+	 		[# 	
+	 			PrepareDish = payloadArg(0)
+				PrepareFood = payloadArg(1)
 			#]
  		}
  		
-		println ("RBR | executing task 'Prepare the room'; DISHES= $PrepareDish; Foods= $PrepareFood:" )
+		println ("RBR | executing task 'Prepare the room' ( Crockery = $PrepareDish; Foods = $PrepareFood ) :" )
+		
 		println ("RBR | going to pantry...")
+		delay 300
 		
-		forward pantry -m remove : remove($PrepareDish)
+		println ("RBR | ...reached pantry. Taking dishes...")
+		forward pantry -m changeState : changeState(remove, $PrepareDish)
+//		forward pantry -m remove : remove($PrepareDish)
+		delay 300
+
+		println ("RBR | going to table...")
+		delay 300
 		
-		println ("RBR | ...reached pantry. Going to table...")
-		forward table -m addDishes : addDishes($PrepareDish)
+		println ("RBR | ...reached table. Adding dishes...")
+		forward table -m changeState : changeState(add, $PrepareDish)
+//		forward table -m add : add($PrepareDish)	
+		delay 300
+			
+		println ("RBR | going to fridge...")
+		delay 300
 		
-		println ("RBR | ...reached table. Going to fridge...")
-		forward fridge -m remove : remove($PrepareFood)
+		println ("RBR | ...reached fridge. Taking food...")
+		forward fridge -m changeState : changeState(remove, $PrepareFood)
+//		forward fridge -m remove : remove($PrepareFood)		
+		delay 300
 		
-		println ("RBR | ...reached fridge. Going to table...")
-		forward table -m addFood : addFood($PrepareFood)
+		println ("RBR | going to table...")
+		delay 300
 		
-		println ("RBR | ...reached table. Coming back to RH...")
+		println ("RBR | ...reached table. Adding food...")
+		forward table -m changeState : changeState(add, $PrepareFood)
+//		forward table -m add : add($PrepareFood)		
+		delay 300
+		
+		println ("RBR | coming back to RH...")
+		delay 300
+		
 		println ("RBR | ...reached RH. Finished executing task") 
 	}
 	Goto wait
@@ -115,108 +138,180 @@ QActor rbr context ctxrbr{
 		println ("RBR | is placed in RH position and it's waiting for a command...")
 	}
 	Transition t1
-		whenMsg addFood -> checkFood
+//		whenMsg addFood -> checkFood
+		whenRequest addFood -> checkFood
 		whenMsg clear -> exClear
-		
-	State checkFood {
-		[# var Food_Code = -1 #]
-		onMsg( addFood:addFood(ARG) ) {
-	 		[# Food_Code = payloadArg(0).toInt() #]
+
+	State checkFood {		
+		onMsg( addFood : addFood(ARG) ) {
+	 		[# FoodCode = payloadArg(0) #]
  		}
 
- 		forward fridge -m askFood : askFood($Food_Code)
- 		println ("RBR | asked fridge if it contains the food with food-code = $Food_Code")
+ 		forward fridge -m askFood : askFood($FoodCode)
+ 		println ("RBR | asked fridge if it contains the food with food-code = $FoodCode")
 	}
 	Transition t2
-		whenEvent observerfridge -> handleReply
+		whenEvent observerfridge -> handleAnswer
+//		whenMsg answer -> handleReply
 			
-	State handleReply {
-		onMsg( observerfridge:observerfridge(X) ) {
-	 		[# FoodPresence = payloadArg(0).toBoolean() #]
+	State handleAnswer {
+		println("RBR | observerFridge")
+		onMsg( observerfridge : observerfridge(X) ) {
+//		onMsg( answer:answer(X, Y) ) {
+	 		[# 
+	 			var Temp = payloadArg(0).split(";")
+	 			FoodPresence = Temp.get(0).toBoolean()
+	 			Food = Temp.get(1)
+//	 			FoodPresence = payloadArg(0).toBoolean() 
+//	 			Food = payloadArg(1)
+	 		#]
  		}
-		println ("RBR | received answer from fridge: $FoodPresence")
+		println ("RBR | received answer from fridge via CoAP: $FoodPresence")
 	}
 	Goto fail if [# FoodPresence == false #] else exAddFood
 
 	State fail {
 		replyTo addFood with warning:warning(w)
+//		forward maitre -m warning:warning(w)
 		println ("RBR | send warning to maitre")
 	}
 	Goto wait
 
 	State exAddFood {
-		println ("RBR | executing task 'Add food'")
+		println ("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
+		
 		println ("RBR | going to fridge...")
-		println ("RBR | ...reached fridge. Going to table...")
-		println ("RBR | ...reached table. Coming back to RH...")
+		delay 300
+		
+		println ("RBR | ...reached fridge. Taking food...")
+		forward fridge -m changeState : changeState(remove, $Food)
+//		forward fridge -m remove : remove($Food)	
+		delay 300
+		
+		println ("RBR | going to table...")
+		delay 300
+		
+		println ("RBR | ...reached table. Adding food...")
+		forward table -m changeState : changeState(add, $Food)
+//		forward table -m add : add($Food)
+		delay 300
+		
+		println ("RBR | coming back to RH...")
+		delay 300
+		
 		println ("RBR | ...reached RH. Finished executing task")
 	}
 	Goto wait
 	
 	State exClear {
-//TODO clear deve prima mandare un consult al tavolo per conoscerne lo stato ?
-		[# 	ClearDish = PrepareDish 
-			ClearFood = PrepareFood
-		#]
+	//TODO clear deve prima mandare un consult al tavolo per conoscerne lo stato ?
+		onMsg( clear:clear(X,Y) ) {
+	 		[# 	
+	 			ClearDish = payloadArg(0)
+				ClearFood = payloadArg(1)
+			#]
+ 		}
+		
 		println ("RBR | executing task 'Clear the room':")
+		
 		println ("RBR | going to table...")
-		forward table -m removeFood:removeFood($ClearFood)
+		delay 300
 		
-		println ("RBR | ...reached table. Going to fridge...")
-		forward fridge -m add:add($ClearFood)
+		println ("RBR | ...reached table. Taking food...")
+		forward table -m changeState : changeState(remove, $ClearFood)
+//		forward table -m remove:remove($ClearFood)		
+		delay 300
 		
-		println ("RBR | ...reached fridge. Going to table...")
-		forward table -m removeDishes:removeDishes($ClearDish)
+		println ("RBR | going to fridge...")
+		delay 300
 		
-		println ("RBR | ...reached table. Going to dishwasher...")
-		forward dishwasher -m add:add($ClearDish)
-		println ("RBR | ...reached dishwasher. Coming back to RH...")
+		println ("RBR | ...reached fridge. Adding food...")
+		forward fridge -m changeState : changeState(add,  $ClearFood)
+//		forward fridge -m add:add($ClearFood)
+		delay 300
+				
+		println ("RBR | going to table...")
+		delay 300
+		
+		println ("RBR | ...reached table. Taking dishes...")
+		forward table -m changeState : changeState(remove, $ClearDish)
+//		forward table -m remove:remove($ClearDish)	
+		delay 300
+			
+		println ("RBR | going to dishwasher...")
+		delay 300
+		
+		println ("RBR | ...reached dishwasher. Adding dishes...")
+		forward dishwasher -m changeState : changeState(add, $ClearDish)
+//		forward dishwasher -m add:add($ClearDish)		
+		delay 300
+		
+		println ("RBR | coming back to RH...")
+		delay 300
+		
 		println ("RBR | ...reached RH. Finished executing task")
-		terminate 0
+
+//		terminate 0
 	}
 }
-/* 
-QActor maitre context ctxmaitre{
-	[#	var AddFoodtime = 3000L 
+
+QActor maitre context ctxsystem {
+	[#	
+		var AddFoodtime = 3000L 
 		var Nexp = 0
-		var PrepareDish = 0
-		var PrepareFood = emptyArray<Int>()
-		var FoodCode = 0
+		var PrepareDish = emptyList<ArrayList<String>>()
+		var PrepareFood = emptyList<ArrayList<String>>()
+		var FoodCode = ""
+		var AnsExpose1 = ""
+		var AnsExpose2 = ""
+		var ClearDish = ""
+		var ClearFood = ""
 		
 		val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
 		val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
 		val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
 		val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
-		
 	#]	
 	
 	State s0 initial {
-		[# 	PrepareDish = 20
-			PrepareFood = arrayOf(1,2,3)
-			FoodCode = 1
-			
-			FridgeObserver.activate(myself)
-			TableObserver.activate(myself)
-			PantryObserver.activate(myself)
-			DishwasherObserver.activate(myself)
+		println ("MAITRE | STARTS...")
+		//FIXME gestione prepare
+		[# 	
+			PrepareDish = arrayListOf(arrayListOf("dishes", "10"), arrayListOf("glasses", "10")) 
+			PrepareFood = arrayListOf(arrayListOf("s001", "bread", "10"), arrayListOf("d001", "water", "10"), 
+				arrayListOf("p003", "pasta", "10"), arrayListOf("s002", "sandwich", "20"), arrayListOf("d005", "wine", "5"),
+				arrayListOf("k007", "muffin", "20"), arrayListOf("s005", "salad", "10"))
 		#]
-	
+		[#
+//			FoodCode = "p003"	// existing food_code that isn't available
+			FoodCode = "c034"	// not existing food_code
+//			FoodCode = "s001"	//existing and available food_code
+		#]
+		[#
+			FridgeObserver.activate()
+			TableObserver.activate()
+			PantryObserver.activate()
+			DishwasherObserver.activate()
+		#]
 		delay 2000
-		println ("MAITRE | STARTS")
-	}Goto sendPrepare
+	}
+	Goto sendPrepare
 	
 	State sendPrepare {
-		forward rbr -m prepare:prepare($PrepareDish, arrayOf(3,2,1))///PrepareDish;PrepareFood
-		println ("MAITRE | send prepare command to RBR: $PrepareDish, $PrepareFood")		
+		forward rbr -m prepare : prepare($PrepareDish, $PrepareFood)
+		println ("MAITRE | send prepare command to RBR: $PrepareDish, $PrepareFood")
+		delay 2000		
 	}
 	Goto sendAddFood
-		
-	State sendAddFood {
-		forward rbr -m addFood : addFood($FoodCode)
-		println ("MAITRE | send addFood(Food_Code) command to RBR")	
+	
+	State sendAddFood {		
+//		forward rbr -m addFood : addFood($FoodCode)
+		request rbr -m addFood : addFood($FoodCode)
+		println ("MAITRE | send addFood($FoodCode) command to RBR")	
 	}
 	Transition t1 
 		whenTimeVar AddFoodtime -> sendConsult //time waiting for warning otherwise the food is present
+//		whenMsg warning -> handleWarning
 		whenReply warning -> handleWarning
 			
 	State handleWarning {
@@ -224,204 +319,349 @@ QActor maitre context ctxmaitre{
 	}
 	Goto sendConsult
 
-	State sendConsult{	
+	State sendConsult {	
 		forward fridge -m consult : consult(0)
 		println ("MAITRE | send consult command to Fridge")
+		
 		forward dishwasher -m consult : consult(0)
 		println ("MAITRE | send consult command to Dishwasher")
+		
 		forward pantry -m consult : consult(0)
 		println ("MAITRE | send consult command to Pantry")
+		
 		forward table -m consult : consult(0)
 		println ("MAITRE | send consult command to Table")
 	}
 	Goto waitExpose
 
-	State waitExpose{
-		delay 500
-		println("waiting answer from resource")
+	State waitExpose {
+		println("MAITRE | waiting answers from resources...")
 	}
-	Transition t0 
-		whenEvent observerdishwasher-> handleExpose
-		whenEvent observerfridge-> handleExpose
-		whenEvent observerpantry-> handleExpose
-		whenEvent observertable-> handleExpose
+	Transition t2
+//		whenMsg expose -> handleExpose
+		whenEvent observerdishwasher -> handleExpose
+		whenEvent observerfridge -> handleExpose
+		whenEvent observerpantry -> handleExpose
+		whenEvent observertable -> handleExpose
 
+//FIXME gestire i messaggi a seconda del mittente
 	State handleExpose {
-		[#  var Sender = currentMsg.msgSender()
-			var AnsExpose = " "
+		[#  
+			var Sender = currentMsg.msgSender()
 			Nexp++ 
 		#]
-		onMsg( observerdishwasher:observerdishwasher(X) ) {
-	 		[# AnsExpose= payloadArg(0) #]
+		
+		onMsg( observerdishwasher : observerdishwasher(X) ) {
+	 		[# AnsExpose1 = payloadArg(0) #]
  		}
- 		onMsg( observerfridge:observerfridge(X) ) {
-	 		[# AnsExpose= payloadArg(0) #]
+ 		onMsg( observerfridge : observerfridge(X) ) {
+	 		[# AnsExpose1 = payloadArg(0) #]
  		}
- 		onMsg( observerpantry:observerpantry(X) ) {
-	 		[# AnsExpose= payloadArg(0) #]
+ 		onMsg( observerpantry : observerpantry(X) ) {
+	 		[# AnsExpose1 = payloadArg(0) #]
  		}
- 		onMsg( observertable:observertable(X) ) {
-	 		[# AnsExpose= payloadArg(0) #]
+ 		onMsg( observertable : observertable(X) ) {
+	 		[# 
+	 			var Temp = payloadArg(0).split(";")
+	 			AnsExpose1 = Temp.get(0)
+	 			AnsExpose2 = Temp.get(1)
+	 		#] 
+ 		}
+ 		if [# Sender == "observertable" #] {
+			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
+ 		}
+ 		else { 
+ 			println ("MAITRE | status of $Sender: $AnsExpose1")
+ 		}
+/* 		
+ 		onMsg( expose:expose(X, Y) ) {
+	 		[# 
+	 			AnsExpose1 = payloadArg(0)
+	 			AnsExpose2 = payloadArg(1)
+	 		#] 
+ 		}
+ 		if [# Sender == "table" #] {
+			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
+ 		}
+ 		else { 
+ 			println ("MAITRE | status of $Sender: $AnsExpose1")
+ 		}	
+*/
+	}
+	Goto preSendClear if [#	Nexp == 4 #] else waitExpose
+	
+	State preSendClear {
+		forward table -m consult : consult(0)
+		println ("MAITRE | send consult command to Table for 'Clear the room' task")
+	}
+	Transition t3
+//		whenMsg expose -> sendClear
+		whenEvent observertable -> sendClear
+	
+	State sendClear {
+		
+		onMsg( observertable : observertable(X) ) {
+	 		[# 
+	 			var Temp = payloadArg(0).split(";")
+	 			ClearDish = Temp.get(0)
+	 			ClearFood = Temp.get(1)
+	 		#] 
+ 		}
+/* 		
+ 		onMsg( expose:expose(X, Y) ) {
+	 		[# 
+	 			ClearDish = payloadArg(0)
+	 			ClearFood = payloadArg(1)
+	 		#]
+ 		}
+*/ 			
+		println ("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
+		forward rbr -m clear : clear($ClearDish, $ClearFood)
+//		terminate 0
+	} 
+}
+//FIXME l'invio dell'expose deve tenere conto di chi invia (on msg expose:mittente)
+QActor pantry context ctxsystem {
+		
+	State s0 initial {
+		println("PANTRY | STARTS and it's filled with a proper set of items...")
+		
+		solve(consult("PantryState.pl"))
+		println ("PANTRY | loaded initial state")	
+	}
+	Goto work
+	
+	State work {
+		println ("PANTRY| working...")
+	}
+	Transition t0
+		whenMsg consult -> exposeState
+		whenMsg changeState -> handleChangeState
+//		whenMsg add-> handleChangeState
+//		whenMsg remove -> handleChangeState
+			
+	State exposeState {
+		solve(getAllEl(Crockery))
+		ifSolved {
+			println("PANTRY | Crockery : ${getCurSol(\"Crockery\")}")
+			
+//			forward maitre -m expose:expose($getCurSol("Crockery"), "")
+		}
+		else {
+			println("PANTRY | Error getting pantry state/Error consult pantry")
+		}
+		
+		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
+		updateResource[#"${getCurSol("Crockery")}"#]
+//		forward maitre -m expose:expose($getCurSol("Crockery"), _) 
+		println ("PANTRY| sending state informations/exposed content to maitre/expose...")
+ 	}
+ 	Goto work
+	
+	State handleChangeState {
+		[# var Crockery = "" #]
+		
+		onMsg( changeState : changeState(add, ARG) ) { 
+	 		[# Crockery = payloadArg(1) #]
+	 		
+	 		solve(add($Crockery))
+			ifSolved {
+				println ("PANTRY | added Crockery : $Crockery...")
+
+				updateResource [# "Add Crockery $Crockery with success!" #]
+			}
+			else {
+				println("PANTRY | Error adding Crockery : $Crockery...")
+				
+				updateResource [# "Fail adding Crockery $Crockery!" #]
+			}
  		}
  		
-		println ("MAITRE | status of $Sender: $AnsExpose")
-	}
-	Goto sendClear if [# Nexp == 4 #]
-		else 
-		waitExpose
-	
-	State sendClear{
-		forward rbr -m clear : clear(0)
-		terminate 0
-	}
+ 		onMsg( changeState : changeState(remove, ARG) ) { 
+			[# Crockery = payloadArg(1) #]
+			
+			solve(remove($Crockery))
+			ifSolved {
+				println ("PANTRY | removed Crockery : $Crockery...")
+
+				updateResource [# "Remove Crockery $Crockery with success!" #]
+			}
+			else {
+				println("PANTRY | Error removing Crockery : $Crockery...")
+				
+				updateResource [# "Fail removing Crockery $Crockery!" #]
+			}
+ 		}	
+ 	}
+ 	Goto work	
 }
-*/
-QActor pantry context ctxres{
 
+QActor table context ctxsystem {
+	//TODO: decidere come rappresentare il cibo consumabile
 	State s0 initial {
-		println ("PANTRY| loading initial state ")
-		solve(consult("PantryInit.pl"))	
-	}Goto work
-	
-	State work{
-		println ("PANTRY| working")
-	}
-	Transition t0
-	whenMsg consult -> exposeState
-	whenMsg add-> handleChangeState
-	whenMsg remove -> handleChangeState
-	
-	State exposeState{
-		[#var State = "c"#]
-
-		println ("PANTRY | exposed content to maitre")
-		//TODO[Prolog] operazione di lettura Status
-
-		updateResource[#"State:$State"#]
-	}Goto work
-	
-	State handleChangeState{
-		[# var Nd = "" #]
+		println("TABLE | STARTS and it's empty...")
 		
-		onMsg( add:add(X) ) { 
-	 		[# 	Nd = payloadArg(0) #]
-	 		println ("PANTRY | add $Nd...")
-	 		[# //Dishes = Dishes + Nd  #]
-			//TODO[Prolog] operazione scrittura
- 		}
- 		onMsg( remove:remove(X) ) { 
-			[# 	Nd = payloadArg(0) #]
-	 		println ("PANTRY| remove $Nd...")
-	 		[# //Dishes = Dishes - Nd  #]
-			//TODO[Prolog] operazione scrittura
- 		}	
- 	}Goto work	
-}
-
-QActor table context ctxres{
-	// da decidere come rappresentare il cibo
-	State s0 initial {
-		println ("TABLE| loading initial state ") 
-		solve(consult("TableInit.pl"))
-	}Goto work
+		solve(consult("TableState.pl"))
+		println("TABLE| loaded initial state") 
+	}
+	Goto work
 	
-	
-	State work{
-		println ("TABLE| working")
+	State work {
+		println ("TABLE| working...")
 	}
 	Transition t0
-	whenMsg consult -> exposeState
-	whenMsg addDishes -> handleChangeState
-	whenMsg removeDishes -> handleChangeState
-	whenMsg addFood -> handleChangeState
-	
-	
-	State exposeState{	
-		[#var State = "b"#]
+		whenMsg consult -> exposeState
+		whenMsg changeState -> handleChangeState
+//		whenMsg add-> handleChangeState
+//		whenMsg remove -> handleChangeState
+		
+	State exposeState {
+//		solve(getAll(CrockeryFood))
+		solve(getAllEl(Crockery, Foods))
+		ifSolved {			
+//			println("TABLE | Crockery and Food = ${getCurSol(\"CrockeryFood\")}")
+			println("TABLE | Crockery = ${getCurSol(\"Crockery\")} Foods = ${getCurSol(\"Foods\")}")
 
-		println ("TABLE | exposed content to maitre")
-		//TODO[Prolog] operazione di lettura Status
-
-		updateResource[#"State:$State"#]
-	}Goto work
-	
-	State handleChangeState{
-		[#
-			var Nd= 0
-			var Fs =  emptyArray<Int>()
-		#]
-
-		onMsg( addFood:addFood(X) ) { //X valore
-			[# Fs= payloadArg(0).map{ it.toInt() }.toTypedArray() #]
-			//TODO[Prolog] operazione scrittura
-	 		println ("TABLE| add $Fs...")
- 		}
-
- 		onMsg( removeFood:removeFood(X) ) { //X valore
-			[# 	Fs = payloadArg(0).map{ it.toInt() }.toTypedArray() #]
-			//TODO[Prolog] operazione scrittura
-	 		println ("TABLE| remove $Fs...")
+//		forward maitre -m expose:expose($getCurSol("CrockeryFood"))
+//		forward maitre -m expose:expose($getCurSol("Crockery"), $getCurSol("Foods"))
 		}
-		onMsg( addDishes:addDishes(X) ) { //X valore
-			[# Nd= payloadArg(0).toInt() #]
-	 		println ("TABLE| add $Nd...")
-			//TODO[Prolog] operazione scrittura
-	 		[# //Dishes = Dishes + Nd  #]
+		else {
+			println("TABLE | Error getting table state/Error consult table")
+			
+//			forward maitre -m expose:expose("ERROR")
+		}
+		
+		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
+		updateResource[#"${getCurSol("Crockery")};${getCurSol("Foods")}"#]
+//		forward maitre -m expose:expose($getCurSol("CrockeryFood"))
+//		forward maitre -m expose:expose($getCurSol("Crockery"), $getCurSol("Foods"))
+		println("TABLE| sending state informations/exposed content to maitre/expose...")
+ 	}
+ 	Goto work
+	
+	State handleChangeState {
+		[# var CrockeryOrFood = "" #]
+		
+ 		//FIXME gestire consumazione food
+		onMsg( changeState : changeState(add, ARG) ) { //X valore
+			[# CrockeryOrFood = payloadArg(1) #]
+			
+			solve(add($CrockeryOrFood))
+			ifSolved {
+				println("TABLE | added $CrockeryOrFood...")
+				
+				updateResource [# "Add $CrockeryOrFood with success!" #]
+			}
+			else {
+				println("TABLE | Error adding $CrockeryOrFood...")
+				
+				updateResource [# "Fail adding $CrockeryOrFood!" #]
+			}
  		}
- 		onMsg( removeDishes:removeDishes(X) ) { //X valore
-			[# 	Nd = payloadArg(0).toInt()#]
-			println ("TABLE| remove $Nd...")
-			//TODO[Prolog] operazione scrittura
-			[# //Dishes = Dishes - Nd  #]
-  		}
-	}Goto work
+ 		//FIXME gestire food
+ 		onMsg( changeState : changeState(remove, ARG) ) { //X valore
+			[# CrockeryOrFood = payloadArg(1) #]
+			
+			solve(remove($CrockeryOrFood))
+			ifSolved {
+				println("TABLE | removed $CrockeryOrFood...")
+				
+				updateResource [# "Remove $CrockeryOrFood with success!" #]
+			}
+			else {
+				println("TABLE | Error removing $CrockeryOrFood...")
+				
+				updateResource [# "Fail removing $CrockeryOrFood!" #]
+			}
+		}
+	}
+	Goto work
 }
 
-QActor dishwasher context ctxres{
-	State s0 initial {
-		println ("DISHWASHER| loading initial state ")
-		solve(consult("DishwasherInit.pl"))
-	}Goto work 
+QActor dishwasher context ctxsystem {
 	
-	State work{
-		println ("DISHWASHER| working")
+	State s0 initial {
+		println("DISHWASHER | STARTS and it's empty...")
+		
+		solve(consult("DishwasherState.pl"))
+		println("DISHWASHER | loaded initial state")
+	}
+	Goto work 
+		
+	State work {
+		println ("DISHWASHER| working...")
 	}
 	Transition t0
-	whenMsg consult -> exposeState
-	whenMsg remove-> handleChangeState
-	whenMsg add-> handleChangeState
+		whenMsg consult -> exposeState
+		whenMsg changeState -> handleChangeState
+//		whenMsg remove-> handleChangeState
+//		whenMsg add-> handleChangeState		
 	
-	State exposeState{
-		[#var State = "d"#]
-
-		println ("DISHWASHER | exposed content to maitre")
-		//TODO[Prolog] operazione di lettura Status
-
-		updateResource[#"State:$State"#]
- 	}Goto work
+	State exposeState {
+		solve(getAllEl(Crockery))
+		ifSolved {
+			println("DISHWASHER | Crockery = ${getCurSol(\"Crockery\")} ")
+			
+//			forward maitre -m expose:expose($getCurSol("Crockery"), "")
+		}
+		else {
+			println("DISHWASHER | Error getting dishwasher state/Error consult dishwasher")
+			
+//			forward maitre -m expose:expose("ERROR", "")
+		}
+		
+		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
+		updateResource[#"${getCurSol("Crockery")}"#]
+//		forward maitre -m expose:expose($getCurSol("Crockery"), _) 
+		println ("DISHWASHER | sending state informations/exposed content to maitre/expose...")
+ 	}
+ 	Goto work
 	
-	State handleChangeState{
-		[# var Nd = ""	#]
+	State handleChangeState {
+		[# var Crockery = "" #]
+//		println ("DISHWASHER | changing state..") 	//lo mettiamo ovunque??
 
-		onMsg( add:add(X) ) { //X valore
-			[# Nd= payloadArg(0) #]
-	 		println ("DISHWASHER| add $Nd...")
+ 		onMsg( changeState : changeState(add, ARG) ) { 
+	 		[# Crockery = payloadArg(1) #]
 	 		
-			//TODO[Prolog] operazione scrittura
+	 		solve(add($Crockery))
+			ifSolved {
+				println ("DISHWASHER | added Crockery : $Crockery...")
+				
+				updateResource [# "Add Crockery $Crockery with success!" #]
+			}
+			else {
+				println("DISHWASHER | Error adding Crockery : $Crockery...")
+				
+				updateResource [# "Fail adding Crockery $Crockery!" #]
+			}
  		}
- 		onMsg( remove:remove(X) ) { //X valore
-			[# 	Nd= payloadArg(0)#]
-	 		println ("DISHWASHER| remove $Nd...")
-			//TODO[Prolog] operazione scrittura
+ 		
+ 		onMsg( changeState : changeState(remove, ARG) ) { 
+			[# Crockery = payloadArg(1) #]
+			
+			solve(remove($Crockery))
+			ifSolved {
+				println ("DISHWASHER | removed Crockery : $Crockery...")
+				
+				updateResource [# "Remove Crockery $Crockery with success!" #]
+			}
+			else {
+				println("DISHWASHER | Error removing Crockery : $Crockery...")
+				
+				updateResource [# "Fail removing Crockery $Crockery!" #]
+			}
  		}	
-	}Goto work
+	}
+	Goto work
 }
 
-QActor fridge context ctxfridge{
-
+QActor fridge context ctxsystem {
 	State s0 initial {
-		println ("FRIDGE | STARTS and it's embedded with the proper set of food")
-		solve(consult("FridgeInit.pl"))
+		println ("FRIDGE | STARTS and it's embedded with the proper set of food...")
+		
+		solve(consult("FridgeState.pl"))
+		println("FRIDGE | loaded initial state")
 		delay 300
 	}
 	Goto wait
@@ -430,47 +670,98 @@ QActor fridge context ctxfridge{
 		println ("FRIDGE | is waiting for a command...")
 	} 
 	Transition t1 
-		whenMsg add-> changeFood
-		whenMsg remove -> changeFood
 		whenMsg askFood -> answerFood
 		whenMsg consult -> exposeState
-
-	State changeFood{			
-		[# var Food_Code = ""  #]
-		
- 		onMsg( add:add(X) ) { //X 
-			[# Food_Code = payloadArg(0)#]
-	 		println ("FRIDGE | add $Food_Code...")
-			//TODO[Prolog] operazione scrittura
- 		}
- 		onMsg( remove:remove(X) ) { //X 
-			[# Food_Code = payloadArg(0)#]
-	 		println ("FRIDGE | remove $Food_Code...")
-			//TODO[Prolog] operazione scrittura
- 		}
-	}Goto wait
-
+		whenMsg changeState -> handleChangeState
+//		whenMsg add-> handleChangeState
+//		whenMsg remove -> handleChangeState
+	
 	State answerFood {
-		[# var Food_Code = "" 
-		   var FoodPresence = false
-		 #]
-		onMsg( askFood:askFood(X) ) {
-	 		[# Food_Code = payloadArg(0) #]
+		[# 
+			var FoodCode = ""
+			var FoodPresence = false
+		#]
+		
+		onMsg( askFood : askFood(FOOD_CODE) ) {
+	 		[# FoodCode = payloadArg(0) #]
  		}
-		println ("FRIDGE | searching Food_Code $Food_Code...")
-		//TODO[Prolog] operazione di ricerca Food_Code
-
-		updateResource[#"FoodPresence:$FoodPresence"#]		
+ 		//TODO perchè alcune operazioni sono fuori da onMsg e altre dentro??
+		println ("FRIDGE | searching food with Food_Code = $FoodCode...")
+		solve(checkFoodByCode($FoodCode, Food))
+		ifSolved {	
+			[# FoodPresence = true #]
+					
+	 		println ("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol(\"Food\")}")
+//			forward rbr -m answer:answer($FoodPresence, $getCurSol("Food"))			
+			updateResource[#"$FoodPresence;${getCurSol("Food")}"#]
+		}
+		else {
+			println("FRIDGE | Error searching food : not found existing or available food with Food_Code = $FoodCode...")
+//			forward rbr -m answer:answer($FoodPresence, _)
+			updateResource[#"$FoodPresence"#]
+		}	
+		
+		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
+//		forward rbr -m answer:answer($FoodPresence, $getCurSol("Food"))
+		println ("FRIDGE | answered to RBR about food presence via CoAP")
 	}
 	Goto wait
-	
+		 
 	State exposeState {
-		[#var State = "a"#]
-
-		println ("FRIDGE | exposed content to maitre")
-		//TODO[Prolog] operazione di lettura Status
+		solve(getAllEl(Foods))
+		ifSolved {
+			println("FRIDGE | Foods = ${getCurSol(\"Foods\")} ")
+			
+//			forward maitre -m expose:expose($getCurSol("Foods"), "")
+		}
+		else {
+			println("FRIDGE | Error getting fridge state/Error consult fridge")
+			
+//			forward maitre -m expose:expose("ERROR", "")
+		} 
 		
-		updateResource[#"State:$State"#]
-	} 
-	Goto wait		
+		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?		
+		updateResource[#"${getCurSol("Foods")}"#]
+//		forward maitre -m expose:expose($getCurSol("Foods"), _) 
+		println ("FRIDGE | sending state informations/exposed content to maitre/expose...")
+ 	}
+ 	Goto wait
+ 	
+ 	State handleChangeState {
+		[# var Food = "" #]
+
+ 		//FIXME gestire food
+		onMsg( changeState : changeState(add, ARG) ) { //X valore
+			[# Food = payloadArg(1) #]
+			
+			solve(add($Food))
+	 		ifSolved {
+				println ("FRIDGE | added Food : $Food...")
+				
+				updateResource [# "Add Food $Food with success!" #]
+			}
+			else {
+				println("FRIDGE | Error adding Food : $Food...")
+				
+				updateResource [# "Fail adding Food $Food!" #]
+			}
+ 		}
+ 		//FIXME gestire food
+ 		onMsg( changeState : changeState(remove, ARG) ) { //X valore
+			[# Food = payloadArg(1) #]
+			
+			solve(remove($Food))
+	 		ifSolved {
+				println ("FRIDGE | removed Food : $Food...")
+				
+				updateResource [# "Remove Food $Food with success!" #]
+			}
+			else {
+				println("FRIDGE | Error removing Food : $Food...")
+				
+				updateResource [# "Fail removing Food $Food!" #]
+			}
+ 		}
+	}
+	Goto wait
 }

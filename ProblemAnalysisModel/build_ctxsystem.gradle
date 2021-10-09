@@ -1,12 +1,12 @@
 /*
 ================================================================================
-build_ctxres.gradle
+build_ctxsystem.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build_ctxres.gradle eclipse		//to set the dependency on the library
-	gradle  -b build_ctxres.gradle distZip
-	gradle  -b build_ctxres.gradle -q tasks --all
-	gradle  -b build_ctxres.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxsystem.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxsystem.gradle distZip
+	gradle  -b build_ctxsystem.gradle -q tasks --all
+	gradle  -b build_ctxsystem.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {

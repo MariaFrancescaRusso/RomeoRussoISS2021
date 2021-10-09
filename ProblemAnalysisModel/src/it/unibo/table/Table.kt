@@ -19,55 +19,63 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						println("TABLE| loading initial state ")
-						solve("consult('TableInit.pl')","") //set resVar	
+						println("TABLE | STARTS and it's empty...")
+						solve("consult('TableState.pl')","") //set resVar	
+						println("TABLE| loaded initial state")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("work") { //this:State
 					action { //it:State
-						println("TABLE| working")
+						println("TABLE| working...")
 					}
-					 transition(edgeName="t07",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t08",targetState="handleChangeState",cond=whenDispatch("addDishes"))
-					transition(edgeName="t09",targetState="handleChangeState",cond=whenDispatch("removeDishes"))
-					transition(edgeName="t010",targetState="handleChangeState",cond=whenDispatch("addFood"))
+					 transition(edgeName="t013",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t014",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
-						var State = "b" 
-						println("TABLE | exposed content to maitre")
-						updateResourceRep("State:$State" 
+						solve("getAllEl(Crockery,Foods)","") //set resVar	
+						if( currentSolution.isSuccess() ) {println("TABLE | Crockery = ${getCurSol("Crockery")} Foods = ${getCurSol("Foods")}")
+						}
+						else
+						{println("TABLE | Error getting table state/Error consult table")
+						}
+						updateResourceRep("${getCurSol("Crockery")};${getCurSol("Foods")}" 
 						)
+						println("TABLE| sending state informations/exposed content to maitre/expose...")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
 				state("handleChangeState") { //this:State
 					action { //it:State
-						
-									var Nd= 0
-									var Fs =  emptyArray<Int>()
-						if( checkMsgContent( Term.createTerm("addFood(FOODE_CODE)"), Term.createTerm("addFood(X)"), 
+						 var CrockeryOrFood = ""  
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(add,ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Fs= payloadArg(0).map{ it.toInt() }.toTypedArray()  
-								println("TABLE| add $Fs...")
+								 CrockeryOrFood = payloadArg(1)  
+								solve("add($CrockeryOrFood)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("TABLE | added $CrockeryOrFood...")
+								updateResourceRep( "Add $CrockeryOrFood with success!"  
+								)
+								}
+								else
+								{println("TABLE | Error adding $CrockeryOrFood...")
+								updateResourceRep( "Fail adding $CrockeryOrFood!"  
+								)
+								}
 						}
-						if( checkMsgContent( Term.createTerm("removeFood(X)"), Term.createTerm("removeFood(X)"), 
+						if( checkMsgContent( Term.createTerm("changeState(X,ARG)"), Term.createTerm("changeState(remove,ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Fs = payloadArg(0).map{ it.toInt() }.toTypedArray()  
-								println("TABLE| remove $Fs...")
-						}
-						if( checkMsgContent( Term.createTerm("addDishes(X)"), Term.createTerm("addDishes(X)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 Nd= payloadArg(0).toInt()  
-								println("TABLE| add $Nd...")
-								 //Dishes = Dishes + Nd   
-						}
-						if( checkMsgContent( Term.createTerm("removeDishes(X)"), Term.createTerm("removeDishes(X)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								 	Nd = payloadArg(0).toInt() 
-								println("TABLE| remove $Nd...")
-								 //Dishes = Dishes - Nd   
+								 CrockeryOrFood = payloadArg(1)  
+								solve("remove($CrockeryOrFood)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("TABLE | removed $CrockeryOrFood...")
+								updateResourceRep( "Remove $CrockeryOrFood with success!"  
+								)
+								}
+								else
+								{println("TABLE | Error removing $CrockeryOrFood...")
+								updateResourceRep( "Fail removing $CrockeryOrFood!"  
+								)
+								}
 						}
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
