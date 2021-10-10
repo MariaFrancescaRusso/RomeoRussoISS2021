@@ -109,15 +109,14 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("handleAnswer") { //this:State
 					action { //it:State
-						println("RBR | observerFridge")
 						if( checkMsgContent( Term.createTerm("observerfridge(X)"), Term.createTerm("observerfridge(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
 									 			var Temp = payloadArg(0).split(";")
 									 			FoodPresence = Temp.get(0).toBoolean()
-									 			Food = Temp.get(1)
-								//	 			FoodPresence = payloadArg(0).toBoolean() 
-								//	 			Food = payloadArg(1)
+								if(  Temp.size == 2  
+								 ){ Food = Temp.get(1)  
+								}
 						}
 						println("RBR | received answer from fridge via CoAP: $FoodPresence")
 					}

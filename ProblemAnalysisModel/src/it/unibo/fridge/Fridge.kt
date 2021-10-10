@@ -47,12 +47,12 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						solve("checkFoodByCode($FoodCode,Food)","") //set resVar	
 						if( currentSolution.isSuccess() ) { FoodPresence = true  
 						println("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol("Food")}")
-						updateResourceRep("$FoodPresence;${getCurSol("Food")}" 
+						updateResourceRep( "$FoodPresence;${getCurSol("Food")}"  
 						)
 						}
 						else
 						{println("FRIDGE | Error searching food : not found existing or available food with Food_Code = $FoodCode...")
-						updateResourceRep("$FoodPresence" 
+						updateResourceRep( "$FoodPresence"  
 						)
 						}
 						println("FRIDGE | answered to RBR about food presence via CoAP")
@@ -63,13 +63,15 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						solve("getAllEl(Foods)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("FRIDGE | Foods = ${getCurSol("Foods")} ")
+						updateResourceRep( "${getCurSol("Foods")}"  
+						)
 						}
 						else
-						{println("FRIDGE | Error getting fridge state/Error consult fridge")
-						}
-						updateResourceRep("${getCurSol("Foods")}" 
+						{println("FRIDGE | Error consulting fridge...")
+						updateResourceRep( "ERROR"  
 						)
-						println("FRIDGE | sending state informations/exposed content to maitre/expose...")
+						}
+						println("FRIDGE | sending state informations/exposed content to maitre...")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 

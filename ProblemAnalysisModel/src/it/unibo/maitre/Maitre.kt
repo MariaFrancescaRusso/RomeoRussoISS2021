@@ -45,10 +45,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 									FoodCode = "c034"	// not existing food_code
 						//			FoodCode = "s001"	//existing and available food_code
 						
-									FridgeObserver.activate()
-									TableObserver.activate()
-									PantryObserver.activate()
-									DishwasherObserver.activate()
+									FridgeObserver.activate(myself)
+									TableObserver.activate(myself)
+									PantryObserver.activate(myself)
+									DishwasherObserver.activate(myself)
 						delay(2000) 
 					}
 					 transition( edgeName="goto",targetState="sendPrepare", cond=doswitch() )
@@ -102,7 +102,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("handleExpose") { //this:State
 					action { //it:State
 						  
-									var Sender = currentMsg.msgSender()
+									var Sender = currentMsg.msgSender().removePrefix("observer")
 									Nexp++ 
 						if( checkMsgContent( Term.createTerm("observerdishwasher(X)"), Term.createTerm("observerdishwasher(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -123,7 +123,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 									 			AnsExpose1 = Temp.get(0)
 									 			AnsExpose2 = Temp.get(1)
 						}
-						if(  Sender == "observertable"  
+						if(  Sender == "table"  
 						 ){println("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
 						}
 						else

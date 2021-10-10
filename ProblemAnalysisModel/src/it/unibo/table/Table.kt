@@ -36,13 +36,15 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 					action { //it:State
 						solve("getAllEl(Crockery,Foods)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("TABLE | Crockery = ${getCurSol("Crockery")} Foods = ${getCurSol("Foods")}")
+						updateResourceRep( "${getCurSol("Crockery")};${getCurSol("Foods")}"  
+						)
 						}
 						else
-						{println("TABLE | Error getting table state/Error consult table")
-						}
-						updateResourceRep("${getCurSol("Crockery")};${getCurSol("Foods")}" 
+						{println("TABLE | Error Error consulting table...")
+						updateResourceRep( "ERROR"  
 						)
-						println("TABLE| sending state informations/exposed content to maitre/expose...")
+						}
+						println("TABLE| sending state informations/exposed content to maitre...")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 

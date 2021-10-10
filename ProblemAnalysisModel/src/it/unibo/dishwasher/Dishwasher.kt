@@ -35,14 +35,16 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 				state("exposeState") { //this:State
 					action { //it:State
 						solve("getAllEl(Crockery)","") //set resVar	
-						if( currentSolution.isSuccess() ) {println("DISHWASHER | Crockery = ${getCurSol("Crockery")} ")
+						if( currentSolution.isSuccess() ) {println("DISHWASHER | Crockery = ${getCurSol("Crockery")}")
+						updateResourceRep( "${getCurSol("Crockery")}"  
+						)
 						}
 						else
-						{println("DISHWASHER | Error getting dishwasher state/Error consult dishwasher")
-						}
-						updateResourceRep("${getCurSol("Crockery")}" 
+						{println("DISHWASHER | Error consulting dishwasher...")
+						updateResourceRep( "ERROR"  
 						)
-						println("DISHWASHER | sending state informations/exposed content to maitre/expose...")
+						}
+						println("DISHWASHER | sending state informations/exposed content to maitre...")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 

@@ -36,13 +36,15 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						solve("getAllEl(Crockery)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("PANTRY | Crockery : ${getCurSol("Crockery")}")
+						updateResourceRep( "${getCurSol("Crockery")}"  
+						)
 						}
 						else
-						{println("PANTRY | Error getting pantry state/Error consult pantry")
-						}
-						updateResourceRep("${getCurSol("Crockery")}" 
+						{println("PANTRY | Error consulting pantry...")
+						updateResourceRep( "ERROR"  
 						)
-						println("PANTRY| sending state informations/exposed content to maitre/expose...")
+						}
+						println("PANTRY| sending state informations/exposed content to maitre...")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 

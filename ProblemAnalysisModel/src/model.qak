@@ -14,8 +14,7 @@ Event observerdishwasher:observerdishwasher(X)
 //Maitre - RBR
 Dispatch prepare:prepare(X, Y)
 
-Request addFood:addFood(FOODE_CODE)
-//Dispatch addFood:addFood(FOODE_CODE)	
+Request addFood:addFood(FOODE_CODE)	
 
 Dispatch clear:clear(X, Y)
 
@@ -24,29 +23,22 @@ Dispatch stop:stop(ARG)	//void
 Dispatch reactivate:reactivate(ARG)	//void
 
 Reply warning:warning(ARG)	//void
-//Dispatch warning:warning(ARG)	//void
 
-//TODO: Togliere expose!!
 //Maitre - Fridge/Resources
 Dispatch consult:consult(ARG)	//void
-//Dispatch expose:expose(ARG)		// ARG = string for the resource content
-//Dispatch expose:expose(X, Y)	// ARG = string for the resource content
 
 //RBR - Fridge
 Dispatch askFood:askFood(FOOD_CODE) 
-//Dispatch answer:answer(X, ARG)	// X = true/false ; ARG = Food for the FOOD_CODE
 
 //RBR - Res
 Dispatch changeState:changeState(X, ARG)	//X = add/remove ; ARG = state to change
-//Dispatch add:add(ARG)	// ARG = state to change
-//Dispatch remove:remove(ARG)	// ARG = state to change
 
 Context ctxsystem ip [host="localhost" port=8040]
-//Context ctxRBR ip [host="localhost" port=8050]
-//Context ctxFridge ip [host="127.0.0.1" port=8060]  
-//Context ctxMaitre ip [host="192.168.1.211" port=8070]
+//Context ctxrbr ip [host="localhost" port=8050]
+//Context ctxfridge ip [host="127.0.0.1" port=8060]  
+//Context ctxmaitre ip [host="192.168.1.211" port=8070]
 
-//QActor rbr context ctxRBR {
+//QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
 		var IsMap = false
@@ -100,7 +92,6 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | ...reached pantry. Taking dishes...")
 		forward pantry -m changeState : changeState(remove, $PrepareDish)
-//		forward pantry -m remove : remove($PrepareDish)
 		delay 300
 
 		println ("RBR | going to table...")
@@ -108,15 +99,13 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | ...reached table. Adding dishes...")
 		forward table -m changeState : changeState(add, $PrepareDish)
-//		forward table -m add : add($PrepareDish)	
 		delay 300
 			
 		println ("RBR | going to fridge...")
 		delay 300
 		
 		println ("RBR | ...reached fridge. Taking food...")
-		forward fridge -m changeState : changeState(remove, $PrepareFood)
-//		forward fridge -m remove : remove($PrepareFood)		
+		forward fridge -m changeState : changeState(remove, $PrepareFood)	
 		delay 300
 		
 		println ("RBR | going to table...")
@@ -124,7 +113,6 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | ...reached table. Adding food...")
 		forward table -m changeState : changeState(add, $PrepareFood)
-//		forward table -m add : add($PrepareFood)		
 		delay 300
 		
 		println ("RBR | coming back to RH...")
@@ -138,7 +126,6 @@ QActor rbr context ctxsystem {
 		println ("RBR | is placed in RH position and it's waiting for a command...")
 	}
 	Transition t1
-//		whenMsg addFood -> checkFood
 		whenRequest addFood -> checkFood
 		whenMsg clear -> exClear
 
@@ -152,27 +139,24 @@ QActor rbr context ctxsystem {
 	}
 	Transition t2
 		whenEvent observerfridge -> handleAnswer
-//		whenMsg answer -> handleReply
 			
 	State handleAnswer {
-		println("RBR | observerFridge")
+		
 		onMsg( observerfridge : observerfridge(X) ) {
-//		onMsg( answer:answer(X, Y) ) {
 	 		[# 
 	 			var Temp = payloadArg(0).split(";")
 	 			FoodPresence = Temp.get(0).toBoolean()
-	 			Food = Temp.get(1)
-//	 			FoodPresence = payloadArg(0).toBoolean() 
-//	 			Food = payloadArg(1)
 	 		#]
+	 		if [# Temp.size == 2 #] {
+	 			[# Food = Temp.get(1) #]	
+ 			}
  		}
 		println ("RBR | received answer from fridge via CoAP: $FoodPresence")
 	}
 	Goto fail if [# FoodPresence == false #] else exAddFood
 
 	State fail {
-		replyTo addFood with warning:warning(w)
-//		forward maitre -m warning:warning(w)
+		replyTo addFood with warning : warning(w)
 		println ("RBR | send warning to maitre")
 	}
 	Goto wait
@@ -185,7 +169,6 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | ...reached fridge. Taking food...")
 		forward fridge -m changeState : changeState(remove, $Food)
-//		forward fridge -m remove : remove($Food)	
 		delay 300
 		
 		println ("RBR | going to table...")
@@ -193,7 +176,6 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | ...reached table. Adding food...")
 		forward table -m changeState : changeState(add, $Food)
-//		forward table -m add : add($Food)
 		delay 300
 		
 		println ("RBR | coming back to RH...")
@@ -204,7 +186,6 @@ QActor rbr context ctxsystem {
 	Goto wait
 	
 	State exClear {
-	//TODO clear deve prima mandare un consult al tavolo per conoscerne lo stato ?
 		onMsg( clear:clear(X,Y) ) {
 	 		[# 	
 	 			ClearDish = payloadArg(0)
@@ -219,7 +200,6 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | ...reached table. Taking food...")
 		forward table -m changeState : changeState(remove, $ClearFood)
-//		forward table -m remove:remove($ClearFood)		
 		delay 300
 		
 		println ("RBR | going to fridge...")
@@ -227,23 +207,20 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | ...reached fridge. Adding food...")
 		forward fridge -m changeState : changeState(add,  $ClearFood)
-//		forward fridge -m add:add($ClearFood)
 		delay 300
 				
 		println ("RBR | going to table...")
 		delay 300
 		
 		println ("RBR | ...reached table. Taking dishes...")
-		forward table -m changeState : changeState(remove, $ClearDish)
-//		forward table -m remove:remove($ClearDish)	
+		forward table -m changeState : changeState(remove, $ClearDish)	
 		delay 300
 			
 		println ("RBR | going to dishwasher...")
 		delay 300
 		
 		println ("RBR | ...reached dishwasher. Adding dishes...")
-		forward dishwasher -m changeState : changeState(add, $ClearDish)
-//		forward dishwasher -m add:add($ClearDish)		
+		forward dishwasher -m changeState : changeState(add, $ClearDish)	
 		delay 300
 		
 		println ("RBR | coming back to RH...")
@@ -288,10 +265,10 @@ QActor maitre context ctxsystem {
 //			FoodCode = "s001"	//existing and available food_code
 		#]
 		[#
-			FridgeObserver.activate()
-			TableObserver.activate()
-			PantryObserver.activate()
-			DishwasherObserver.activate()
+			FridgeObserver.activate(myself)
+			TableObserver.activate(myself)
+			PantryObserver.activate(myself)
+			DishwasherObserver.activate(myself)
 		#]
 		delay 2000
 	}
@@ -305,13 +282,11 @@ QActor maitre context ctxsystem {
 	Goto sendAddFood
 	
 	State sendAddFood {		
-//		forward rbr -m addFood : addFood($FoodCode)
 		request rbr -m addFood : addFood($FoodCode)
 		println ("MAITRE | send addFood($FoodCode) command to RBR")	
 	}
 	Transition t1 
 		whenTimeVar AddFoodtime -> sendConsult //time waiting for warning otherwise the food is present
-//		whenMsg warning -> handleWarning
 		whenReply warning -> handleWarning
 			
 	State handleWarning {
@@ -338,16 +313,14 @@ QActor maitre context ctxsystem {
 		println("MAITRE | waiting answers from resources...")
 	}
 	Transition t2
-//		whenMsg expose -> handleExpose
 		whenEvent observerdishwasher -> handleExpose
 		whenEvent observerfridge -> handleExpose
 		whenEvent observerpantry -> handleExpose
 		whenEvent observertable -> handleExpose
 
-//FIXME gestire i messaggi a seconda del mittente
 	State handleExpose {
 		[#  
-			var Sender = currentMsg.msgSender()
+			var Sender = currentMsg.msgSender().removePrefix("observer")
 			Nexp++ 
 		#]
 		
@@ -367,35 +340,21 @@ QActor maitre context ctxsystem {
 	 			AnsExpose2 = Temp.get(1)
 	 		#] 
  		}
- 		if [# Sender == "observertable" #] {
-			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
- 		}
- 		else { 
- 			println ("MAITRE | status of $Sender: $AnsExpose1")
- 		}
-/* 		
- 		onMsg( expose:expose(X, Y) ) {
-	 		[# 
-	 			AnsExpose1 = payloadArg(0)
-	 			AnsExpose2 = payloadArg(1)
-	 		#] 
- 		}
  		if [# Sender == "table" #] {
 			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
  		}
  		else { 
  			println ("MAITRE | status of $Sender: $AnsExpose1")
- 		}	
-*/
+ 		}
 	}
 	Goto preSendClear if [#	Nexp == 4 #] else waitExpose
 	
+	//FIXME: clear manda prima un consult al tavolo per conoscerne lo stato
 	State preSendClear {
 		forward table -m consult : consult(0)
 		println ("MAITRE | send consult command to Table for 'Clear the room' task")
 	}
 	Transition t3
-//		whenMsg expose -> sendClear
 		whenEvent observertable -> sendClear
 	
 	State sendClear {
@@ -407,20 +366,14 @@ QActor maitre context ctxsystem {
 	 			ClearFood = Temp.get(1)
 	 		#] 
  		}
-/* 		
- 		onMsg( expose:expose(X, Y) ) {
-	 		[# 
-	 			ClearDish = payloadArg(0)
-	 			ClearFood = payloadArg(1)
-	 		#]
- 		}
-*/ 			
+ 				
 		println ("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
 		forward rbr -m clear : clear($ClearDish, $ClearFood)
+		
 //		terminate 0
 	} 
 }
-//FIXME l'invio dell'expose deve tenere conto di chi invia (on msg expose:mittente)
+
 QActor pantry context ctxsystem {
 		
 	State s0 initial {
@@ -437,24 +390,19 @@ QActor pantry context ctxsystem {
 	Transition t0
 		whenMsg consult -> exposeState
 		whenMsg changeState -> handleChangeState
-//		whenMsg add-> handleChangeState
-//		whenMsg remove -> handleChangeState
 			
 	State exposeState {
 		solve(getAllEl(Crockery))
 		ifSolved {
 			println("PANTRY | Crockery : ${getCurSol(\"Crockery\")}")
-			
-//			forward maitre -m expose:expose($getCurSol("Crockery"), "")
+			updateResource[# "${getCurSol("Crockery")}" #]
 		}
 		else {
-			println("PANTRY | Error getting pantry state/Error consult pantry")
+			println("PANTRY | Error consulting pantry...")
+			updateResource[# "ERROR" #]
 		}
 		
-		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
-		updateResource[#"${getCurSol("Crockery")}"#]
-//		forward maitre -m expose:expose($getCurSol("Crockery"), _) 
-		println ("PANTRY| sending state informations/exposed content to maitre/expose...")
+		println ("PANTRY| sending state informations/exposed content to maitre...")
  	}
  	Goto work
 	
@@ -512,30 +460,19 @@ QActor table context ctxsystem {
 	Transition t0
 		whenMsg consult -> exposeState
 		whenMsg changeState -> handleChangeState
-//		whenMsg add-> handleChangeState
-//		whenMsg remove -> handleChangeState
 		
 	State exposeState {
-//		solve(getAll(CrockeryFood))
 		solve(getAllEl(Crockery, Foods))
 		ifSolved {			
-//			println("TABLE | Crockery and Food = ${getCurSol(\"CrockeryFood\")}")
 			println("TABLE | Crockery = ${getCurSol(\"Crockery\")} Foods = ${getCurSol(\"Foods\")}")
-
-//		forward maitre -m expose:expose($getCurSol("CrockeryFood"))
-//		forward maitre -m expose:expose($getCurSol("Crockery"), $getCurSol("Foods"))
+			updateResource[# "${getCurSol("Crockery")};${getCurSol("Foods")}" #]
 		}
 		else {
-			println("TABLE | Error getting table state/Error consult table")
-			
-//			forward maitre -m expose:expose("ERROR")
+			println("TABLE | Error Error consulting table...")
+			updateResource[# "ERROR" #]
 		}
-		
-		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
-		updateResource[#"${getCurSol("Crockery")};${getCurSol("Foods")}"#]
-//		forward maitre -m expose:expose($getCurSol("CrockeryFood"))
-//		forward maitre -m expose:expose($getCurSol("Crockery"), $getCurSol("Foods"))
-		println("TABLE| sending state informations/exposed content to maitre/expose...")
+
+		println("TABLE| sending state informations/exposed content to maitre...")
  	}
  	Goto work
 	
@@ -543,7 +480,7 @@ QActor table context ctxsystem {
 		[# var CrockeryOrFood = "" #]
 		
  		//FIXME gestire consumazione food
-		onMsg( changeState : changeState(add, ARG) ) { //X valore
+		onMsg( changeState : changeState(add, ARG) ) { 
 			[# CrockeryOrFood = payloadArg(1) #]
 			
 			solve(add($CrockeryOrFood))
@@ -558,8 +495,8 @@ QActor table context ctxsystem {
 				updateResource [# "Fail adding $CrockeryOrFood!" #]
 			}
  		}
- 		//FIXME gestire food
- 		onMsg( changeState : changeState(remove, ARG) ) { //X valore
+ 		//FIXME gestire consumazione food
+ 		onMsg( changeState : changeState(remove, ARG) ) {
 			[# CrockeryOrFood = payloadArg(1) #]
 			
 			solve(remove($CrockeryOrFood))
@@ -593,33 +530,25 @@ QActor dishwasher context ctxsystem {
 	}
 	Transition t0
 		whenMsg consult -> exposeState
-		whenMsg changeState -> handleChangeState
-//		whenMsg remove-> handleChangeState
-//		whenMsg add-> handleChangeState		
+		whenMsg changeState -> handleChangeState	
 	
 	State exposeState {
 		solve(getAllEl(Crockery))
 		ifSolved {
-			println("DISHWASHER | Crockery = ${getCurSol(\"Crockery\")} ")
-			
-//			forward maitre -m expose:expose($getCurSol("Crockery"), "")
+			println("DISHWASHER | Crockery = ${getCurSol(\"Crockery\")}")
+			updateResource[# "${getCurSol("Crockery")}" #]
 		}
 		else {
-			println("DISHWASHER | Error getting dishwasher state/Error consult dishwasher")
-			
-//			forward maitre -m expose:expose("ERROR", "")
+			println("DISHWASHER | Error consulting dishwasher...")
+			updateResource[# "ERROR" #]
 		}
-		
-		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
-		updateResource[#"${getCurSol("Crockery")}"#]
-//		forward maitre -m expose:expose($getCurSol("Crockery"), _) 
-		println ("DISHWASHER | sending state informations/exposed content to maitre/expose...")
+ 
+		println ("DISHWASHER | sending state informations/exposed content to maitre...")
  	}
  	Goto work
 	
 	State handleChangeState {
 		[# var Crockery = "" #]
-//		println ("DISHWASHER | changing state..") 	//lo mettiamo ovunque??
 
  		onMsg( changeState : changeState(add, ARG) ) { 
 	 		[# Crockery = payloadArg(1) #]
@@ -673,8 +602,6 @@ QActor fridge context ctxsystem {
 		whenMsg askFood -> answerFood
 		whenMsg consult -> exposeState
 		whenMsg changeState -> handleChangeState
-//		whenMsg add-> handleChangeState
-//		whenMsg remove -> handleChangeState
 	
 	State answerFood {
 		[# 
@@ -685,24 +612,21 @@ QActor fridge context ctxsystem {
 		onMsg( askFood : askFood(FOOD_CODE) ) {
 	 		[# FoodCode = payloadArg(0) #]
  		}
- 		//TODO perchè alcune operazioni sono fuori da onMsg e altre dentro??
+
 		println ("FRIDGE | searching food with Food_Code = $FoodCode...")
+
 		solve(checkFoodByCode($FoodCode, Food))
 		ifSolved {	
 			[# FoodPresence = true #]
 					
-	 		println ("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol(\"Food\")}")
-//			forward rbr -m answer:answer($FoodPresence, $getCurSol("Food"))			
-			updateResource[#"$FoodPresence;${getCurSol("Food")}"#]
+	 		println ("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol(\"Food\")}")	
+			updateResource[# "$FoodPresence;${getCurSol("Food")}" #]
 		}
 		else {
 			println("FRIDGE | Error searching food : not found existing or available food with Food_Code = $FoodCode...")
-//			forward rbr -m answer:answer($FoodPresence, _)
-			updateResource[#"$FoodPresence"#]
+			updateResource[# "$FoodPresence" #]
 		}	
 		
-		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?
-//		forward rbr -m answer:answer($FoodPresence, $getCurSol("Food"))
 		println ("FRIDGE | answered to RBR about food presence via CoAP")
 	}
 	Goto wait
@@ -711,27 +635,21 @@ QActor fridge context ctxsystem {
 		solve(getAllEl(Foods))
 		ifSolved {
 			println("FRIDGE | Foods = ${getCurSol(\"Foods\")} ")
-			
-//			forward maitre -m expose:expose($getCurSol("Foods"), "")
+			updateResource[# "${getCurSol("Foods")}" #]
 		}
 		else {
-			println("FRIDGE | Error getting fridge state/Error consult fridge")
-			
-//			forward maitre -m expose:expose("ERROR", "")
+			println("FRIDGE | Error consulting fridge...")
+			updateResource[# "ERROR" #]
 		} 
-		
-		//solo se Solved altrimenti errore!! va messo nel Solved quindi!!?		
-		updateResource[#"${getCurSol("Foods")}"#]
-//		forward maitre -m expose:expose($getCurSol("Foods"), _) 
-		println ("FRIDGE | sending state informations/exposed content to maitre/expose...")
+		 
+		println ("FRIDGE | sending state informations/exposed content to maitre...")
  	}
  	Goto wait
  	
  	State handleChangeState {
 		[# var Food = "" #]
 
- 		//FIXME gestire food
-		onMsg( changeState : changeState(add, ARG) ) { //X valore
+		onMsg( changeState : changeState(add, ARG) ) {
 			[# Food = payloadArg(1) #]
 			
 			solve(add($Food))
@@ -747,7 +665,7 @@ QActor fridge context ctxsystem {
 			}
  		}
  		//FIXME gestire food
- 		onMsg( changeState : changeState(remove, ARG) ) { //X valore
+ 		onMsg( changeState : changeState(remove, ARG) ) {
 			[# Food = payloadArg(1) #]
 			
 			solve(remove($Food))
