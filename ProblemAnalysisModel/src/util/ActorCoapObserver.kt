@@ -1,5 +1,6 @@
 package util
 
+
 import org.eclipse.californium.core.CoapClient
 import org.eclipse.californium.core.CoapResponse
 import org.eclipse.californium.core.coap.MediaTypeRegistry
@@ -26,8 +27,8 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String){
     		this.context     = context     
     		this.destactor   = destactor
     		this.content	 = ""
-	}	
-
+	}
+	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
 	 fun activate( owner: ActorBasic? = null){ 
