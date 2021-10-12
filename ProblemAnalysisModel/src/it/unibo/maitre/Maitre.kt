@@ -19,9 +19,6 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 			
 				var AddFoodtime = 3000L 
 				var Nexp = 0
-				var PrepareDish = emptyList<ArrayList<String>>()
-				var PrepareFood = emptyList<ArrayList<String>>()
-				var FoodCode = ""
 				var AnsExpose1 = ""
 				var AnsExpose2 = ""
 				var ClearDish = ""
@@ -35,15 +32,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("s0") { //this:State
 					action { //it:State
 						println("MAITRE | STARTS...")
-						 	
-									PrepareDish = arrayListOf(arrayListOf("dishes", "10"), arrayListOf("glasses", "10")) 
-									PrepareFood = arrayListOf(arrayListOf("s001", "bread", "10"), arrayListOf("d001", "water", "10"), 
-										arrayListOf("p003", "pasta", "10"), arrayListOf("s002", "sandwich", "20"), arrayListOf("d005", "wine", "5"),
-										arrayListOf("k007", "muffin", "20"), arrayListOf("s005", "salad", "10"))
-						
-						//			FoodCode = "p003"	// existing food_code that isn't available
-									FoodCode = "c034"	// not existing food_code
-						//			FoodCode = "s001"	//existing and available food_code
+						solve("consult('Prepare.pl')","") //set resVar	
 						
 									FridgeObserver.activate(myself)
 									TableObserver.activate(myself)
@@ -55,16 +44,26 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("sendPrepare") { //this:State
 					action { //it:State
-						forward("prepare", "prepare($PrepareDish,$PrepareFood)" ,"rbr" ) 
-						println("MAITRE | send prepare command to RBR: $PrepareDish, $PrepareFood")
+						solve("getAllEl(Crockery,Foods)","") //set resVar	
+						if( currentSolution.isSuccess() ) {forward("prepare", "prepare(${getCurSol("Crockery")},${getCurSol("Foods")})" ,"rbr" ) 
+						println("MAITRE | send prepare command to RBR: ${getCurSol("Crockery")}, ${getCurSol("Foods")}")
+						}
+						else
+						{println("MAITRE | Error getting 'Prepare the room' elements...")
+						}
 						delay(2000) 
 					}
 					 transition( edgeName="goto",targetState="sendAddFood", cond=doswitch() )
 				}	 
 				state("sendAddFood") { //this:State
 					action { //it:State
-						request("addFood", "addFood($FoodCode)" ,"rbr" )  
-						println("MAITRE | send addFood($FoodCode) command to RBR")
+						solve("getFoodCodeEl(FoodCode)","") //set resVar	
+						if( currentSolution.isSuccess() ) {request("addFood", "addFood(${getCurSol("FoodCode")})" ,"rbr" )  
+						println("MAITRE | send addFood(${getCurSol("FoodCode")}) command to RBR")
+						}
+						else
+						{println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
+						}
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}

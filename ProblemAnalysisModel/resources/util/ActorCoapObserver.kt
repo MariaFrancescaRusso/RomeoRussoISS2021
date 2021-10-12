@@ -1,6 +1,5 @@
 package util
 
-
 import org.eclipse.californium.core.CoapClient
 import org.eclipse.californium.core.CoapResponse
 import org.eclipse.californium.core.coap.MediaTypeRegistry
@@ -13,7 +12,7 @@ import org.eclipse.californium.core.CoapHandler
 import it.unibo.kactor.ActorBasic
 import kotlinx.coroutines.launch 
  
-class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String){
+class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
 
     private val client = CoapClient()
 	

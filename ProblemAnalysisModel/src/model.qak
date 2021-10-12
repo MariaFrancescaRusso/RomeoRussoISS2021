@@ -54,11 +54,7 @@ QActor rbr context ctxsystem {
 //TODO nell'analisi dei requisiti qua attendiamo direttametne prepare è opportuno inserire lo stato e planning work già prima ?
 	State s0 initial {
 		println ("RBR | STARTS and it's placed in RH position...")
-		
-		[#
-			IsMap = true  	
-			//util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge").activate(myself)
-		#]		
+		[# IsMap = true #]		
 	}
 	Goto working if [# IsMap #] else mapping
 	
@@ -131,7 +127,7 @@ QActor rbr context ctxsystem {
 
 	State checkFood {		
 		onMsg( addFood : addFood(ARG) ) {
-	 		[# FoodCode = payloadArg(0) #]
+	 		[# FoodCode = payloadArg(0).removeSurrounding("[", "]")  #]
  		}
 
  		forward fridge -m askFood : askFood($FoodCode)
@@ -236,9 +232,6 @@ QActor maitre context ctxsystem {
 	[#	
 		var AddFoodtime = 3000L 
 		var Nexp = 0
-		var PrepareDish = emptyList<ArrayList<String>>()
-		var PrepareFood = emptyList<ArrayList<String>>()
-		var FoodCode = ""
 		var AnsExpose1 = ""
 		var AnsExpose2 = ""
 		var ClearDish = ""
@@ -252,38 +245,44 @@ QActor maitre context ctxsystem {
 	
 	State s0 initial {
 		println ("MAITRE | STARTS...")
-		//FIXME gestione prepare
-		[# 	
-			PrepareDish = arrayListOf(arrayListOf("dishes", "10"), arrayListOf("glasses", "10")) 
-			PrepareFood = arrayListOf(arrayListOf("s001", "bread", "10"), arrayListOf("d001", "water", "10"), 
-				arrayListOf("p003", "pasta", "10"), arrayListOf("s002", "sandwich", "20"), arrayListOf("d005", "wine", "5"),
-				arrayListOf("k007", "muffin", "20"), arrayListOf("s005", "salad", "10"))
-		#]
-		[#
-//			FoodCode = "p003"	// existing food_code that isn't available
-			FoodCode = "c034"	// not existing food_code
-//			FoodCode = "s001"	//existing and available food_code
-		#]
+		
+		solve(consult("Prepare.pl"))
+		
 		[#
 			FridgeObserver.activate(myself)
 			TableObserver.activate(myself)
 			PantryObserver.activate(myself)
 			DishwasherObserver.activate(myself)
 		#]
+		
 		delay 2000
 	}
 	Goto sendPrepare
 	
 	State sendPrepare {
-		forward rbr -m prepare : prepare($PrepareDish, $PrepareFood)
-		println ("MAITRE | send prepare command to RBR: $PrepareDish, $PrepareFood")
+		//FIXME gestione prepare		
+		solve(getAllEl(Crockery, Foods))
+		ifSolved {			
+			forward rbr -m prepare : prepare( $getCurSol("Crockery"), $getCurSol("Foods"))
+			println ("MAITRE | send prepare command to RBR: ${getCurSol(\"Crockery\")}, ${getCurSol(\"Foods\")}")
+		}
+		else {
+			println("MAITRE | Error getting 'Prepare the room' elements...")
+		}
+		
 		delay 2000		
 	}
 	Goto sendAddFood
 	
 	State sendAddFood {		
-		request rbr -m addFood : addFood($FoodCode)
-		println ("MAITRE | send addFood($FoodCode) command to RBR")	
+		solve(getFoodCodeEl(FoodCode))
+		ifSolved {			
+			request rbr -m addFood : addFood($getCurSol("FoodCode"))
+			println ("MAITRE | send addFood(${getCurSol(\"FoodCode\")}) command to RBR")				
+		}
+		else {
+			println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
+		}
 	}
 	Transition t1 
 		whenTimeVar AddFoodtime -> sendConsult //time waiting for warning otherwise the food is present

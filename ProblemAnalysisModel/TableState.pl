@@ -10,10 +10,8 @@
 
 %% ONLY for "https://swish.swi-prolog.org/"
 %:- dynamic (crockery/2, food/3).
-
-crockery(empty, 0).
-
-food(empty, empty, 0).
+%crockery(empty, 0).
+%food(empty, empty, 0).
 
 %% To obtain a list of crockery
 getCrockery(Res) :-
@@ -28,10 +26,10 @@ getCrockeryByName(NAME, Res) :-
 getCrockeryElByName(NAME, Res) :-
     findall([NAME, QUANTITY], crockery(NAME, QUANTITY), Res).  
 
-% To obtain a list of foods    
+%% To obtain a list of foods    
 getFood(Res) :-
     findall(food(CODE, NAME, QUANTITY), food(CODE, NAME, QUANTITY), Res).    
-% To obtain a list of foods elements
+%% To obtain a list of foods elements
 getFoodEl(Res) :-
     findall([CODE, NAME, QUANTITY], food(CODE, NAME, QUANTITY), Res). 
 %% To obtain the food by its code and name
@@ -41,19 +39,19 @@ getFoodByCodeAndName(CODE, NAME, Res) :-
 getFoodElByCodeAndName(CODE, NAME, Res) :-
     findall([CODE, NAME, QUANTITY], food(CODE, NAME, QUANTITY), Res). 
 
-% To obtain a list of crockery and a list of foods
+%% To obtain a list of crockery and a list of foods
 getAll(ResCrockery, ResFood) :-
 	getCrockery(ResCrockery),
     getFood(ResFood). 
-% To obtain a list of crockery elements and a list of food elements
+%% To obtain a list of crockery elements and a list of food elements
 getAllEl(ResCrockery, ResFood) :-
 	getCrockeryEl(ResCrockery),
     getFoodEl(ResFood).
-% To obtain a list of two list: crockery list and foods list
+%% To obtain a list of two list: crockery list and foods list
 getAll([H, T]) :-
 	getCrockery(H),
     getFood(T).      
-% To obtain a list of two list: crockery elements list and food elements list
+%% To obtain a list of two list: crockery elements list and food elements list
 getAllEl([H, T]) :-
 	getCrockeryEl(H),
     getFoodEl(T).
@@ -153,7 +151,7 @@ checkAllFoodByCodeAndName([]).
 checkAllFoodByCodeAndName([[CODE, NAME, _QUANTITY] | T]) :-
     checkFoodByCodeAndName(CODE, NAME),
     checkAllFoodByCodeAndName(T).
-%% To check if the crockery defined by its name is present
+%% To check if the food defined by its code and name is present
 checkFoodByCodeAndName(CODE, NAME) :-
     getFoodEl(Food),
     member([CODE, NAME, _QUANTITY], Food), !.

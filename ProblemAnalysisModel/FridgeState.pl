@@ -33,7 +33,7 @@ getFoodByCode(CODE, FoodRes) :-
 getFoodElByCode(CODE, FoodRes) :-
     findall([CODE, NAME, QUANTITY], food(CODE, NAME, QUANTITY), FoodRes).
 
-%% To add some elements to the table
+%% To add some elements
 add([]).
 	%% if the element is already present 
 	%% --> sum of their quantity to update the element
@@ -49,13 +49,13 @@ add([[CODE, NAME, QUANTITY] | T]) :-
     assertz(food(CODE, NAME, QUANTITY)),
     add(T).
 
-%% To remove some elements of food 
+%% To remove some foods
 %% only if all they exist in less quantity then the available
 remove(FoodEl) :-
 	checkAllByCodeAndName(FoodEl), !,
 	checkQuantity(FoodEl), !,
 	removeEl(FoodEl).
-%% To remove some elements of food
+%% To remove some foods
 removeEl([]).
 removeEl([[CODE, NAME, QUANTITY] | T]) :-
 	getElByCodeAndName(CODE, NAME, [[CODE, NAME, QUANTITYel] | _T]),
@@ -75,7 +75,7 @@ checkAllByCodeAndName([]).
 checkAllByCodeAndName([[CODE, NAME, _QUANTITY] | T]) :-
     checkFoodByCodeAndName(CODE, NAME),
     checkAllByCodeAndName(T).
-%% To check if the crockery defined by its name is present
+%% To check if the food defined by its code and name is present
 checkFoodByCodeAndName(CODE, NAME) :-
     getAllEl(Food),
     member([CODE, NAME, _QUANTITY], Food), !.

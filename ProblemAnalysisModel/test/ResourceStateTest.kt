@@ -30,7 +30,7 @@ class ResourceStateTest{
 		fun systemSetUp() {
 			println("===============TEST Init | Running context ")
 			GlobalScope.launch{ 
-				it.unibo.ctx.main()
+				it.unibo.ctxsystem.main()
 			}
 			println("===============TEST Init | Activating Observers")
 			GlobalScope.launch{
