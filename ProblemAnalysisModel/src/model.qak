@@ -9,7 +9,6 @@ Event observerfridge:observerfridge(X)
 Event observerpantry:observerpantry(X)
 Event observertable:observertable(X)
 Event observerdishwasher:observerdishwasher(X)
-//Event observer:observer(X)
 
 //Maitre - RBR
 Dispatch prepare:prepare(X, Y)
@@ -30,7 +29,7 @@ Dispatch consult:consult(ARG)	//void
 //RBR - Fridge
 Dispatch askFood:askFood(FOOD_CODE) 
 
-//RBR - Res
+//RBR - Resources
 Dispatch changeState:changeState(X, ARG)	//X = add/remove ; ARG = state to change
 
 Context ctxsystem ip [host="localhost" port=8040]
@@ -613,7 +612,7 @@ QActor fridge context ctxsystem {
 		println("FRIDGE | loaded initial state")
 		
 		[# FridgeObserver.activate(myself) #]
-		println ("DISHWASHER | activated DishwasherObserver")
+		println ("FRIDGE | activated FridgeObserver")
 		delay 300
 	}
 	Goto wait

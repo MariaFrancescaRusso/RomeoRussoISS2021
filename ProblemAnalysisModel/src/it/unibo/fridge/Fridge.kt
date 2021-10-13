@@ -26,7 +26,7 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						solve("consult('FridgeState.pl')","") //set resVar	
 						println("FRIDGE | loaded initial state")
 						 FridgeObserver.activate(myself)  
-						println("DISHWASHER | activated DishwasherObserver")
+						println("FRIDGE | activated FridgeObserver")
 						delay(300) 
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
