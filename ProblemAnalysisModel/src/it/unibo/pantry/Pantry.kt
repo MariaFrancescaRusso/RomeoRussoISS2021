@@ -16,12 +16,17 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		
+				val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
+		//		val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("PANTRY | STARTS and it's filled with a proper set of items...")
 						solve("consult('PantryState.pl')","") //set resVar	
 						println("PANTRY | loaded initial state")
+						 PantryObserver.activate(myself)  
+						println("PANTRY | activated PantryObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
@@ -29,8 +34,8 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("PANTRY| working...")
 					}
-					 transition(edgeName="t011",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t012",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t04",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t05",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State

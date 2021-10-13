@@ -28,6 +28,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
 				val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
 				val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
+				//val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
+				//val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")
+				//val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
+				//val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -67,8 +71,8 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t14",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
-					transition(edgeName="t15",targetState="handleWarning",cond=whenReply("warning"))
+					 transition(edgeName="t10",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					transition(edgeName="t11",targetState="handleWarning",cond=whenReply("warning"))
 				}	 
 				state("handleWarning") { //this:State
 					action { //it:State
@@ -93,10 +97,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("MAITRE | waiting answers from resources...")
 					}
-					 transition(edgeName="t26",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
-					transition(edgeName="t27",targetState="handleExpose",cond=whenEvent("observerfridge"))
-					transition(edgeName="t28",targetState="handleExpose",cond=whenEvent("observerpantry"))
-					transition(edgeName="t29",targetState="handleExpose",cond=whenEvent("observertable"))
+					 transition(edgeName="t22",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
+					transition(edgeName="t23",targetState="handleExpose",cond=whenEvent("observerfridge"))
+					transition(edgeName="t24",targetState="handleExpose",cond=whenEvent("observerpantry"))
+					transition(edgeName="t25",targetState="handleExpose",cond=whenEvent("observertable"))
 				}	 
 				state("handleExpose") { //this:State
 					action { //it:State
@@ -139,7 +143,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						forward("consult", "consult(0)" ,"table" ) 
 						println("MAITRE | send consult command to Table for 'Clear the room' task")
 					}
-					 transition(edgeName="t310",targetState="sendClear",cond=whenEvent("observertable"))
+					 transition(edgeName="t36",targetState="sendClear",cond=whenEvent("observertable"))
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State

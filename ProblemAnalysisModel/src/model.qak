@@ -36,7 +36,143 @@ Dispatch changeState:changeState(X, ARG)	//X = add/remove ; ARG = state to chang
 Context ctxsystem ip [host="localhost" port=8040]
 //Context ctxrbr ip [host="localhost" port=8050]
 //Context ctxfridge ip [host="127.0.0.1" port=8060]  
-//Context ctxmaitre ip [host="192.168.1.211" port=8070]
+//Context ctxmaitre ip [host="192.168.1.171" port=8070]
+
+/*
+//QActor maitre context ctxmaitre {
+QActor maitre context ctxsystem {
+	[#	
+		var AddFoodtime = 3000L 
+		var Nexp = 0
+		var AnsExpose1 = ""
+		var AnsExpose2 = ""
+		var ClearDish = ""
+		var ClearFood = ""
+	#]	
+	
+	State s0 initial {
+		println ("MAITRE | STARTS...")
+		
+		solve(consult("Prepare.pl"))
+		
+		delay 2000
+	}
+	Goto sendPrepare
+	
+	State sendPrepare {
+		//FIXME gestione prepare		
+		solve(getAllEl(Crockery, Foods))
+		ifSolved {			
+			forward rbr -m prepare : prepare( $getCurSol("Crockery"), $getCurSol("Foods"))
+			println ("MAITRE | send prepare command to RBR: ${getCurSol(\"Crockery\")}, ${getCurSol(\"Foods\")}")
+		}
+		else {
+			println("MAITRE | Error getting 'Prepare the room' elements...")
+		}
+		
+		delay 2000		
+	}
+	Goto sendAddFood
+	
+	State sendAddFood {		
+		solve(getFoodCodeEl(FoodCode))
+		ifSolved {			
+			request rbr -m addFood : addFood($getCurSol("FoodCode"))
+			println ("MAITRE | send addFood(${getCurSol(\"FoodCode\")}) command to RBR")				
+		}
+		else {
+			println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
+		}
+	}
+	Transition t1 
+		whenTimeVar AddFoodtime -> sendConsult //time waiting for warning otherwise the food is present
+		whenReply warning -> handleWarning
+			
+	State handleWarning {
+		println ("MAITRE | received warning from RBR")
+	}
+	Goto sendConsult
+
+	State sendConsult {	
+		forward fridge -m consult : consult(0)
+		println ("MAITRE | send consult command to Fridge")
+		
+		forward dishwasher -m consult : consult(0)
+		println ("MAITRE | send consult command to Dishwasher")
+		
+		forward pantry -m consult : consult(0)
+		println ("MAITRE | send consult command to Pantry")
+		
+		forward table -m consult : consult(0)
+		println ("MAITRE | send consult command to Table")
+	}
+	Goto waitExpose
+
+	State waitExpose {
+		println("MAITRE | waiting answers from resources...")
+	}
+	Transition t2
+		whenEvent observerdishwasher -> handleExpose
+		whenEvent observerfridge -> handleExpose
+		whenEvent observerpantry -> handleExpose
+		whenEvent observertable -> handleExpose
+
+	State handleExpose {
+		[#  
+			var Sender = currentMsg.msgSender().removePrefix("observer")
+			Nexp++ 
+		#]
+		
+		onMsg( observerdishwasher : observerdishwasher(X) ) {
+	 		[# AnsExpose1 = payloadArg(0) #]
+ 		}
+ 		onMsg( observerfridge : observerfridge(X) ) {
+	 		[# AnsExpose1 = payloadArg(0) #]
+ 		}
+ 		onMsg( observerpantry : observerpantry(X) ) {
+	 		[# AnsExpose1 = payloadArg(0) #]
+ 		}
+ 		onMsg( observertable : observertable(X) ) {
+	 		[# 
+	 			var Temp = payloadArg(0).split(";")
+	 			AnsExpose1 = Temp.get(0)
+	 			AnsExpose2 = Temp.get(1)
+	 		#] 
+ 		}
+ 		if [# Sender == "table" #] {
+			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
+ 		}
+ 		else { 
+ 			println ("MAITRE | status of $Sender: $AnsExpose1")
+ 		}
+	}
+	Goto preSendClear if [#	Nexp == 4 #] else waitExpose
+	
+	//FIXME: clear manda prima un consult al tavolo per conoscerne lo stato
+	State preSendClear {
+		forward table -m consult : consult(0)
+		println ("MAITRE | send consult command to Table for 'Clear the room' task")
+	}
+	Transition t3
+		whenEvent observertable -> sendClear
+	
+	State sendClear {
+		
+		onMsg( observertable : observertable(X) ) {
+	 		[# 
+	 			var Temp = payloadArg(0).split(";")
+	 			ClearDish = Temp.get(0)
+	 			ClearFood = Temp.get(1)
+	 		#] 
+ 		}
+ 				
+		println ("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
+		forward rbr -m clear : clear($ClearDish, $ClearFood)
+		
+//		terminate 0
+	} 
+}
+*/
 
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
@@ -228,158 +364,21 @@ QActor rbr context ctxsystem {
 	}
 }
 
-QActor maitre context ctxsystem {
-	[#	
-		var AddFoodtime = 3000L 
-		var Nexp = 0
-		var AnsExpose1 = ""
-		var AnsExpose2 = ""
-		var ClearDish = ""
-		var ClearFood = ""
-		
-		val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
-		val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
-		val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
-		val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
-	#]	
-	
-	State s0 initial {
-		println ("MAITRE | STARTS...")
-		
-		solve(consult("Prepare.pl"))
-		
-		[#
-			FridgeObserver.activate(myself)
-			TableObserver.activate(myself)
-			PantryObserver.activate(myself)
-			DishwasherObserver.activate(myself)
-		#]
-		
-		delay 2000
-	}
-	Goto sendPrepare
-	
-	State sendPrepare {
-		//FIXME gestione prepare		
-		solve(getAllEl(Crockery, Foods))
-		ifSolved {			
-			forward rbr -m prepare : prepare( $getCurSol("Crockery"), $getCurSol("Foods"))
-			println ("MAITRE | send prepare command to RBR: ${getCurSol(\"Crockery\")}, ${getCurSol(\"Foods\")}")
-		}
-		else {
-			println("MAITRE | Error getting 'Prepare the room' elements...")
-		}
-		
-		delay 2000		
-	}
-	Goto sendAddFood
-	
-	State sendAddFood {		
-		solve(getFoodCodeEl(FoodCode))
-		ifSolved {			
-			request rbr -m addFood : addFood($getCurSol("FoodCode"))
-			println ("MAITRE | send addFood(${getCurSol(\"FoodCode\")}) command to RBR")				
-		}
-		else {
-			println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
-		}
-	}
-	Transition t1 
-		whenTimeVar AddFoodtime -> sendConsult //time waiting for warning otherwise the food is present
-		whenReply warning -> handleWarning
-			
-	State handleWarning {
-		println ("MAITRE | received warning from RBR")
-	}
-	Goto sendConsult
-
-	State sendConsult {	
-		forward fridge -m consult : consult(0)
-		println ("MAITRE | send consult command to Fridge")
-		
-		forward dishwasher -m consult : consult(0)
-		println ("MAITRE | send consult command to Dishwasher")
-		
-		forward pantry -m consult : consult(0)
-		println ("MAITRE | send consult command to Pantry")
-		
-		forward table -m consult : consult(0)
-		println ("MAITRE | send consult command to Table")
-	}
-	Goto waitExpose
-
-	State waitExpose {
-		println("MAITRE | waiting answers from resources...")
-	}
-	Transition t2
-		whenEvent observerdishwasher -> handleExpose
-		whenEvent observerfridge -> handleExpose
-		whenEvent observerpantry -> handleExpose
-		whenEvent observertable -> handleExpose
-
-	State handleExpose {
-		[#  
-			var Sender = currentMsg.msgSender().removePrefix("observer")
-			Nexp++ 
-		#]
-		
-		onMsg( observerdishwasher : observerdishwasher(X) ) {
-	 		[# AnsExpose1 = payloadArg(0) #]
- 		}
- 		onMsg( observerfridge : observerfridge(X) ) {
-	 		[# AnsExpose1 = payloadArg(0) #]
- 		}
- 		onMsg( observerpantry : observerpantry(X) ) {
-	 		[# AnsExpose1 = payloadArg(0) #]
- 		}
- 		onMsg( observertable : observertable(X) ) {
-	 		[# 
-	 			var Temp = payloadArg(0).split(";")
-	 			AnsExpose1 = Temp.get(0)
-	 			AnsExpose2 = Temp.get(1)
-	 		#] 
- 		}
- 		if [# Sender == "table" #] {
-			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
- 		}
- 		else { 
- 			println ("MAITRE | status of $Sender: $AnsExpose1")
- 		}
-	}
-	Goto preSendClear if [#	Nexp == 4 #] else waitExpose
-	
-	//FIXME: clear manda prima un consult al tavolo per conoscerne lo stato
-	State preSendClear {
-		forward table -m consult : consult(0)
-		println ("MAITRE | send consult command to Table for 'Clear the room' task")
-	}
-	Transition t3
-		whenEvent observertable -> sendClear
-	
-	State sendClear {
-		
-		onMsg( observertable : observertable(X) ) {
-	 		[# 
-	 			var Temp = payloadArg(0).split(";")
-	 			ClearDish = Temp.get(0)
-	 			ClearFood = Temp.get(1)
-	 		#] 
- 		}
- 				
-		println ("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
-		forward rbr -m clear : clear($ClearDish, $ClearFood)
-		
-//		terminate 0
-	} 
-}
-
+//QActor pantry context ctxmaitre {
 QActor pantry context ctxsystem {
-		
+	[#
+		val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
+//		val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
+	#]
+	
 	State s0 initial {
 		println("PANTRY | STARTS and it's filled with a proper set of items...")
 		
 		solve(consult("PantryState.pl"))
 		println ("PANTRY | loaded initial state")	
+		
+		[# PantryObserver.activate(myself) #]
+		println ("PANTRY | activated PantryObserver")
 	}
 	Goto work
 	
@@ -443,13 +442,21 @@ QActor pantry context ctxsystem {
  	Goto work	
 }
 
+//QActor table context ctxmaitre {
 QActor table context ctxsystem {
+	[#
+		val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
+//		val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
+	#]
 	//TODO: decidere come rappresentare il cibo consumabile
 	State s0 initial {
 		println("TABLE | STARTS and it's empty...")
 		
 		solve(consult("TableState.pl"))
 		println("TABLE| loaded initial state") 
+		
+		[# TableObserver.activate(myself) #]
+		println ("TABLE | activated TableObserver")
 	}
 	Goto work
 	
@@ -514,13 +521,21 @@ QActor table context ctxsystem {
 	Goto work
 }
 
+//QActor dishwasher context ctxmaitre {
 QActor dishwasher context ctxsystem {
+	[#
+		val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
+//		val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")	
+	#]
 	
 	State s0 initial {
 		println("DISHWASHER | STARTS and it's empty...")
 		
 		solve(consult("DishwasherState.pl"))
 		println("DISHWASHER | loaded initial state")
+		
+		[# DishwasherObserver.activate(myself) #]
+		println ("DISHWASHER | activated DishwasherObserver")
 	}
 	Goto work 
 		
@@ -584,12 +599,21 @@ QActor dishwasher context ctxsystem {
 	Goto work
 }
 
+//QActor fridge context ctxfridge {
 QActor fridge context ctxsystem {
+	[#
+		val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
+//		val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
+	#]
+	
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food...")
 		
 		solve(consult("FridgeState.pl"))
 		println("FRIDGE | loaded initial state")
+		
+		[# FridgeObserver.activate(myself) #]
+		println ("DISHWASHER | activated DishwasherObserver")
 		delay 300
 	}
 	Goto wait

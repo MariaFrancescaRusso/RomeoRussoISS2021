@@ -1,4 +1,4 @@
-package it.unibo.test
+package util
 
 import org.eclipse.californium.core.CoapClient
 import org.eclipse.californium.core.CoapHandler
@@ -30,8 +30,8 @@ class UpdateHandler(val name : String, val channel : Channel<String>,
             }
         }
 
-class CoapObserverForTesting(val name: String      = "testingobs",
-							 val ip: String      = "localhost",
+class CoapObserverForTest(val name: String      = "testingobs",
+							 val ip: String      = "127.0.0.1",
 							 val context: String   = "ctxfridge",
 							 val observed : String = "fridge",
 							 val port: String      = "8060") {

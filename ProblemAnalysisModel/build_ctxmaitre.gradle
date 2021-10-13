@@ -1,19 +1,19 @@
 /*
 ================================================================================
-build2021
+build_ctxmaitre.gradle
 GENERATED ONLY ONCE
 USAGE:	 
-  	gradle  -b build2021.gradle eclipse		//to set the dependency on the library
-	gradle  -b build2021.gradle distZip
-	gradle  -b build2021.gradle -q tasks --all
-	gradle  -b build2021.gradle cleanDistDir	//to clean the src directory
+  	gradle  -b build_ctxmaitre.gradle eclipse		//to set the dependency on the library
+	gradle  -b build_ctxmaitre.gradle distZip
+	gradle  -b build_ctxmaitre.gradle -q tasks --all
+	gradle  -b build_ctxmaitre.gradle cleanDistDir	//to clean the src directory
 ================================================================================
 */
 plugins {
     id 'java'
     id 'eclipse'
-    id 'application'
-    id 'org.jetbrains.kotlin.jvm' version '1.4.32'
+    //id 'application'
+    id 'org.jetbrains.kotlin.jvm' version '1.3.71'
 }
 
 version '1.0'
@@ -52,47 +52,35 @@ dependencies {
 	// https://mvnrepository.com/artifact/org.mongodb/mongo-java-driver
 	//compile group: 'org.mongodb', name: 'mongo-java-driver', version: '3.8.2'
 
-//OkHttp library for websockets with Kotlin
-    implementation( "com.squareup.okhttp3:okhttp:4.9.0" )
-//COLORS
-	// https://mvnrepository.com/artifact/com.andreapivetta.kolor/kolor
-	implementation group: 'com.andreapivetta.kolor', name: 'kolor', version: '1.0.0'	
-
-//HTTP CLIENT
-    // https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-    implementation ("org.apache.httpcomponents:httpclient:4.5")
-    // https://mvnrepository.com/artifact/commons-io/commons-io
-    implementation ("commons-io:commons-io:2.6")
-
 //CUSTOM
     compile name: 'uniboInterfaces'
     compile name: '2p301'
     compile name: 'it.unibo.qakactor-2.4'
+ 
+    //For p2p two-way connections (TCP, UDP, BTH, Serial ...)
     compile name: 'unibonoawtsupports'
-	compile name: 'IssActorKotlinRobotSupport-2.0'
+
 	//BLS
 	//compile name: 'it.unibo.bls19Local-1.0'
-	
 	//RADAR
-	//compile name: 'radarPojo'
+	compile name: 'radarPojo'
 	//RADAR GUI
 	// https://mvnrepository.com/artifact/org.pushingpixels/trident
-	//compile group: 'org.pushingpixels', name: 'trident', version: '1.3'
+	compile group: 'org.pushingpixels', name: 'trident', version: '1.3'
 	//ROBOT nano (SAM)
     //compile name: 'labbaseRobotSam'
 	//compile mame: 'pi4j-core' //2-12 SNAPSHOT non in gradle
- 	
- 	//PLANNER FROM IssActorKotlinRobotSupport-2.0
-    //compile name: 'it.unibo.planner20-1.0'
+ 	//PLANNER
+    //compile name: 'it.unibo.planner'
  	// https://mvnrepository.com/artifact/com.googlecode.aima-java/aima-core
 	compile group: 'com.googlecode.aima-java', name: 'aima-core', version: '3.0.0'
 }
 
 compileKotlin {
-    kotlinOptions.jvmTarget = "1.8" //"1.8"
+    kotlinOptions.jvmTarget = "1.8"
 }
 compileTestKotlin {
-    kotlinOptions.jvmTarget = "1.8" //"1.8"  
+    kotlinOptions.jvmTarget = "1.8"
 }
 
 sourceSets {
@@ -100,19 +88,14 @@ sourceSets {
     main.java.srcDirs += 'resources'
     test.java.srcDirs += 'test'		//test is specific
 }
-
-eclipse {
-    classpath {
-        sourceSets -= [sourceSets.main, sourceSets.test]	
-    }	
- }
- 
-mainClassName ='it.unibo.ctxbasicrobot.MainCtxbasicrobotKt' //'robotNano.SonarHCSR04SupportActorKt'  
+/*
+mainClassName = 'it.unibo.TODOKt'
 
 jar {
-    println("building jar")
+    println("executing jar")
     from sourceSets.main.allSource
     manifest {
         attributes 'Main-Class': "$mainClassName"
     }
 }
+*/
