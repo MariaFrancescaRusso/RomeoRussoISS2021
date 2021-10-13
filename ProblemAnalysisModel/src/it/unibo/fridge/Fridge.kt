@@ -16,12 +16,17 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		
+				val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
+		//		val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("FRIDGE | STARTS and it's embedded with the proper set of food...")
 						solve("consult('FridgeState.pl')","") //set resVar	
 						println("FRIDGE | loaded initial state")
+						 FridgeObserver.activate(myself)  
+						println("DISHWASHER | activated DishwasherObserver")
 						delay(300) 
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
@@ -30,9 +35,9 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("FRIDGE | is waiting for a command...")
 					}
-					 transition(edgeName="t117",targetState="answerFood",cond=whenDispatch("askFood"))
-					transition(edgeName="t118",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t119",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t110",targetState="answerFood",cond=whenDispatch("askFood"))
+					transition(edgeName="t111",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t112",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("answerFood") { //this:State
 					action { //it:State

@@ -16,12 +16,17 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		
+				val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
+		//		val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("TABLE | STARTS and it's empty...")
 						solve("consult('TableState.pl')","") //set resVar	
 						println("TABLE| loaded initial state")
+						 TableObserver.activate(myself)  
+						println("TABLE | activated TableObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
@@ -29,8 +34,8 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 					action { //it:State
 						println("TABLE| working...")
 					}
-					 transition(edgeName="t013",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t014",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t06",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t07",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State

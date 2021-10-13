@@ -19,9 +19,6 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 			
 				var AddFoodtime = 3000L 
 				var Nexp = 0
-				var PrepareDish = emptyList<ArrayList<String>>()
-				var PrepareFood = emptyList<ArrayList<String>>()
-				var FoodCode = ""
 				var AnsExpose1 = ""
 				var AnsExpose2 = ""
 				var ClearDish = ""
@@ -31,19 +28,15 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
 				val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
 				val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
+				//val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
+				//val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")
+				//val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
+				//val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("MAITRE | STARTS...")
-						 	
-									PrepareDish = arrayListOf(arrayListOf("dishes", "10"), arrayListOf("glasses", "10")) 
-									PrepareFood = arrayListOf(arrayListOf("s001", "bread", "10"), arrayListOf("d001", "water", "10"), 
-										arrayListOf("p003", "pasta", "10"), arrayListOf("s002", "sandwich", "20"), arrayListOf("d005", "wine", "5"),
-										arrayListOf("k007", "muffin", "20"), arrayListOf("s005", "salad", "10"))
-						
-						//			FoodCode = "p003"	// existing food_code that isn't available
-									FoodCode = "c034"	// not existing food_code
-						//			FoodCode = "s001"	//existing and available food_code
+						solve("consult('Prepare.pl')","") //set resVar	
 						
 									FridgeObserver.activate(myself)
 									TableObserver.activate(myself)
@@ -55,21 +48,31 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("sendPrepare") { //this:State
 					action { //it:State
-						forward("prepare", "prepare($PrepareDish,$PrepareFood)" ,"rbr" ) 
-						println("MAITRE | send prepare command to RBR: $PrepareDish, $PrepareFood")
+						solve("getAllEl(Crockery,Foods)","") //set resVar	
+						if( currentSolution.isSuccess() ) {forward("prepare", "prepare(${getCurSol("Crockery")},${getCurSol("Foods")})" ,"rbr" ) 
+						println("MAITRE | send prepare command to RBR: ${getCurSol("Crockery")}, ${getCurSol("Foods")}")
+						}
+						else
+						{println("MAITRE | Error getting 'Prepare the room' elements...")
+						}
 						delay(2000) 
 					}
 					 transition( edgeName="goto",targetState="sendAddFood", cond=doswitch() )
 				}	 
 				state("sendAddFood") { //this:State
 					action { //it:State
-						request("addFood", "addFood($FoodCode)" ,"rbr" )  
-						println("MAITRE | send addFood($FoodCode) command to RBR")
+						solve("getFoodCodeEl(FoodCode)","") //set resVar	
+						if( currentSolution.isSuccess() ) {request("addFood", "addFood(${getCurSol("FoodCode")})" ,"rbr" )  
+						println("MAITRE | send addFood(${getCurSol("FoodCode")}) command to RBR")
+						}
+						else
+						{println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
+						}
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t14",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
-					transition(edgeName="t15",targetState="handleWarning",cond=whenReply("warning"))
+					 transition(edgeName="t10",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					transition(edgeName="t11",targetState="handleWarning",cond=whenReply("warning"))
 				}	 
 				state("handleWarning") { //this:State
 					action { //it:State
@@ -94,10 +97,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("MAITRE | waiting answers from resources...")
 					}
-					 transition(edgeName="t26",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
-					transition(edgeName="t27",targetState="handleExpose",cond=whenEvent("observerfridge"))
-					transition(edgeName="t28",targetState="handleExpose",cond=whenEvent("observerpantry"))
-					transition(edgeName="t29",targetState="handleExpose",cond=whenEvent("observertable"))
+					 transition(edgeName="t22",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
+					transition(edgeName="t23",targetState="handleExpose",cond=whenEvent("observerfridge"))
+					transition(edgeName="t24",targetState="handleExpose",cond=whenEvent("observerpantry"))
+					transition(edgeName="t25",targetState="handleExpose",cond=whenEvent("observertable"))
 				}	 
 				state("handleExpose") { //this:State
 					action { //it:State
@@ -140,7 +143,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						forward("consult", "consult(0)" ,"table" ) 
 						println("MAITRE | send consult command to Table for 'Clear the room' task")
 					}
-					 transition(edgeName="t310",targetState="sendClear",cond=whenEvent("observertable"))
+					 transition(edgeName="t36",targetState="sendClear",cond=whenEvent("observertable"))
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State

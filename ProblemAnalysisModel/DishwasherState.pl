@@ -6,8 +6,7 @@
 
 %% ONLY for "https://swish.swi-prolog.org/"
 %:- dynamic (crockery/2).
-
-crockery(empty, 0).
+%crockery(empty, 0).
 
 %% To obtain a list of crockery
 getAll(Res) :-

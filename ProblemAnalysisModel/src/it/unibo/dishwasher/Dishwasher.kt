@@ -16,12 +16,17 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
+		
+				val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
+		//		val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")	
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("DISHWASHER | STARTS and it's empty...")
 						solve("consult('DishwasherState.pl')","") //set resVar	
 						println("DISHWASHER | loaded initial state")
+						 DishwasherObserver.activate(myself)  
+						println("DISHWASHER | activated DishwasherObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )
 				}	 
@@ -29,8 +34,8 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					action { //it:State
 						println("DISHWASHER| working...")
 					}
-					 transition(edgeName="t015",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t016",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t08",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t09",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
