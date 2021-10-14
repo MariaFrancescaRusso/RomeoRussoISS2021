@@ -17,13 +17,11 @@ import kotlin.jvm.JvmStatic
 import kotlinx.coroutines.channels.Channel
 import util.CoapObserverForTest
 
-class ResourceStateTest {
+class PantryTest {
 		
 	companion object {
-		var fridgeActor : ActorBasic? = null
 		var pantryActor : ActorBasic? = null
 		var systemStarted         = false
-		var testingObserverFridge   : CoapObserverForTest ? = null
 		var testingObserverPantry 	: CoapObserverForTest ? = null
 		val channelSyncStart      = Channel<String>()
 	
@@ -51,15 +49,6 @@ class ResourceStateTest {
 			}
 */									
 			println("===============TEST Init | Activating Observers")
-
-			GlobalScope.launch {
-				fridgeActor = QakContext.getActor("fridge")
-				while(  fridgeActor == null ) {
-					delay(500)
-					fridgeActor = QakContext.getActor("fridge")
-				}
-				channelSyncStart.send("starttesting1")
-			}
 			
 			GlobalScope.launch {
 				pantryActor = QakContext.getActor("pantry")
@@ -73,11 +62,7 @@ class ResourceStateTest {
 			
 		@JvmStatic
 	    @AfterClass
-		fun terminate() {
-			println("${testingObserverFridge!!.name}")
-			testingObserverFridge!!.terminate()
-			testingObserverFridge = null
-			
+		fun terminate() {			
 			println("${testingObserverPantry!!.name}")
 			testingObserverPantry!!.terminate()
 			testingObserverPantry = null
@@ -89,30 +74,22 @@ class ResourceStateTest {
 	@Before
 	fun checkSystemStarted()  {
 		var ip = "localhost"
-		var ip1 = "127.0.0.1"
-		var ip2 = "192.168.1.211"
+//		var ip = "192.168.1.211"
 		var ctx = "ctxsystem"
-		var ctx1 = "ctxfridge"
-		var ctx2 = "ctxmaitre"
-		var actname1 = "fridge"
-		var actname2 = "pantry"
+//		var ctx = "ctxmaitre"
+		var actname = "pantry"
 		var port = "8040"
-		var port1 = "8060"
-		var port2 = "8070"
+//		var port = "8070"
 		
 		if( ! systemStarted ) {
 			runBlocking {
-				channelSyncStart.receive()
 				channelSyncStart.receive()
 				systemStarted = true
 				println("===============TEST | checkSystemStarted resumed")
 			}
 		}
-		
-		if( testingObserverFridge == null) testingObserverFridge = CoapObserverForTest("testingObserverFridge","$ip", "$ctx", "$actname1", "$port")
-		println("testingObserverFridge=$testingObserverFridge")
-		
-		if( testingObserverPantry == null) testingObserverPantry = CoapObserverForTest("testingObserverPantry","$ip", "$ctx", "$actname2", "$port")
+				
+		if( testingObserverPantry == null) testingObserverPantry = CoapObserverForTest("testingObserverPantry","$ip", "$ctx", "$actname", "$port")
 		println("testingObserverPantry=$testingObserverPantry")
   	}
 
@@ -143,7 +120,7 @@ class ResourceStateTest {
 		var Prevision = "Remove Crockery [[dishes,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "pantry")
 		var State = ""
-		var expected = "Remove "
+		var expected = Prevision
 		val channelForObserver = Channel<String>()		
 		
 		testingObserverPantry!!.addObserver( channelForObserver,expected )
@@ -159,46 +136,44 @@ class ResourceStateTest {
 	}
 	
 	@Test
-	fun AddFoodFridgeTest(){
-		var	Food = arrayListOf(arrayListOf("s034", "cheddar", "10"))
-		var fridgePrevision = "Add Food [[s034,cheddar,10]] with success!"
-		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Food)", "fridge")
-		var fridgeState = ""
-		var expected = "Add "
+	fun RemoveDishPantryFailTest() {
+		var	Dishes = arrayListOf(arrayListOf("cristal_glasses", "10"))
+		var Prevision = "Fail removing Crockery [[cristal_glasses,10]]!"
+		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "pantry")
+		var State = ""
+		var expected = Prevision
 		val channelForObserver = Channel<String>()		
 		
-		testingObserverFridge!!.addObserver( channelForObserver,expected )
+		testingObserverPantry!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
 			println("===============TEST | sending $msg")
-			MsgUtil.sendMsg(msg, fridgeActor!!)
-			fridgeState = channelForObserver.receive()			
+			MsgUtil.sendMsg(msg, pantryActor!!)
+			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$fridgeState for $msg")
-			assertEquals(fridgePrevision,fridgeState)
+			println("===============TEST | RESULT=$State for $msg")
+			assertEquals(Prevision,State)
 		}
 	}
 	
 	@Test
-	fun RemoveFoodFridTest() {
-//		var	PrepareDish = arrayListOf(arrayListOf("dishes", "10"), arrayListOf("glasses", "10")) 
-		var	Food = arrayListOf(arrayListOf("s001", "bread", "10"))
-		var fridgePrevision = "Remove Food [[s001,bread,10]] with success!"
-//		var fridgePrevision = "Remove Food $Food with success!"
-		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Food)", "fridge")
-		var fridgeState = ""
-		var expected = "Remove "
+	fun RemoveDishPantryFailQuantityTest() {
+		var	Dishes = arrayListOf(arrayListOf("dishes", "31"))
+		var Prevision = "Fail removing Crockery [[dishes,31]]!"
+		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "pantry")
+		var State = ""
+		var expected = Prevision
 		val channelForObserver = Channel<String>()		
 		
-		testingObserverFridge!!.addObserver( channelForObserver,expected )
+		testingObserverPantry!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
 			println("===============TEST | sending $msg")
-			MsgUtil.sendMsg(msg, fridgeActor!!)
-			fridgeState = channelForObserver.receive()			
+			MsgUtil.sendMsg(msg, pantryActor!!)
+			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$fridgeState for $msg")
-			assertEquals(fridgePrevision,fridgeState)
+			println("===============TEST | RESULT=$State for $msg")
+			assertEquals(Prevision,State)
 		}
 	}
  }
