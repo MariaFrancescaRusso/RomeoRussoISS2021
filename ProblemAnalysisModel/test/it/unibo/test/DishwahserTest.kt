@@ -63,10 +63,6 @@ class DishwasherTest {
 		@JvmStatic
 	    @AfterClass
 		fun terminate() {			
-			println("${testingObserverdishwasher!!.name}")
-			testingObserverdishwasher!!.terminate()
-			testingObserverdishwasher = null
-			
 			println("===============TEST | terminate the testing")				
 		}
 	}
@@ -93,6 +89,18 @@ class DishwasherTest {
 		println("testingObserverdishwasher=$testingObserverdishwasher")
   	}
 
+	
+	@After
+	fun removeObs(){
+		println("+++++++++ AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverdishwasher!!.name}")
+		testingObserverdishwasher!!.terminate()
+		testingObserverdishwasher= null
+
+		runBlocking{
+			delay(1000)
+		}
+	}
+	
 	@Test
 	fun AddDishdishwasherTest() {
 		var	Dishes = arrayListOf(arrayListOf("dishes", "10"))
@@ -105,6 +113,7 @@ class DishwasherTest {
 		testingObserverdishwasher!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, dishwasherActor!!)
 			State = channelForObserver.receive()			
@@ -118,7 +127,8 @@ class DishwasherTest {
 	fun RemoveDishdishwasherTest() {
 		var	Dishes = arrayListOf(arrayListOf("dishes", "10"))
 		var Prevision = "Remove Crockery [[dishes,10]] with success!"
-		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "dishwasher")
+		var msgAdd = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Dishes)", "dishwasher")
+		var msgRemove= MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "dishwasher")
 		var State = ""
 		var expected = Prevision
 		val channelForObserver = Channel<String>()		
@@ -126,11 +136,15 @@ class DishwasherTest {
 		testingObserverdishwasher!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
-			println("===============TEST | sending $msg")
-			MsgUtil.sendMsg(msg, dishwasherActor!!)
+			delay(200)
+			println("===============TEST | sending $msgAdd")
+			MsgUtil.sendMsg(msgAdd, dishwasherActor!!)
+			println("===============TEST | sending $msgRemove")
+			MsgUtil.sendMsg(msgRemove, dishwasherActor!!)
+
 			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$State for $msg")
+			println("===============TEST | RESULT=$State for $msgRemove")
 			assertEquals(Prevision,State)
 		}
 	}
@@ -147,6 +161,7 @@ class DishwasherTest {
 		testingObserverdishwasher!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, dishwasherActor!!)
 			State = channelForObserver.receive()			
@@ -168,6 +183,7 @@ class DishwasherTest {
 		testingObserverdishwasher!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, dishwasherActor!!)
 			State = channelForObserver.receive()			

@@ -62,11 +62,7 @@ class FridgeTest {
 			
 		@JvmStatic
 	    @AfterClass
-		fun terminate() {
-			println("${testingObserverFridge!!.name}")
-			testingObserverFridge!!.terminate()
-			testingObserverFridge = null
-						
+		fun terminate() {	
 			println("===============TEST | terminate the testing")				
 		}
 	}
@@ -92,8 +88,18 @@ class FridgeTest {
 		if( testingObserverFridge == null) testingObserverFridge = CoapObserverForTest("testingObserverFridge","$ip", "$ctx", "$actname", "$port")
 		println("testingObserverFridge=$testingObserverFridge")
   	}
-
-		
+	
+	
+	@After
+	fun removeObs(){
+		println("+++++++++ AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverFridge!!.name}")
+		testingObserverFridge!!.terminate()
+		testingObserverFridge = null
+		runBlocking{
+			delay(1000)
+		}
+	}	
+	
 	@Test
 	fun AddFoodFridgeTest(){
 		var	Food = arrayListOf(arrayListOf("s034", "cheddar", "10"))
@@ -106,6 +112,7 @@ class FridgeTest {
 		testingObserverFridge!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			fridgeState = channelForObserver.receive()			
@@ -127,6 +134,7 @@ class FridgeTest {
 		testingObserverFridge!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			fridgeState = channelForObserver.receive()			
@@ -148,6 +156,7 @@ class FridgeTest {
 		testingObserverFridge!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			State = channelForObserver.receive()			
@@ -169,6 +178,7 @@ class FridgeTest {
 		testingObserverFridge!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			State = channelForObserver.receive()			

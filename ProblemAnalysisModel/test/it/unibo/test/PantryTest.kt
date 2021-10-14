@@ -63,10 +63,6 @@ class PantryTest {
 		@JvmStatic
 	    @AfterClass
 		fun terminate() {			
-			println("${testingObserverPantry!!.name}")
-			testingObserverPantry!!.terminate()
-			testingObserverPantry = null
-			
 			println("===============TEST | terminate the testing")				
 		}
 	}
@@ -93,6 +89,17 @@ class PantryTest {
 		println("testingObserverPantry=$testingObserverPantry")
   	}
 
+	
+	@After
+	fun removeObs(){
+		println("+++++++++ AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverPantry!!.name}")
+		testingObserverPantry!!.terminate()
+		testingObserverPantry = null
+
+		runBlocking{
+			delay(1000)
+		}
+	}
 	@Test
 	fun AddDishPantryTest() {
 		var	Dishes = arrayListOf(arrayListOf("dishes", "10"))
@@ -105,6 +112,7 @@ class PantryTest {
 		testingObserverPantry!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			
@@ -126,6 +134,7 @@ class PantryTest {
 		testingObserverPantry!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			
@@ -147,6 +156,7 @@ class PantryTest {
 		testingObserverPantry!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			
@@ -168,6 +178,7 @@ class PantryTest {
 		testingObserverPantry!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			

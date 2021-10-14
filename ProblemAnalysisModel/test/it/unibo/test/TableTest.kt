@@ -62,11 +62,7 @@ class TableTest {
 			
 		@JvmStatic
 	    @AfterClass
-		fun terminate() {
-			println("${testingObserverTable!!.name}")
-			testingObserverTable!!.terminate()
-			testingObserverTable = null
-						
+		fun terminate() {	
 			println("===============TEST | terminate the testing")				
 		}
 	}
@@ -92,10 +88,21 @@ class TableTest {
 		if( testingObserverTable == null) testingObserverTable = CoapObserverForTest("testingObserverTable","$ip", "$ctx", "$actname", "$port")
 		println("testingObserverTable=$testingObserverTable")
   	}
+	
+	
+	@After
+	fun removeObs(){
+		println("+++++++++ AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverTable!!.name}")
+		testingObserverTable!!.terminate()
+		testingObserverTable = null
+		runBlocking{
+			delay(1000)
+		}
+	}
 
-		
 	@Test
 	fun AddFoodTableTest(){
+		
 		var	Food = arrayListOf(arrayListOf("s034", "cheddar", "10"))
 		var TablePrevision = "Add [[s034,cheddar,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Food)", "table")
@@ -106,6 +113,7 @@ class TableTest {
 		testingObserverTable!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, tableActor!!)
 			TableState = channelForObserver.receive()			
@@ -127,11 +135,12 @@ class TableTest {
 		val channelForObserver = Channel<String>()		
 		
 		testingObserverTable!!.addObserver( channelForObserver,expected )
-		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msgAdd")
 			MsgUtil.sendMsg(msgAdd, tableActor!!)
 			println("===============TEST | sending $msgRemove")
+			delay(200)
 			MsgUtil.sendMsg(msgRemove, tableActor!!)
 			TableState = channelForObserver.receive()			
 			
@@ -152,6 +161,7 @@ class TableTest {
 		testingObserverTable!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, tableActor!!)
 			State = channelForObserver.receive()			
@@ -175,11 +185,95 @@ class TableTest {
 		testingObserverTable!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
+			delay(200)
 			println("===============TEST | sending $msgAdd")
 			MsgUtil.sendMsg(msgAdd, tableActor!!)
 			println("===============TEST | sending $msgRemove")
 			MsgUtil.sendMsg(msgRemove, tableActor!!)
 
+			State = channelForObserver.receive()			
+			
+			println("===============TEST | RESULT=$State for $msgRemove")
+			assertEquals(Prevision,State)
+		}
+	}
+	
+	@Test
+	fun AddRemoveDishTableTest() {
+		var	DishesAdd = arrayListOf(arrayListOf("dishes", "10"))
+		var	DishesRemove= arrayListOf(arrayListOf("dishes", "10"))
+		var PrevisionAdd= "Add [[dishes,10]] with success!"
+		var PrevisionRemove = "Remove [[dishes,10]] with success!"
+		var msgAdd = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $DishesAdd)", "table")
+		var msgRemove= MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $DishesRemove)", "table")
+		var State = ""
+		var expectedRemove = PrevisionRemove
+		var expected = PrevisionAdd
+		val channelForObserver = Channel<String>()		
+		
+		testingObserverTable!!.addObserver( channelForObserver,expected)
+		
+		runBlocking {
+			delay(200)
+			println("===============TEST | sending $msgAdd")
+			MsgUtil.sendMsg(msgAdd, tableActor!!)
+			State = channelForObserver.receive()			
+			assertEquals(PrevisionAdd,State)
+		
+			testingObserverTable!!.addObserver( channelForObserver,expectedRemove )
+			println("===============TEST | sending $msgRemove")
+			delay(200)
+			MsgUtil.sendMsg(msgRemove, tableActor!!)
+			State = channelForObserver.receive()		
+		
+			println("===============TEST | RESULT=$State for $msgRemove")
+			assertEquals(PrevisionRemove,State)
+		}
+	}
+
+	@Test
+	fun RemoveDishTableFailTest() {
+		var	Dishes = arrayListOf(arrayListOf("cristal_glasses", "10"))
+		var Prevision = "Fail removing [[cristal_glasses,10]]!"
+		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "table")
+		var State = ""
+		var expected = Prevision
+		val channelForObserver = Channel<String>()		
+		
+		testingObserverTable!!.addObserver( channelForObserver,expected )
+		
+		runBlocking {
+			delay(200)
+			println("===============TEST | sending $msg")
+			MsgUtil.sendMsg(msg, tableActor!!)
+			State = channelForObserver.receive()			
+			
+			println("===============TEST | RESULT=$State for $msg")
+			assertEquals(Prevision,State)
+		}
+	}
+
+	
+	@Test
+	fun RemoveDishTableFailQuantityTest() {
+		var	DishesAdd = arrayListOf(arrayListOf("glass", "10"))
+		var	DishesRemove= arrayListOf(arrayListOf("glass", "11"))
+		var Prevision = "Fail removing [[glass,11]]!"
+		var msgAdd = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $DishesAdd)", "table")
+		var msgRemove = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $DishesRemove)", "table")
+		var State = ""
+		var expected = Prevision
+		val channelForObserver = Channel<String>()		
+		
+		testingObserverTable!!.addObserver( channelForObserver,expected )
+		
+		runBlocking {
+			delay(200)
+			println("===============TEST | sending $msgAdd")
+			MsgUtil.sendMsg(msgRemove, tableActor!!)
+			delay(200)
+			println("===============TEST | sending $msgAdd")
+			MsgUtil.sendMsg(msgRemove, tableActor!!)
 			State = channelForObserver.receive()			
 			
 			println("===============TEST | RESULT=$State for $msgRemove")
