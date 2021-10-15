@@ -49,10 +49,10 @@ QActor rbr context ctxRBR {
 		whenMsg clear -> exClear
 		
 	State checkFood {
-		[# var FOOD_CODE = -1 #]
+		[# var FOOD_CODE = "" #]
 		
 		onMsg( addFood : addFood(ARG) ) {
-			[# FOOD_CODE = payloadArg(0).toInt() #]
+			[# FOOD_CODE = payloadArg(0)#]
 		}
 		
 		forward fridge -m askFood : askFood($FOOD_CODE)
@@ -95,15 +95,12 @@ QActor rbr context ctxRBR {
 		println ("RBR | ...reached dishwasher. Coming back to RH...")
 		println ("RBR | ...reached RH. Finished executing task")
 		
-		terminate 0
+//		terminate 0
 	}
 }
 
 QActor fridge context ctxFridge {
-	[#
-		var FOOD_PRESENCE = false
-		var STATUS = "Vuoto"
-	#]
+	[# var STATUS = "Vuoto"	#]
 	
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food")
@@ -118,10 +115,12 @@ QActor fridge context ctxFridge {
 		whenMsg consult -> exposeState
 
 	State answerFood {
-		[# var FOOD_CODE = -1 #]
+	[# 	var FOOD_CODE = "" 
+		var FOOD_PRESENCE = false	
+	#]
 		
 		onMsg( askFood : askFood(ARG) ) {
-			[# FOOD_CODE = payloadArg(0).toInt() #]
+			[# FOOD_CODE = payloadArg(0) #]
 		}
 		println ("FRIDGE | searching food_code $FOOD_CODE...")
 		
@@ -185,6 +184,6 @@ QActor maitre context ctxMaitre {
 	State sendClear {
 		forward rbr -m clear : clear(0)
 		
-		terminate 0
+//		terminate 0
 	}
 }
