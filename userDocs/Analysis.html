@@ -138,8 +138,8 @@ Once we have understood the main concepts set by the <a href="./Analysis.html#re
 <tr>
 	<td>The software running on <kc>fridgeNode</kc> must be able to:
 		<ul>
-		<li>answer to the <ks>maître's smartphone</ks>, via <tt>CoAP</tt> (so it must know the destination URI), with his content when it's required;</li>
-		<li>answer to the <ks>RBR</ks>, via <tt>CoAP</tt> (so it must know the destination URI), when it asks if it contains a specific food defined by a <ks>food-code</ks>.</li>
+		<li>answer to the <ks>maître's smartphone</ks>, via <tt>CoAP</tt>, with his content when it's required;</li>
+		<li>answer to the <ks>RBR</ks>, via <tt>CoAP</tt>, when it asks if it contains a specific food defined by a <ks>food-code</ks>.</li>
 		</ul>
 	</td>
 </tr>
@@ -165,7 +165,7 @@ Here, it's illustrated a possible scenario of the system.
 	<td class="imageScenario"><img src="./utils/img/ScenarioPrepare.png" alt="Scenario 'Prepare the room'"></td>
 </tr>
 <tr>
-	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> answers to <ks>RBR</ks>, via <tt>CoAP</tt>, with <em>answer</em> command. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a warning to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
+	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> <em>answers</em> to <ks>RBR</ks>, via <tt>CoAP</tt>. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a <em>warning</em> to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
 	<td class="imageScenario"><img src="./utils/img/ScenarioAddFood.png" alt="Scenario 'Add food'"></td>
 </tr>
 <tr>
@@ -175,7 +175,7 @@ Here, it's illustrated a possible scenario of the system.
 <tr>
 	<td colspan="2">At every time of the service:
 	<ul>
-		<li>The <ks>Maître de Salle</ks> can use <em>consult</em> command to know the state of each element in the <ks>room</ks> (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>). In this case, the <ks>fridge</ks> answers via <tt>CoAP</tt>, using the <em>expose</em> command, to show its content.</li>
+		<li>The <ks>Maître de Salle</ks> can use <em>consult</em> command to know the state of each element in the <ks>room</ks> (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>). In this case, the <ks>fridge</ks> answers via <tt>CoAP</tt>, <em>exposing</em> its content.</li>
 		<li>The <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an already activated <ks>task</ks>, otherwise these commands have no effect.</li>
 		<li>The <ks>RBR</ks> must <em>avoid</em> the obstacles.</li>
 	</ul>
@@ -201,16 +201,17 @@ It's necessary to make some test plans that must be verified for the correct wor
 
 <h3>A First Model of the System Architecture</h3>
 
-From the requirements analysis, it's possible to obtain a first model, that is an initial representation of the system architecture, using a meta-model written in a machine-understandable language, like <tt>QActor</tt>, that describes the main interactions and behaviors between the main system components. In particular, the three main entities (<ks>RBR</ks>, <ks>maître's smartphone</ks>, <ks>fridge</ks>) are represented by three actors (QActors, that behave as <tt>Finite State Machines</tt> and work as <tt>CoAP</tt> observable resources) (<k>rbr</k>, <k>maitre</k>, <k>fridge</k>) and the nodes (<kc>robotNode</kc>, <kc>maitreNode</kc>, <kc>fridgeNode</kc>) where they run are represented by contexts (<k>ctxRBR</k>, <k>ctxMaitre</k>, <k>ctxFridge</k>).
+From the requirements analysis, it's possible to obtain a first model, that is an initial representation of the system architecture, using a meta-model written in a machine-understandable language, like <tt>QActor</tt>, that describes the main interactions and behaviors between the main system components. In particular, the three main entities (<ks>RBR</ks>, <ks>maître's smartphone</ks>, <ks>fridge</ks>) are represented by three <tt>actors</tt> (<tt>QActors</tt>, that behave as <tt>Finite State Machines</tt> and work as <tt>CoAP</tt> observable resources) (<k>rbr</k>, <k>maitre</k>, <k>fridge</k>) and the nodes (<kc>robotNode</kc>, <kc>maitreNode</kc>, <kc>fridgeNode</kc>) where they run are represented by <tt>contexts</tt> (<k>ctxRBR</k>, <k>ctxMaitre</k>, <k>ctxFridge</k>).
 <br><br>
-Making this, there were been found some problems, that will be addressed and solved next in the problem analysis:
+To make this, there were been found some problems, that will be addressed and solved next in the problem analysis:
 <ul>
-	<li>the <em>stop</em>/<em>reactivate</em> feature is just described as a <ko>dispatcher</ko> but is still not working cause none state reads that message;</li>
-	<li>the <em>consult</em> feature is still not completed cause it's necessary to manage the state information of smart and non-smart elements, but in this representation it's handled only the <ks>fridge</ks> state information.</li>
+	<li>the <em>stop</em> and <em>reactivate</em> features;</li>
+	<li>the <em>consult</em> feature, that is still not completed cause it's necessary to manage the state of smart and non-smart elements, but in this representation it's handled only the <k>fridge</k> state;</li>
+	<li>the <ks>fridge</ks> requirement to reply via <tt>CoAP</tt> to <k>rbr</k> or <k>maitre</k>, that isn't yet implemented but it's handled in this first phase through a <ko>dispatch</ko> message;</li>
+	<li>the movements of the <ks>RBR</ks>, that aren't addressed here but only its interactions with <k>fridge</k> and <k>maitre</k>;</li>
+	<li>the <ks>maître's smartphone</ks>, that is described here as a <tt>mock client</tt>, because it's early, in the requirements analysis, to represent his full proactive behavior that depends from a <tt>GUI</tt>.</li>
 </ul>
-Furthermore, the <ks>maitre</ks> is described here as a <tt>mock client</tt>, because it's early, in the requirements analysis, to represent his full proactive behavior that depend from a GUI.
-<br><br>
-<table>
+<table><br>
 <tr>
 <th>Machine Understandable Architecture Model</th>
 <th>A Possible Graphic Representation</th>
@@ -236,21 +237,6 @@ Furthermore, the <ks>maitre</ks> is described here as a <tt>mock client</tt>, be
 
 <h2>Problem Analysis</h2>
 
-<dl>
-<dt><k>What To Do</k>:</dt>
-<dd><ol>
-<li>Identify the main (technical) problems involved by the requirements<br>
-		+	the most appropriate (software) technologies (the best tools/libraries/supports etc.) to adopt that are necessary and/or useful for building the system<br>
-		+	evaluate the abstraction gap and give a quantitative measure of the effort/resources necessary to build the system and clarify the constraints (human, technical, economical, etc.) related to both the software product to build and the software production process</li>
-<li>Define (a model of) the logical architecture of the system</li>
-<li>Refine the set of functional TestPlan</li>
-<li>In the context of SCRUM:<ul>
-	<li>define a (first) product backlog</li>
-	<li>a possibile set/sequence of SPRINT</li>
-</ul></li>
-</ol></dd>
-</dl>
-
 <h3>Identification of the Problems and the Corresponding Solutions</h3>
 
 Starting from the requirements analysis, it's now necessary to found the main problems and abstraction gap involved by the requirements and to solve them, establishing the most appropriate technologies necessary for building the system.
@@ -260,11 +246,24 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<br>
 	<dd>To support the distribuited communications, it's possible to use the <tt>TCP</tt>, <tt>MQTT</tt> and/or <tt>CoAP</tt> protocols; the last one, by requirements, must be used by the <k>fridge</k> to communicate with the other two main components. In particular, <tt>MQTT</tt> is a IoT optimized messagging protocol which allows to implement a publish/subscribe interaction; while <tt>CoAP</tt> is a protocol for point-to-point communications among different nodes on the same network. <tt>CoAP</tt> supports also the <i>observe mechanism</i> where the node state is seen as a resource (<tt>CoAP</tt>) observed by other <tt>CoAP</tt> clients.</dd>
 	<br>
-	<dd>In the <ks>room</ks> there are non-smart resources, whose states should be managed by the software system. This could be done in different ways, listed below.
+	
+	<dt>Fridge</dt>
+	<dd>The requirements specify that the <k>fridge</k> must communicate through <tt>CoAP</tt> protocol. This can be done updating the <k>fridge</k> state through the <ko>updateResource</ko> command provided by the <tt>Qak-infrastructure</tt> and using a <tt>CoAP</tt> observer which waits for a <k>fridge</k> state update and when this happens, it sends an <ko>event</ko> to the listening actors.</dd>
+	<br>
+	
+	<dt>Resources</dt>
+	<dd>In the <ks>room</ks> there are non-smart resources, whose communications with other system components could be managed:
+		<ol>
+			<li><a name="sol1_coap"></a>via <tt>CoAP</tt>, as for <k>fridge</k> resource;</li>
+			<li>through messages, like <ko>dispatch</ko> or <ko>request</ko>/<ko>reply</ko>.</li>
+		</ol>
+	For uniformity in the management of all resources (smart and non-smart), the most indicated solution could be the <a href="./Analysis.html#sol1_coap">first one</a>.<dd>
+	<br>
+	<dd>The states of non-smart resources should be managed by the software system. This could be done in different ways, listed below.
 	<br><br>
 	<table>
 	<tr>
-		<td><ol><li>Using a resource manager actor (<k>rm</k>) which manages the state of each non-smart resource. It receives the <em>consult</em> command from <k>maitre</k> and answers it <em>exposing</em> the state of each non-smart resource. Moreover, when the <k>rbr</k> executes the <ks>tasks</ks>, it interacts with the <k>rm</k> to change the state of each non-smart resource.
+		<td><ol><li>Using a resource manager actor (<k>rm</k>) which manages the state of each non-smart resource. It receives the <em>consult</em> command from <k>maitre</k> and answers it, via CoAP, <em>exposing</em> the state of each non-smart resource. Moreover, when the <k>rbr</k> executes the <ks>tasks</ks>, it interacts with the <k>rm</k> to change the state of each non-smart resource.
 		<dl>
 			<dt>Pro:</dt>
 			<dd><ul>
@@ -357,11 +356,11 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	</table><br>
 	Therefore, exposed some possible solutions, the most appropriate seems to be the <a href="./Analysis.html#sol3_msr">number 3</a>, because it makes the most of the message communication system and allows to extend the functioning of the actors if the resources they represent, in future, assume a more advanced behavior.</dd>
 	<br>
-	<dd>Futhermore, it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set. To do this, it's possibile to use different approaches.
+	<dd>By requirement, at system start, fridge and pantry resources are embedded with a proper set of items and dishwasher and table resources are empty; so it's necessary a initialization procedure which loads the initial state for each resource (smart and non-smart) with its own elements set. To do this, it's possibile to use different approaches.
 	<br><br>
 	<table>
 	<tr>
-	<td><ol><li>Inserting resources state data directly in the code.
+	<td><ol><li>Inserting resources initial state data directly in the code.
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
@@ -376,7 +375,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	</li></ol></td>
 	</tr>
 	<tr>
-	<td><ol start="2"><li>Using a text file for each resource (smart and non-smart), where to read data of the state of each resource.
+	<td><ol start="2"><li>Using a text file for each resource (smart and non-smart), where to read data of the initial state of each resource.
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
@@ -385,13 +384,13 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 		</ul></dd>
 		<dt>CONS</dt>
 		<dd><ul>
-			<li>it's necessary to introduce the read (load the resource state) from text file functionality to implement this solution.</li>
+			<li>it's necessary to introduce the read from text file functionality (load the resource state) to implement this solution.</li>
 		</ul></dd>
 	</dl>
 	</li></ol></td>
 	</tr>
 	<tr>
-	<td><a name="sol3_isr"></a><ol start="3"><li>Availing the <tt>Prolog</tt> functionality made available by the <tt>Qak-infrastructure</tt>. In this way, the resource initial state is represented by <tt>facts</tt> in a <tt>prolog</tt> file <ko>(?) [(one for each resource actor) and can be obtained through specific methods in this file]</ko>.
+	<td><a name="sol3_isr"></a><ol start="3"><li>Availing the <tt>Prolog</tt> functionality made available by the <tt>Qak-infrastructure</tt>. In this way, the resources initial state is represented by <tt>facts</tt> in a <tt>prolog</tt> file (one for each resource actor), which can be load through the consult command provided by the <tt>Qak-infrastructure</tt>, specifying the prolog file name.
 	<dl>
 		<dt>PRO</dt>
 		<dd><ul>
@@ -406,26 +405,84 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	</dl>
 	</li></ol></td>
 	</tr>
+	<tr>
+	<td><ol start="4"><li>Using a <tt>database (DB)</tt> to load the initial state of each resource.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>separation between code and data; so to have a more clean code;</li>
+				<li>easy to create mock states for testing;</li>
+				<li>possibility to manage the state persistence, using well known patterns.</li>
+		</ul></dd>
+		<dt>CONS</dt>
+		<dd><ul>
+			<li>it's necessary to install a database server and to manually implement the access.</li>
+		</ul></dd>
+	</dl>
+	</li></ol></td>
+	</tr>
 	</table><br>
-	Therefore, exposed some possible solutions, the most appropriate seems to be the <a href="./Analysis.html#sol3_isr">number 3</a>, because it integrates best with the <tt>Qak-infrastructure</tt> and it is easier to implement and manage.</dd>
-	<br>
-	<dd>Said where to store the initial state of each resource, now it's necessary to establish how to load these informations at start of the system. It can be done:
-	<ol>
-		<li><a name="sol1_pef"></a>creating, in the <tt>prolog</tt> file, <tt>facts</tt> with a prefixed value for each resource state, which can be load at start of each resource actor;</li>
-		<li><a name="sol2_arf"></a>adding in the <ks>maître's smartphone</ks> software application a configuration tool, so to make possible for the <ks>Maître de Salle</ks> to insert or change the initial state values for each resource in the <ks>room</ks>. This can be done thanks to the possibility to add or remove a <tt>fact</tt>.</li>
-	</ol>
-	For an initial implementation of this system it will be adopted the <a href="./Analysis.html#sol1_pef">first solution</a>, but in future it could be ever integrated the <a href="./Analysis.html#sol2_arf">second solution</a>.</dd>
+	Therefore, exposed some possible solutions, the most appropriate seems to be the <a href="./Analysis.html#sol3_isr">number 3</a>, because it integrates best with the <tt>Qak-infrastructure</tt> and it is easier to implement and manage. In future, it could be ever integrated the possibility to add in the <ks>maître's smartphone</ks> software application a configuration tool, so to make possible for the <ks>Maître de Salle</ks> to insert or change the initial state values for each resource in the <ks>room</ks>.</dd>
 	<br>
 	<dd>To manage the update of the state value of each resource, there are two possible solutions:
 	<ol>
 		<li>to load at the start of each resource actor its initial state value from the <tt>prolog</tt> file and to save it in a variable, which will represent the resource state value and which will be updated when necessary;</li>
-		<li><a name="sol2_uff"></a>to load at the start of each resource actor its initial state value from the <tt>prolog</tt> file and to update it when necessary (removing/adding <tt>facts</tt> with appropriate methods).</li>
+		<li><a name="sol2_uff"></a>to load at the start of each resource actor its initial state value from the <tt>prolog</tt> file and to update it when necessary, 
+		through the solve command provided by the <tt>Qak-infrastructure</tt>, which executes specific methods in the prolog file.</li>
 	</ol>
 	The solution adopted is the <a href="./Analysis.html#sol2_uff">second</a>, so as to make the most of the integration between <tt>Prolog</tt> and the <tt>Qak-infrastructure</tt>.</dd>
 	<br>
 	<dd>COME GESTIRE ASPETTO DEI CIBI CONSUMABILI SUL TAVOLO? lo stato del cibo sul tavolo potrebbe avere un tempo random di consumazione, al termine del quale il cibo risulta consumato e quindi non più disponibile sul tavolo. Questo però nonostante sia una soluzione semplice non è predisposta ad un "miglioramento"/aggiornamento futuro. Un altra soluzione potrebbe essere quella di simulare le persone nella stanza, le quali consumano il cibo sempre in modo random. Un'altra soluzione ancora potrebbe essere quella di far indicare al maitre quando/quali cibi sono stati consumati (in quanto si pensa che il maitre/utente possa vedere la situazione del tavolo)</dd>
-</dl>
-<dl>
+	<br>
+	<dd>An other problem could be represented from the management of the food consumption on the table. To do this, it's possibile to use different approaches.This could be done in different ways, listed below.
+	<br><br>
+	<table>
+	<tr>
+	<td><ol><li>Using, for each food state on the table, a random consumption time, at which end/at the end of which the corresponding food will be consumed and therefore will be no longer available on the table.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>easy solution/easy to implement??</li>
+		</ul></dd>
+		<dt>CONS</dt>
+		<dd><ul>
+			<li>this solution isn't predisposed to a future improvement/update.</li>
+		</ul></dd>
+	</dl>
+	</li></ol></td>
+	</tr>
+	<tr>
+	<td><ol><li>Simulating people in the room, which consume the food on the table randomly, cosi da renderlo non piu disponibile sul tavolo??.
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li>this solution simulates the real functioning of the room / what might actually happen in the room</li>
+		</ul></dd>
+		<dt>CONS</dt>
+		<dd><ul>
+			<li></li>
+		</ul></dd>
+	</dl>
+	</li></ol></td>
+	</tr>
+	<tr>
+	<td><ol><li>Making that the maitre indicates when/which foods were consumed (in quanto si pensa che il maitre/utente possa vedere la situazione del tavolo), in modo da renderlo non più disponibile sul tavolo (remove del food).
+	<dl>
+		<dt>PRO</dt>
+		<dd><ul>
+				<li></li>
+		</ul></dd>
+		<dt>CONS</dt>
+		<dd><ul>
+			<li></li>
+			<li></li>
+		</ul></dd>
+	</dl>
+	</li></ol></td>
+	</tr>
+	</table><br>
+	The choose of a possible solution will be done during the design phase.</dd>
+
 	<dt>RBR</dt>
 	<dd>To allow <k>rbr</k> to move, the customer provides a library <m>it.unibo.qak21.basicrobot-1.0.jar</m>. In particular, this framework provides the <tt>basicRobot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>) and its possible implementations: <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>), on its own <tt>WEnv</tt> (Web Environment), or real robot, that can be <tt>mbot</tt> (<a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).
 	<br>
@@ -436,8 +493,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<dd>To be able to map the <ks>room</ks> and to satisfy the requirement <i><em>avoid</em> the impact with obstacles</i>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicRobot</k>.</dd>
 	<br>
 	<dd>To manage the the <em>stop</em>/<em>reactivate</em> commands received by the <k>maitre</k>, during the execution of each <ks>task</ks>, it's possible to split the path, the <ks>rbr</ks> must execute, in a steps sequence. In this way, at the end of each step the <k>rbr</k> checks if it has received a <em>stop</em> command and in this case it saves its state and waits for the <em>reactivate</em> command, otherwise it carries out the next step.</dd>
-</dl>
-<dl>
+
 	<dt>Maitre</dt>
 	<dd></dd>
 	<dd>The software running on the <ks>maitre's smartphone</ks> must provide an user interface to allow the user (<ks>Maître de Salle</ks>) to interact with the system. This software may be a native (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser.
@@ -451,7 +507,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<li><a name="sol2_fpv"></a>using, loadind from a prolog file, prefixed values for the number of elements in <em>prepare</em> commmand;</li>
 	<li><a name="sol3_cbp"></a>making that the maitre (<k>ACTOR? or user?</k>) can decide which and how many elements to insert (as arguments of) for the <em>prepare</em> command and, to do this, it's/it could be useful run a <em>consult</em> command at the start of the system, so as to have the updated resources state values which limit the choose, by maitre, of the elements (that must be less or equal then the available number of elements).</li>
 	</ol>
-	(Initially, in an early/first design phase, it coulde be possible/necessary to adopt the <a href="./Analysis.html#sol2_fpv">second solution</a>, but in a later/next design phase it could be better to adopt the ...)
+	(Initially, in an early/first design phase, it could be possible/necessary to adopt the <a href="./Analysis.html#sol2_fpv">second solution</a>, but in a later/next design phase it could be better to adopt the ...)
 	The <a href="./Analysis.html#sol2_cbp">third solution</a> seems to be the best, because it is predisposed to a possibile future change of the resources initial state, while using the <a href="./Analysis.html#sol1_cpv">first solution</a>, in case of future change of the resources initial state, the code will have to be changed, that is never a good practice.<dd>
 	<br>
 	<dd>A similar problem could be represented from <em>addFood</em> (<k>metto food-code??</k>) command/<ks>Add food</ks> <ks>task</ks>. Here, before sending this command, the maitre must specify which element (food-code) the <k>rbr</k> must require to the <k>fridge</k> and, if possible, take and bring to the table. This can be done making possible for the maitre the choose of this element from/using the set of elements obtained through the <em>consult</em> command runned before the <em>prepare</em> command and used to obtain the resources state values.<dd>
@@ -460,8 +516,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<br>
 	<dd>SE SCEGLIAMO DI FAR AGGIORNARE ALL'UTENTE/MAITRE I CIBI CONSUMATI SUL TAVOLO: ALLORA DOVREMMO SPECIFICARE CHE AGGIUNGIAMO QUESTA FUNZIONALITÀ DI AGGIORNAMENTO DELLO STATO DEL TAVOLO (ELIMINAZIONE DEI CIBI CONSUMATI) ALL'APPLICAZIONE LATO MAITRE.</dd>
 	<br>
-</dl>
-<dl>
+	
 	<dt>Fridge</dt>
 	<dd>The requirements specify that the <k>fridge</k> must communicate through <tt>CoAP</tt> protocol. This can be easily obtained, with the <tt>Qak framework</tt>, sending a normal <ko>dispatch</ko> to another actor running on another context. The software running on the fridge context (<k>ctxFridge</k>) should communicate via <ko>dispatch</ko> (<tt>CoAP</tt>) with the actors running on other contexts.</dd>
 </dl>
