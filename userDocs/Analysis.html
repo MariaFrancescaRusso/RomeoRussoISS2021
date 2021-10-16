@@ -480,7 +480,11 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 
 <h3>Model of System's Logical Architecture</h3>
 
-Below it's shown a model, that is a representation of the system architecture obtained from the problem analysis using <tt>QActor</tt> meta-model. In particular, starting from the <a href="./Analysis.html#ReqAnModel">model</a> obtained from the requirements analysis, in this model there are represented the main entities of the system as <tt>actors</tt> (<k>maitre</k>, <k>rbr</k>, <k>fridge</k>, <k>pantry</k>, <k>table</k>, <k>dishwasher</k>) which runs on their own <tt>contexts</tt> (<k>ctxmaitre</k>, which includes also the non-smart resources <tt>actors</tt>, <k>ctxrbr</k>, <k>ctxfridge</k>). At each resource (smart and non-smart) it's associated a <a href="../ProblemAnalysisModel/resources/util/ActorCoapObserver.kt" target="_blank"><tt>CoAP observer</tt></a>. The initial state of each resource and the methods to update it are managed through <tt>prolog</tt> files (<a href="../ProblemAnalysisModel/FridgeState.pl" target="_blank">FridgeState.pl</a>, <a href="../ProblemAnalysisModel/PantryState.pl" target="_blank">PantryState.pl</a>, <a href="../ProblemAnalysisModel/DishwasherState.pl" target="_blank">DishwasherState.pl</a>, <a href="../ProblemAnalysisModel/TableState.pl" target="_blank">TableState.pl</a>).
+Below it's shown a model, that is a representation of the system architecture obtained from the problem analysis using <tt>QActor</tt> meta-model. In particular, starting from the <a href="./Analysis.html#ReqAnModel">model</a> obtained from the requirements analysis, in this model there are represented the main entities of the system as <tt>actors</tt> (<k>maitre</k>, <k>rbr</k>, <k>fridge</k>, <k>pantry</k>, <k>table</k>, <k>dishwasher</k>) which runs on their own <tt>contexts</tt> (<k>ctxmaitre</k>, which includes also the non-smart resources <tt>actors</tt>, <k>ctxrbr</k>, <k>ctxfridge</k>).<br>
+At each resource (smart and non-smart) it's associated a <a href="../ProblemAnalysisModel/resources/util/ActorCoapObserver.kt" target="_blank"><tt>CoAP observer</tt></a>.<br>
+The initial state of each resource and the methods to update it are managed through <tt>prolog</tt> files (<a  href="../ProblemAnalysisModel/FridgeState.pl" target="_blank">FridgeState.pl</a>, <a href="../ProblemAnalysisModel/PantryState.pl" target="_blank">PantryState.pl</a>, <a href="../ProblemAnalysisModel/DishwasherState.pl" target="_blank">DishwasherState.pl</a>, <a href="../ProblemAnalysisModel/TableState.pl" target="_blank">TableState.pl</a>).<br>
+The elements and the <ks>food-code</ks> for the <em>prepare</em> and <em>addFood</em> commands are also managed by a <tt>prolog</tt> file (<a href="../ProblemAnalysisModel/Prepare.pl" target="_blank">Prepare.pl</a>).<br>
+Furthermore, the <em>clear</em> command is managed, <k>maitre</k> side, by sending a <em>consult</em> command to the <k>table</k> before sending the <em>clear</em> command to the <k>rbr</k>.
 <br><br>
 <table>
 <tr class="text">
@@ -490,7 +494,7 @@ Below it's shown a model, that is a representation of the system architecture ob
 <tr>
 	<td class="text">
 		<a href="../ProblemAnalysisModel/src/model.qak" target="_blank">ModelAnalysisModel.qak</a><br>
-		<pre><iframe class="qak" src="../ProblemAnalysisModel/src/model.qak" title="ProblemAnalysisModel">Model of Problem Analysis</iframe></pre>
+		<pre style="word-wrap: break-word; white-space: pre-wrap;"><iframe class="qak" src="../ProblemAnalysisModel/src/model.qak" title="ProblemAnalysisModel">Model of Problem Analysis</iframe></pre>
 	</td>
 	<td class="imageSchema">
 		<img src="./utils/img/ModelFromProblemAnalysis.png" alt="Logical Architecture System Model from Problem Analysis"><br>
