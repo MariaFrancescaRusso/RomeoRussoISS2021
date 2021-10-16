@@ -137,6 +137,7 @@ QActor fridge context ctxFridge {
 	Goto wait
 }
 
+// Actor maitre is used as a mock client
 QActor maitre context ctxMaitre {
 	[# var AddFoodtime = 3000L #]
 	

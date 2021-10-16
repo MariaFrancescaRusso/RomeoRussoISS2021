@@ -21,34 +21,34 @@ class PantryTest {
 		
 	companion object {
 		var pantryActor : ActorBasic? = null
-		var systemStarted         = false
-		var testingObserverPantry 	: CoapObserverForTest ? = null
-		val channelSyncStart      = Channel<String>()
+		var systemStarted = false
+		var testingObserverPantry : CoapObserverForTest ? = null
+		val channelSyncStart = Channel<String>()
 	
 		@JvmStatic
 		@BeforeClass
 		fun systemSetUp() {
-			println("===============TEST Init | Running context ")
+			println ("===============TEST Init | Running context")
 
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxsystem.main()
 			}			
 /*		
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxfridge.main()
 			}
 */
 /*			
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxrbr.main()
 			}
 */
 /*		
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxmaitre.main()
 			}
 */									
-			println("===============TEST Init | Activating Observers")
+			println ("===============TEST Init | Activating Observers")
 			
 			GlobalScope.launch {
 				pantryActor = QakContext.getActor("pantry")
@@ -63,12 +63,12 @@ class PantryTest {
 		@JvmStatic
 	    @AfterClass
 		fun terminate() {			
-			println("===============TEST | terminate the testing")				
+			println ("===============TEST | terminate the testing")				
 		}
 	}
 	
 	@Before
-	fun checkSystemStarted()  {
+	fun checkSystemStarted() {
 		var ip = "localhost"
 //		var ip = "192.168.1.211"
 		var ctx = "ctxsystem"
@@ -81,43 +81,43 @@ class PantryTest {
 			runBlocking {
 				channelSyncStart.receive()
 				systemStarted = true
-				println("===============TEST | checkSystemStarted resumed")
+				println ("===============TEST | checkSystemStarted resumed")
 			}
 		}
 				
 		if( testingObserverPantry == null) testingObserverPantry = CoapObserverForTest("testingObserverPantry","$ip", "$ctx", "$actname", "$port")
-		println("testingObserverPantry=$testingObserverPantry")
+		println ("testingObserverPantry=$testingObserverPantry")
   	}
 
-	
 	@After
-	fun removeObs(){
-		println("+++++++++ AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverPantry!!.name}")
+	fun removeObs() {
+		println ("+++++++++AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverPantry!!.name}")
 		testingObserverPantry!!.terminate()
 		testingObserverPantry = null
 
-		runBlocking{
+		runBlocking {
 			delay(1000)
 		}
 	}
+	
 	@Test
 	fun AddDishPantryTest() {
 		var	Dishes = arrayListOf(arrayListOf("dishes", "10"))
-		var Prevision = "Add Crockery [[dishes,10]] with success!"
+		var Prevision = "Added Crockery [[dishes,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Dishes)", "pantry")
 		var State = ""
-		var expected = "Add "
+		var expected = "Added "
 		val channelForObserver = Channel<String>()
 		
 		testingObserverPantry!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$State for $msg")
+			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
 	}
@@ -125,7 +125,7 @@ class PantryTest {
 	@Test
 	fun RemoveDishPantryTest() {
 		var	Dishes = arrayListOf(arrayListOf("dishes", "10"))
-		var Prevision = "Remove Crockery [[dishes,10]] with success!"
+		var Prevision = "Removed Crockery [[dishes,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "pantry")
 		var State = ""
 		var expected = Prevision
@@ -135,11 +135,11 @@ class PantryTest {
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$State for $msg")
+			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
 	}
@@ -157,11 +157,11 @@ class PantryTest {
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$State for $msg")
+			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
 	}
@@ -179,11 +179,11 @@ class PantryTest {
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, pantryActor!!)
 			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$State for $msg")
+			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
 	}

@@ -61,7 +61,7 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 								 CrockeryOrFood = payloadArg(1)  
 								solve("add($CrockeryOrFood)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("TABLE | added $CrockeryOrFood...")
-								updateResourceRep( "Add $CrockeryOrFood with success!"  
+								updateResourceRep( "Added $CrockeryOrFood with success!"  
 								)
 								}
 								else
@@ -75,7 +75,7 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 								 CrockeryOrFood = payloadArg(1)  
 								solve("remove($CrockeryOrFood)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("TABLE | removed $CrockeryOrFood...")
-								updateResourceRep( "Remove $CrockeryOrFood with success!"  
+								updateResourceRep( "Removed $CrockeryOrFood with success!"  
 								)
 								}
 								else

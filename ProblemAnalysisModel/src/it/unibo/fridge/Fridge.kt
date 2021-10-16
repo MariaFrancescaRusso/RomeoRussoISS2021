@@ -88,7 +88,7 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 Food = payloadArg(1)  
 								solve("add($Food)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("FRIDGE | added Food : $Food...")
-								updateResourceRep( "Add Food $Food with success!"  
+								updateResourceRep( "Added Food $Food with success!"  
 								)
 								}
 								else
@@ -102,7 +102,7 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 Food = payloadArg(1)  
 								solve("remove($Food)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("FRIDGE | removed Food : $Food...")
-								updateResourceRep( "Remove Food $Food with success!"  
+								updateResourceRep( "Removed Food $Food with success!"  
 								)
 								}
 								else

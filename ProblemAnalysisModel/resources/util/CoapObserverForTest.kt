@@ -40,19 +40,19 @@ class CoapObserverForTest(val name: String      = "testingobs",
    private lateinit var handler : CoapHandler
    private val uriStr = "coap://$ip:$port/$context/$observed"   
   
-   fun setup( channel : Channel<String>, expected:String?=null ){
+   fun setup( channel : Channel<String>, expected:String?=null ) {
  	   client     = CoapClient()
 	   println("	%%%%%% $name | START uriStr: $uriStr - expected=$expected"  )
        client!!.uri = uriStr	   
 	   handler = UpdateHandler( "h_$name", channel, expected)
    }
 	     
-   fun addObserver(  channel : Channel<String>, expected:String?=null ){
+   fun addObserver(  channel : Channel<String>, expected:String?=null ) {
 	   setup(channel,expected)
 	   client!!.observe( handler )
 	}		 
  
-   fun terminate(){
+   fun terminate() {
 	   println("	%%%%%% $name | terminate $handler"  )
 	   //client!!.delete( handler )
 	   //client!!.shutdown()

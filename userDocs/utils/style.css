@@ -118,6 +118,8 @@ pre {
 	background-color: #f5f5f5;
 	border: 1.5px solid silver;
 	padding: 5px;
+	word-wrap: break-word;
+	white-space: pre-wrap;
 }
 
 /*for libraries*/

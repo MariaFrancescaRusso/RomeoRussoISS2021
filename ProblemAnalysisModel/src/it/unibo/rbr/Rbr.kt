@@ -98,7 +98,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("addFood(FOODE_CODE)"), Term.createTerm("addFood(ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 FoodCode = payloadArg(0).removeSurrounding("[", "]")   
+								 FoodCode = payloadArg(0).removeSurrounding("[", "]")  
 						}
 						forward("askFood", "askFood($FoodCode)" ,"fridge" ) 
 						println("RBR | asked fridge if it contains the food with food-code = $FoodCode")

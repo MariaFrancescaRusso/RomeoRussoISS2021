@@ -30,7 +30,7 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
 	
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	 fun activate( owner: ActorBasic? = null){ 
+	 fun activate( owner: ActorBasic? = null) { 
        val uriStr = "coap://$ipaddr/$context/$destactor"
 //       val ownerName = owner?.getName()
 	   println("actortQakCoapObserver | START uriStr: $uriStr")
@@ -39,7 +39,7 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
             override fun onLoad(response: CoapResponse) {
 				content = response.responseText
                 println("actortQakCoapObserver | GET RESP-CODE= " + response.code + " content:" + content)
- 				if(  owner!== null ) owner.scope.launch{
+ 				if(  owner!== null ) owner.scope.launch {
  					val event = MsgUtil.buildEvent( "observer$destactor","observer$destactor","observer$destactor('$content')")
 // 					val event = MsgUtil.buildEvent( "$destactor","observer","observer('$content')")
 //					val event = MsgUtil.buildEvent( "observer","local_resrep","resrep('$content')")

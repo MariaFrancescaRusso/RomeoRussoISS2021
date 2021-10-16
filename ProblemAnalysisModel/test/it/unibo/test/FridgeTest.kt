@@ -21,34 +21,34 @@ class FridgeTest {
 		
 	companion object {
 		var fridgeActor : ActorBasic? = null
-		var systemStarted         = false
-		var testingObserverFridge   : CoapObserverForTest ? = null
-		val channelSyncStart      = Channel<String>()
+		var systemStarted = false
+		var testingObserverFridge : CoapObserverForTest ? = null
+		val channelSyncStart = Channel<String>()
 	
 		@JvmStatic
 		@BeforeClass
 		fun systemSetUp() {
-			println("===============TEST Init | Running context ")
+			println ("===============TEST Init | Running context")
 
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxsystem.main()
 			}			
 /*		
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxfridge.main()
 			}
 */
 /*			
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxrbr.main()
 			}
 */
 /*		
-			GlobalScope.launch{ 
+			GlobalScope.launch { 
 				it.unibo.ctxmaitre.main()
 			}
 */									
-			println("===============TEST Init | Activating Observers")
+			println ("===============TEST Init | Activating Observers")
 
 			GlobalScope.launch {
 				fridgeActor = QakContext.getActor("fridge")
@@ -63,12 +63,12 @@ class FridgeTest {
 		@JvmStatic
 	    @AfterClass
 		fun terminate() {	
-			println("===============TEST | terminate the testing")				
+			println ("===============TEST | terminate the testing")				
 		}
 	}
 	
 	@Before
-	fun checkSystemStarted()  {
+	fun checkSystemStarted() {
 		var ip = "localhost"
 //		var ip = "127.0.0.1"
 		var ctx = "ctxsystem"
@@ -81,29 +81,29 @@ class FridgeTest {
 			runBlocking {
 				channelSyncStart.receive()
 				systemStarted = true
-				println("===============TEST | checkSystemStarted resumed")
+				println ("===============TEST | checkSystemStarted resumed")
 			}
 		}
 		
 		if( testingObserverFridge == null) testingObserverFridge = CoapObserverForTest("testingObserverFridge","$ip", "$ctx", "$actname", "$port")
-		println("testingObserverFridge=$testingObserverFridge")
+		println ("testingObserverFridge=$testingObserverFridge")
   	}
 	
-	
 	@After
-	fun removeObs(){
-		println("+++++++++ AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverFridge!!.name}")
+	fun removeObs() {
+		println ("+++++++++AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverFridge!!.name}")
 		testingObserverFridge!!.terminate()
 		testingObserverFridge = null
-		runBlocking{
+		
+		runBlocking {
 			delay(1000)
 		}
 	}	
 	
 	@Test
-	fun AddFoodFridgeTest(){
+	fun AddFoodFridgeTest() {
 		var	Food = arrayListOf(arrayListOf("s034", "cheddar", "10"))
-		var fridgePrevision = "Add Food [[s034,cheddar,10]] with success!"
+		var fridgePrevision = "Added Food [[s034,cheddar,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Food)", "fridge")
 		var fridgeState = ""
 		var expected = fridgePrevision
@@ -113,11 +113,11 @@ class FridgeTest {
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			fridgeState = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$fridgeState for $msg")
+			println ("===============TEST | RESULT=$fridgeState for $msg")
 			assertEquals(fridgePrevision,fridgeState)
 		}
 	}
@@ -125,7 +125,7 @@ class FridgeTest {
 	@Test
 	fun RemoveFoodFridgeTest() {
 		var	Food = arrayListOf(arrayListOf("s001", "bread", "10"))
-		var fridgePrevision = "Remove Food [[s001,bread,10]] with success!"
+		var fridgePrevision = "Removed Food [[s001,bread,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Food)", "fridge")
 		var fridgeState = ""
 		var expected = fridgePrevision
@@ -135,11 +135,11 @@ class FridgeTest {
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			fridgeState = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$fridgeState for $msg")
+			println ("===============TEST | RESULT=$fridgeState for $msg")
 			assertEquals(fridgePrevision,fridgeState)
 		}
 	}
@@ -157,11 +157,11 @@ class FridgeTest {
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$State for $msg")
+			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
 	}
@@ -179,11 +179,11 @@ class FridgeTest {
 		
 		runBlocking {
 			delay(200)
-			println("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, fridgeActor!!)
 			State = channelForObserver.receive()			
 			
-			println("===============TEST | RESULT=$State for $msg")
+			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
 	}

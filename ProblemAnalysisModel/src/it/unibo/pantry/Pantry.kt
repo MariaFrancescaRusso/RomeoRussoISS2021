@@ -61,7 +61,7 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 Crockery = payloadArg(1)  
 								solve("add($Crockery)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("PANTRY | added Crockery : $Crockery...")
-								updateResourceRep( "Add Crockery $Crockery with success!"  
+								updateResourceRep( "Added Crockery $Crockery with success!"  
 								)
 								}
 								else
@@ -75,7 +75,7 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 								 Crockery = payloadArg(1)  
 								solve("remove($Crockery)","") //set resVar	
 								if( currentSolution.isSuccess() ) {println("PANTRY | removed Crockery : $Crockery...")
-								updateResourceRep( "Remove Crockery $Crockery with success!"  
+								updateResourceRep( "Removed Crockery $Crockery with success!"  
 								)
 								}
 								else
