@@ -11,14 +11,14 @@ Dispatch warning:warning(ARG)	//void
 Dispatch consult:consult(ARG)	//void
 Dispatch expose:expose(ARG)	//ARG = fridge state
 
-//RBR-Fridge
+//RBR - Fridge
 Dispatch askFood:askFood(FOODE_CODE)
 Dispatch answer:answer(ARG)	//ARG = true/false
 
 //Context ctxSystem ip [host="localhost" port=8040]
 
 Context ctxRBR ip [host="localhost" port=8050]
-Context ctxFridge ip [host="127.0.0.1" port=8060]  
+Context ctxFridge ip [host="127.0.0.1" port=8060]
 Context ctxMaitre ip [host="192.168.1.211" port=8070]
 
 QActor rbr context ctxRBR {
@@ -37,7 +37,7 @@ QActor rbr context ctxRBR {
 		println ("RBR | ...reached table. Going to fridge...")
 		println ("RBR | ...reached fridge. Going to table...")
 		println ("RBR | ...reached table. Coming back to RH...")
-		println ("RBR | ...reached RH. Finished executing task") 
+		println ("RBR | ...reached RH. Finished executing task")
 	}
 	Goto wait
 	
@@ -52,7 +52,7 @@ QActor rbr context ctxRBR {
 		[# var FOOD_CODE = "" #]
 		
 		onMsg( addFood : addFood(ARG) ) {
-			[# FOOD_CODE = payloadArg(0)#]
+			[# FOOD_CODE = payloadArg(0) #]
 		}
 		
 		forward fridge -m askFood : askFood($FOOD_CODE)
@@ -100,7 +100,7 @@ QActor rbr context ctxRBR {
 }
 
 QActor fridge context ctxFridge {
-	[# var STATUS = "Vuoto"	#]
+	[# var STATUS = "Empty" #]
 	
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food")
@@ -115,8 +115,9 @@ QActor fridge context ctxFridge {
 		whenMsg consult -> exposeState
 
 	State answerFood {
-	[# 	var FOOD_CODE = "" 
-		var FOOD_PRESENCE = false	
+	[#
+		var FOOD_CODE = ""
+		var FOOD_PRESENCE = false
 	#]
 		
 		onMsg( askFood : askFood(ARG) ) {

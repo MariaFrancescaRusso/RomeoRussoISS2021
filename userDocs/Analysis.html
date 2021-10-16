@@ -152,9 +152,9 @@ Once we have understood the main concepts set by the <a href="./Analysis.html#re
 Here, it's illustrated a possible scenario of the system.
 <br><br>
 <table>
-<tr>
-<th>Steps in the Scenario</th>
-<th>Simplified Representation of Each Step</th>
+<tr class="text">
+	<th>Steps in the Scenario</th>
+	<th>Simplified Representation of Each Step</th>
 </tr>
 <tr>
 	<td><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> and the <ks>table</ks> are empty.</li></ol></td>
@@ -189,17 +189,17 @@ It's necessary to make some test plans that must be verified for the correct wor
 <br>Below it's reported a first planning of tests:
 <br><br>
 <ul>
-<li>Tests of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>;</li>
-<li>Tests of the states for each element (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>) in the <ks>room</ks> in every moment of the service (start, end, end <ks>task</ks>, <em>consult</em> command);</li>
-<li>Tests of all the communications between entities;</li>
-<li>Tests of the path carried out by the <ks>RBR</ks> that must be the one expected to execute the <ks>task</ks> required by the <ks>Maître de Salle</ks>;</li>
-<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
-<li>Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactivate</em> command;</li>
-<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>;</li>
-<li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
+	<li>Tests of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>;</li>
+	<li>Tests of the states for each element (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>) in the <ks>room</ks> in every moment of the service (start, end, end <ks>task</ks>, <em>consult</em> command);</li>
+	<li>Tests of all the communications between entities;</li>
+	<li>Tests of the path carried out by the <ks>RBR</ks> that must be the one expected to execute the <ks>task</ks> required by the <ks>Maître de Salle</ks>;</li>
+	<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
+	<li>Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactivate</em> command;</li>
+	<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>;</li>
+	<li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
 </ul>
 
-<h3>A First Model of the System Architecture</h3>
+<h3><a name="ReqAnModel"></a>A First Model of the System Architecture</h3>
 
 From the requirements analysis, it's possible to obtain a first model, that is an initial representation of the system architecture, using a meta-model written in a machine-understandable language, like <tt>QActor</tt>, that describes the main interactions and behaviors between the main system components. In particular, the three main entities (<ks>RBR</ks>, <ks>maître's smartphone</ks>, <ks>fridge</ks>) are represented by three <tt>actors</tt> (<tt>QActors</tt>, that behave as <tt>Finite State Machines</tt> and work as <tt>CoAP</tt> observable resources) (<k>rbr</k>, <k>maitre</k>, <k>fridge</k>) and the nodes (<kc>robotNode</kc>, <kc>maitreNode</kc>, <kc>fridgeNode</kc>) where they run are represented by <tt>contexts</tt> (<k>ctxRBR</k>, <k>ctxMaitre</k>, <k>ctxFridge</k>).
 <br><br>
@@ -211,27 +211,31 @@ To make this, there were been found some problems, that will be addressed and so
 	<li>the movements of the <ks>RBR</ks>, that aren't addressed here but only its interactions with <k>fridge</k> and <k>maitre</k>;</li>
 	<li>the <ks>maître's smartphone</ks>, that is described here as a <tt>mock client</tt>, because it's early, in the requirements analysis, to represent his full proactive behavior that depends from a <tt>GUI</tt>.</li>
 </ul>
-<table><br>
-<tr>
-<th>Machine Understandable Architecture Model</th>
-<th>A Possible Graphic Representation</th>
+<br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
 </tr>
 <tr>
-<td class="text" rowspan="3"><a href="./ReqAnalysisModel.qak" target="_blank">ReqAnalysisModel.qak</a><br><pre><iframe class="qak" src="./ReqAnalysisModel.qak" title="ReqAnalysisModel">Model of Requirements Analysis</iframe></pre></td>
-<td class="imageSchema">
-<img src="./utils/img/FirstModelFromReqAnalysis.png" alt="Representations of the system from Requirements Analysis"><br>
-</td>
+	<td class="text" rowspan="3">
+		<a href="./ReqAnalysisModel.qak" target="_blank">ReqAnalysisModel.qak</a><br>
+		<pre><iframe class="qak" src="./ReqAnalysisModel.qak" title="ReqAnalysisModel">Model of Requirements Analysis</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/FirstModelFromReqAnalysis.png" alt="Representations of the system from Requirements Analysis">
+	</td>
+</tr>
+<tr class="text">
+	<th>Moore State Machine Diagram</th>
 </tr>
 <tr>
-<th>Moore State Machine Diagram</th>
-</tr>
-<tr>
-<td class="imageSchema">
-<img src="./utils/img/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
-<img src="./utils/img/QActorMaitre.png" alt="Representation of the behavior of QActor maitre, modeled as a Moore state machine"><br>
-<img src="./utils/img/QActorRBR.png" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine"><br>
-<img src="./utils/img/QActorFridge.png" alt="Representation of the behavior of QActor fridge, modeled as a Moore state machine">
-</td>
+	<td class="imageSchema">
+		<img src="./utils/img/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
+		<img src="./utils/img/QActorMaitre.png" alt="Representation of the behavior of QActor maitre, modeled as a Moore state machine"><br>
+		<img src="./utils/img/QActorRBR.png" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine"><br>
+		<img src="./utils/img/QActorFridge.png" alt="Representation of the behavior of QActor fridge, modeled as a Moore state machine">
+	</td>
 </tr>
 </table>
 
@@ -248,7 +252,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<br>
 	
 	<dt>Fridge</dt>
-	<dd>The requirements specify that the <k>fridge</k> must communicate through <tt>CoAP</tt> protocol. This can be done updating the <k>fridge</k> state through the <ko>updateResource</ko> command provided by the <tt>Qak-infrastructure</tt> and using a <tt>CoAP</tt> <tt>observer</tt> which waits for a <k>fridge</k> state update and when this happens, it sends an <ko>event</ko> to the listening actors.</dd>
+	<dd>The requirements specify that the <k>fridge</k> must communicate through <tt>CoAP</tt> protocol. This can be done updating the <k>fridge</k> state through the <ko>updateResource</ko> command provided by the <tt>Qak-infrastructure</tt> and using a <tt>CoAP observer</tt> which waits for a <k>fridge</k> state update and when this happens, it sends an <ko>event</ko> to the listening actors.</dd>
 	<br>
 	
 	<dt>Resources</dt>
@@ -474,43 +478,31 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<dd>With regard of the <em>clear</em> command related to the <ks>Clear the room</ks> task, the <k>rbr</k> has to know which and how much elements it has to take from the <k>table</k> and bring to the <k>dishwasher</k> and to the <k>fridge</k>. Similarly to the <em>prepare</em> and <em>addFood</em> command, to do this, it could be useful to run a <em>consult</em> command to the <k>table</k>. This can be done automatically by the <k>maitre</k> before sending the <em>clear</em> command to the <k>rbr</k> or by the <k>rbr</k> before executing the <ks>Clear the room</ks> task.</dd>
 </dl>
 
-<h3>(2) Model of system's logical architecture</h3>
-Define (a model of) the logical architecture of the system
+<h3>Model of System's Logical Architecture</h3>
 
-<ol start="2">
-<li>Model of the logical architecture of the system:</li>
-</ol>
+Below it's shown a model, that is a representation of the system architecture obtained from the problem analysis using <tt>QActor</tt> meta-model. In particular, starting from the <a href="./Analysis.html#ReqAnModel">model</a> obtained from the requirements analysis, in this model there are represented the main entities of the system as <tt>actors</tt> (<k>maitre</k>, <k>rbr</k>, <k>fridge</k>, <k>pantry</k>, <k>table</k>, <k>dishwasher</k>) which runs on their own <tt>contexts</tt> (<k>ctxmaitre</k>, which includes also the non-smart resources <tt>actors</tt>, <k>ctxrbr</k>, <k>ctxfridge</k>). At each resource (smart and non-smart) it's associated a <a href="../ProblemAnalysisModel/resources/util/ActorCoapObserver.kt" target="_blank"><tt>CoAP observer</tt></a>. The initial state of each resource and the methods to update it are managed through <tt>prolog</tt> files (<a href="../ProblemAnalysisModel/FridgeState.pl" target="_blank">FridgeState.pl</a>, <a href="../ProblemAnalysisModel/PantryState.pl" target="_blank">PantryState.pl</a>, <a href="../ProblemAnalysisModel/DishwasherState.pl" target="_blank">DishwasherState.pl</a>, <a href="../ProblemAnalysisModel/TableState.pl" target="_blank">TableState.pl</a>).
+<br><br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text">
+		<a href="../ProblemAnalysisModel/src/model.qak" target="_blank">ModelAnalysisModel.qak</a><br>
+		<pre><iframe class="qak" src="../ProblemAnalysisModel/src/model.qak" title="ProblemAnalysisModel">Model of Problem Analysis</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/ModelFromProblemAnalysis.png" alt="Logical Architecture System Model from Problem Analysis"><br>
+	</td>
+</tr>
+</table>
 
-<img src="./utils/img/ModelFromProblemAnalysis.png" alt="Logical Architecture System Model from Problem Analysis">
+<h3>Test Plans</h3>
 
-<h3>(3) Test Plan</h3>
 Refine the set of functional TestPlan
 
-<ol start="3">
-<li>Functional TestPlan:</li>
-</ol>
-
-<h3>(4) SCRUM context</h3>
-
-In the context of SCRUM:<ul>
-	<li>define a (first) product backlog</li>
-	<li>a possibile set/sequence of SPRINT</li>
-</ul>
-
-<ol start="4">
-<li>In the context of SCRUM:
-	<ul>
-	<li>First product backlog:</li>
-	<ol>
-	<li></li>
-	</ol>
-	<li>Possibile set/sequence of SPRINT:</li>
-	<ol>
-	<li></li>
-	</ol>
-	</ul>
-</li>
-</ol>
+<h3>SCRUM Context</h3>
 
 <h4>Product Backlog</h4>
 
@@ -532,7 +524,7 @@ A first Product Backlog can be:
 	<li>Maintenance</li>
 </ol>
 
-<h4>first SPRINT sequence</h4>
+<h4>First SPRINT Sequence</h4>
 
 A possibile set/sequence of SPRINT can be:
 <dl>
@@ -572,20 +564,15 @@ A possibile set/sequence of SPRINT can be:
 <dd></dd>
 </dl>
 
-<h2>Test plans</h2> 
+<h2>Test plans</h2>
 
+<h2>Project</h2>
 
-<h2>Project</h2> 
+<h2>Testing</h2>
 
+<h2>Deployment</h2>
 
-
-<h2>Testing</h2> 
- 
-
-<h2>Deployment</h2> 
-
- 
-<h2>Maintenance</h2> 
+<h2>Maintenance</h2>
 
 </div>
 <br><br>
@@ -593,10 +580,9 @@ A possibile set/sequence of SPRINT can be:
 By Romeo Stefano (stefano.romeo@studio.unibo.it) and Russo Maria (maria.russo10@studio.unibo.it)<br>
 <img class="photo" src="./utils/img/StefanoRomeo.png" alt="Stefano Romeo image">
 <img class="photo" src="./utils/img/MariaRusso.png" alt="Maria Russo image">
-
 </div>
 
-<div>elementi utili:</div>
+<div hidden="hidden">elementi utili:
 Table:
 <table>
 <tr>
@@ -627,9 +613,7 @@ IFrame:
 <iframe src="./src" title="title">"Link"/Cosa c'è nel frame</iframe>
 <br>Image:
 <img src="./utils/img/Nome.png" alt="description">
-<br>Key words:
-<ks></ks>
-<br>commands:
-<em></em>
+</div>
+
 </body>
 </html>

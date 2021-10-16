@@ -217,6 +217,10 @@ td.text {
 	text-align: center;
 }
 
+tr.text {
+	text-align: center;
+}
+
 ol, ul, li {
 	margin: 0;
 	margin-left: 10px;
