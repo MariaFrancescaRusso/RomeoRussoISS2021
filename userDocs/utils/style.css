@@ -248,8 +248,12 @@ iframe {
 	height: 347px;
 }
 
-iframe.qak {
+iframe.qakReq {
 	height: 1210px;
+}
+
+iframe.qakProblem {
+	height: 675px;
 }
 
 img {

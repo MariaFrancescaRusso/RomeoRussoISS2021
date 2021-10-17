@@ -112,7 +112,7 @@ Once we have understood the main concepts set by the <a href="./Analysis.html#re
 		<li><ks>fridge</ks>, running on a <kc>fridgeNode</kc>.</li>
 	</ul>
 	</td>
-	<td class="image"><img src="./utils/img/threeEntities.png" alt="Three entities"></td>
+	<td class="image"><img src="./utils/img/ReqAnalysis/threeEntities.png" alt="Three entities"></td>
 </tr>
 <tr>
 	<td>The software running on <kc>maitreNode</kc> must allow <ks>Maître de Salle</ks> to:
@@ -121,7 +121,7 @@ Once we have understood the main concepts set by the <a href="./Analysis.html#re
 		<li>known and to show the objects related to each resources, smart (<ks>fridge</ks>) and non-smart(<ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>), so it must be able to communicate with <ks>fridge</ks> too.</li>
 	</ul>
 	</td>
-	<td class="image" rowspan="3"><img src="./utils/img/entitiesRel.png" alt="Relationships between entities"></td>
+	<td class="image" rowspan="3"><img src="./utils/img/ReqAnalysis/entitiesRel.png" alt="Relationships between entities"></td>
 </tr>
 <tr>
 	<td>The software running on <kc>robotNode</kc> must be able to:
@@ -158,19 +158,19 @@ Here, it's illustrated a possible scenario of the system.
 </tr>
 <tr>
 	<td><ol><li>The <ks>room</ks> is empty, beside the <ks>Maître de Salle</ks>. The <ks>RBR</ks> is on its <ks>RH</ks>. The <ks>fridge</ks> and the <ks>pantry</ks> are embedded with a proper set of items; while the <ks>dishwasher</ks> and the <ks>table</ks> are empty.</li></ol></td>
-	<td class="imageScenario"><img src="./utils/img/InitialScenario.png" alt="Initial scenario"></td>
+	<td class="imageScenario"><img src="./utils/img/ReqAnalysis/InitialScenario.png" alt="Initial scenario"></td>
 </tr>
 <tr>
 	<td><ol start="2"><li>The <ks>Maître de Salle</ks> sends the <em>prepare</em> command (for the <ks>task</ks> <ks>Prepare the room</ks>) to the <ks>RBR</ks> and waits. The <ks>RBR</ks> executes the <ks>task</ks> related to the command and at the end he returns to its <ks>RH</ks>.</li></ol></td>
-	<td class="imageScenario"><img src="./utils/img/ScenarioPrepare.png" alt="Scenario 'Prepare the room'"></td>
+	<td class="imageScenario"><img src="./utils/img/ReqAnalysis/ScenarioPrepare.png" alt="Scenario 'Prepare the room'"></td>
 </tr>
 <tr>
 	<td><ol start="3"><li>The party starts and the <ks>room</ks> is opened to people: so now there are other obstacoles in the <ks>room</ks>. The <ks>Maître de Salle</ks> can send at any time to <ks>RBR</ks> the <em>addFood (food-code)</em> command (for the <ks>task</ks> <ks>Add food</ks>). The <ks>RBR</ks> asks <ks>fridge</ks> if it has the food specified by <ks>food-code</ks> and the <ks>fridge</ks> <em>answers</em> to <ks>RBR</ks>, via <tt>CoAP</tt>. If the <ks>fridge</ks> doesn't contain that food, then the <ks>RBR</ks> sends a <em>warning</em> to the <ks>Maître de Salle</ks>; otherwise the <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
-	<td class="imageScenario"><img src="./utils/img/ScenarioAddFood.png" alt="Scenario 'Add food'"></td>
+	<td class="imageScenario"><img src="./utils/img/ReqAnalysis/ScenarioAddFood.png" alt="Scenario 'Add food'"></td>
 </tr>
 <tr>
 	<td><ol start="4"><li>At the end of the party the <ks>room</ks> is empty again, beside the <ks>Maître de Salle</ks>. The <ks>Maître de Salle</ks> sends to <ks>RBR</ks> the <em>clear</em> command (for the <ks>task</ks> <ks>Clear the room</ks>) and waits. The <ks>RBR</ks> executes the <ks>task</ks> and then he returns to its <ks>RH</ks>.</li></ol></td>
-	<td class="imageScenario"><img src="./utils/img/ScenarioClear.png" alt="Scenario 'Clear the room'"></td>
+	<td class="imageScenario"><img src="./utils/img/ReqAnalysis/ScenarioClear.png" alt="Scenario 'Clear the room'"></td>
 </tr>
 <tr>
 	<td colspan="2">At every time of the service:
@@ -220,10 +220,10 @@ To make this, there were been found some problems, that will be addressed and so
 <tr>
 	<td class="text" rowspan="3">
 		<a href="./ReqAnalysisModel.qak" target="_blank">ReqAnalysisModel.qak</a><br>
-		<pre><iframe class="qak" src="./ReqAnalysisModel.qak" title="ReqAnalysisModel">Model of Requirements Analysis</iframe></pre>
+		<pre><iframe class="qakReq" src="./ReqAnalysisModel.qak" title="ReqAnalysisModel">Model of Requirements Analysis</iframe></pre>
 	</td>
 	<td class="imageSchema">
-		<img src="./utils/img/FirstModelFromReqAnalysis.png" alt="Representations of the system from Requirements Analysis">
+		<img src="./utils/img/ReqAnalysis/FirstModelFromReqAnalysis.png" alt="Representations of the system from Requirements Analysis">
 	</td>
 </tr>
 <tr class="text">
@@ -231,10 +231,10 @@ To make this, there were been found some problems, that will be addressed and so
 </tr>
 <tr>
 	<td class="imageSchema">
-		<img src="./utils/img/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
-		<img src="./utils/img/QActorMaitre.png" alt="Representation of the behavior of QActor maitre, modeled as a Moore state machine"><br>
-		<img src="./utils/img/QActorRBR.png" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine"><br>
-		<img src="./utils/img/QActorFridge.png" alt="Representation of the behavior of QActor fridge, modeled as a Moore state machine">
+		<img src="./utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
+		<img src="./utils/img/ReqAnalysis/QActorMaitre.png" alt="Representation of the behavior of QActor maitre, modeled as a Moore state machine"><br>
+		<img src="./utils/img/ReqAnalysis/QActorRBR.png" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine"><br>
+		<img src="./utils/img/ReqAnalysis/QActorFridge.png" alt="Representation of the behavior of QActor fridge, modeled as a Moore state machine">
 	</td>
 </tr>
 </table>
@@ -280,7 +280,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 			</ul></dd>
 		</dl>
 		</li></ol></td>
-		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type1_model.png" alt="ResourcesStatusManagement_type1_model"></td>
+		<td class="imageScenario"><img src="./utils/img/ProblemAnalysis/ResourcesStatusManagement_type1_model.png" alt="ResourcesStatusManagement_type1_model"></td>
 	</tr>
 	<tr>
 		<td><ol start="2"><li>Using a resource manager <tt>actor</tt> (<k>rm</k>) which manages the state of each resource (smart and non-smart). It works as an intermediary between the <k>maitre</k> (which sends it the <em>consult</em> command to know the state of each resource) or the <k>rbr</k> (which interacts with it to change the state of each resource, during the execution of each <ks>task</ks>) and the other resources. In this way, the <k>rm</k> will know the states of non-smart resources and it will communicate with <k>fridge</k> to know its state.
@@ -298,7 +298,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 			</ul></dd>
 		</dl>
 		</li></ol></td>
-		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type2_model.png" alt="ResourcesStatusManagement_type2_model"></td>
+		<td class="imageScenario"><img src="./utils/img/ProblemAnalysis/ResourcesStatusManagement_type2_model.png" alt="ResourcesStatusManagement_type2_model"></td>
 	</tr>
 	<tr>
 		<td><a name="sol3_msr"></a><ol start="3"><li>Managing the state of each non-smart resource using dedicated <tt>actors</tt>. In this way, the <k>maitre</k>, to know the state of each resource (smart and non-smart) sends to each <tt>actor</tt> the <em>consult</em> command. At the same way, when the <k>rbr</k> executes the <ks>tasks</ks>, it interacts with each <tt>actor</tt> to change the state of each resource.
@@ -315,7 +315,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 			</ul></dd>
 		</dl>
 		</li></ol></td>
-		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type3_model.png" alt="ResourcesStatusManagement_type3_model"></td>
+		<td class="imageScenario"><img src="./utils/img/ProblemAnalysis/ResourcesStatusManagement_type3_model.png" alt="ResourcesStatusManagement_type3_model"></td>
 	</tr>
 	<tr>
 		<td><ol start="4"><li>Managing the state of each non-smart resource using dedicated <tt>actors</tt> and using a resource manager <tt>actor</tt> (<k>rm</k>) which manages the state of each resource (smart and non-smart). It works as an intermediary between the <k>maitre</k> (which sends it the <em>consult</em> command to know the state of each resource) or the <k>rbr</k> (which interacts with it to change the state of each resource, during the execution of each <ks>task</ks>) and the other resources <tt>actors</tt>. In this way, the <k>rm</k> will communicate with <k>fridge</k> and the other non-smart resource <tt>actors</tt> to know their states.
@@ -335,7 +335,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 			</ul></dd>
 		</dl>
 		</li></ol></td>
-		<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type4_model.png" alt="ResourcesStatusManagement_type4_model"></td>
+		<td class="imageScenario"><img src="./utils/img/ProblemAnalysis/ResourcesStatusManagement_type4_model.png" alt="ResourcesStatusManagement_type4_model"></td>
 	</tr>
 	<tr>
 	<td><ol start="5"><li>Managing the state of each non-smart resource using dedicated <tt>actors</tt> and using a resource manager <tt>actor</tt> (<k>rm</k>) which manages the state of each resource (smart and non-smart). At system start, there is a registration protocol where each resource try to subscribe it-self to <k>rm</k>; so to make the system more dynamic and ready at future resource add. The <k>rm</k> works as an intermediary between the <k>maitre</k> (which sends it the <em>consult</em> command to know the state of each resource) or the <k>rbr</k> (which interacts with it to change the state of each resource, during the execution of each <ks>task</ks>) and the other resources <tt>actors</tt>. In this way, the <k>rm</k> will communicate with <k>fridge</k> and the other non-smart resource <tt>actors</tt> to know their states.
@@ -355,7 +355,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 		</ul></dd>
 	</dl>
 	</li></ol></td>
-	<td class="imageScenario"><img src="./utils/img/ResourcesStatusManagement_type5_model.png" alt="ResourcesStatusManagement_type5_model"></td>
+	<td class="imageScenario"><img src="./utils/img/ProblemAnalysis/ResourcesStatusManagement_type5_model.png" alt="ResourcesStatusManagement_type5_model"></td>
 	</tr>
 	</table><br>
 	Therefore, exposed some possible solutions, the most appropriate seems to be the <a href="./Analysis.html#sol3_msr">number 3</a>, because it makes the most of the message communication system and allows to extend the functioning of the <tt>actors</tt> if the resources they represent, in future, assume a more advanced behavior.</dd>
@@ -482,8 +482,8 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 
 Below it's shown a model, that is a representation of the system architecture obtained from the problem analysis using <tt>QActor</tt> meta-model. In particular, starting from the <a href="./Analysis.html#ReqAnModel">model</a> obtained from the requirements analysis, in this model there are represented the main entities of the system as <tt>actors</tt> (<k>maitre</k>, <k>rbr</k>, <k>fridge</k>, <k>pantry</k>, <k>table</k>, <k>dishwasher</k>) which runs on their own <tt>contexts</tt> (<k>ctxmaitre</k>, which includes also the non-smart resources <tt>actors</tt>, <k>ctxrbr</k>, <k>ctxfridge</k>).<br>
 At each resource (smart and non-smart) it's associated a <a href="../ProblemAnalysisModel/resources/util/ActorCoapObserver.kt" target="_blank"><tt>CoAP observer</tt></a>.<br>
-The initial state of each resource and the methods to update it are managed through <tt>prolog</tt> files (<a  href="../ProblemAnalysisModel/FridgeState.pl" target="_blank">FridgeState.pl</a>, <a href="../ProblemAnalysisModel/PantryState.pl" target="_blank">PantryState.pl</a>, <a href="../ProblemAnalysisModel/DishwasherState.pl" target="_blank">DishwasherState.pl</a>, <a href="../ProblemAnalysisModel/TableState.pl" target="_blank">TableState.pl</a>).<br>
-The elements and the <ks>food-code</ks> for the <em>prepare</em> and <em>addFood</em> commands are also managed by a <tt>prolog</tt> file (<a href="../ProblemAnalysisModel/Prepare.pl" target="_blank">Prepare.pl</a>).<br>
+The initial state of each resource and the methods to update it are managed through <tt>prolog</tt> files (<a  href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/FridgeState.pl" target="_blank">FridgeState.pl</a>, <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/PantryState.pl" target="_blank">PantryState.pl</a>, <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/DishwasherState.pl" target="_blank">DishwasherState.pl</a>, <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/TableState.pl" target="_blank">TableState.pl</a>).<br>
+The elements and the <ks>food-code</ks> for the <em>prepare</em> and <em>addFood</em> commands are also managed by a <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/Prepare.pl" target="_blank">Prepare.pl</a>).<br>
 Furthermore, the <em>clear</em> command is managed, <k>maitre</k> side, by sending a <em>consult</em> command to the <k>table</k> before sending the <em>clear</em> command to the <k>rbr</k>.
 <br><br>
 <table>
@@ -494,10 +494,11 @@ Furthermore, the <em>clear</em> command is managed, <k>maitre</k> side, by sendi
 <tr>
 	<td class="text">
 		<a href="../ProblemAnalysisModel/src/model.qak" target="_blank">ModelAnalysisModel.qak</a><br>
-		<pre><iframe class="qak" src="../ProblemAnalysisModel/src/model.qak" title="ProblemAnalysisModel">Model of Problem Analysis</iframe></pre>
+		<pre><iframe class="qakProblem" src="../ProblemAnalysisModel/src/model.qak" title="ProblemAnalysisModel">Model of Problem Analysis</iframe></pre>
 	</td>
 	<td class="imageSchema">
-		<img src="./utils/img/ModelFromProblemAnalysis.png" alt="Logical Architecture System Model from Problem Analysis"><br>
+		<img src="./utils/img/ProblemAnalysis/ModelProblemAnalysisLegend.png" alt="Legend of the Logical Architecture System Model from Problem Analysis"><br>
+		<img src="./utils/img/ProblemAnalysis/ModelFromProblemAnalysis.png" alt="Logical Architecture System Model from Problem Analysis">
 	</td>
 </tr>
 </table>
