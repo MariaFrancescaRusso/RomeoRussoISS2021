@@ -24,7 +24,14 @@ class FridgeTest {
 		var systemStarted = false
 		var testingObserverFridge : CoapObserverForTest ? = null
 		val channelSyncStart = Channel<String>()
-	
+		var ip = "localhost"
+//		var ip = "127.0.0.1"
+		var ctx = "ctxsystem"
+//		var ctx = "ctxfridge"
+		var actname = "fridge"
+		var port = "8040"
+//		var port = "8060"
+
 		@JvmStatic
 		@BeforeClass
 		fun systemSetUp() {
@@ -56,6 +63,8 @@ class FridgeTest {
 					delay(500)
 					fridgeActor = QakContext.getActor("fridge")
 				}
+				if( testingObserverFridge == null) testingObserverFridge = CoapObserverForTest("testingObserverFridge","$ip", "$ctx", "$actname", "$port")
+				println ("testingObserverFridge=$testingObserverFridge")
 				channelSyncStart.send("starttesting1")
 			}
 		}
@@ -69,13 +78,6 @@ class FridgeTest {
 	
 	@Before
 	fun checkSystemStarted() {
-		var ip = "localhost"
-//		var ip = "127.0.0.1"
-		var ctx = "ctxsystem"
-//		var ctx = "ctxfridge"
-		var actname = "fridge"
-		var port = "8040"
-//		var port = "8060"
 		
 		if( ! systemStarted ) {
 			runBlocking {
@@ -83,21 +85,13 @@ class FridgeTest {
 				systemStarted = true
 				println ("===============TEST | checkSystemStarted resumed")
 			}
-		}
-		
-		if( testingObserverFridge == null) testingObserverFridge = CoapObserverForTest("testingObserverFridge","$ip", "$ctx", "$actname", "$port")
-		println ("testingObserverFridge=$testingObserverFridge")
+		}		
   	}
 	
 	@After
 	fun removeObs() {
 		println ("+++++++++AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverFridge!!.name}")
 		testingObserverFridge!!.terminate()
-		testingObserverFridge = null
-		
-		runBlocking {
-			delay(1000)
-		}
 	}	
 	
 	@Test
@@ -120,6 +114,7 @@ class FridgeTest {
 			println ("===============TEST | RESULT=$fridgeState for $msg")
 			assertEquals(fridgePrevision,fridgeState)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -142,6 +137,7 @@ class FridgeTest {
 			println ("===============TEST | RESULT=$fridgeState for $msg")
 			assertEquals(fridgePrevision,fridgeState)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -164,6 +160,7 @@ class FridgeTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -186,5 +183,6 @@ class FridgeTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
  }

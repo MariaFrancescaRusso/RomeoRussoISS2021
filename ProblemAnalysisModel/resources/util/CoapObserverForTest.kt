@@ -6,6 +6,7 @@ import kotlinx.coroutines.channels.Channel
 import org.eclipse.californium.core.CoapResponse
 import org.eclipse.californium.core.coap.CoAP
 import kotlinx.coroutines.runBlocking
+import org.eclipse.californium.core.CoapObserveRelation
 
 class UpdateHandler(val name : String, val channel : Channel<String>,
 					val expected:String?=null) : CoapHandler {
@@ -14,7 +15,7 @@ class UpdateHandler(val name : String, val channel : Channel<String>,
 	@kotlinx.coroutines.ExperimentalCoroutinesApi
 	override fun onLoad(response: CoapResponse) {
 				val content = response.responseText
-                println("	%%%%%% $name | content=$content  expected=$expected RESP-CODE=${response.code} " )
+                println("	$name | content=$content  expected=$expected RESP-CODE=${response.code} " )
 				/*
                     2.05 means content (like HTTP 200 "OK" but only used in response to GET requests)
  					4.04 means NOT FOUND
@@ -38,23 +39,31 @@ class CoapObserverForTest(val name: String      = "testingobs",
 
    private var client  : CoapClient?  = null
    private lateinit var handler : CoapHandler
-   private val uriStr = "coap://$ip:$port/$context/$observed"   
+   private val uriStr = "coap://$ip:$port/$context/$observed"
+   private var observation : CoapObserveRelation? = null
+   private var isStarted = false
   
-   fun setup( channel : Channel<String>, expected:String?=null ) {
- 	   client     = CoapClient()
-	   println("	%%%%%% $name | START uriStr: $uriStr - expected=$expected"  )
-       client!!.uri = uriStr	   
-	   handler = UpdateHandler( "h_$name", channel, expected)
+   fun setup(channel : Channel<String>, expected:String?=null ) {
+	    client     = CoapClient()
+	    client!!.uri = uriStr
    }
 	     
    fun addObserver(  channel : Channel<String>, expected:String?=null ) {
-	   setup(channel,expected)
-	   client!!.observe( handler )
+	   if (!isStarted){
+		   setup(channel, expected)
+	   }
+	   handler = UpdateHandler( "h_$name", channel, expected)
+	   observation = client!!.observe( handler )
+   	   println("	$name | START uriStr: $uriStr - expected=$expected"  ) 
 	}		 
- 
+   
+	fun removeObserver(){
+		observation!!.proactiveCancel()
+	}
+	
    fun terminate() {
-	   println("	%%%%%% $name | terminate $handler"  )
-	   //client!!.delete( handler )
-	   //client!!.shutdown()
+	   removeObserver()
+//	   client!!.shutdown()
+//	   client = null
 	}		
 }

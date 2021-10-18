@@ -24,7 +24,14 @@ class DishwasherTest {
 		var systemStarted = false
 		var testingObserverdishwasher : CoapObserverForTest ? = null
 		val channelSyncStart = Channel<String>()
-	
+		var ip = "localhost"
+//		var ip = "192.168.1.211"
+		var ctx = "ctxsystem"
+//		var ctx = "ctxmaitre"
+		var actname = "dishwasher"
+		var port = "8040"
+//		var port = "8070"
+
 		@JvmStatic
 		@BeforeClass
 		fun systemSetUp() {
@@ -56,6 +63,7 @@ class DishwasherTest {
 					delay(500)
 					dishwasherActor = QakContext.getActor("dishwasher")
 				}
+				if( testingObserverdishwasher == null) testingObserverdishwasher = CoapObserverForTest("testingObserverdishwasher","$ip", "$ctx", "$actname", "$port")
 				channelSyncStart.send("starttesting2")
 			}
 		}
@@ -69,13 +77,6 @@ class DishwasherTest {
 	
 	@Before
 	fun checkSystemStarted() {
-		var ip = "localhost"
-//		var ip = "192.168.1.211"
-		var ctx = "ctxsystem"
-//		var ctx = "ctxmaitre"
-		var actname = "dishwasher"
-		var port = "8040"
-//		var port = "8070"
 		
 		if( ! systemStarted ) {
 			runBlocking {
@@ -83,21 +84,13 @@ class DishwasherTest {
 				systemStarted = true
 				println ("===============TEST | checkSystemStarted resumed")
 			}
-		}
-				
-		if( testingObserverdishwasher == null) testingObserverdishwasher = CoapObserverForTest("testingObserverdishwasher","$ip", "$ctx", "$actname", "$port")
-		println ("testingObserverdishwasher=$testingObserverdishwasher")
+		}				
   	}
 
 	@After
 	fun removeObs() {
 		println ("+++++++++AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverdishwasher!!.name}")
 		testingObserverdishwasher!!.terminate()
-		testingObserverdishwasher = null
-
-		runBlocking {
-			delay(1000)
-		}
 	}
 	
 	@Test
@@ -106,7 +99,7 @@ class DishwasherTest {
 		var Prevision = "Added Crockery [[dishes,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Dishes)", "dishwasher")
 		var State = ""
-		var expected = "Added "
+		var expected = Prevision
 		val channelForObserver = Channel<String>()
 		
 		testingObserverdishwasher!!.addObserver( channelForObserver,expected )
@@ -120,12 +113,13 @@ class DishwasherTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
 	fun RemoveDishdishwasherTest() {
-		var	Dishes = arrayListOf(arrayListOf("dishes", "10"))
-		var Prevision = "Removed Crockery [[dishes,10]] with success!"
+		var	Dishes = arrayListOf(arrayListOf("dishes", "12"))
+		var Prevision = "Removed Crockery [[dishes,12]] with success!"
 		var msgAdd = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Dishes)", "dishwasher")
 		var msgRemove= MsgUtil.buildDispatch("tester", "changeState", "changeState(remove, $Dishes)", "dishwasher")
 		var State = ""
@@ -146,6 +140,7 @@ class DishwasherTest {
 			println ("===============TEST | RESULT=$State for $msgRemove")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -168,6 +163,7 @@ class DishwasherTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -190,5 +186,6 @@ class DishwasherTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
  }

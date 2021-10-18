@@ -24,11 +24,18 @@ class PantryTest {
 		var systemStarted = false
 		var testingObserverPantry : CoapObserverForTest ? = null
 		val channelSyncStart = Channel<String>()
-	
+		var ip = "localhost"
+//		var ip = "192.168.1.211"
+		var ctx = "ctxsystem"
+//		var ctx = "ctxmaitre"
+		var actname = "pantry"
+		var port = "8040"
+//		var port = "8070"
+		
 		@JvmStatic
 		@BeforeClass
 		fun systemSetUp() {
-			println ("===============TEST Init | Running context")
+			println ("TEST Init | Running context")
 
 			GlobalScope.launch { 
 				it.unibo.ctxsystem.main()
@@ -56,7 +63,9 @@ class PantryTest {
 					delay(500)
 					pantryActor = QakContext.getActor("pantry")
 				}
-				channelSyncStart.send("starttesting2")
+				if( testingObserverPantry == null) testingObserverPantry = CoapObserverForTest("testingObserverPantry","$ip", "$ctx", "$actname", "$port")
+				println ("testingObserverPantry=$testingObserverPantry")
+				channelSyncStart.send("starttesting")
 			}
 		}
 			
@@ -69,35 +78,20 @@ class PantryTest {
 	
 	@Before
 	fun checkSystemStarted() {
-		var ip = "localhost"
-//		var ip = "192.168.1.211"
-		var ctx = "ctxsystem"
-//		var ctx = "ctxmaitre"
-		var actname = "pantry"
-		var port = "8040"
-//		var port = "8070"
-		
+
 		if( ! systemStarted ) {
 			runBlocking {
 				channelSyncStart.receive()
 				systemStarted = true
 				println ("===============TEST | checkSystemStarted resumed")
 			}
-		}
-				
-		if( testingObserverPantry == null) testingObserverPantry = CoapObserverForTest("testingObserverPantry","$ip", "$ctx", "$actname", "$port")
-		println ("testingObserverPantry=$testingObserverPantry")
+		}				
   	}
 
 	@After
 	fun removeObs() {
 		println ("+++++++++AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserverPantry!!.name}")
 		testingObserverPantry!!.terminate()
-		testingObserverPantry = null
-
-		runBlocking {
-			delay(1000)
-		}
 	}
 	
 	@Test
@@ -106,7 +100,7 @@ class PantryTest {
 		var Prevision = "Added Crockery [[dishes,10]] with success!"
 		var msg = MsgUtil.buildDispatch("tester", "changeState", "changeState(add, $Dishes)", "pantry")
 		var State = ""
-		var expected = "Added "
+		var expected = Prevision
 		val channelForObserver = Channel<String>()
 		
 		testingObserverPantry!!.addObserver( channelForObserver,expected )
@@ -120,6 +114,7 @@ class PantryTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -142,6 +137,7 @@ class PantryTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -164,6 +160,7 @@ class PantryTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
 	
 	@Test
@@ -186,5 +183,6 @@ class PantryTest {
 			println ("===============TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
+		channelForObserver.close()
 	}
  }
