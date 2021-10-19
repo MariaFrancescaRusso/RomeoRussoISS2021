@@ -183,7 +183,7 @@ Here, it's illustrated a possible scenario of the system.
 </tr>
 </table>
 
-<h4>Test Plans</h4>
+<h4><a name="reqATP"></a>Test Plans</h4>
 
 It's necessary to make some test plans that must be verified for the correct working of the final system, according to the requirements provided by the customer.
 <br>Below it's reported a first planning of tests:
@@ -459,15 +459,17 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<br>
 	<dd>During the execution of each <ks>task</ks>, the <k>rbr</k> must interact with all the resources by taking or bringing elements to or from them. Therefore, the state of these resources must be updated and the most indicated solution is for the <k>rbr</k> to do it.</dd>
 	<br>
+	<img src="./utils/img/ProblemAnalysis/RBRctx.png" alt="Context of RBR">
+	<br>
 	
 	<dt>Maitre</dt>
 	<dd>The software running on the <ks>maître's smartphone</ks> must provide an user interface to allow the user (<ks>Maître de Salle</ks>) to interact with the system. This software may be a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser; but, after a careful evaluation of the available means to design this software, it results more appropriate the use of a <tt>web</tt> application, as it appears to be a more versatile tool.</dd>
 	<br>
 	<dd>A problem could be represented by the sending of the <em>prepare</em> command. In fact, before sending this command, it's necessary to specify how much elements the <k>rbr</k> has to take from the resources (<ks>pantry</ks> and <ks>fridge</ks>) and bring to the <ks>table</ks>, being careful that the number of these elements is less or equal then the available number of elements. This can be done in different ways:
 	<ol>
-	<li><a name="sol1_cpv"></a>using, in the code, prefixed values for the number of elements in <em>prepare</em> command; but it's never a good practice;</li>
-	<li><a name="sol2_fpv"></a>loadind from a <tt>prolog</tt> file, prefixed values for the number of elements in <em>prepare</em> command;</li>
-	<li><a name="sol3_cbp"></a>making that the <ks>Maître de Salle</ks> can decide which and how many elements to insert in the <em>prepare</em> command.</li>
+		<li><a name="sol1_cpv"></a>using, in the code, prefixed values for the number of elements in <em>prepare</em> command; but it's never a good practice;</li>
+		<li><a name="sol2_fpv"></a>loadind from a <tt>prolog</tt> file, prefixed values for the number of elements in <em>prepare</em> command;</li>
+		<li><a name="sol3_cbp"></a>making that the <ks>Maître de Salle</ks> can decide which and how many elements to insert in the <em>prepare</em> command.</li>
 	</ol>
 	Initially, in a first design phase, it's adopted the <a href="./Analysis.html#sol2_fpv">second solution</a>, which, in future, could be improved by integrating it with the <a href="./Analysis.html#sol2_cbp">third solution</a>, that seems to be the best, because it's predisposed to a possibile future change of the resources initial state.<dd>
 	<br>
@@ -478,7 +480,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<dd>With regard of the <em>clear</em> command related to the <ks>Clear the room</ks> task, the <k>rbr</k> has to know which and how much elements it has to take from the <k>table</k> and bring to the <k>dishwasher</k> and to the <k>fridge</k>. Similarly to the <em>prepare</em> and <em>addFood</em> command, to do this, it could be useful to run a <em>consult</em> command to the <k>table</k>. This can be done automatically by the <k>maitre</k> before sending the <em>clear</em> command to the <k>rbr</k> or by the <k>rbr</k> before executing the <ks>Clear the room</ks> task.</dd>
 </dl>
 
-<h3>Model of System's Logical Architecture</h3>
+<h3><a name="ReqPrModel"></a>Model of System's Logical Architecture</h3>
 
 Below it's shown a model, that is a representation of the system architecture obtained from the problem analysis using <tt>QActor</tt> meta-model. In particular, starting from the <a href="./Analysis.html#ReqAnModel">model</a> obtained from the requirements analysis, in this model there are represented the main entities of the system as <tt>actors</tt> (<k>maitre</k>, <k>rbr</k>, <k>fridge</k>, <k>pantry</k>, <k>table</k>, <k>dishwasher</k>) which runs on their own <tt>contexts</tt> (<k>ctxmaitre</k>, which includes also the non-smart resources <tt>actors</tt>, <k>ctxrbr</k>, <k>ctxfridge</k>).<br>
 At each resource (smart and non-smart) it's associated a <a href="../ProblemAnalysisModel/resources/util/ActorCoapObserver.kt" target="_blank"><tt>CoAP observer</tt></a>.<br>
@@ -493,7 +495,7 @@ Furthermore, the <em>clear</em> command is managed, <k>maitre</k> side, by sendi
 </tr>
 <tr>
 	<td class="text">
-		<a href="../ProblemAnalysisModel/src/model.qak" target="_blank">ModelAnalysisModel.qak</a><br>
+		<a href="../ProblemAnalysisModel/src/model.qak" target="_blank">ProblemAnalysisModel.qak</a><br>
 		<pre><iframe class="qakProblem" src="../ProblemAnalysisModel/src/model.qak" title="ProblemAnalysisModel">Model of Problem Analysis</iframe></pre>
 	</td>
 	<td class="imageSchema">
@@ -505,68 +507,138 @@ Furthermore, the <em>clear</em> command is managed, <k>maitre</k> side, by sendi
 
 <h3>Test Plans</h3>
 
-Refine the set of functional TestPlan
+Below it's reported a functional tests planning starting from the <a href="./Analysis.html#reqATP">requirements analysis test plans</a>:
+<br><br>
+<ul>
+	<li>Tests of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>;</li>
+	<li>Tests of all the communications between entities;</li>
+	<li>Tests of all the communications via <tt>CoAP</tt>;</li>
+	<li>Tests of the states for each element (<ks>fridge</ks>, <ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks>) in the <ks>room</ks> in every moment of the service (start, end, end <ks>task</ks>, <em>consult</em> command);</li>
+	<li>Tests of the path carried out by the <ks>RBR</ks> that must be the one expected to execute the <ks>task</ks> required by the <ks>Maître de Salle</ks>;</li>
+	<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
+	<li>Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactivate</em> command;</li>
+	<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>;</li>
+	<li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
+</ul>
+
+<h4>Tests</h4>
+
+Below there are exposed some tests made for the <a href="./Analysis.html#ReqPrModel">model</a> achieved from the problem analysis:
+<dl>
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/PantryTest.kt" target="_blank">PantryTest</a></dt>
+	<dd>Tests about removing of dishes from the pantry, useful for Prepare the room task:<ol>
+		<li>RemoveDishPantryTest: after a remove operation, changing the pantry state via CoAP, it's verified that the operation was successful;</li>
+		<li>RemoveDishPantryFailTest: after a remove operation of a not existing element, changing the pantry state via CoAP, it's verified that the operation fails;</li>
+		<li>RemoveDishPantryFailQuantityTest: after a remove operation of an existing element but not available for the required quantity, changing the pantry state via CoAP, it's verified that the operation fails.</li>
+	</ol></dd>
+	
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/DishwasherTest.kt" target="_blank">DishwasherTest</a></dt>
+	<dd>Tests about adding of dishes to the dishwasher, useful for Clear the room task:<ol>
+		<li>AddDishdishwasherTest: after an add operation, changing the dishwasher state via CoAP, it's verified that the operation was successful.</li>
+	</ol></dd>
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/FridgeTest.kt" target="_blank">FridgeTest</a></dt>
+	<dd>Tests about removing and adding of foods from and to the fridge, useful for Prepare the room, Add food and Clear the room tasks:<ol>
+		<li>RemoveFoodFridgeTest: after a remove operation, changing the fridge state via CoAP, it's verified that the operation was successful;</li>
+		<li>RemoveFoodFridgeFailTest: after a remove operation of a not existing element, changing the fridge state via CoAP, it's verified that the operation fails;</li>
+		<li>RemoveFoodFridgeFailQuantityTest: after a remove operation of an existing element but not available for the required quantity, changing the fridge state via CoAP, it's verified that the operation fails;</li>
+		<li>AddFoodFridgeTest: after an add operation, changing the fridge state via CoAP, it's verified that the operation was successful.</li>
+	</ol></dd>
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/TableTest.kt" target="_blank">TableTest</a></dt>
+	<dd>Tests about removing and adding of dishes and foods from and to the table, useful for Prepare the room, Add food and Clear the room tasks:<ol>
+		<li>AddRemoveDishTableTest: after an add and then a remove operation of dishes element, changing the table state via CoAP, it's verified that the remove operation was successful;</li>
+		<li>RemoveDishTableFailTest: after a remove operation of a not existing dishes element, changing the table state via CoAP, it's verified that the operation fails;</li>
+		<li>RemoveDishTableFailQuantityTest: after a remove operation of an existing dishes element but not available for the required quantity, changing the table state via CoAP, it's verified that the operation fails;</li>
+		<li>AddFoodTableTest: after an add operation of a food element, changing the table state via CoAP, it's verified that the operation was successful;</li>
+		<li>RemoveFoodTableTest: after a remove operation of a food element, changing the table state via CoAP, it's verified that the operation was successful;</li>
+		<li>RemoveFoodTableFailTest: after a remove operation of a not existing food element, changing the table state via CoAP, it's verified that the operation fails;</li>
+		<li>RemoveFoodTableFailQuantityTest: after a remove operation of an existing food element but not available for the required quantity, changing the table state via CoAP, it's verified that the operation fails.</li>
+	</ol></dd>
+</dl>
 
 <h3>SCRUM Context</h3>
 
 <h4>Product Backlog</h4>
 
-A first Product Backlog can be:
+A first Product Backlog could have these elements:
+<br><br>
 <ol>
-	<li>planning</li>
-	<li>RBR moving</li>
-	<li>prepare the room task</li>
-	<li>add food task</li>
-	<li>clear task</li>
-	<li>sonar</li>
-	<li>mapping</li>
-	<li>rbr avoid obstacles</li>
-	<li>managing resources (actors + state manager??)</li>
-	<li>consult</li>
-	<li>stop/reactivate</li>
-	<li>gui matre's smartphone software</li>
+	<li>Resources representation</li>
+	<li>Resources state</li>
+	<li>CoAP integration</li>
+	<li>Consult</li>
+	<li>Prepare the room task</li>
+	<li>Add Food task</li>
+	<li>Clear the room task</li>
+	<li>Planning</li>
+	<li>Integration of Basic Robot for the RBR</li>
+	<li>Sonar</li>
+	<li>Mapping</li>
+	<li>Stop/Reactivate</li>
+	<li>GUI matre's smartphone software</li>
 	<li>Deployment</li>
 	<li>Maintenance</li>
 </ol>
 
 <h4>First SPRINT Sequence</h4>
 
-A possibile set/sequence of SPRINT can be:
 <dl>
 <dt>SPRINT 0</dt>
-<dd><ol>
-	<li>Planning: insert an initial map representation and use of Planner</li>
-	<li>Integration of Basic Robot for the RBR</li>
-	<li>Prepare the room task</li>
-	<li>Add Food task</li>
-	<li>Clear the room task</li>
+<dd>The problem analysis already solves some problems; so the resulting <a href="./Analysis.html#ReqPrModel">model</a> could represent the result of a first SPRINT. In particular, the elements DONE of this SPRINT are:
+<ol>
+	<li>Resources representation: an actor for each non-smart resource</li>
+	<li>Resources state: a prolog file for each resource actor</li>
+	<li>CoAP observer: for CoAP communications from resources actors (smart and non-smart/elenco) to listening actors</li>
+	<li>Consult: communications between actors and get methods in prolog files of resources state</li>
+	<li>Prepare the room task: communications between actors and add and remove methods in prolog files of resources state</li>
+	<li>Add Food task: communications between actors and check for specific food and add and remove methods in prolog files of resources state</li>
+	<li>Clear the room task: communications between actors and add and remove methods in prolog files of resources state</li>
 	<li>Tests</li>
 </ol></dd>
-<dt>SPRINT 1</dt>
-<dd><ol>
-	<li>Sonar</li>
-	<li>Mapping</li>
-	<li>Avoid the obstacles requirement</li>
-	<li>Tests</li>
-</ol></dd>
-<dt>SPRINT 2</dt>
-<dd><ol>
-	<li>Resources representation: an actor for each non-smart resource + State Manager??</li>
-	<li>Consult</li>
-	<li>Tests</li>
-</ol></dd>
-<dt>SPRINT 3</dt>
-<dd><ol>
-	<li>Stop/Reactivate</li>
-	<li>Tests</li>
-</ol></dd>
-<dt>SPRINT 4</dt>
-<dd><ol>
-	<li>gui matre's smartphone software</li>
-	<li>Tests</li>
-</ol></dd>
-<dt></dt>
-<dd></dd>
+</dl>
+<br>
+A possibile set of next SPRINT could be:
+<dl>
+	<dt>SPRINT 0.1</dt>
+	<dd><ol>
+		<li>Table state: consumption of food</li>
+		<li>Tests</li>
+	</ol></dd>
+	
+	<dt>SPRINT 1</dt>
+	<dd><ol>
+		<li>Planning: insert an initial map representation and use of Planner</li>
+		<li>Integration of Basic Robot for the RBR</li>
+		<li>Prepare the room task: path execution by the virtual robot</li>
+		<li>Add Food task: path execution by the virtual robot</li>
+		<li>Clear the room task: path execution by the virtual robot</li>
+		<li>Tests</li>
+	</ol></dd>
+	
+	<dt>SPRINT 2</dt>
+	<dd><ol>
+		<li>Sonar</li>
+		<li>Mapping</li>
+		<li>Avoid the obstacles requirement</li>
+		<li>Prepare the room task: path execution by the virtual robot avoiding the obstacles</li>
+		<li>Add Food task: path execution by the virtual robot avoiding the obstacles</li>
+		<li>Clear the room task: path execution by the virtual robot avoiding the obstacles</li>
+		<li>Tests</li>
+	</ol></dd>
+	
+	<dt>SPRINT 3</dt>
+	<dd><ol>
+		<li>Stop/Reactivate</li>
+		<li>Prepare the room task: path execution by the virtual robot receiving stop and then reactivate commands</li>
+		<li>Add Food task: path execution by the virtual robot receiving stop and then reactivate commands</li>
+		<li>Clear the room task: path execution by the virtual robot receiving stop and then reactivate commands</li>
+		<li>Tests</li>
+	</ol></dd>
+	
+	<dt>SPRINT 4</dt>
+	<dd><ol>
+		<li>GUI matre's smartphone software</li>
+		<li>Tests</li>
+	</ol></dd>
 </dl>
 
 <h2>Test plans</h2>
