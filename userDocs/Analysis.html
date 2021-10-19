@@ -525,35 +525,39 @@ Below it's reported a functional tests planning starting from the <a href="./Ana
 
 Below there are exposed some tests made for the <a href="./Analysis.html#ReqPrModel">model</a> achieved from the problem analysis:
 <dl>
-	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/PantryTest.kt" target="_blank">PantryTest</a></dt>
-	<dd>Tests about removing of dishes from the pantry, useful for Prepare the room task:<ol>
-		<li>RemoveDishPantryTest: after a remove operation, changing the pantry state via CoAP, it's verified that the operation was successful;</li>
-		<li>RemoveDishPantryFailTest: after a remove operation of a not existing element, changing the pantry state via CoAP, it's verified that the operation fails;</li>
-		<li>RemoveDishPantryFailQuantityTest: after a remove operation of an existing element but not available for the required quantity, changing the pantry state via CoAP, it's verified that the operation fails.</li>
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/PantryTest.kt" target="_blank">PantryTest.kt</a></dt>
+	<dd>Tests about removing of dishes from the <k>pantry</k>, useful for <ks>Prepare the room</ks> <ks>task</ks>:<ol>
+		<li><em>RemoveDishPantryTest</em>: after a remove operation, changing the <k>pantry</k> state via <tt>CoAP</tt>, it's verified that the operation was successful;</li>
+		<li><em>RemoveDishPantryFailTest</em>: after a remove operation of a not existing element, changing the <k>pantry</k> state via <tt>CoAP</tt>, it's verified that the operation fails;</li>
+		<li><em>RemoveDishPantryFailQuantityTest</em>: after a remove operation of an existing element but not available for the required quantity, changing the <k>pantry</k> state via <tt>CoAP</tt>, it's verified that the operation fails.</li>
 	</ol></dd>
-	
-	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/DishwasherTest.kt" target="_blank">DishwasherTest</a></dt>
-	<dd>Tests about adding of dishes to the dishwasher, useful for Clear the room task:<ol>
-		<li>AddDishdishwasherTest: after an add operation, changing the dishwasher state via CoAP, it's verified that the operation was successful.</li>
+	<br>
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/DishwasherTest.kt" target="_blank">DishwasherTest.kt</a></dt>
+	<dd>Tests about adding of dishes to the <k>dishwasher</k>, useful for <ks>Clear the room</ks> <ks>task</ks>:<ol>
+		<li><em>AddDishdishwasherTest</em>: after an add operation, changing the <k>dishwasher</k> state via <tt>CoAP</tt>, it's verified that the operation was successful.</li>
 	</ol></dd>
-	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/FridgeTest.kt" target="_blank">FridgeTest</a></dt>
-	<dd>Tests about removing and adding of foods from and to the fridge, useful for Prepare the room, Add food and Clear the room tasks:<ol>
-		<li>RemoveFoodFridgeTest: after a remove operation, changing the fridge state via CoAP, it's verified that the operation was successful;</li>
-		<li>RemoveFoodFridgeFailTest: after a remove operation of a not existing element, changing the fridge state via CoAP, it's verified that the operation fails;</li>
-		<li>RemoveFoodFridgeFailQuantityTest: after a remove operation of an existing element but not available for the required quantity, changing the fridge state via CoAP, it's verified that the operation fails;</li>
-		<li>AddFoodFridgeTest: after an add operation, changing the fridge state via CoAP, it's verified that the operation was successful.</li>
+	<br>
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/FridgeTest.kt" target="_blank">FridgeTest.kt</a></dt>
+	<dd>Tests about removing and adding of foods from and to the <k>fridge</k>, useful for <ks>Prepare the room</ks>, <ks>Add food</ks> and <ks>Clear the room</ks> <ks>tasks</ks>:<ol>
+		<li><em>RemoveFoodFridgeTest</em>: after a remove operation, changing the <k>fridge</k> state via <tt>CoAP</tt>, it's verified that the operation was successful;</li>
+		<li><em>RemoveFoodFridgeFailTest</em>: after a remove operation of a not existing element, changing the <k>fridge</k> state via <tt>CoAP</tt>, it's verified that the operation fails;</li>
+		<li><em>RemoveFoodFridgeFailQuantityTest</em>: after a remove operation of an existing element but not available for the required quantity, changing the <k>fridge</k> state via <tt>CoAP</tt>, it's verified that the operation fails;</li>
+		<li><em>AddFoodFridgeTest</em>: after an add operation, changing the <k>fridge</k> state via <tt>CoAP</tt>, it's verified that the operation was successful.</li>
 	</ol></dd>
-	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/TableTest.kt" target="_blank">TableTest</a></dt>
-	<dd>Tests about removing and adding of dishes and foods from and to the table, useful for Prepare the room, Add food and Clear the room tasks:<ol>
-		<li>AddRemoveDishTableTest: after an add and then a remove operation of dishes element, changing the table state via CoAP, it's verified that the remove operation was successful;</li>
-		<li>RemoveDishTableFailTest: after a remove operation of a not existing dishes element, changing the table state via CoAP, it's verified that the operation fails;</li>
-		<li>RemoveDishTableFailQuantityTest: after a remove operation of an existing dishes element but not available for the required quantity, changing the table state via CoAP, it's verified that the operation fails;</li>
-		<li>AddFoodTableTest: after an add operation of a food element, changing the table state via CoAP, it's verified that the operation was successful;</li>
-		<li>RemoveFoodTableTest: after a remove operation of a food element, changing the table state via CoAP, it's verified that the operation was successful;</li>
-		<li>RemoveFoodTableFailTest: after a remove operation of a not existing food element, changing the table state via CoAP, it's verified that the operation fails;</li>
-		<li>RemoveFoodTableFailQuantityTest: after a remove operation of an existing food element but not available for the required quantity, changing the table state via CoAP, it's verified that the operation fails.</li>
+	<br>
+	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/TableTest.kt" target="_blank">TableTest.kt</a></dt>
+	<dd>Tests about removing and adding of dishes and foods from and to the <k>table</k>, useful for <ks>Prepare the room</ks>, <ks>Add food</ks> and <ks>Clear the room</ks> <ks>tasks</ks>:<ol>
+		<li><em>AddRemoveDishTableTest</em>: after an add and then a remove operation of dishes element, changing the <k>table</k> state via <tt>CoAP</tt>, it's verified that the remove operation was successful;</li>
+		<li><em>RemoveDishTableFailTest</em>: after a remove operation of a not existing dishes element, changing the <k>table</k> state via <tt>CoAP</tt>, it's verified that the operation fails;</li>
+		<li><em>RemoveDishTableFailQuantityTest</em>: after a remove operation of an existing dishes element but not available for the required quantity, changing the <k>table</k> state via <tt>CoAP</tt>, it's verified that the operation fails;</li>
+		<li><em>AddFoodTableTest</em>: after an add operation of a food element, changing the <k>table</k> state via <tt>CoAP</tt>, it's verified that the operation was successful;</li>
+		<li><em>RemoveFoodTableTest</em>: after a remove operation of a food element, changing the <k>table</k> state via <tt>CoAP</tt>, it's verified that the operation was successful;</li>
+		<li><em>RemoveFoodTableFailTest</em>: after a remove operation of a not existing food element, changing the <k>table</k> state via <tt>CoAP</tt>, it's verified that the operation fails;</li>
+		<li><em>RemoveFoodTableFailQuantityTest</em>: after a remove operation of an existing food element but not available for the required quantity, changing the <k>table</k> state via <tt>CoAP</tt>, it's verified that the operation fails.</li>
 	</ol></dd>
 </dl>
+<br>
+To execute these tests, it's necessary to comment the <k>maitre</k>, because it is a <tt>mock client</tt> and it could interfere with tests.
 
 <h3>SCRUM Context</h3>
 
@@ -564,17 +568,17 @@ A first Product Backlog could have these elements:
 <ol>
 	<li>Resources representation</li>
 	<li>Resources state</li>
-	<li>CoAP integration</li>
-	<li>Consult</li>
-	<li>Prepare the room task</li>
-	<li>Add Food task</li>
-	<li>Clear the room task</li>
+	<li><tt>CoAP</tt> integration</li>
+	<li><em>Consult</em></li>
+	<li><ks>Prepare the room</ks> <ks>task</ks></li>
+	<li><ks>Add Food</ks> <ks>task</ks></li>
+	<li><ks>Clear the room</ks> <ks>task</ks></li>
 	<li>Planning</li>
-	<li>Integration of Basic Robot for the RBR</li>
-	<li>Sonar</li>
+	<li>Integration of <k>basicRobot</k> with the <k>rbr</k></li>
+	<li><tt>Sonar</tt></li>
 	<li>Mapping</li>
-	<li>Stop/Reactivate</li>
-	<li>GUI matre's smartphone software</li>
+	<li><em>Stop</em>/<em>Reactivate</em></li>
+	<li><tt>GUI</tt> <ks>maître's smartphone</ks> software</li>
 	<li>Deployment</li>
 	<li>Maintenance</li>
 </ol>
@@ -585,58 +589,62 @@ A first Product Backlog could have these elements:
 <dt>SPRINT 0</dt>
 <dd>The problem analysis already solves some problems; so the resulting <a href="./Analysis.html#ReqPrModel">model</a> could represent the result of a first SPRINT. In particular, the elements DONE of this SPRINT are:
 <ol>
-	<li>Resources representation: an actor for each non-smart resource</li>
-	<li>Resources state: a prolog file for each resource actor</li>
-	<li>CoAP observer: for CoAP communications from resources actors (smart and non-smart/elenco) to listening actors</li>
-	<li>Consult: communications between actors and get methods in prolog files of resources state</li>
-	<li>Prepare the room task: communications between actors and add and remove methods in prolog files of resources state</li>
-	<li>Add Food task: communications between actors and check for specific food and add and remove methods in prolog files of resources state</li>
-	<li>Clear the room task: communications between actors and add and remove methods in prolog files of resources state</li>
+	<li>Resources representation: an <tt>actor</tt> for each non-smart resource</li>
+	<li>Resources state: a <tt>prolog</tt> file for each resource <tt>actor</tt></li>
+	<li><tt>CoAP observer</tt>: for <tt>CoAP</tt> communications from resources <tt>actors</tt> (smart and non-smart) to listening <tt>actors</tt></li>
+	<li><em>Consult</em>: communications between <tt>actors</tt> and get methods in <tt>prolog</tt> files of resources state</li>
+	<li><ks>Prepare the room</ks> <ks>task</ks>: communications between <tt>actors</tt> and add and remove methods in <tt>prolog</tt> files of resources state</li>
+	<li><ks>Add Food</ks> <ks>task</ks>: communications between <tt>actors</tt> and check for specific food and add and remove methods in <tt>prolog</tt> files of resources state</li>
+	<li><ks>Clear the room</ks> <ks>task</ks>: communications between <tt>actors</tt> and add and remove methods in <tt>prolog</tt> files of resources state</li>
 	<li>Tests</li>
 </ol></dd>
 </dl>
 <br>
 A possibile set of next SPRINT could be:
 <dl>
-	<dt>SPRINT 0.1</dt>
-	<dd><ol>
-		<li>Table state: consumption of food</li>
-		<li>Tests</li>
-	</ol></dd>
-	
 	<dt>SPRINT 1</dt>
 	<dd><ol>
+		<li><ks>Table</ks> state: consumption of food</li>
 		<li>Planning: insert an initial map representation and use of Planner</li>
-		<li>Integration of Basic Robot for the RBR</li>
-		<li>Prepare the room task: path execution by the virtual robot</li>
-		<li>Add Food task: path execution by the virtual robot</li>
-		<li>Clear the room task: path execution by the virtual robot</li>
+		<li>Integration of <k>basicRobot</k> with the <k>rbr</k></li>
+		<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+		<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+		<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
 		<li>Tests</li>
 	</ol></dd>
-	
+	<br>
 	<dt>SPRINT 2</dt>
 	<dd><ol>
-		<li>Sonar</li>
+		<li><tt>Sonar</tt></li>
 		<li>Mapping</li>
-		<li>Avoid the obstacles requirement</li>
-		<li>Prepare the room task: path execution by the virtual robot avoiding the obstacles</li>
-		<li>Add Food task: path execution by the virtual robot avoiding the obstacles</li>
-		<li>Clear the room task: path execution by the virtual robot avoiding the obstacles</li>
+		<li><i><em>Avoid</em> the impact with obstacles</i> requirement</li>
+		<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles</li>
+		<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles</li>
+		<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles</li>
 		<li>Tests</li>
 	</ol></dd>
-	
+	<br>
 	<dt>SPRINT 3</dt>
 	<dd><ol>
-		<li>Stop/Reactivate</li>
-		<li>Prepare the room task: path execution by the virtual robot receiving stop and then reactivate commands</li>
-		<li>Add Food task: path execution by the virtual robot receiving stop and then reactivate commands</li>
-		<li>Clear the room task: path execution by the virtual robot receiving stop and then reactivate commands</li>
+		<li><em>Stop</em>/<em>Reactivate</em></li>
+		<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+		<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+		<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> receiving <em>stop</em> and then <em>reactivate</em> commands</li>
 		<li>Tests</li>
 	</ol></dd>
-	
+	<br>
 	<dt>SPRINT 4</dt>
 	<dd><ol>
-		<li>GUI matre's smartphone software</li>
+		<li><tt>GUI</tt> <ks>maître's smartphone</ks> software</li>
+		<li>Tests</li>
+	</ol></dd>
+	<br>
+	<dt>SPRINT 5</dt>
+	<dd><ol>
+		<li>Deploy on <tt>Raspberry</tt></li>
+		<li><ks>Prepare the room</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li><ks>Add Food</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li><ks>Clear the room</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
 		<li>Tests</li>
 	</ol></dd>
 </dl>
