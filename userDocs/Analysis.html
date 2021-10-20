@@ -480,7 +480,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<dd>With regard of the <em>clear</em> command related to the <ks>Clear the room</ks> task, the <k>rbr</k> has to know which and how much elements it has to take from the <k>table</k> and bring to the <k>dishwasher</k> and to the <k>fridge</k>. Similarly to the <em>prepare</em> and <em>addFood</em> command, to do this, it could be useful to run a <em>consult</em> command to the <k>table</k>. This can be done automatically by the <k>maitre</k> before sending the <em>clear</em> command to the <k>rbr</k> or by the <k>rbr</k> before executing the <ks>Clear the room</ks> task.</dd>
 </dl>
 
-<h3><a name="ReqPrModel"></a>Model of System's Logical Architecture</h3>
+<h3><a name="PrAnModel"></a>Model of System's Logical Architecture</h3>
 
 Below it's shown a model, that is a representation of the system architecture obtained from the problem analysis using <tt>QActor</tt> meta-model. In particular, starting from the <a href="./Analysis.html#ReqAnModel">model</a> obtained from the requirements analysis, in this model there are represented the main entities of the system as <tt>actors</tt> (<k>maitre</k>, <k>rbr</k>, <k>fridge</k>, <k>pantry</k>, <k>table</k>, <k>dishwasher</k>) which runs on their own <tt>contexts</tt> (<k>ctxmaitre</k>, which includes also the non-smart resources <tt>actors</tt>, <k>ctxrbr</k>, <k>ctxfridge</k>).<br>
 At each resource (smart and non-smart) it's associated a <a href="../ProblemAnalysisModel/resources/util/ActorCoapObserver.kt" target="_blank"><tt>CoAP observer</tt></a>.<br>
@@ -523,7 +523,7 @@ Below it's reported a functional tests planning starting from the <a href="./Ana
 
 <h4>Tests</h4>
 
-Below there are exposed some tests made for the <a href="./Analysis.html#ReqPrModel">model</a> achieved from the problem analysis:
+Below there are exposed some tests made for the <a href="./Analysis.html#PrAnModel">model</a> achieved from the problem analysis:
 <dl>
 	<dt><a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/ProblemAnalysisModel/test/it/unibo/test/PantryTest.kt" target="_blank">PantryTest.kt</a></dt>
 	<dd>Tests about removing of dishes from the <k>pantry</k>, useful for <ks>Prepare the room</ks> <ks>task</ks>:<ol>
@@ -587,7 +587,7 @@ A first Product Backlog could have these elements:
 
 <dl>
 <dt>SPRINT 0</dt>
-<dd>The problem analysis already solves some problems; so the resulting <a href="./Analysis.html#ReqPrModel">model</a> could represent the result of a first SPRINT. In particular, the elements DONE of this SPRINT are:
+<dd>The problem analysis already solves some problems; so the resulting <a href="./Analysis.html#PrAnModel">model</a> could represent the result of a first SPRINT. In particular, the elements DONE of this SPRINT are:
 <ol>
 	<li>Resources representation: an <tt>actor</tt> for each non-smart resource</li>
 	<li>Resources state: a <tt>prolog</tt> file for each resource <tt>actor</tt></li>
