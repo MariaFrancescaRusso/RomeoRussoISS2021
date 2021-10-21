@@ -58,6 +58,19 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 
 <h3>Planner</h3>
+The planning feature is the capability to execute actions in a logical space; this space is a map described by a set of square cells whose edges are robot sized. So it's possible to see a step of the robot as the ingress in a new cell. The planner keeps track of the current position in the map .<br>
+
+The planner feature is documented in the <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.planner20/userDocs/LabPlanner.html"  >LabPlanner</a>
+<a href = "https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.cautiousExplorer/userDocs/LabPlanner2021.html" >LabPlanner2021</a>. <br>
+
+Support is provided by the it.unibo.planner20-1.0.jar library and it's available in itunibo.planner.plannerUtil. The main operations provided by the planner are:
+<li>initAI(): initializes the planner assuming that the robot is in the robot home position.</li>
+<li>setGoal(x:int, y:int): allows the system to set a goal to be reached  providing the coordinates of the goal cell.</li>
+<li>doPlan(): List?: allows the system to get the moves to reach the goal from the current position.</li>
+<li>doMove(move:String): allows the system to perform a move in the logical space.</li>
+There are other functions that allow the system to manage the map used by the planner. In this sprint are very useful:
+<li>loadRoomMap: allows the system to load a map.</li>
+<li>get_curPos : Pair<Int, Int>: return the current position of the robot in the map.</li>
 
 
 
