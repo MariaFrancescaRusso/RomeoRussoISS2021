@@ -46,36 +46,8 @@ object generatorMap {
 		var t2 = ""
 		var obsY = 0
 		while(i < len-1){
-// Search for one obstacle
-//			if(curCol%2==0){
-//					//down direction
-//					t1 = "r"
-//					t2 = "l"
-//					obsY = obstacleY
-//				}else{
-//					//up direction
-//					t1 = "l"
-//					t2 = "r"
-//					obsY = len-obstacleY
-//				}
-//			if( curCol == obstacleX && i==obsY){
-//				itunibo.planner.plannerUtil.showCurrentRobotState()
-//				itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
-//				itunibo.planner.plannerUtil.updateMap(t1)
-//				itunibo.planner.plannerUtil.updateMap("w")
-//				itunibo.planner.plannerUtil.updateMap(t2)
-//				itunibo.planner.plannerUtil.updateMap("w")
-//				itunibo.planner.plannerUtil.updateMap("w")
-//				itunibo.planner.plannerUtil.updateMap(t2)
-//				itunibo.planner.plannerUtil.updateMap("w")
-//				itunibo.planner.plannerUtil.updateMap(t1)
-//				itunibo.planner.plannerUtil.showCurrentRobotState()
-//				i++
-//			}else{
 				itunibo.planner.plannerUtil.updateMap("w")
-//			}
 			i++
-		
 		}
 	}
 
