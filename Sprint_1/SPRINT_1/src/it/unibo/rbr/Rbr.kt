@@ -25,9 +25,21 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				var Food = ""
 				var ClearDish = ""
 				var ClearFood = ""
+				var RHCoordinate : Pair<String,String> ?=null
+				var TableCoordinate : Pair<String,String> ?=null
+				var FridgeCoordinate : Pair<String,String> ?=null
+				var PantryCoordinate : Pair<String,String> ?=null
+				var DishwasherCoordinate : Pair<String,String> ?=null
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
+						
+									RHCoordinate = Pair("0","0")
+									TableCoordinate = Pair("4","2")
+									FridgeCoordinate = Pair("6","0")
+									PantryCoordinate = Pair("0","6")
+									DishwasherCoordinate = Pair("5","6")
+									
 						println("RBR | STARTS and it's placed in RH position...")
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( "roomMap"  )
@@ -68,7 +80,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						delay(300) 
 						 
 									var ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal("0","6")
+									itunibo.planner.plannerUtil.planForGoal(PantryCoordinate!!.first,PantryCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(ac!=""){
@@ -84,7 +96,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						delay(300) 
 						 
 									ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal("2","4")
+									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(ac!=""){
@@ -99,7 +111,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						delay(300) 
 						 
 									ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal("6","0")
+									itunibo.planner.plannerUtil.planForGoal(FridgeCoordinate!!.first,FridgeCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(ac!=""){
@@ -115,7 +127,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						delay(300) 
 						 
 									ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal("4","2")
+									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(ac!=""){
@@ -131,7 +143,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						delay(300) 
 						 
 									ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal("0","0")
+									itunibo.planner.plannerUtil.planForGoal(RHCoordinate!!.first,RHCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(ac!=""){
