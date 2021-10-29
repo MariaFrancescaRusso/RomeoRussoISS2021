@@ -41,7 +41,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						else
 						{println("MAITRE | Error getting 'Prepare the room' elements...")
 						}
-						delay(2000) 
+						delay(6000) 
 					}
 					 transition( edgeName="goto",targetState="sendAddFood", cond=doswitch() )
 				}	 
@@ -54,6 +54,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						else
 						{println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
 						}
+						delay(6000) 
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
@@ -126,19 +127,24 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("preSendClear") { //this:State
 					action { //it:State
+						delay(6000) 
 						forward("consult", "consult(0)" ,"table" ) 
 						println("MAITRE | send consult command to Table for 'Clear the room' task")
+						delay(10000) 
 					}
 					 transition(edgeName="t36",targetState="sendClear",cond=whenEvent("observertable"))
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State
+						println("MAITRE | sono in sendClear")
 						if( checkMsgContent( Term.createTerm("observertable(X)"), Term.createTerm("observertable(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("${payloadArg(0)}")
 								 
 									 			var Temp = payloadArg(0).split(";")
 									 			ClearDish = Temp.get(0)
 									 			ClearFood = Temp.get(1)
+								println("MAITRE | $Temp")
 						}
 						println("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
 						forward("clear", "clear($ClearDish,$ClearFood)" ,"rbr" ) 

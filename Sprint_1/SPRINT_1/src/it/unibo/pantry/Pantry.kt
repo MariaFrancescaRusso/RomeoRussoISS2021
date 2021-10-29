@@ -34,8 +34,8 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("PANTRY| working...")
 					}
-					 transition(edgeName="t011",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t012",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t012",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t013",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
