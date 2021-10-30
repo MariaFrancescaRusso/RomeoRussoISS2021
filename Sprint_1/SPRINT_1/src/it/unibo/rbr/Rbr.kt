@@ -21,35 +21,31 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				var PrepareDish = ""
 				var PrepareFood = ""
 				var FoodCode = ""
-				var FoodPresence = "" //false 
+				var FoodPresence = "" 
 				var Food = ""
 				var ClearDish = ""
 				var ClearFood = ""
-				var RHCoordinate : Pair<String,String> ?=null		//X = column; Y = row
+				var RHCoordinate : Pair<String,String> ?=null	// X = column; Y = row
 				var PantryCoordinate : Pair<String,String> ?=null
-				var TableFromPantryCoordinate : Pair<String,String> ?=null
+				var TableCoordinate : Pair<String,String> ?=null
 				var FridgeCoordinate : Pair<String,String> ?=null
-				var TableFromFridgeCoordinate : Pair<String,String> ?=null
-				var TableFromHomeCoordinate : Pair<String,String> ?=null
 				var DishwasherCoordinate : Pair<String,String> ?=null
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						
-									RHCoordinate = Pair("0","0")
-									PantryCoordinate = Pair("0","6")
-									TableFromPantryCoordinate = Pair("2","4")
-									FridgeCoordinate = Pair("5","0")
-									TableFromFridgeCoordinate = Pair("4","2")
-									TableFromHomeCoordinate = Pair("2", "2")
-									DishwasherCoordinate = Pair("5","6")
-									
 						println("RBR | STARTS and it's placed in RH position...")
 						itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( "roomMap"  )
 						 IsMap = true  
 						itunibo.planner.plannerUtil.showMap(  )
 						solve("consult('ResourcesCoordinates.pl')","") //set resVar	
+						solve("getRHXYCoordinates(XRH,YRH)","") //set resVar	
+						if( currentSolution.isSuccess() ) { RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}")  
+						println("RBR | RH in $RHCoordinate")
+						}
+						else
+						{println("RBR | Error getting RH coordinates...")
+						}
 					}
 					 transition( edgeName="goto",targetState="working", cond=doswitchGuarded({ IsMap  
 					}) )
@@ -81,6 +77,13 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 												PrepareFood = payloadArg(1)
 						}
 						println("RBR | executing task 'Prepare the room' ( Crockery = $PrepareDish; Foods = $PrepareFood ) :")
+						solve("getPantryFromCurPosXYCoordinate($RHCoordinate,XPantry,YPantry)","") //set resVar	
+						if( currentSolution.isSuccess() ) { PantryCoordinate = Pair("${getCurSol("XPantry")}", "${getCurSol("YPantry")}")  
+						println("RBR | Found nearest goal for pantry in $PantryCoordinate")
+						}
+						else
+						{println("RBR | Error getting pantry coordinates...")
+						}
 						println("RBR | going to pantry...")
 						 
 									var Ac = "empty"
@@ -99,10 +102,17 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached pantry. Taking dishes...")
 						forward("changeState", "changeState(remove,$PrepareDish)" ,"pantry" ) 
 						delay(300) 
+						solve("getTableFromCurPosXYCoordinate($PantryCoordinate,XTable,YTable)","") //set resVar	
+						if( currentSolution.isSuccess() ) { TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}")  
+						println("RBR | Found nearest goal for table in $TableCoordinate")
+						}
+						else
+						{println("RBR | Error getting table coordinates...")
+						}
 						println("RBR | going to table...")
 						 
 									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableFromPantryCoordinate!!.first,TableFromPantryCoordinate!!.second)
+									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(Ac!=""){
@@ -116,6 +126,13 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached table. Adding dishes...")
 						forward("changeState", "changeState(add,$PrepareDish)" ,"table" ) 
 						delay(300) 
+						solve("getFridgeFromCurPosXYCoordinate($TableCoordinate,XFridge,YFridge)","") //set resVar	
+						if( currentSolution.isSuccess() ) { FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}")  
+						println("RBR | Found nearest goal for fridge in $FridgeCoordinate")
+						}
+						else
+						{println("RBR | Error getting fridge coordinates...")
+						}
 						println("RBR | going to fridge...")
 						 
 									Ac = "empty"
@@ -134,10 +151,17 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached fridge. Taking food...")
 						forward("changeState", "changeState(remove,$PrepareFood)" ,"fridge" ) 
 						delay(300) 
+						solve("getTableFromCurPosXYCoordinate($FridgeCoordinate,XTable,YTable)","") //set resVar	
+						if( currentSolution.isSuccess() ) { TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}")  
+						println("RBR | Found nearest goal for table in $TableCoordinate")
+						}
+						else
+						{println("RBR | Error getting table coordinates...")
+						}
 						println("RBR | going to table...")
 						 
 									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableFromFridgeCoordinate!!.first,TableFromFridgeCoordinate!!.second)
+									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(Ac!=""){
@@ -230,6 +254,13 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("exAddFood") { //this:State
 					action { //it:State
 						println("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
+						solve("getFridgeFromCurPosXYCoordinate($RHCoordinate,XFridge,YFridge)","") //set resVar	
+						if( currentSolution.isSuccess() ) { FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}")  
+						println("RBR | Found nearest goal for fridge in $FridgeCoordinate")
+						}
+						else
+						{println("RBR | Error getting fridge coordinates...")
+						}
 						println("RBR | going to fridge...")
 						 
 									var Ac = "empty"
@@ -248,10 +279,17 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached fridge. Taking food...")
 						forward("changeState", "changeState(remove,$Food)" ,"fridge" ) 
 						delay(300) 
+						solve("getTableFromCurPosXYCoordinate($FridgeCoordinate,XTable,YTable)","") //set resVar	
+						if( currentSolution.isSuccess() ) { TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}")  
+						println("RBR | Found nearest goal for table in $TableCoordinate")
+						}
+						else
+						{println("RBR | Error getting table coordinates...")
+						}
 						println("RBR | going to table...")
 						 
 									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableFromFridgeCoordinate!!.first,TableFromFridgeCoordinate!!.second)
+									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(Ac!=""){
@@ -293,10 +331,17 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 												ClearFood = payloadArg(1)
 						}
 						println("RBR | executing task 'Clear the room':")
+						solve("getTableFromCurPosXYCoordinate($RHCoordinate,XTable,YTable)","") //set resVar	
+						if( currentSolution.isSuccess() ) { TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}")  
+						println("RBR | Found nearest goal for table in $TableCoordinate")
+						}
+						else
+						{println("RBR | Error getting table coordinates...")
+						}
 						println("RBR | going to table...")
 						 
 									var Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableFromHomeCoordinate!!.first,TableFromHomeCoordinate!!.second)
+									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(Ac!=""){
@@ -313,6 +358,13 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						 ){println("RBR | Taking food...")
 						forward("changeState", "changeState(remove,$ClearFood)" ,"table" ) 
 						delay(300) 
+						solve("getFridgeFromCurPosXYCoordinate($TableCoordinate,XFridge,YFridge)","") //set resVar	
+						if( currentSolution.isSuccess() ) { FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}")  
+						println("RBR | Found nearest goal for fridge in $FridgeCoordinate")
+						}
+						else
+						{println("RBR | Error getting fridge coordinates...")
+						}
 						println("RBR | going to fridge...")
 						 
 										Ac = "empty"
@@ -331,10 +383,17 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached fridge. Adding food...")
 						forward("changeState", "changeState(add,$ClearFood)" ,"fridge" ) 
 						delay(300) 
+						solve("getTableFromCurPosXYCoordinate($FridgeCoordinate,XTable,YTable)","") //set resVar	
+						if( currentSolution.isSuccess() ) { TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}")  
+						println("RBR | Found nearest goal for table in $TableCoordinate")
+						}
+						else
+						{println("RBR | Error getting table coordinates...")
+						}
 						println("RBR | going to table...")
 						 
 										Ac = "empty"
-										itunibo.planner.plannerUtil.planForGoal(TableFromFridgeCoordinate!!.first,TableFromFridgeCoordinate!!.second)
+										itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 						//				itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 										while(Ac!=""){
@@ -351,6 +410,13 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | Taking dishes...")
 						forward("changeState", "changeState(remove,$ClearDish)" ,"table" ) 
 						delay(300) 
+						solve("getDishwasherFromCurPosXYCoordinate($TableCoordinate,XDishwasher,YDishwasher)","") //set resVar	
+						if( currentSolution.isSuccess() ) { DishwasherCoordinate = Pair("${getCurSol("XDishwasher")}", "${getCurSol("YDishwasher")}")  
+						println("RBR | Found nearest goal for dishwasher in $DishwasherCoordinate")
+						}
+						else
+						{println("RBR | Error getting dishwasher coordinates...")
+						}
 						println("RBR | going to dishwasher...")
 						 
 									Ac = "empty"

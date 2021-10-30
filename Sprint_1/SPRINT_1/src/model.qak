@@ -183,33 +183,21 @@ QActor rbr context ctxsystem {
 		var PrepareDish = ""
 		var PrepareFood = ""
 		var FoodCode = ""
-		var FoodPresence = "" //false 
+		var FoodPresence = "" 
 		var Food = ""
 		var ClearDish = ""
 		var ClearFood = ""
-		var RHCoordinate : Pair<String,String> ?=null		//X = column; Y = row
+		var RHCoordinate : Pair<String,String> ?=null	// X = column; Y = row
 		var PantryCoordinate : Pair<String,String> ?=null
-		var TableFromPantryCoordinate : Pair<String,String> ?=null
+		var TableCoordinate : Pair<String,String> ?=null
 		var FridgeCoordinate : Pair<String,String> ?=null
-		var TableFromFridgeCoordinate : Pair<String,String> ?=null
-		var TableFromHomeCoordinate : Pair<String,String> ?=null
 		var DishwasherCoordinate : Pair<String,String> ?=null
 	#]	
 	
 	/* Initialization of planner and loading map if available */
-	State s0 initial {
-		[#
-			RHCoordinate = Pair("0","0")
-			PantryCoordinate = Pair("0","6")
-			TableFromPantryCoordinate = Pair("2","4")
-			FridgeCoordinate = Pair("5","0")
-			TableFromFridgeCoordinate = Pair("4","2")
-			TableFromHomeCoordinate = Pair("2", "2")
-			DishwasherCoordinate = Pair("5","6")
-			
-		#]
-		
+	State s0 initial {		
 		println ("RBR | STARTS and it's placed in RH position...")
+		
 		run itunibo.planner.plannerUtil.initAI()
 		run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
 			
@@ -218,6 +206,15 @@ QActor rbr context ctxsystem {
 		run itunibo.planner.plannerUtil.showMap()
 		
 		solve( consult("ResourcesCoordinates.pl") )
+					
+		solve( getRHXYCoordinates(XRH, YRH) )
+		ifSolved {	
+			[# RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}") #]
+			println ("RBR | RH in $RHCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting RH coordinates...")
+		}
 	}
 	Goto working if [# IsMap #] else mapping
 	
@@ -246,6 +243,14 @@ QActor rbr context ctxsystem {
  		 		
 		println ("RBR | executing task 'Prepare the room' ( Crockery = $PrepareDish; Foods = $PrepareFood ) :" )
 		
+		solve( getPantryFromCurPosXYCoordinate($RHCoordinate, XPantry, YPantry) )
+		ifSolved {	
+			[# PantryCoordinate = Pair("${getCurSol("XPantry")}", "${getCurSol("YPantry")}") #]
+			println ("RBR | Found nearest goal for pantry in $PantryCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting pantry coordinates...")
+		}
 		println ("RBR | going to pantry...")		
 		[# 
 			var Ac = "empty"
@@ -266,11 +271,19 @@ QActor rbr context ctxsystem {
 		println ("RBR | ...reached pantry. Taking dishes...")
 		forward pantry -m changeState : changeState(remove, $PrepareDish)
 		delay 300
-
+		
+		solve( getTableFromCurPosXYCoordinate($PantryCoordinate, XTable, YTable) )
+		ifSolved {	
+			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
+			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting table coordinates...")
+		}
 		println ("RBR | going to table...")
 		[# 
 			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableFromPantryCoordinate!!.first,TableFromPantryCoordinate!!.second)
+			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 //			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 			while(Ac!=""){
@@ -287,6 +300,14 @@ QActor rbr context ctxsystem {
 		forward table -m changeState : changeState(add, $PrepareDish)
 		delay 300	
 		
+		solve( getFridgeFromCurPosXYCoordinate($TableCoordinate, XFridge, YFridge) )
+		ifSolved {	
+			[# FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}") #]
+			println ("RBR | Found nearest goal for fridge in $FridgeCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting fridge coordinates...")
+		}
 		println ("RBR | going to fridge...")
 		[# 
 			Ac = "empty"
@@ -307,11 +328,19 @@ QActor rbr context ctxsystem {
 		println ("RBR | ...reached fridge. Taking food...")
 		forward fridge -m changeState : changeState(remove, $PrepareFood)	
 		delay 300
-
+		
+		solve( getTableFromCurPosXYCoordinate($FridgeCoordinate, XTable, YTable) )
+		ifSolved {	
+			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
+			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting table coordinates...")
+		}
 		println ("RBR | going to table...")
 		[# 
 			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableFromFridgeCoordinate!!.first,TableFromFridgeCoordinate!!.second)
+			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 //			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 			while(Ac!=""){
@@ -404,6 +433,14 @@ QActor rbr context ctxsystem {
 	State exAddFood {
 		println ("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
 		
+		solve( getFridgeFromCurPosXYCoordinate($RHCoordinate, XFridge, YFridge) )
+		ifSolved {	
+			[# FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}") #]
+			println ("RBR | Found nearest goal for fridge in $FridgeCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting fridge coordinates...")
+		}
 		println ("RBR | going to fridge...")
 		[# 
 			var Ac = "empty"
@@ -425,10 +462,18 @@ QActor rbr context ctxsystem {
 		forward fridge -m changeState : changeState(remove, $Food)
 		delay 300
 		
+		solve( getTableFromCurPosXYCoordinate($FridgeCoordinate, XTable, YTable) )
+		ifSolved {	
+			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
+			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting table coordinates...")
+		}
 		println ("RBR | going to table...")
 		[# 
 			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableFromFridgeCoordinate!!.first,TableFromFridgeCoordinate!!.second)
+			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 //			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 			while(Ac!=""){
@@ -476,10 +521,18 @@ QActor rbr context ctxsystem {
 		
 		println ("RBR | executing task 'Clear the room':")
 		
+		solve( getTableFromCurPosXYCoordinate($RHCoordinate, XTable, YTable) )
+		ifSolved {	
+			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
+			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting table coordinates...")
+		}
 		println ("RBR | going to table...")
 		[# 
 			var Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableFromHomeCoordinate!!.first,TableFromHomeCoordinate!!.second)
+			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 //			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 			while(Ac!=""){
@@ -496,11 +549,18 @@ QActor rbr context ctxsystem {
 		println ("RBR | ...reached table.")
 		
 		if [# ClearFood != "[]" #] {
-		
 			println ("RBR | Taking food...")
 			forward table -m changeState : changeState(remove, $ClearFood)
 			delay 300
 			
+			solve( getFridgeFromCurPosXYCoordinate($TableCoordinate, XFridge, YFridge) )
+			ifSolved {	
+				[# FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}") #]
+				println ("RBR | Found nearest goal for fridge in $FridgeCoordinate")				
+			}
+			else {
+				println ("RBR | Error getting fridge coordinates...")
+			}
 			println ("RBR | going to fridge...")
 			[# 
 				Ac = "empty"
@@ -521,11 +581,19 @@ QActor rbr context ctxsystem {
 			println ("RBR | ...reached fridge. Adding food...")
 			forward fridge -m changeState : changeState(add,  $ClearFood)
 			delay 300
-					
+			
+			solve( getTableFromCurPosXYCoordinate($FridgeCoordinate, XTable, YTable) )
+			ifSolved {	
+				[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
+				println ("RBR | Found nearest goal for table in $TableCoordinate")				
+			}
+			else {
+				println ("RBR | Error getting table coordinates...")
+			}
 			println ("RBR | going to table...")
 			[# 
 				Ac = "empty"
-				itunibo.planner.plannerUtil.planForGoal(TableFromFridgeCoordinate!!.first,TableFromFridgeCoordinate!!.second)
+				itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
 //				itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
 				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 				while(Ac!=""){
@@ -545,7 +613,15 @@ QActor rbr context ctxsystem {
 		println ("RBR | Taking dishes...")
 		forward table -m changeState : changeState(remove, $ClearDish)	
 		delay 300
-			
+		
+		solve( getDishwasherFromCurPosXYCoordinate($TableCoordinate, XDishwasher, YDishwasher) )
+		ifSolved {	
+			[# DishwasherCoordinate = Pair("${getCurSol("XDishwasher")}", "${getCurSol("YDishwasher")}") #]
+			println ("RBR | Found nearest goal for dishwasher in $DishwasherCoordinate")				
+		}
+		else {
+			println ("RBR | Error getting dishwasher coordinates...")
+		}
 		println ("RBR | going to dishwasher...")
 		[# 
 			Ac = "empty"
@@ -585,6 +661,7 @@ QActor rbr context ctxsystem {
 			itunibo.planner.plannerUtil.showMap()
 		#]
 		println ("RBR | ...reached RH. Finished executing task")
+ 
 //		terminate 0
 	}
 }
