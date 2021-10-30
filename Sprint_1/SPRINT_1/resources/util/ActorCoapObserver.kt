@@ -10,8 +10,7 @@ import it.unibo.kactor.ApplMessage
 import java.util.Scanner
 import org.eclipse.californium.core.CoapHandler
 import it.unibo.kactor.ActorBasic
-import kotlinx.coroutines.launch
-import org.eclipse.californium.core.coap.CoAP 
+import kotlinx.coroutines.launch 
  
 class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
 
@@ -34,18 +33,14 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
 	 fun activate( owner: ActorBasic? = null) { 
        val uriStr = "coap://$ipaddr/$context/$destactor"
 //       val ownerName = owner?.getName()
-	   println("actortQakCoapObserver | START uriStr: $uriStr")
+	   println("observer$destactor | START uriStr: $uriStr")
        client.uri = uriStr
        client.observe(object : CoapHandler {
             override fun onLoad(response: CoapResponse) {
 				content = response.responseText
-                println("actortQakCoapObserver | GET RESP-CODE= " + response.code + " content:" + content)
+                println("observer$destactor | GET RESP-CODE= " + response.code + " content:" + content)
  				if(  owner!== null ) owner.scope.launch {
  					val event = MsgUtil.buildEvent( "observer$destactor","observer$destactor","observer$destactor('$content')")
-// 					val event = MsgUtil.buildEvent( "$destactor","observer","observer('$content')")
-//					val event = MsgUtil.buildEvent( "observer","local_resrep","resrep('$content')")
-					
-				if( response.code != CoAP.ResponseCode.NOT_FOUND && !(content.contains("START") || content.contains("created")))
 					owner.emit( event, avatar=true ) //to avoid that auto-event will be discarded
 				}
            } 
