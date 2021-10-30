@@ -10,7 +10,8 @@ import it.unibo.kactor.ApplMessage
 import java.util.Scanner
 import org.eclipse.californium.core.CoapHandler
 import it.unibo.kactor.ActorBasic
-import kotlinx.coroutines.launch 
+import kotlinx.coroutines.launch
+import java.util.ArrayList 
  
 class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
 
@@ -27,11 +28,13 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
     		this.destactor   = destactor
     		this.content	 = ""
 	}
-	
+
+//ignore allows to ignore state update not usefull in a particular step
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @kotlinx.coroutines.ExperimentalCoroutinesApi
-	 fun activate( owner: ActorBasic? = null) { 
+	 fun activate( owner: ActorBasic? = null, ignores:ArrayList<String>?= null) { 
        val uriStr = "coap://$ipaddr/$context/$destactor"
+    	var ignored = false
 //       val ownerName = owner?.getName()
 	   println("observer$destactor | START uriStr: $uriStr")
        client.uri = uriStr
@@ -39,10 +42,20 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
             override fun onLoad(response: CoapResponse) {
 				content = response.responseText
                 println("observer$destactor | GET RESP-CODE= " + response.code + " content:" + content)
- 				if(  owner!== null ) owner.scope.launch {
+                if(ignores!=null){
+					for(i in ignores!!){
+						if(content.contains(i)){
+							println("controllo se contiene " + i)
+							ignored = true
+							break
+						}
+					}
+				}
+ 				if(  owner!== null && !ignored) owner.scope.launch {
  					val event = MsgUtil.buildEvent( "observer$destactor","observer$destactor","observer$destactor('$content')")
 					owner.emit( event, avatar=true ) //to avoid that auto-event will be discarded
 				}
+				ignored = false
            } 
             override fun onError() {
                 println("actortQakCoapObserver | FAILED")
