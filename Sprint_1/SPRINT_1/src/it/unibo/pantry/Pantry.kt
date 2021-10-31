@@ -25,7 +25,7 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("PANTRY | STARTS and it's filled with a proper set of items...")
 						solve("consult('PantryState.pl')","") //set resVar	
 						println("PANTRY | loaded initial state")
-						 PantryObserver.activate(myself)  
+						 PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail"))  
 						println("PANTRY | activated PantryObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

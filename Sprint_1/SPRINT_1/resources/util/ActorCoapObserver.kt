@@ -45,7 +45,6 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
                 if(ignores!=null){
 					for(i in ignores!!){
 						if(content.contains(i)){
-							println("controllo se contiene " + i)
 							ignored = true
 							break
 						}

@@ -147,30 +147,26 @@ QActor maitre context ctxsystem {
 	
 	/* maitre sends a consult command to table before sending clear command to rbr */
 	State preSendClear {
-		delay 6000
+		delay 40000
 		forward table -m consult : consult(0)
 		println ("MAITRE | send consult command to Table for 'Clear the room' task")
-		delay 10000
 	}
 	Transition t3
 		whenEvent observertable -> sendClear
 	
 	State sendClear {
-		println ("MAITRE | sono in sendClear")
-		onMsg( observertable : observertable(X) ) {
-	 		println ("${payloadArg(0)}")
-	 		
+		onMsg( observertable : observertable(X) ) {	 		
 	 		[# 
 	 			var Temp = payloadArg(0).split(";")
 	 			ClearDish = Temp.get(0)
 	 			ClearFood = Temp.get(1)
-	 		#] 
-	 		
-	 		println ("MAITRE | $Temp")
+	 		#]
  		}
  				
 		println ("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
+		
 		forward rbr -m clear : clear($ClearDish, $ClearFood)
+		println ("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
 		
 //		terminate 0
 	} 
@@ -401,17 +397,15 @@ QActor rbr context ctxsystem {
 		onMsg( observerfridge : observerfridge(X) ) { 		
 	 		[# 
 	 			var Temp = payloadArg(0).split(";")
-	 			FoodPresence = Temp.get(0) //.toBoolean()
+	 			FoodPresence = Temp.get(0)
 	 		#]
 
 	 		if [# Temp.size == 2 #] {
 	 			[# Food = Temp.get(1) #]	
  			}
  		}
-//		println ("RBR | received answer from fridge via CoAP: $FoodPresence")
 	} 
 	Goto waitAnswer if [# FoodPresence != "true" && FoodPresence != "false" #] else checkAnswer
-//	Goto fail if [# FoodPresence == false #] else exAddFood
 
 	/* Waiting state of the expected event --> for example to manage the case of "consult" sent by maitre before the "addFood" */
 	State waitAnswer {	
@@ -679,7 +673,7 @@ QActor pantry context ctxsystem {
 		solve( consult("PantryState.pl") )
 		println ("PANTRY | loaded initial state")	
 		
-		[# PantryObserver.activate(myself) #]
+		[# PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("PANTRY | activated PantryObserver")
 	}
 	Goto work
@@ -753,7 +747,7 @@ QActor table context ctxsystem {
 		solve( consult("TableState.pl") )
 		println ("TABLE| loaded initial state") 
 		
-		[# TableObserver.activate(myself) #]
+		[# TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("TABLE | activated TableObserver")
 	}
 	Goto work
@@ -827,7 +821,7 @@ QActor dishwasher context ctxsystem {
 		solve( consult("DishwasherState.pl") )
 		println ("DISHWASHER | loaded initial state")
 		
-		[# DishwasherObserver.activate(myself) #]
+		[# DishwasherObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("DISHWASHER | activated DishwasherObserver")
 	}
 	Goto work 
@@ -901,7 +895,7 @@ QActor fridge context ctxsystem {
 		solve( consult("FridgeState.pl") )
 		println ("FRIDGE | loaded initial state")
 		
-		[# FridgeObserver.activate(myself) #]
+		[# FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("FRIDGE | activated FridgeObserver")
 		delay 300
 	}

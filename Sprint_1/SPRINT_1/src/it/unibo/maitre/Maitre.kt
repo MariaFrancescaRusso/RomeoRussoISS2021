@@ -127,27 +127,24 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("preSendClear") { //this:State
 					action { //it:State
-						delay(6000) 
+						delay(40000) 
 						forward("consult", "consult(0)" ,"table" ) 
 						println("MAITRE | send consult command to Table for 'Clear the room' task")
-						delay(10000) 
 					}
 					 transition(edgeName="t36",targetState="sendClear",cond=whenEvent("observertable"))
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State
-						println("MAITRE | sono in sendClear")
 						if( checkMsgContent( Term.createTerm("observertable(X)"), Term.createTerm("observertable(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("${payloadArg(0)}")
 								 
 									 			var Temp = payloadArg(0).split(";")
 									 			ClearDish = Temp.get(0)
 									 			ClearFood = Temp.get(1)
-								println("MAITRE | $Temp")
 						}
 						println("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
 						forward("clear", "clear($ClearDish,$ClearFood)" ,"rbr" ) 
+						println("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
 					}
 				}	 
 			}

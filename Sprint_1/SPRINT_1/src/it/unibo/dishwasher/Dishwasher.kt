@@ -25,7 +25,7 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 						println("DISHWASHER | STARTS and it's empty...")
 						solve("consult('DishwasherState.pl')","") //set resVar	
 						println("DISHWASHER | loaded initial state")
-						 DishwasherObserver.activate(myself)  
+						 DishwasherObserver.activate(myself, arrayListOf("Added", "Removed", "Fail"))  
 						println("DISHWASHER | activated DishwasherObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

@@ -219,7 +219,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 
 									 			var Temp = payloadArg(0).split(";")
-									 			FoodPresence = Temp.get(0) //.toBoolean()
+									 			FoodPresence = Temp.get(0)
 								if(  Temp.size == 2  
 								 ){ Food = Temp.get(1)  
 								}

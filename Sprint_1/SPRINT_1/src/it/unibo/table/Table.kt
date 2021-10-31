@@ -25,7 +25,7 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 						println("TABLE | STARTS and it's empty...")
 						solve("consult('TableState.pl')","") //set resVar	
 						println("TABLE| loaded initial state")
-						 TableObserver.activate(myself)  
+						 TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail"))  
 						println("TABLE | activated TableObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

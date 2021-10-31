@@ -25,7 +25,7 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("FRIDGE | STARTS and it's embedded with the proper set of food...")
 						solve("consult('FridgeState.pl')","") //set resVar	
 						println("FRIDGE | loaded initial state")
-						 FridgeObserver.activate(myself)  
+						 FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail"))  
 						println("FRIDGE | activated FridgeObserver")
 						delay(300) 
 					}
