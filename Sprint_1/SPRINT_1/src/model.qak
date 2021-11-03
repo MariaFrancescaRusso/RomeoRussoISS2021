@@ -11,6 +11,10 @@ Dispatch prepare:prepare(X, Y)
 Request addFood:addFood(FOODE_CODE)	
 Dispatch clear:clear(X, Y)
 
+//rbr- rbrwalker
+Request setgoal:setgoal(X,Y)
+Reply goalstate:goalstate(X)
+
 Reply warning:warning(ARG)	//void
 
 //Maitre - Fridge/Resources
@@ -25,15 +29,17 @@ Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to cha
 //RBR - basicRobot
 Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
 
+Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
+//Context ctxwalker ip [host="192.168.1.211" port=8030]
 Context ctxsystem ip [host="localhost" port=8040]
 //Context ctxrbr ip [host="localhost" port=8050]
-Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 //Context ctxfridge ip [host="127.0.0.1" port=8060]  
 //Context ctxmaitre ip [host="192.168.1.171" port=8070]
 
-ExternalQActor basicrobot context ctxbasicrobot
+ExternalQActor basicrobot context ctxbasicrobot  
 
 /* Actor maitre is used as a mock client */
+
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -145,7 +151,7 @@ QActor maitre context ctxsystem {
 	}
 	Goto preSendClear if [#	Nexp == 4 #] else waitExpose
 	
-	/* maitre sends a consult command to table before sending clear command to rbr */
+	// maitre sends a consult command to table before sending clear command to rbr 
 	State preSendClear {
 		delay 40000
 		forward table -m consult : consult(0)
@@ -188,18 +194,16 @@ QActor rbr context ctxsystem {
 		var TableCoordinate : Pair<String,String> ?=null
 		var FridgeCoordinate : Pair<String,String> ?=null
 		var DishwasherCoordinate : Pair<String,String> ?=null
+		var CurPrepStep = 0
+		var CurAddStep = 0
+		var CurClearStep = 0
 	#]	
 	
 	/* Initialization of planner and loading map if available */
 	State s0 initial {		
 		println ("RBR | STARTS and it's placed in RH position...")
-		
-		run itunibo.planner.plannerUtil.initAI()
-		run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
 			
 		[# IsMap = true #]		
-			
-		run itunibo.planner.plannerUtil.showMap()
 		
 		solve( consult("ResourcesCoordinates.pl") )
 					
@@ -230,16 +234,18 @@ QActor rbr context ctxsystem {
 		whenMsg prepare -> exPrepare
 	
 	State exPrepare {
+		[# 
+			if (CurPrepStep == 0){				
+		#] 
 		onMsg( prepare : prepare(X,Y) ) {
 	 		[# 	
 	 			PrepareDish = payloadArg(0)
 				PrepareFood = payloadArg(1)
 			#]
  		}
- 		 		
-		println ("RBR | executing task 'Prepare the room' ( Crockery = $PrepareDish; Foods = $PrepareFood ) :" )
-		
-		solve( getPantryFromCurPosXYCoordinate($RHCoordinate, XPantry, YPantry) )
+ 		println ("RBR | executing task 'Prepare the room' ( Crockery = $PrepareDish; Foods = $PrepareFood ) :" )
+ 		
+ 		solve( getPantryFromCurPosXYCoordinate($RHCoordinate, XPantry, YPantry) )
 		ifSolved {	
 			[# PantryCoordinate = Pair("${getCurSol("XPantry")}", "${getCurSol("YPantry")}") #]
 			println ("RBR | Found nearest goal for pantry in $PantryCoordinate")				
@@ -247,23 +253,16 @@ QActor rbr context ctxsystem {
 		else {
 			println ("RBR | Error getting pantry coordinates...")
 		}
+				
 		println ("RBR | going to pantry...")		
+		
+//				request rbrwalker -m setgoal : setgoal($PantryCoordinate!!.first,${PantryCoordinate!!.second})
 		[# 
-			var Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(PantryCoordinate!!.first,PantryCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!="") {
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${PantryCoordinate!!.first},${PantryCoordinate!!.second})" ,"rbrwalker" )  		
 			}
-			itunibo.planner.plannerUtil.showMap()
+			if (CurPrepStep == 1){				
 		#]
+		
 		println ("RBR | ...reached pantry. Taking dishes...")
 		forward pantry -m changeState : changeState(remove, $PrepareDish)
 		delay 300
@@ -277,21 +276,13 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting table coordinates...")
 		}
 		println ("RBR | going to table...")
+		
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 			}
+			if (CurPrepStep == 2){				
 		#]
+		
 		println ("RBR | ...reached table. Adding dishes...")
 		forward table -m changeState : changeState(add, $PrepareDish)
 		delay 300	
@@ -305,22 +296,13 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting fridge coordinates...")
 		}
 		println ("RBR | going to fridge...")
+		
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(FridgeCoordinate!!.first,FridgeCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
 			}
-			itunibo.planner.plannerUtil.showMap()
+			if (CurPrepStep == 3){				
 		#]
+		
 		println ("RBR | ...reached fridge. Taking food...")
 		forward fridge -m changeState : changeState(remove, $PrepareFood)	
 		delay 300
@@ -334,47 +316,40 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting table coordinates...")
 		}
 		println ("RBR | going to table...")
+		
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 			}
-			itunibo.planner.plannerUtil.showMap()
+			if (CurPrepStep == 4){				
 		#]
+		
 		println ("RBR | ...reached table. Adding food...")
 		forward table -m changeState : changeState(add, $PrepareFood)
 		delay 300
-
+		
 		println ("RBR | coming back to RH...")
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(RHCoordinate!!.first,RHCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
+				request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
+			}				
+			
+			CurPrepStep++
 		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			}
-			itunibo.planner.plannerUtil.showMap()
-		#]
-		println ("RBR | ...reached RH. Finished executing task") 
 	}
-	Goto wait
-	
+	Transition t0
+		whenReply goalstate -> handlePrep
+		
+	State handlePrep{
+		onMsg(goalstate: goalstate(X)){
+			println("RBR | cur position: ${payloadArg(0)} step : $CurPrepStep")		
+		}
+		[# if (CurPrepStep==5){#]
+			println ("RBR | ...reached RH. Finished executing task")
+		[#
+			}
+		#] 
+	}
+	Goto exPrepare if [# CurPrepStep <5 #] else wait 
+		
 	State wait {
 		println ("RBR | is placed in RH position and it's waiting for a command...")
 	}
@@ -425,6 +400,7 @@ QActor rbr context ctxsystem {
 	Goto wait
 
 	State exAddFood {
+		[# if (CurAddStep == 0){ #]
 		println ("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
 		
 		solve( getFridgeFromCurPosXYCoordinate($RHCoordinate, XFridge, YFridge) )
@@ -436,22 +412,13 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting fridge coordinates...")
 		}
 		println ("RBR | going to fridge...")
+
 		[# 
-			var Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(FridgeCoordinate!!.first,FridgeCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
 			}
-			itunibo.planner.plannerUtil.showMap()
+			if (CurAddStep == 1){				
 		#]
+
 		println ("RBR | ...reached fridge. Taking food...")
 		forward fridge -m changeState : changeState(remove, $Food)
 		delay 300
@@ -465,54 +432,48 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting table coordinates...")
 		}
 		println ("RBR | going to table...")
+		
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 			}
+			if (CurAddStep == 2){				
 		#]
+		
 		println ("RBR | ...reached table. Adding food...")
 		forward table -m changeState : changeState(add, $Food)
 		delay 300
 		
 		println ("RBR | coming back to RH...")
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(RHCoordinate!!.first,RHCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
+				request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
+			}			
+			CurAddStep++
 		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			}
-			itunibo.planner.plannerUtil.showMap()
-		#]
-		println ("RBR | ...reached RH. Finished executing task")
 	}
-	Goto wait
+	Transition t2 
+		whenReply goalstate-> handleAdd
+	
+	State handleAdd {
+		onMsg(goalstate: goalstate(X)){
+			println("RBR | cur position: ${payloadArg(0)}")		
+		}
+		[# if (CurAddStep == 3){ #]
+		
+		println ("RBR | ...reached RH. Finished executing task")
+		[#
+			}
+		#]
+	}	
+	Goto exAddFood if [# CurAddStep < 3 #] else wait 
 	
 	State exClear {
+		[# if(CurClearStep == 0){ #]
 		onMsg( clear:clear(X,Y) ) {
 	 		[# 	
 	 			ClearDish = payloadArg(0)
 				ClearFood = payloadArg(1)
 			#]
  		}
-		
 		println ("RBR | executing task 'Clear the room':")
 		
 		solve( getTableFromCurPosXYCoordinate($RHCoordinate, XTable, YTable) )
@@ -525,24 +486,13 @@ QActor rbr context ctxsystem {
 		}
 		println ("RBR | going to table...")
 		[# 
-			var Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 			}
-			itunibo.planner.plannerUtil.showMap()
 		#]
-		println ("RBR | ...reached table.")
 		
 		if [# ClearFood != "[]" #] {
+			[# if(CurClearStep == 1){ #]
+			println ("RBR | ...reached table.")	
 			println ("RBR | Taking food...")
 			forward table -m changeState : changeState(remove, $ClearFood)
 			delay 300
@@ -556,24 +506,13 @@ QActor rbr context ctxsystem {
 				println ("RBR | Error getting fridge coordinates...")
 			}
 			println ("RBR | going to fridge...")
-			[# 
-				Ac = "empty"
-				itunibo.planner.plannerUtil.planForGoal(FridgeCoordinate!!.first,FridgeCoordinate!!.second)
-//				itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-				while(Ac!=""){
-			#]
-			forward basicrobot -m cmd : cmd($Ac)
-			delay 500
-			[#
-					itunibo.planner.plannerUtil.updateMap(Ac) 
-					println ("RBR | $Ac")
-					Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+			[# 	
+					request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
 				}
-				itunibo.planner.plannerUtil.showMap()
+				if (CurClearStep == 2){				
 			#]
 			println ("RBR | ...reached fridge. Adding food...")
-			forward fridge -m changeState : changeState(add,  $ClearFood)
+			forward fridge -m changeState : changeState(add,$ClearFood)
 			delay 300
 			
 			solve( getTableFromCurPosXYCoordinate($FridgeCoordinate, XTable, YTable) )
@@ -586,24 +525,19 @@ QActor rbr context ctxsystem {
 			}
 			println ("RBR | going to table...")
 			[# 
-				Ac = "empty"
-				itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-//				itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-				while(Ac!=""){
+					request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
+				}				
 			#]
-			forward basicrobot -m cmd : cmd($Ac)
-			delay 500
-			[#
-					itunibo.planner.plannerUtil.updateMap(Ac) 
-					println ("RBR | $Ac")
-					Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-				}
-				itunibo.planner.plannerUtil.showMap()
-			#]
-			println ("RBR | ...reached table.")
+		}else{
+		[#
+			CurClearStep ++
+			CurClearStep ++
+		#]
 		}
 		
+		[# if (CurClearStep == 3){#]
+		println ("RBR | ...reached table.")
+						
 		println ("RBR | Taking dishes...")
 		forward table -m changeState : changeState(remove, $ClearDish)	
 		delay 300
@@ -618,46 +552,34 @@ QActor rbr context ctxsystem {
 		}
 		println ("RBR | going to dishwasher...")
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(DishwasherCoordinate!!.first,DishwasherCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${DishwasherCoordinate!!.first},${DishwasherCoordinate!!.second})" ,"rbrwalker" )  		
 			}
-			itunibo.planner.plannerUtil.showMap()
+			if (CurClearStep == 4){				
 		#]
-		println ("RBR | ...reached dishwasher. Adding dishes...")
 		forward dishwasher -m changeState : changeState(add, $ClearDish)	
 		delay 300
 		
 		println ("RBR | coming back to RH...")
 		[# 
-			Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(RHCoordinate!!.first,RHCoordinate!!.second)
-//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!=""){
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				println ("RBR | $Ac")
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+				request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
 			}
-			itunibo.planner.plannerUtil.showMap()
-		#]
-		println ("RBR | ...reached RH. Finished executing task")
- 
-//		terminate 0
+ 			CurClearStep++
+ 		#]
 	}
+	Transition t3
+		whenReply goalstate -> handleClear
+	
+	State handleClear{
+		onMsg(goalstate: goalstate(X)){
+			println("RBR | cur position: ${payloadArg(0)} step: $CurClearStep")		
+		}
+		[# if (CurClearStep == 5){ #]
+			println ("RBR | ...reached RH. Finished executing task")
+ 		[#
+ 			}
+ 		#]
+	}	
+	Goto exClear //if [# CurClearStep < 4 #] 
 }
 
 //QActor pantry context ctxmaitre {
@@ -982,6 +904,60 @@ QActor fridge context ctxsystem {
 				updateResource [# "Fail removing Food $Food!" #]
 			}
  		}
+	}
+	Goto wait
+}
+QActor rbrwalker context ctxsystem{
+	
+	State s0 initial {
+		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
+		run itunibo.planner.plannerUtil.showMap()
+		println ("WALKER | STARTS...")	
+	}
+	Goto wait
+	
+	State wait {
+		println ("WALKER | waits a goal...")
+	}
+	Transition t0 
+	whenRequest setgoal -> gotogoal
+	
+//TODO inserire uno stato di errore
+//TODO goal posizione risorsa e mangia ultima soluzione
+	State gotogoal {
+		[#
+			var x = ""
+			var y = ""	
+			var Status = ""
+			var CurPos :Pair<Int,Int>? = null
+		#]
+		onMsg(setgoal:setgoal(X,Y)){
+			[#
+				x = payloadArg(0)
+				y = payloadArg(1)
+			#]
+		}
+		println ("WALKER | received the goal $x $y...")
+		[# 
+			var Ac = "empty"
+			itunibo.planner.plannerUtil.planForGoal(x,y)
+			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+			while(Ac!="") {
+		#]
+		forward basicrobot -m cmd : cmd($Ac)
+		delay 500
+		[#
+				itunibo.planner.plannerUtil.updateMap(Ac) 
+				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+			}
+			CurPos = itunibo.planner.plannerUtil.get_curPos()
+			Status = "$CurPos"
+			itunibo.planner.plannerUtil.showMap()
+		#]
+		println ("WALKER | arrived to the goal ...")
+		replyTo setgoal with goalstate : goalstate($Status)
+		updateResource[# "$Status" #]
 	}
 	Goto wait
 }
