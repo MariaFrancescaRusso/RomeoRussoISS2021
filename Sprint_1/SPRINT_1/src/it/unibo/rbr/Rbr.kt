@@ -30,14 +30,14 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				var TableCoordinate : Pair<String,String> ?=null
 				var FridgeCoordinate : Pair<String,String> ?=null
 				var DishwasherCoordinate : Pair<String,String> ?=null
+				var CurPrepStep = 0
+				var CurAddStep = 0
+				var CurClearStep = 0
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("RBR | STARTS and it's placed in RH position...")
-						itunibo.planner.plannerUtil.initAI(  )
-						itunibo.planner.plannerUtil.loadRoomMap( "roomMap"  )
 						 IsMap = true  
-						itunibo.planner.plannerUtil.showMap(  )
 						solve("consult('ResourcesCoordinates.pl')","") //set resVar	
 						solve("getRHXYCoordinates(XRH,YRH)","") //set resVar	
 						if( currentSolution.isSuccess() ) { RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}")  
@@ -70,6 +70,8 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("exPrepare") { //this:State
 					action { //it:State
+						 
+									if (CurPrepStep == 0){				
 						if( checkMsgContent( Term.createTerm("prepare(X,Y)"), Term.createTerm("prepare(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 	
@@ -86,19 +88,9 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to pantry...")
 						 
-									var Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(PantryCoordinate!!.first,PantryCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!="") {
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${PantryCoordinate!!.first},${PantryCoordinate!!.second})" ,"rbrwalker" )  		
 									}
-									itunibo.planner.plannerUtil.showMap()
+									if (CurPrepStep == 1){				
 						println("RBR | ...reached pantry. Taking dishes...")
 						forward("changeState", "changeState(remove,$PrepareDish)" ,"pantry" ) 
 						delay(300) 
@@ -111,18 +103,9 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to table...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 									}
+									if (CurPrepStep == 2){				
 						println("RBR | ...reached table. Adding dishes...")
 						forward("changeState", "changeState(add,$PrepareDish)" ,"table" ) 
 						delay(300) 
@@ -135,19 +118,9 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to fridge...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(FridgeCoordinate!!.first,FridgeCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
 									}
-									itunibo.planner.plannerUtil.showMap()
+									if (CurPrepStep == 3){				
 						println("RBR | ...reached fridge. Taking food...")
 						forward("changeState", "changeState(remove,$PrepareFood)" ,"fridge" ) 
 						delay(300) 
@@ -160,47 +133,43 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to table...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 									}
-									itunibo.planner.plannerUtil.showMap()
+									if (CurPrepStep == 4){				
 						println("RBR | ...reached table. Adding food...")
 						forward("changeState", "changeState(add,$PrepareFood)" ,"table" ) 
 						delay(300) 
 						println("RBR | coming back to RH...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(RHCoordinate!!.first,RHCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									}
-									itunibo.planner.plannerUtil.showMap()
-						println("RBR | ...reached RH. Finished executing task")
+										request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
+									}				
+									
+									CurPrepStep++
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+					 transition(edgeName="t08",targetState="handlePrep",cond=whenReply("goalstate"))
+				}	 
+				state("handlePrep") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("goalstate(X)"), Term.createTerm("goalstate(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("RBR | cur position: ${payloadArg(0)}")
+						}
+						 if (CurPrepStep==5){ 
+						println("RBR | ...reached RH. Finished executing task")
+						
+									}
+					}
+					 transition( edgeName="goto",targetState="exPrepare", cond=doswitchGuarded({ CurPrepStep <5  
+					}) )
+					transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({! ( CurPrepStep <5  
+					) }) )
 				}	 
 				state("wait") { //this:State
 					action { //it:State
 						println("RBR | is placed in RH position and it's waiting for a command...")
 					}
-					 transition(edgeName="t18",targetState="checkFood",cond=whenRequest("addFood"))
-					transition(edgeName="t19",targetState="exClear",cond=whenDispatch("clear"))
+					 transition(edgeName="t19",targetState="checkFood",cond=whenRequest("addFood"))
+					transition(edgeName="t110",targetState="exClear",cond=whenDispatch("clear"))
 				}	 
 				state("checkFood") { //this:State
 					action { //it:State
@@ -211,7 +180,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						forward("askFood", "askFood($FoodCode)" ,"fridge" ) 
 						println("RBR | asked fridge if it contains the food with food-code = $FoodCode")
 					}
-					 transition(edgeName="t210",targetState="handleAnswer",cond=whenEvent("observerfridge"))
+					 transition(edgeName="t211",targetState="handleAnswer",cond=whenEvent("observerfridge"))
 				}	 
 				state("handleAnswer") { //this:State
 					action { //it:State
@@ -233,7 +202,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("waitAnswer") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t311",targetState="handleAnswer",cond=whenEvent("observerfridge"))
+					 transition(edgeName="t312",targetState="handleAnswer",cond=whenEvent("observerfridge"))
 				}	 
 				state("checkAnswer") { //this:State
 					action { //it:State
@@ -253,6 +222,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("exAddFood") { //this:State
 					action { //it:State
+						 if (CurAddStep == 0){  
 						println("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
 						solve("getFridgeFromCurPosXYCoordinate($RHCoordinate,XFridge,YFridge)","") //set resVar	
 						if( currentSolution.isSuccess() ) { FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}")  
@@ -263,19 +233,9 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to fridge...")
 						 
-									var Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(FridgeCoordinate!!.first,FridgeCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
 									}
-									itunibo.planner.plannerUtil.showMap()
+									if (CurAddStep == 1){				
 						println("RBR | ...reached fridge. Taking food...")
 						forward("changeState", "changeState(remove,$Food)" ,"fridge" ) 
 						delay(300) 
@@ -288,42 +248,39 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to table...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 									}
+									if (CurAddStep == 2){				
 						println("RBR | ...reached table. Adding food...")
 						forward("changeState", "changeState(add,$Food)" ,"table" ) 
 						delay(300) 
 						println("RBR | coming back to RH...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(RHCoordinate!!.first,RHCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									}
-									itunibo.planner.plannerUtil.showMap()
-						println("RBR | ...reached RH. Finished executing task")
+										request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
+									}			
+									CurAddStep++
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+					 transition(edgeName="t213",targetState="handleAdd",cond=whenReply("goalstate"))
+				}	 
+				state("handleAdd") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("goalstate(X)"), Term.createTerm("goalstate(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("RBR | cur position: ${payloadArg(0)}")
+						}
+						 if (CurAddStep == 3){  
+						println("RBR | ...reached RH. Finished executing task")
+						
+									}
+					}
+					 transition( edgeName="goto",targetState="exAddFood", cond=doswitchGuarded({ CurAddStep < 3  
+					}) )
+					transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({! ( CurAddStep < 3  
+					) }) )
 				}	 
 				state("exClear") { //this:State
 					action { //it:State
+						 if(CurClearStep == 0){  
 						if( checkMsgContent( Term.createTerm("clear(X,Y)"), Term.createTerm("clear(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 	
@@ -340,22 +297,12 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to table...")
 						 
-									var Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
 									}
-									itunibo.planner.plannerUtil.showMap()
-						println("RBR | ...reached table.")
 						if(  ClearFood != "[]"  
-						 ){println("RBR | Taking food...")
+						 ){ if(CurClearStep == 1){  
+						println("RBR | ...reached table.")
+						println("RBR | Taking food...")
 						forward("changeState", "changeState(remove,$ClearFood)" ,"table" ) 
 						delay(300) 
 						solve("getFridgeFromCurPosXYCoordinate($TableCoordinate,XFridge,YFridge)","") //set resVar	
@@ -366,20 +313,10 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						{println("RBR | Error getting fridge coordinates...")
 						}
 						println("RBR | going to fridge...")
-						 
-										Ac = "empty"
-										itunibo.planner.plannerUtil.planForGoal(FridgeCoordinate!!.first,FridgeCoordinate!!.second)
-						//				itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-										while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-											itunibo.planner.plannerUtil.updateMap(Ac) 
-											println ("RBR | $Ac")
-											Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+						 	
+											request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
 										}
-										itunibo.planner.plannerUtil.showMap()
+										if (CurClearStep == 2){				
 						println("RBR | ...reached fridge. Adding food...")
 						forward("changeState", "changeState(add,$ClearFood)" ,"fridge" ) 
 						delay(300) 
@@ -392,21 +329,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to table...")
 						 
-										Ac = "empty"
-										itunibo.planner.plannerUtil.planForGoal(TableCoordinate!!.first,TableCoordinate!!.second)
-						//				itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-										while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-											itunibo.planner.plannerUtil.updateMap(Ac) 
-											println ("RBR | $Ac")
-											Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-										}
-										itunibo.planner.plannerUtil.showMap()
-						println("RBR | ...reached table.")
+											request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
+										}				
 						}
+						else
+						 {
+						 			CurClearStep ++
+						 			CurClearStep ++
+						 }
+						 if (CurClearStep == 3){ 
+						println("RBR | ...reached table.")
 						println("RBR | Taking dishes...")
 						forward("changeState", "changeState(remove,$ClearDish)" ,"table" ) 
 						delay(300) 
@@ -419,39 +351,31 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						}
 						println("RBR | going to dishwasher...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(DishwasherCoordinate!!.first,DishwasherCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${DishwasherCoordinate!!.first},${DishwasherCoordinate!!.second})" ,"rbrwalker" )  		
 									}
-									itunibo.planner.plannerUtil.showMap()
-						println("RBR | ...reached dishwasher. Adding dishes...")
+									if (CurClearStep == 4){				
 						forward("changeState", "changeState(add,$ClearDish)" ,"dishwasher" ) 
 						delay(300) 
 						println("RBR | coming back to RH...")
 						 
-									Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(RHCoordinate!!.first,RHCoordinate!!.second)
-						//			itunibo.planner.plannerUtil.getPosX()!=2 || itunibo.planner.plannerUtil.getPosY()!=2 
-									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-									while(Ac!=""){
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
-										println ("RBR | $Ac")
-										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+										request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
 									}
-									itunibo.planner.plannerUtil.showMap()
-						println("RBR | ...reached RH. Finished executing task")
+						 			CurClearStep++
 					}
+					 transition(edgeName="t314",targetState="handleClear",cond=whenReply("goalstate"))
+				}	 
+				state("handleClear") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("goalstate(X)"), Term.createTerm("goalstate(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("RBR | cur position: ${payloadArg(0)}")
+						}
+						 if (CurClearStep == 5){  
+						println("RBR | ...reached RH. Finished executing task")
+						
+						 			}
+					}
+					 transition( edgeName="goto",targetState="exClear", cond=doswitch() )
 				}	 
 			}
 		}

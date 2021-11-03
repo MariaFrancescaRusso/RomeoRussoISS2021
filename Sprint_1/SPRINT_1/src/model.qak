@@ -340,7 +340,7 @@ QActor rbr context ctxsystem {
 		
 	State handlePrep{
 		onMsg(goalstate: goalstate(X)){
-			println("RBR | cur position: ${payloadArg(0)} step : $CurPrepStep")		
+			println("RBR | cur position: ${payloadArg(0)}")		
 		}
 		[# if (CurPrepStep==5){#]
 			println ("RBR | ...reached RH. Finished executing task")
@@ -571,7 +571,7 @@ QActor rbr context ctxsystem {
 	
 	State handleClear{
 		onMsg(goalstate: goalstate(X)){
-			println("RBR | cur position: ${payloadArg(0)} step: $CurClearStep")		
+			println("RBR | cur position: ${payloadArg(0)}")		
 		}
 		[# if (CurClearStep == 5){ #]
 			println ("RBR | ...reached RH. Finished executing task")
