@@ -30,42 +30,50 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("WALKER | waits a goal...")
 					}
-					 transition(edgeName="t024",targetState="gotogoal",cond=whenRequest("setgoal"))
+					 transition(edgeName="t025",targetState="goToGoal",cond=whenRequest("setGoal"))
+					transition(edgeName="t026",targetState="terminateWalker",cond=whenEvent("endall"))
 				}	 
-				state("gotogoal") { //this:State
+				state("goToGoal") { //this:State
 					action { //it:State
 						
-									var x = ""
-									var y = ""	
-									var Status = ""
-									var CurPos :Pair<Int,Int>? = null
-						if( checkMsgContent( Term.createTerm("setgoal(X,Y)"), Term.createTerm("setgoal(X,Y)"), 
+									var X = ""
+									var Y = ""	
+									var CurPos : Pair<Int, Int> ?= null
+						if( checkMsgContent( Term.createTerm("setGoal(X,Y)"), Term.createTerm("setGoal(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
-												x = payloadArg(0)
-												y = payloadArg(1)
+												X = payloadArg(0)
+												Y = payloadArg(1)
 						}
-						println("WALKER | received the goal $x $y...")
-						 
+						println("WALKER | received the goal ($X, $Y)...")
+						  
 									var Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(x,y)
+									itunibo.planner.plannerUtil.planForGoal(X, Y)
 									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(Ac!="") {
 						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(500) 
+						delay(800) 
 						
 										itunibo.planner.plannerUtil.updateMap(Ac) 
 										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									}
+						forward("cmd", "cmd(h)" ,"basicrobot" ) 
+						delay(800) 
+						
 									CurPos = itunibo.planner.plannerUtil.get_curPos()
-									Status = "$CurPos"
 									itunibo.planner.plannerUtil.showMap()
-						println("WALKER | arrived to the goal ...")
-						answer("setgoal", "goalstate", "goalstate($Status)"   )  
-						updateResourceRep( "$Status"  
+						println("WALKER | arrived to the goal")
+						answer("setGoal", "goalState", "goalState($CurPos)"   )  
+						updateResourceRep( "$CurPos"  
 						)
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+				}	 
+				state("terminateWalker") { //this:State
+					action { //it:State
+						println("WALKER | terminate...")
+						terminate(1)
+					}
 				}	 
 			}
 		}

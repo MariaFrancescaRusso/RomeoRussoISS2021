@@ -34,8 +34,8 @@ class Dishwasher ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name,
 					action { //it:State
 						println("DISHWASHER| working...")
 					}
-					 transition(edgeName="t019",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t020",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t031",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t032",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State

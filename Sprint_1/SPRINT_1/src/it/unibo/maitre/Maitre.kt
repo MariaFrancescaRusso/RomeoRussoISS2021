@@ -17,7 +17,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 			
-				var AddFoodtime = 3000L 
+				var AddFoodtime = 20000L 
 				var Nexp = 0
 				var AnsExpose1 = ""
 				var AnsExpose2 = ""

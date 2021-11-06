@@ -11,11 +11,11 @@ Dispatch prepare:prepare(X, Y)
 Request addFood:addFood(FOODE_CODE)	
 Dispatch clear:clear(X, Y)
 
-//rbr- rbrwalker
-Request setgoal:setgoal(X,Y)
-Reply goalstate:goalstate(X)
-
 Reply warning:warning(ARG)	//void
+
+//RBR - RBRWalker
+Request setGoal:setGoal(X, Y)
+Reply goalState:goalState(X)
 
 //Maitre - Fridge/Resources
 Dispatch consult:consult(ARG)	//void
@@ -28,13 +28,16 @@ Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to cha
 
 //RBR - basicRobot
 Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
+Dispatch end:end(ARG)	//void
 
-Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
-//Context ctxwalker ip [host="192.168.1.211" port=8030]
+//basicRobot - RBRWalker
+Event endall:endall(ARG)	//void
+
 Context ctxsystem ip [host="localhost" port=8040]
-//Context ctxrbr ip [host="localhost" port=8050]
-//Context ctxfridge ip [host="127.0.0.1" port=8060]  
 //Context ctxmaitre ip [host="192.168.1.171" port=8070]
+//Context ctxfridge ip [host="127.0.0.1" port=8060]
+//Context ctxrbr ip [host="localhost" port=8050]
+Context ctxbasicrobot ip [host="127.0.0.1" port=8020]  
 
 ExternalQActor basicrobot context ctxbasicrobot  
 
@@ -43,7 +46,7 @@ ExternalQActor basicrobot context ctxbasicrobot
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
-		var AddFoodtime = 3000L 
+		var AddFoodtime = 20000L 
 		var Nexp = 0
 		var AnsExpose1 = ""
 		var AnsExpose2 = ""
@@ -90,7 +93,7 @@ QActor maitre context ctxsystem {
 		whenTimeVar AddFoodtime -> sendConsult	//Time waiting for warning otherwise the food is present
 		whenReply warning -> handleWarning
 			
-	State handleWarning {
+	State handleWarning {		
 		println ("MAITRE | received warning from RBR")
 	}
 	Goto sendConsult
@@ -189,14 +192,9 @@ QActor rbr context ctxsystem {
 		var Food = ""
 		var ClearDish = ""
 		var ClearFood = ""
-		var RHCoordinate : Pair<String,String> ?=null	// X = column; Y = row
-		var PantryCoordinate : Pair<String,String> ?=null
-		var TableCoordinate : Pair<String,String> ?=null
-		var FridgeCoordinate : Pair<String,String> ?=null
-		var DishwasherCoordinate : Pair<String,String> ?=null
-		var CurPrepStep = 0
-		var CurAddStep = 0
-		var CurClearStep = 0
+		var RHCoordinate : Pair<String,String> ?= null	// X = column; Y = row
+		var CurrentPos = ""
+		var Cleared = false
 	#]	
 	
 	/* Initialization of planner and loading map if available */
@@ -231,131 +229,147 @@ QActor rbr context ctxsystem {
 		println ("RBR | STARTS and it's ready to work")
 	}
 	Transition t0
-		whenMsg prepare -> exPrepare
+		whenMsg prepare -> exPrepareHP
 	
-	State exPrepare {
-		[# 
-			if (CurPrepStep == 0){				
-		#] 
+	// State that receives prepare command and sets nearest pantry goal from home
+	State exPrepareHP {
 		onMsg( prepare : prepare(X,Y) ) {
 	 		[# 	
 	 			PrepareDish = payloadArg(0)
 				PrepareFood = payloadArg(1)
 			#]
- 		}
+		}
  		println ("RBR | executing task 'Prepare the room' ( Crockery = $PrepareDish; Foods = $PrepareFood ) :" )
  		
  		solve( getPantryFromCurPosXYCoordinate($RHCoordinate, XPantry, YPantry) )
 		ifSolved {	
-			[# PantryCoordinate = Pair("${getCurSol("XPantry")}", "${getCurSol("YPantry")}") #]
-			println ("RBR | Found nearest goal for pantry in $PantryCoordinate")				
+			println ("RBR | Found nearest goal for pantry in (${getCurSol(\"XPantry\")}, ${getCurSol(\"YPantry\")})")				
 		}
 		else {
 			println ("RBR | Error getting pantry coordinates...")
 		}
 				
 		println ("RBR | going to pantry...")		
-		
-//				request rbrwalker -m setgoal : setgoal($PantryCoordinate!!.first,${PantryCoordinate!!.second})
-		[# 
-				request("setgoal", "setgoal(${PantryCoordinate!!.first},${PantryCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-			if (CurPrepStep == 1){				
-		#]
+		request rbrwalker -m setGoal : setGoal($getCurSol("XPantry"), $getCurSol("YPantry"))
+	}	
+	Transition t1 
+		whenReply goalState -> exPreparePT
+
+	// State that changes pantry state and sets nearest table goal from pantry
+	State exPreparePT {		
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}		
 		
 		println ("RBR | ...reached pantry. Taking dishes...")
 		forward pantry -m changeState : changeState(remove, $PrepareDish)
 		delay 300
 		
-		solve( getTableFromCurPosXYCoordinate($PantryCoordinate, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
 		ifSolved {	
-			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
-			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
+		
 		println ("RBR | going to table...")
-		
-		[# 
-				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-			if (CurPrepStep == 2){				
-		#]
-		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))
+	}
+	Transition t2 
+		whenReply goalState -> exPrepareTF
+
+	// State that changes table state and sets nearest fridge goal from table		
+	State exPrepareTF {	
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}	
+	
 		println ("RBR | ...reached table. Adding dishes...")
 		forward table -m changeState : changeState(add, $PrepareDish)
 		delay 300	
 		
-		solve( getFridgeFromCurPosXYCoordinate($TableCoordinate, XFridge, YFridge) )
+		solve( getFridgeFromCurPosXYCoordinate($CurrentPos, XFridge, YFridge) )
 		ifSolved {	
-			[# FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}") #]
-			println ("RBR | Found nearest goal for fridge in $FridgeCoordinate")				
+			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
 		}
 		else {
 			println ("RBR | Error getting fridge coordinates...")
 		}
-		println ("RBR | going to fridge...")
 		
-		[# 
-				request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-			if (CurPrepStep == 3){				
-		#]
+		println ("RBR | going to fridge...")
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge")) 		
+	}
+	Transition t3 
+		whenReply goalState -> exPrepareFT
+
+	// State that changes fridge state and sets nearest table goal from fridge		
+	State exPrepareFT {	
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}
 		
 		println ("RBR | ...reached fridge. Taking food...")
 		forward fridge -m changeState : changeState(remove, $PrepareFood)	
 		delay 300
 		
-		solve( getTableFromCurPosXYCoordinate($FridgeCoordinate, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
 		ifSolved {	
-			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
-			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
+	
 		println ("RBR | going to table...")
-		
-		[# 
-				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-			if (CurPrepStep == 4){				
-		#]
-		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))		
+	}
+	Transition t4 
+		whenReply goalState -> addFoodTable
+
+	// State that changes table state	
+	State addFoodTable {
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}
+
 		println ("RBR | ...reached table. Adding food...")
 		forward table -m changeState : changeState(add, $PrepareFood)
-		delay 300
-		
+		delay 300				
+	}
+	Goto goToHome
+	
+	// State that sets RH goal	
+	State goToHome {			
 		println ("RBR | coming back to RH...")
-		[# 
-				request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
-			}				
-			
-			CurPrepStep++
-		#]
+//		request rbrwalker -m setgoal : setgoal("${RHCoordinate!!.first}", "${RHCoordinate!!.second}")
+		[# request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second})", "rbrwalker") #] 
 	}
-	Transition t0
-		whenReply goalstate -> handlePrep
-		
-	State handlePrep{
-		onMsg(goalstate: goalstate(X)){
-			println("RBR | cur position: ${payloadArg(0)}")		
-		}
-		[# if (CurPrepStep==5){#]
-			println ("RBR | ...reached RH. Finished executing task")
-		[#
-			}
-		#] 
-	}
-	Goto exPrepare if [# CurPrepStep <5 #] else wait 
+	Transition t5
+		whenReply goalState and [# !Cleared #] -> wait
+		whenReply goalState and [# Cleared #] -> terminateRbr 
 		
 	State wait {
-		println ("RBR | is placed in RH position and it's waiting for a command...")
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #] 
+		}
+		
+		println ("RBR | ...reached RH. Finished executing task")
+		println ("RBR | waiting for a command...")
 	}
-	Transition t1
+	Transition t6
 		whenRequest addFood -> checkFood
-		whenMsg clear -> exClear
+		whenMsg clear -> exClearHT
 
 	State checkFood {		
 		onMsg( addFood : addFood(ARG) ) {
@@ -365,7 +379,7 @@ QActor rbr context ctxsystem {
  		forward fridge -m askFood : askFood($FoodCode)
  		println ("RBR | asked fridge if it contains the food with food-code = $FoodCode")
 	}
-	Transition t2
+	Transition t7
 		whenEvent observerfridge -> handleAnswer
 			
 	State handleAnswer {		
@@ -385,89 +399,66 @@ QActor rbr context ctxsystem {
 	/* Waiting state of the expected event --> for example to manage the case of "consult" sent by maitre before the "addFood" */
 	State waitAnswer {	
 	}
-	Transition t3
+	Transition t8
 		whenEvent observerfridge -> handleAnswer
 		
 	State checkAnswer {
 		println ("RBR | received answer from fridge via CoAP: $FoodPresence")
 	}
-	Goto fail if [# FoodPresence == "false" #] else exAddFood
+	Goto fail if [# FoodPresence == "false" #] else exAddFoodHF
 
 	State fail {
 		replyTo addFood with warning : warning(w)
 		println ("RBR | send warning to maitre")
 	}
 	Goto wait
-
-	State exAddFood {
-		[# if (CurAddStep == 0){ #]
+	
+	// State that sets nearest fridge goal from home
+	State exAddFoodHF {		
 		println ("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
 		
 		solve( getFridgeFromCurPosXYCoordinate($RHCoordinate, XFridge, YFridge) )
 		ifSolved {	
-			[# FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}") #]
-			println ("RBR | Found nearest goal for fridge in $FridgeCoordinate")				
+			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
 		}
 		else {
 			println ("RBR | Error getting fridge coordinates...")
 		}
+		
 		println ("RBR | going to fridge...")
-
-		[# 
-				request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-			if (CurAddStep == 1){				
-		#]
-
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"))		
+	}
+	Transition t9
+		whenReply goalState -> exAddFoodFT
+	
+	// State that changes fridge state and sets nearest table goal from fridge
+	State exAddFoodFT {	
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}
+			
 		println ("RBR | ...reached fridge. Taking food...")
 		forward fridge -m changeState : changeState(remove, $Food)
 		delay 300
 		
-		solve( getTableFromCurPosXYCoordinate($FridgeCoordinate, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
 		ifSolved {	
-			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
-			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
+		
 		println ("RBR | going to table...")
-		
-		[# 
-				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-			if (CurAddStep == 2){				
-		#]
-		
-		println ("RBR | ...reached table. Adding food...")
-		forward table -m changeState : changeState(add, $Food)
-		delay 300
-		
-		println ("RBR | coming back to RH...")
-		[# 
-				request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
-			}			
-			CurAddStep++
-		#]
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable")) 		
 	}
-	Transition t2 
-		whenReply goalstate-> handleAdd
-	
-	State handleAdd {
-		onMsg(goalstate: goalstate(X)){
-			println("RBR | cur position: ${payloadArg(0)}")		
-		}
-		[# if (CurAddStep == 3){ #]
-		
-		println ("RBR | ...reached RH. Finished executing task")
-		[#
-			}
-		#]
-	}	
-	Goto exAddFood if [# CurAddStep < 3 #] else wait 
-	
-	State exClear {
-		[# if(CurClearStep == 0){ #]
+	Transition t10
+		whenReply goalState -> addFoodTable 
+
+	// State that receives clear command and sets nearest table goal from home
+	State exClearHT {	    
 		onMsg( clear:clear(X,Y) ) {
 	 		[# 	
 	 			ClearDish = payloadArg(0)
@@ -478,108 +469,194 @@ QActor rbr context ctxsystem {
 		
 		solve( getTableFromCurPosXYCoordinate($RHCoordinate, XTable, YTable) )
 		ifSolved {	
-			[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
-			println ("RBR | Found nearest goal for table in $TableCoordinate")				
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
+		}
+		else {
+			println ("RBR | Error getting table coordinates...")
+		}
+		
+		println ("RBR | going to table...")
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))		
+	}
+	Transition t11 
+		whenReply goalState and [# ClearFood != "[]" #] -> exClearTF
+		whenReply goalState and [# ClearFood == "[]" #] -> exClearTD
+
+	// State that changes table state and sets nearest fridge goal from table		
+	State exClearTF	{
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}	
+		
+		println ("RBR | ...reached table. Taking food...")
+		forward table -m changeState : changeState(remove, $ClearFood)
+		delay 300
+		
+		solve( getFridgeFromCurPosXYCoordinate($CurrentPos, XFridge, YFridge) )
+		ifSolved {	
+			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
+		}
+		else {
+			println ("RBR | Error getting fridge coordinates...")
+		}
+		
+		println ("RBR | going to fridge...")
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge")) 		
+	}		
+	Transition t12 
+		whenReply goalState -> exClearFT
+
+	// State that changes fridge state and sets nearest table goal from fridge		
+	State exClearFT	{
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}		
+		
+		println ("RBR | ...reached fridge. Adding food...")
+		forward fridge -m changeState : changeState(add,$ClearFood)
+		delay 300
+		
+		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
+		ifSolved {	
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
 		println ("RBR | going to table...")
-		[# 
-				request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-		#]
-		
-		if [# ClearFood != "[]" #] {
-			[# if(CurClearStep == 1){ #]
-			println ("RBR | ...reached table.")	
-			println ("RBR | Taking food...")
-			forward table -m changeState : changeState(remove, $ClearFood)
-			delay 300
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))
+	}			
+	Transition t13 
+		whenReply goalState -> exClearTD
+
+	// State that changes table state and sets nearest dishwasher goal from table		
+	State exClearTD	{
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}	
 			
-			solve( getFridgeFromCurPosXYCoordinate($TableCoordinate, XFridge, YFridge) )
-			ifSolved {	
-				[# FridgeCoordinate = Pair("${getCurSol("XFridge")}", "${getCurSol("YFridge")}") #]
-				println ("RBR | Found nearest goal for fridge in $FridgeCoordinate")				
-			}
-			else {
-				println ("RBR | Error getting fridge coordinates...")
-			}
-			println ("RBR | going to fridge...")
-			[# 	
-					request("setgoal", "setgoal(${FridgeCoordinate!!.first},${FridgeCoordinate!!.second})" ,"rbrwalker" )  		
-				}
-				if (CurClearStep == 2){				
-			#]
-			println ("RBR | ...reached fridge. Adding food...")
-			forward fridge -m changeState : changeState(add,$ClearFood)
-			delay 300
-			
-			solve( getTableFromCurPosXYCoordinate($FridgeCoordinate, XTable, YTable) )
-			ifSolved {	
-				[# TableCoordinate = Pair("${getCurSol("XTable")}", "${getCurSol("YTable")}") #]
-				println ("RBR | Found nearest goal for table in $TableCoordinate")				
-			}
-			else {
-				println ("RBR | Error getting table coordinates...")
-			}
-			println ("RBR | going to table...")
-			[# 
-					request("setgoal", "setgoal(${TableCoordinate!!.first},${TableCoordinate!!.second})" ,"rbrwalker" )  		
-				}				
-			#]
-		}else{
-		[#
-			CurClearStep ++
-			CurClearStep ++
-		#]
-		}
-		
-		[# if (CurClearStep == 3){#]
-		println ("RBR | ...reached table.")
-						
-		println ("RBR | Taking dishes...")
+		println ("RBR | ...reached table. Taking dishes...")
 		forward table -m changeState : changeState(remove, $ClearDish)	
 		delay 300
 		
-		solve( getDishwasherFromCurPosXYCoordinate($TableCoordinate, XDishwasher, YDishwasher) )
+		solve( getDishwasherFromCurPosXYCoordinate($CurrentPos, XDishwasher, YDishwasher) )
 		ifSolved {	
-			[# DishwasherCoordinate = Pair("${getCurSol("XDishwasher")}", "${getCurSol("YDishwasher")}") #]
-			println ("RBR | Found nearest goal for dishwasher in $DishwasherCoordinate")				
+			println ("RBR | Found nearest goal for dishwasher in (${getCurSol(\"XDishwasher\")}, ${getCurSol(\"YDishwasher\")})")				
 		}
 		else {
 			println ("RBR | Error getting dishwasher coordinates...")
 		}
 		println ("RBR | going to dishwasher...")
-		[# 
-				request("setgoal", "setgoal(${DishwasherCoordinate!!.first},${DishwasherCoordinate!!.second})" ,"rbrwalker" )  		
-			}
-			if (CurClearStep == 4){				
-		#]
+		request rbrwalker -m setGoal : setGoal($getCurSol("XDishwasher"), $getCurSol("YDishwasher")) 		
+	}
+	Transition t14 
+		whenReply goalState -> exClearD
+
+	// State that changes dishwasher state		
+	State exClearD	{
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #]
+		}
+		
+		println ("RBR | ...reached dishwasher. Adding dishes...")
 		forward dishwasher -m changeState : changeState(add, $ClearDish)	
 		delay 300
 		
-		println ("RBR | coming back to RH...")
-		[# 
-				request("setgoal", "setgoal(${RHCoordinate!!.first},${RHCoordinate!!.second})" ,"rbrwalker" )  		
-			}
- 			CurClearStep++
- 		#]
+		[# Cleared = true #]
 	}
-	Transition t3
-		whenReply goalstate -> handleClear
-	
-	State handleClear{
-		onMsg(goalstate: goalstate(X)){
-			println("RBR | cur position: ${payloadArg(0)}")		
+	Goto goToHome
+		
+	State terminateRbr {		
+		onMsg( goalState : goalState(X) ) {
+			[# CurrentPos = payloadArg(0).removePrefix(",") #]
+			println("RBR | current position: $CurrentPos")		
+			updateResource [# "$CurrentPos" #] 
 		}
-		[# if (CurClearStep == 5){ #]
-			println ("RBR | ...reached RH. Finished executing task")
- 		[#
- 			}
- 		#]
-	}	
-	Goto exClear //if [# CurClearStep < 4 #] 
+		println ("RBR | ...reached RH. Finished executing task")
+		
+		println ("RBR | terminate Basic Robot...")
+		forward basicrobot -m end : end(0)
+		
+//		println ("RBR | terminate RBR Walker...")
+//		forward rbrwalker -m end : end(0)
+		 
+		println ("RBR | terminate...")
+		terminate 1
+	} 
+}
+
+//QActor rbrwalker context ctxrbr {
+QActor rbrwalker context ctxsystem {
+	
+	State s0 initial {
+		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
+		run itunibo.planner.plannerUtil.showMap()
+		println ("WALKER | STARTS...")	
+	}
+	Goto wait
+	
+	State wait {
+		println ("WALKER | waits a goal...")
+	}
+	Transition t0 
+		whenRequest setGoal -> goToGoal
+		whenEvent endall -> terminateWalker
+	
+//TODO inserire uno stato di errore
+//TODO goal posizione risorsa e mangia ultima soluzione
+	State goToGoal {
+		[#
+			var X = ""
+			var Y = ""	
+			var CurPos : Pair<Int, Int> ?= null
+		#]
+		
+		onMsg( setGoal : setGoal(X, Y) ) {
+			[#
+				X = payloadArg(0)
+				Y = payloadArg(1)
+			#]
+		}
+		println ("WALKER | received the goal ($X, $Y)...")
+		
+		[#  
+			var Ac = "empty"
+			itunibo.planner.plannerUtil.planForGoal(X, Y)
+			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+			while(Ac!="") {
+		#]
+				forward basicrobot -m cmd : cmd($Ac)
+				delay 800
+		[#
+				itunibo.planner.plannerUtil.updateMap(Ac) 
+				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
+			}
+		#]
+				forward basicrobot -m cmd : cmd(h)
+				delay 800
+		[#
+			CurPos = itunibo.planner.plannerUtil.get_curPos()
+			itunibo.planner.plannerUtil.showMap()
+		#]
+		println ("WALKER | arrived to the goal")
+		replyTo setGoal with goalState : goalState($CurPos)
+		updateResource [# "$CurPos" #]
+	}
+	Goto wait
+	
+	State terminateWalker {
+		println ("WALKER | terminate...")
+		terminate 1
+	}
 }
 
 //QActor pantry context ctxmaitre {
@@ -904,60 +981,6 @@ QActor fridge context ctxsystem {
 				updateResource [# "Fail removing Food $Food!" #]
 			}
  		}
-	}
-	Goto wait
-}
-QActor rbrwalker context ctxsystem{
-	
-	State s0 initial {
-		run itunibo.planner.plannerUtil.initAI()
-		run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
-		run itunibo.planner.plannerUtil.showMap()
-		println ("WALKER | STARTS...")	
-	}
-	Goto wait
-	
-	State wait {
-		println ("WALKER | waits a goal...")
-	}
-	Transition t0 
-	whenRequest setgoal -> gotogoal
-	
-//TODO inserire uno stato di errore
-//TODO goal posizione risorsa e mangia ultima soluzione
-	State gotogoal {
-		[#
-			var x = ""
-			var y = ""	
-			var Status = ""
-			var CurPos :Pair<Int,Int>? = null
-		#]
-		onMsg(setgoal:setgoal(X,Y)){
-			[#
-				x = payloadArg(0)
-				y = payloadArg(1)
-			#]
-		}
-		println ("WALKER | received the goal $x $y...")
-		[# 
-			var Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(x,y)
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!="") {
-		#]
-		forward basicrobot -m cmd : cmd($Ac)
-		delay 500
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			}
-			CurPos = itunibo.planner.plannerUtil.get_curPos()
-			Status = "$CurPos"
-			itunibo.planner.plannerUtil.showMap()
-		#]
-		println ("WALKER | arrived to the goal ...")
-		replyTo setgoal with goalstate : goalstate($Status)
-		updateResource[# "$Status" #]
 	}
 	Goto wait
 }

@@ -34,8 +34,8 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 					action { //it:State
 						println("TABLE| working...")
 					}
-					 transition(edgeName="t017",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t018",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t029",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t030",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("exposeState") { //this:State
 					action { //it:State
