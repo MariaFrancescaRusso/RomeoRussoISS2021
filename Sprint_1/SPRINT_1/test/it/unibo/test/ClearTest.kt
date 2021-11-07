@@ -17,8 +17,8 @@ import kotlin.jvm.JvmStatic
 import kotlinx.coroutines.channels.Channel
 import util.CoapObserverForTest
 
-class PrepareTest {
-		
+
+class ClaerTest {
 	companion object {
 		var rbrActor : ActorBasic? = null
 		var systemStarted = false
@@ -83,17 +83,38 @@ class PrepareTest {
 //h_testingObserverPantry | content=moveactivated(w)  expected=giancarlo RESP-CODE=2.05
 	//test movimenti
 	//test risorse
-	@Test
-	fun PrepareTest() {
+// Send a prepare and wait the end of the task
+	fun waitPrepare(){
 		var Crockerys =  arrayListOf(arrayListOf("dishes", "10"))
 		var Foods= arrayListOf(arrayListOf("s001", "bread", "1")) 
-
-		var msg = MsgUtil.buildDispatch("tester", "prepare", "prepare($Crockerys, $Foods)", "rbr")
+		val channelForObserverPrepare = Channel<String>()
+		
+		var msgPrepare = MsgUtil.buildDispatch("tester", "prepare", "prepare($Crockerys, $Foods)", "rbr")
+		var expectedPrepare = "(0,0)"
+		testingObserverRbr!!.addObserver( channelForObserverPrepare,expectedPrepare )
+		
+		runBlocking {
+			delay(200)
+			println ("===============TEST | sending $msgPrepare")
+			MsgUtil.sendMsg(msgPrepare, rbrActor!!)
+			channelForObserverPrepare.receive()
+			testingObserverRbr!!.removeObserver()
+		}
+		channelForObserverPrepare.close()
+	}
+	
+	@Test
+	fun ClearTest() {
+		var Crockerys =  arrayListOf(arrayListOf("dishes", "10"))
+		var Foods= arrayListOf(arrayListOf("s035", "cocacola", "1")) 
+		var msg = MsgUtil.buildDispatch("tester", "clear", "clear($Crockerys, $Foods)", "rbr")
 		var State = ""
-		var expected = "(0,0)"
+		var expected = "(0,0) terminating RBR"
 		var Prevision = expected
 		val channelForObserver = Channel<String>()
-		
+
+		waitPrepare()
+
 		testingObserverRbr!!.addObserver( channelForObserver,expected )
 		
 		runBlocking {
