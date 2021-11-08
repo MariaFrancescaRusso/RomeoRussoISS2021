@@ -28,10 +28,10 @@ Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to cha
 
 //RBR - basicRobot
 Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
-Dispatch end:end(ARG)	//void
+Request step:step(TIME)
 
-//basicRobot - RBRWalker
-Event endall:endall(ARG)	//void
+//RBR - basicRobot/RBRWalker
+Dispatch end:end(ARG)	//void
 
 Context ctxsystem ip [host="localhost" port=8040]
 //Context ctxmaitre ip [host="192.168.1.171" port=8070]
@@ -42,7 +42,7 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 ExternalQActor basicrobot context ctxbasicrobot  
 
 /* Actor maitre is used as a mock client */
-
+/*
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -180,18 +180,15 @@ QActor maitre context ctxsystem {
 //		terminate 0
 	} 
 }
-
+*/
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
 		var IsMap = false
-		var PrepareDish = ""
-		var PrepareFood = ""
+		var Dishes = ""
+		var Food = ""
 		var FoodCode = ""
 		var FoodPresence = "" 
-		var Food = ""
-		var ClearDish = ""
-		var ClearFood = ""
 		var RHCoordinate : Pair<String,String> ?= null	// X = column; Y = row
 		var CurrentPos = ""
 		var Cleared = false
@@ -226,7 +223,7 @@ QActor rbr context ctxsystem {
 	Goto working
  
 	State working {
-		println ("RBR | STARTS and it's ready to work")
+		println ("RBR | ready to work...")
 	}
 	Transition t0
 		whenMsg prepare -> exPrepareHP
@@ -235,11 +232,11 @@ QActor rbr context ctxsystem {
 	State exPrepareHP {
 		onMsg( prepare : prepare(X,Y) ) {
 	 		[# 	
-	 			PrepareDish = payloadArg(0)
-				PrepareFood = payloadArg(1)
+	 			Dishes = payloadArg(0)
+				Food = payloadArg(1)
 			#]
 		}
- 		println ("RBR | executing task 'Prepare the room' ( Crockery = $PrepareDish; Foods = $PrepareFood ) :" )
+ 		println ("RBR | executing task 'Prepare the room' ( Crockery = $Dishes; Foods = $Food ) :" )
  		
  		solve( getPantryFromCurPosXYCoordinate($RHCoordinate, XPantry, YPantry) )
 		ifSolved {	
@@ -264,7 +261,7 @@ QActor rbr context ctxsystem {
 		}		
 		
 		println ("RBR | ...reached pantry. Taking dishes...")
-		forward pantry -m changeState : changeState(remove, $PrepareDish)
+		forward pantry -m changeState : changeState(remove, $Dishes)
 		delay 300
 		
 		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
@@ -290,7 +287,7 @@ QActor rbr context ctxsystem {
 		}	
 	
 		println ("RBR | ...reached table. Adding dishes...")
-		forward table -m changeState : changeState(add, $PrepareDish)
+		forward table -m changeState : changeState(add, $Dishes)
 		delay 300	
 		
 		solve( getFridgeFromCurPosXYCoordinate($CurrentPos, XFridge, YFridge) )
@@ -316,7 +313,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | ...reached fridge. Taking food...")
-		forward fridge -m changeState : changeState(remove, $PrepareFood)	
+		forward fridge -m changeState : changeState(remove, $Food)	
 		delay 300
 		
 		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
@@ -342,7 +339,7 @@ QActor rbr context ctxsystem {
 		}
 
 		println ("RBR | ...reached table. Adding food...")
-		forward table -m changeState : changeState(add, $PrepareFood)
+		forward table -m changeState : changeState(add, $Food)
 		delay 300				
 	}
 	Goto goToHome
@@ -461,8 +458,8 @@ QActor rbr context ctxsystem {
 	State exClearHT {	    
 		onMsg( clear:clear(X,Y) ) {
 	 		[# 	
-	 			ClearDish = payloadArg(0)
-				ClearFood = payloadArg(1)
+	 			Dishes = payloadArg(0)
+				Food = payloadArg(1)
 			#]
  		}
 		println ("RBR | executing task 'Clear the room':")
@@ -479,8 +476,8 @@ QActor rbr context ctxsystem {
 		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))		
 	}
 	Transition t11 
-		whenReply goalState and [# ClearFood != "[]" #] -> exClearTF
-		whenReply goalState and [# ClearFood == "[]" #] -> exClearTD
+		whenReply goalState and [# Food != "[]" #] -> exClearTF
+		whenReply goalState and [# Food == "[]" #] -> exClearTD
 
 	// State that changes table state and sets nearest fridge goal from table		
 	State exClearTF	{
@@ -491,7 +488,7 @@ QActor rbr context ctxsystem {
 		}	
 		
 		println ("RBR | ...reached table. Taking food...")
-		forward table -m changeState : changeState(remove, $ClearFood)
+		forward table -m changeState : changeState(remove, $Food)
 		delay 300
 		
 		solve( getFridgeFromCurPosXYCoordinate($CurrentPos, XFridge, YFridge) )
@@ -517,7 +514,7 @@ QActor rbr context ctxsystem {
 		}		
 		
 		println ("RBR | ...reached fridge. Adding food...")
-		forward fridge -m changeState : changeState(add,$ClearFood)
+		forward fridge -m changeState : changeState(add, $Food)
 		delay 300
 		
 		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
@@ -542,7 +539,7 @@ QActor rbr context ctxsystem {
 		}	
 			
 		println ("RBR | ...reached table. Taking dishes...")
-		forward table -m changeState : changeState(remove, $ClearDish)	
+		forward table -m changeState : changeState(remove, $Dishes)	
 		delay 300
 		
 		solve( getDishwasherFromCurPosXYCoordinate($CurrentPos, XDishwasher, YDishwasher) )
@@ -567,7 +564,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | ...reached dishwasher. Adding dishes...")
-		forward dishwasher -m changeState : changeState(add, $ClearDish)	
+		forward dishwasher -m changeState : changeState(add, $Dishes)	
 		delay 300
 		
 		[# Cleared = true #]
@@ -585,8 +582,8 @@ QActor rbr context ctxsystem {
 		println ("RBR | terminate Basic Robot...")
 		forward basicrobot -m end : end(0)
 		
-//		println ("RBR | terminate RBR Walker...")
-//		forward rbrwalker -m end : end(0)
+		println ("RBR | terminate RBR Walker...")
+		forward rbrwalker -m end : end(0)
 		 
 		println ("RBR | terminate...")
 		terminate 1
@@ -609,7 +606,7 @@ QActor rbrwalker context ctxsystem {
 	}
 	Transition t0 
 		whenRequest setGoal -> goToGoal
-		whenEvent endall -> terminateWalker
+		whenMsg end -> terminateWalker
 	
 //TODO inserire uno stato di errore
 //TODO goal posizione risorsa e mangia ultima soluzione
@@ -617,6 +614,7 @@ QActor rbrwalker context ctxsystem {
 		[#
 			var X = ""
 			var Y = ""	
+			var Ac = "empty"
 			var CurPos : Pair<Int, Int> ?= null
 		#]
 		
@@ -628,25 +626,28 @@ QActor rbrwalker context ctxsystem {
 		}
 		println ("WALKER | received the goal ($X, $Y)...")
 		
-		[#  
-			var Ac = "empty"
-			itunibo.planner.plannerUtil.planForGoal(X, Y)
+		run	itunibo.planner.plannerUtil.planForGoal(X, Y)
+		[#	
 			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 			while(Ac!="") {
 		#]
-				forward basicrobot -m cmd : cmd($Ac)
-				delay 800
-		[#
-				itunibo.planner.plannerUtil.updateMap(Ac) 
+				if [# Ac == "w" #] {
+					request basicrobot -m step : step(770) 
+				}
+				else {
+					forward basicrobot -m cmd : cmd($Ac)
+//					delay 770
+				}
+				
+				run itunibo.planner.plannerUtil.updateMap(Ac) 
+		[# 
 				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 			}
+			
+			CurPos = itunibo.planner.plannerUtil.get_curPos() 
 		#]
-				forward basicrobot -m cmd : cmd(h)
-				delay 800
-		[#
-			CurPos = itunibo.planner.plannerUtil.get_curPos()
-			itunibo.planner.plannerUtil.showMap()
-		#]
+		run itunibo.planner.plannerUtil.showMap()
+			
 		println ("WALKER | arrived to the goal")
 		replyTo setGoal with goalState : goalState($CurPos)
 		updateResource [# "$CurPos" #]

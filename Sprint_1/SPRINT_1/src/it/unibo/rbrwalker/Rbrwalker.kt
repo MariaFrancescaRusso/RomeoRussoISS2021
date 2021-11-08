@@ -30,14 +30,15 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("WALKER | waits a goal...")
 					}
-					 transition(edgeName="t025",targetState="goToGoal",cond=whenRequest("setGoal"))
-					transition(edgeName="t026",targetState="terminateWalker",cond=whenEvent("endall"))
+					 transition(edgeName="t018",targetState="goToGoal",cond=whenRequest("setGoal"))
+					transition(edgeName="t019",targetState="terminateWalker",cond=whenDispatch("end"))
 				}	 
 				state("goToGoal") { //this:State
 					action { //it:State
 						
 									var X = ""
 									var Y = ""	
+									var Ac = "empty"
 									var CurPos : Pair<Int, Int> ?= null
 						if( checkMsgContent( Term.createTerm("setGoal(X,Y)"), Term.createTerm("setGoal(X,Y)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -46,22 +47,23 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 												Y = payloadArg(1)
 						}
 						println("WALKER | received the goal ($X, $Y)...")
-						  
-									var Ac = "empty"
-									itunibo.planner.plannerUtil.planForGoal(X, Y)
+						itunibo.planner.plannerUtil.planForGoal( X, Y  )
+							
 									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(Ac!="") {
-						forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
-						delay(800) 
-						
-										itunibo.planner.plannerUtil.updateMap(Ac) 
+						if(  Ac == "w"  
+						 ){request("step", "step(770)" ,"basicrobot" )  
+						}
+						else
+						 {forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
+						 }
+						itunibo.planner.plannerUtil.updateMap( Ac  )
+						 
 										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									}
-						forward("cmd", "cmd(h)" ,"basicrobot" ) 
-						delay(800) 
-						
-									CurPos = itunibo.planner.plannerUtil.get_curPos()
-									itunibo.planner.plannerUtil.showMap()
+									
+									CurPos = itunibo.planner.plannerUtil.get_curPos() 
+						itunibo.planner.plannerUtil.showMap(  )
 						println("WALKER | arrived to the goal")
 						answer("setGoal", "goalState", "goalState($CurPos)"   )  
 						updateResourceRep( "$CurPos"  
