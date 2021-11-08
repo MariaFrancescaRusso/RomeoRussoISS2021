@@ -22,12 +22,14 @@ class AddFoodTest {
 		var rbrActor : ActorBasic? = null
 		var systemStarted = false
 		var testingObserverRbr: CoapObserverForTest ? = null
+		var testingObserverTable: CoapObserverForTest ? = null
 		var testingObserverFridge: CoapObserverForTest ? = null
 		val channelSyncStart = Channel<String>()
 		var ip = "localhost"
 		var ctx = "ctxsystem"
 		var actname = "rbr"
 		var actname2 = "fridge"
+		var actname3 = "table"
 		var port = "8040"
 
 		@JvmStatic
@@ -60,6 +62,13 @@ class AddFoodTest {
 				}
 				channelSyncStart.send("starttesting")
 			}
+			GlobalScope.launch {
+				if( testingObserverTable== null){
+					 testingObserverTable= CoapObserverForTest("testingObserverTable","$ip", "$ctx", "$actname3", "$port") 		
+					println ("testingObserverTable=$testingObserverTable")
+				}
+				channelSyncStart.send("starttesting")
+			}
 		}
 			
 		@JvmStatic
@@ -74,6 +83,7 @@ class AddFoodTest {
 
 		if( ! systemStarted ) {
 			runBlocking {
+				channelSyncStart.receive()
 				channelSyncStart.receive()
 				channelSyncStart.receive()
 				systemStarted = true
@@ -116,31 +126,55 @@ class AddFoodTest {
 		var msg = MsgUtil.buildRequest("tester", "addFood", "addFood(s002)", "rbr")
 		var State = ""
 		var StateFridge = ""
+		var StateTable = ""
 		var expected = "(0,0)"
 		var expectedFridge= "Removed Food [[s002,sandwich,1]] with success!"
-		var Previsionfridge = expectedFridge
+		var PrevisionFridge = expectedFridge
 		var Prevision = expected
+		var expectedTable= "Added [[s002,sandwich,1]] with success!"
+		var PrevisionTable = expectedTable
 		val channelForObserver = Channel<String>()
 		val channelForObserverFridge = Channel<String>()
+		val channelForObserverTable = Channel<String>()
 
+		//waiting the rbr finishes the prepare task
 		waitPrepare()
-
+		println ("===============TEST | Prepare finished")
 		testingObserverFridge!!.addObserver( channelForObserverFridge,expectedFridge )
-		testingObserverRbr!!.addObserver( channelForObserver,expected )
 		
+		//reading the result of the removing operation from food
 		runBlocking {
 			delay(200)
 			println ("===============TEST | sending $msg")
 
 			MsgUtil.sendMsg(msg, rbrActor!!)
-			StateFridge = channelForObserverFridge.receive()
-			State = channelForObserver.receive()	
 			
-			println ("===============TEST | RESULT=$State for $msg")
-			assertEquals(Previsionfridge,StateFridge)
-			assertEquals(Prevision,State)
+			StateFridge = channelForObserverFridge.receive()
+			
 		}
 		channelForObserverFridge.close()
+		
+		testingObserverTable!!.addObserver( channelForObserverTable,expectedTable )
+		//reading the result of the operation of adding the food on the table
+		runBlocking {
+			delay(200)
+			println ("===============TEST | sending $msg")	
+			
+			StateTable = channelForObserverTable.receive()	
+		}
+		channelForObserverTable.close()
+		testingObserverRbr!!.addObserver( channelForObserver,expected )
+		//reading the position of the rbr
+		runBlocking {
+			delay(200)
+			println ("===============TEST | sending $msg")	
+			
+			State = channelForObserver.receive()	
+		}
+
+		println ("===============TEST | RESULT=$State for $msg")
+		assertEquals(PrevisionFridge,StateFridge)
+		assertEquals(Prevision,State)
 		channelForObserver.close()
 	}	
 }

@@ -18,7 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import util.CoapObserverForTest
 
 class GoalTest {
-
+		
 	companion object {
 		var Actor : ActorBasic? = null
 		var systemStarted = false
@@ -34,10 +34,10 @@ class GoalTest {
 		fun systemSetUp() {
 			println ("TEST Init | Running context")
 
-			GlobalScope.launch {
+			GlobalScope.launch { 
 				it.unibo.ctxsystem.main()
 			}
-
+			
 			println ("TEST Init | Activating Observers")
 
 			GlobalScope.launch {
@@ -52,17 +52,17 @@ class GoalTest {
 				channelSyncStart.send("starttesting")
 			}
 		}
-
+			
 		@JvmStatic
 	    @AfterClass
 		fun terminate() {
-			println ("TEST | terminate the testing")
+			println ("TEST | terminate the testing")				
 		}
 	}
-
+	
 	@Before
 	fun checkSystemStarted() {
-
+		
 		if( ! systemStarted ) {
 			runBlocking {
 				channelSyncStart.receive()
@@ -70,8 +70,8 @@ class GoalTest {
 				println ("TEST | checkSystemStarted resumed")
 			}
 		}
-  	}
-
+  	}	
+	
 	@After
 	fun removeObs() {
 		println ("TEST | AFTERRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRRR  ${testingObserver!!.name}")
@@ -85,14 +85,14 @@ class GoalTest {
 		var msg = MsgUtil.buildRequest("tester", "setgoal", "setgoal(5,5)", "rbrwalker")
 		var State = ""
 		var expected = Prevision
-		val channelForObserver = Channel<String>()
+		val channelForObserver = Channel<String>()		
 
 		testingObserver!!.addObserver( channelForObserver,expected )
 		runBlocking {
 			println ("TEST | sending $msg")
 			MsgUtil.sendMsg(msg, Actor!!)
-			State = channelForObserver.receive()
-
+			State = channelForObserver.receive()			
+			
 			println ("TEST | RESULT=$State for $msg")
 			assertEquals(Prevision,State)
 		}
