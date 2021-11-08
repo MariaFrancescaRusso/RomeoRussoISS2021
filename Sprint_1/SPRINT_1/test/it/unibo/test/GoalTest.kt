@@ -80,9 +80,8 @@ class GoalTest {
 
 	@Test
 	fun GoToGoalTest() {
-		var	Food = arrayListOf(arrayListOf("s034", "cheddar", "10"))
 		var Prevision = "(5, 5)"
-		var msg = MsgUtil.buildRequest("tester", "setgoal", "setgoal(5,5)", "rbrwalker")
+		var msg = MsgUtil.buildRequest("tester", "setGoal", "setGoal(5,5)", "rbrwalker")
 		var State = ""
 		var expected = Prevision
 		val channelForObserver = Channel<String>()		
