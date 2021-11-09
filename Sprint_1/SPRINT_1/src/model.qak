@@ -620,6 +620,7 @@ QActor rbrwalker context ctxsystem {
 			var Y = ""
 			var Dir = ""	
 			var Ac = "empty"
+			var CurDir = ""
 			var CurPos : Pair<Int, Int> ?= null
 		#]
 		
@@ -650,20 +651,27 @@ QActor rbrwalker context ctxsystem {
 			}
 			
 			//Turn the robot to be in front of the resource
-			while ( itunibo.planner.plannerUtil.getDirection() != Dir) {
+			CurDir = itunibo.planner.plannerUtil.getDirection()
+			while ( CurDir != Dir) {
 		#]	 
-				forward basicrobot -m cmd : cmd(l)
-				run itunibo.planner.plannerUtil.updateMap("l") 
+				if [# (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
+				   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir") #] {
+					forward basicrobot -m cmd : cmd(l)
+					run itunibo.planner.plannerUtil.updateMap("l") 
+				}
+				else {
+					forward basicrobot -m cmd : cmd(r)
+					run itunibo.planner.plannerUtil.updateMap("r") 
+				}
 				delay 1000
 		[#
+				CurDir = itunibo.planner.plannerUtil.getDirection()
 			}
 		#]
 		forward basicrobot -m cmd : cmd(h)
 		run itunibo.planner.plannerUtil.updateMap("h") 
 		delay 800
-		[#	
-			CurPos = itunibo.planner.plannerUtil.get_curPos() 
-		#]
+		[# CurPos = itunibo.planner.plannerUtil.get_curPos() #]
 		run itunibo.planner.plannerUtil.showMap()
 			
 		println ("WALKER | arrived to the goal")

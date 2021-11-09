@@ -40,6 +40,7 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 									var Y = ""
 									var Dir = ""	
 									var Ac = "empty"
+									var CurDir = ""
 									var CurPos : Pair<Int, Int> ?= null
 						if( checkMsgContent( Term.createTerm("setGoal(X,Y,DIR)"), Term.createTerm("setGoal(X,Y,DIR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -66,17 +67,25 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 									}
 									
 									//Turn the robot to be in front of the resource
-									while ( itunibo.planner.plannerUtil.getDirection() != Dir) {
-						forward("cmd", "cmd(l)" ,"basicrobot" ) 
+									CurDir = itunibo.planner.plannerUtil.getDirection()
+									while ( CurDir != Dir) {
+						if(  (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
+										   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir")  
+						 ){forward("cmd", "cmd(l)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "l"  )
+						}
+						else
+						 {forward("cmd", "cmd(r)" ,"basicrobot" ) 
+						 itunibo.planner.plannerUtil.updateMap( "r"  )
+						 }
 						delay(1000) 
 						
+										CurDir = itunibo.planner.plannerUtil.getDirection()
 									}
 						forward("cmd", "cmd(h)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "h"  )
 						delay(800) 
-							
-									CurPos = itunibo.planner.plannerUtil.get_curPos() 
+						 CurPos = itunibo.planner.plannerUtil.get_curPos()  
 						itunibo.planner.plannerUtil.showMap(  )
 						println("WALKER | arrived to the goal")
 						answer("setGoal", "goalState", "goalState($CurPos)"   )  
