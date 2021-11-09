@@ -1,40 +1,47 @@
 %% Goal coordinates near the resources that the RBR can achieve.
-%% There are the resources with their coordinates (X = columns; Y = rows) in a map 7x7:
-%% rh(X, Y).
-%% pantry(X, Y).
-%% fridge(X, Y).
-%% table(X, Y).
-%% dishwasher(X, Y).
+%% There are the resources with their coordinates (X = columns; Y = rows) 
+%% and the rbr direction to be in front of the resources in a map 7x7:
+%% rh(X, Y, DIRECTION).
+%% pantry(X, Y, DIRECTION).
+%% fridge(X, Y, DIRECTION).
+%% table(X, Y, DIRECTION).
+%% dishwasher(X, Y, DIRECTION).
 
 %% ONLY for "https://swish.swi-prolog.org/"
 %:- dynamic (rh/2, pantry/2, fridge/2, table/2, dishwasher/2).
 
-rh(0, 0).
+rh(0, 0, downDir).
 
-pantry(0, 6).
-pantry(1, 6).
+pantry(0, 6, downDir).
+pantry(1, 6, downDir).
 
-table(2, 2).
-table(3, 2).
-table(4, 2).
-table(1, 3).
-table(5, 3).
-table(2, 4).
-table(3, 4).
-table(4, 4).
+table(2, 2, downDir).
+table(3, 2, downDir).
+table(4, 2, downDir).
+table(1, 3, rightDir).
+table(5, 3, leftDir).
+table(2, 4, upDir).
+table(3, 4, upDir).
+table(4, 4, upDir).
 
-fridge(5, 0).
-fridge(6, 0).
+fridge(5, 0, upDir).
+fridge(6, 0, upDir).
 
-dishwasher(5, 6).
-dishwasher(6, 6).
+dishwasher(5, 6, downDir).
+dishwasher(6, 6, downDir).
 
 %% To obtain a list of pantry
 getPantryCoordinate(Res) :-
-    findall(pantry(X, Y), pantry(X, Y), Res).
+    findall(pantry(X, Y), pantry(X, Y, _DIR), Res).
 %% To obtain a list of pantry coordinate element
 getPantryCoordinateEl(Res) :-
-    findall([X, Y], pantry(X, Y), Res).
+    findall([X, Y], pantry(X, Y, _DIR), Res).
+%% To obtain a list of pantry coordinate element with the rbr direction
+getPantryCoordinateAndDirEl(Res) :-
+    findall([X, Y, DIR], pantry(X, Y, DIR), Res).
+%% To obtain the rbr direction for pantry goal
+getPantryDir(X, Y, DIR) :-
+    findall(DIR, pantry(X, Y, DIR), [DIR | _T]).
 %% To obtain the list of nearest pantry goal coordinates from the current position 
 getListPantryFromCurPosCoordinateEl(Cp, Goal) :-
     getPantryCoordinateEl(Res),
@@ -50,27 +57,44 @@ getPantryFromCurPosXYCoordinate(Cp, Xgoal, Ygoal) :-
     getPantryCoordinateEl(Res),
     searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
    	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]).
+%% To obtain the nearest pantry goal 
+%% XY coordinates from the current position and the rbr direction
+getPantryFromCurPosXYCoordinateAndDir(Cp, Xgoal, Ygoal, Dir) :-
+    getPantryCoordinateEl(Res),
+    searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
+   	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]),
+    getPantryDir(Xgoal, Ygoal, Dir).
 
 %% To obtain a list of rh
 getRHCoordinate(Res) :-
-    findall(rh(X, Y), rh(X, Y), Res).
+    findall(rh(X, Y), rh(X, Y, _DIR), Res).
 %% To obtain a list of rh coordinate element
 getRHListCoordinate(Res) :-
-    findall([X, Y], rh(X, Y), Res).
+    findall([X, Y], rh(X, Y, _DIR), Res).
 %% To obtain the rh coordinate element,
 %% assuming that RH is composed by a sigle cell
 getRHCoordinateEl(Res) :-
-    findall([X, Y], rh(X, Y), [Res | _Tres]).
+    findall([X, Y], rh(X, Y, _DIR), [Res | _Tres]).
+%% To obtain a list of rh coordinate element with the rbr direction
+getRHCoordinateAndDirEl(Res) :-
+    findall([X, Y, DIR], rh(X, Y, DIR), Res).
 %% To obtain the coordinates of rh,
 %% assuming that RH is composed by a sigle cell
 getRHXYCoordinates(Xres, Yres) :-
-    findall([X, Y], rh(X, Y), [[Xres, Yres] | _Tres]).
+    findall([X, Y], rh(X, Y, _DIR), [[Xres, Yres] | _Tres]).
+%% To obtain the coordinates of rh,
+%% assuming that RH is composed by a sigle cell
+getRHXYCoordinatesAndDir(Xres, Yres, DirRes) :-
+    findall([X, Y, DIR], rh(X, Y, DIR), [[Xres, Yres, DirRes] | _Tres]).
+%% To obtain the rbr direction for rh goal
+getRHDir(X, Y, DIR) :-
+    findall(DIR, rh(X, Y, DIR), [DIR | _T]).
 %% To obtain the list of nearest rh goal coordinates from the current position 
 getListRHFromCurPosCoordinateEl(Cp, Goal) :-
     getRHCoordinateEl(Res),
     searchNearestGoal(Cp, Res, ResGoal),
    	sortDis(ResGoal, Goal).
-%% To obtain the nearest rh goal coordinates from the current position 
+%% To obtain the nearest RH goal coordinates from the current position 
 getRHFromCurPosCoordinateEl(Cp, XYgoal) :-
     getRHListCoordinate(Res),
     searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
@@ -80,13 +104,26 @@ getRHFromCurPosXYCoordinate(Cp, Xgoal, Ygoal) :-
     getRHListCoordinate(Res),
     searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
    	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]).
+%% To obtain the nearest RH goal 
+%% XY coordinates from the current position and the rbr direction
+getRHFromCurPosXYCoordinateAndDir(Cp, Xgoal, Ygoal, Dir) :-
+    getRHListCoordinate(Res),
+    searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
+   	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]),
+    getRHDir(Xgoal, Ygoal, Dir).
 
 %% To obtain a list of fridge
 getFridgeCoordinate(Res) :-
-    findall(fridge(X, Y), fridge(X, Y), Res).
+    findall(fridge(X, Y), fridge(X, Y, _DIR), Res).
 %% To obtain a list of fridge coordinate element
 getFridgeCoordinateEl(Res) :-
-    findall([X, Y], fridge(X, Y), Res).
+    findall([X, Y], fridge(X, Y, _DIR), Res).
+%% To obtain a list of fridge coordinate element with the rbr direction
+getFridgeCoordinateAndDirEl(Res) :-
+    findall([X, Y, DIR], fridge(X, Y, DIR), Res).
+%% To obtain the rbr direction for fridge goal
+getFridgeDir(X, Y, DIR) :-
+    findall(DIR, fridge(X, Y, DIR), [DIR | _T]).
 %% To obtain the list of nearest fridge goal coordinates from the current position 
 getListFridgeFromCurPosCoordinateEl(Cp, Goal) :-
     getFridgeCoordinateEl(Res),
@@ -102,13 +139,26 @@ getFridgeFromCurPosXYCoordinate(Cp, Xgoal, Ygoal) :-
     getFridgeCoordinateEl(Res),
     searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
    	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]).
+%% To obtain the nearest fridge goal 
+%% XY coordinates from the current position and the rbr direction
+getFridgeFromCurPosXYCoordinateAndDir(Cp, Xgoal, Ygoal, Dir) :-
+    getFridgeCoordinateEl(Res),
+    searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
+   	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]),
+    getFridgeDir(Xgoal, Ygoal, Dir).
 
 %% To obtain a list of table
 getTableCoordinate(Res) :-
-    findall(table(X, Y), table(X, Y), Res).
+    findall(table(X, Y), table(X, Y, _DIR), Res).
 %% To obtain a list of table coordinate element
 getTableCoordinateEl(Res) :-
-    findall([X, Y], table(X, Y), Res).
+    findall([X, Y], table(X, Y, _DIR), Res).
+%% To obtain a list of table coordinate element with the rbr direction
+getTableCoordinateAndDirEl(Res) :-
+    findall([X, Y, DIR], table(X, Y, DIR), Res).
+%% To obtain the rbr direction for table goal
+getTableDir(X, Y, DIR) :-
+    findall(DIR, table(X, Y, DIR), [DIR | _T]).
 %% To obtain the list of nearest table goal coordinates from the current position 
 getListTableFromCurPosCoordinateEl(Cp, Goal) :-
     getTableCoordinateEl(Res),
@@ -124,13 +174,26 @@ getTableFromCurPosXYCoordinate(Cp, Xgoal, Ygoal) :-
     getTableCoordinateEl(Res),
     searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
    	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]).
+%% To obtain the nearest table goal 
+%% XY coordinates from the current position and the rbr direction
+getTableFromCurPosXYCoordinateAndDir(Cp, Xgoal, Ygoal, Dir) :-
+    getTableCoordinateEl(Res),
+    searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
+   	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]),
+    getTableDir(Xgoal, Ygoal, Dir).
 
 %% To obtain a list of dishwasher
 getDishwasherCoordinate(Res) :-
-    findall(dishwasher(X, Y), dishwasher(X, Y), Res).
+    findall(dishwasher(X, Y), dishwasher(X, Y, _DIR), Res).
 %% To obtain a list of dishwasher coordinate element
 getDishwasherCoordinateEl(Res) :-
-    findall([X, Y], dishwasher(X, Y), Res).
+    findall([X, Y], dishwasher(X, Y, _DIR), Res).
+%% To obtain a list of dishwasher coordinate element with the rbr direction
+getDishwasherCoordinateAndDirEl(Res) :-
+    findall([X, Y, DIR], dishwasher(X, Y, DIR), Res).
+%% To obtain the rbr direction for dishwasher goal
+getDishwasherDir(X, Y, DIR) :-
+    findall(DIR, dishwasher(X, Y, DIR), [DIR | _T]).
 %% To obtain the list of nearest dishwasher goal coordinates from the current position 
 getListDishwasherFromCurPosCoordinateEl(Cp, Goal) :-
     getDishwasherCoordinateEl(Res),
@@ -146,8 +209,16 @@ getDishwasherFromCurPosXYCoordinate(Cp, Xgoal, Ygoal) :-
     getDishwasherCoordinateEl(Res),
     searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
    	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]).
+%% To obtain the nearest dishwasher goal 
+%% XY coordinates from the current position and the rbr direction
+getDishwasherFromCurPosXYCoordinateAndDir(Cp, Xgoal, Ygoal, Dir) :-
+    getDishwasherCoordinateEl(Res),
+    searchNearestGoal(Cp, Res, [[Dis1, XY1] | TresGoal]),
+   	min([Dis1, XY1], TresGoal, _DisMin, [Xgoal, Ygoal]),
+    getDishwasherDir(Xgoal, Ygoal, Dir).
 
-%% To search the nearest resource goal coordinates from the current position 
+%% To search the nearest resource goal coordinates 
+%% from the current position 
 searchNearestGoal(_Cp, [], []).
 searchNearestGoal((Xcp, Ycp), [[Xres, Yres] | Tres], [[Dis, [Xres, Yres]] | Tgoal]) :-
     Dis is abs(Xcp-Xres) + abs(Ycp-Yres),

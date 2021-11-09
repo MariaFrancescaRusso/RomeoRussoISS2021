@@ -23,6 +23,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				var FoodCode = ""
 				var FoodPresence = "" 
 				var RHCoordinate : Pair<String,String> ?= null	// X = column; Y = row
+				var RHDir = ""
 				var CurrentPos = ""
 				var Cleared = false
 		return { //this:ActionBasciFsm
@@ -31,8 +32,10 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | STARTS and it's placed in RH position...")
 						 IsMap = true  
 						solve("consult('ResourcesCoordinates.pl')","") //set resVar	
-						solve("getRHXYCoordinates(XRH,YRH)","") //set resVar	
-						if( currentSolution.isSuccess() ) { RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}")  
+						solve("getRHXYCoordinatesAndDir(XRH,YRH,Dir)","") //set resVar	
+						if( currentSolution.isSuccess() ) { 
+										RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}") 
+										RHDir = "${getCurSol("Dir")}"
 						println("RBR | RH in $RHCoordinate")
 						}
 						else
@@ -58,7 +61,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 					action { //it:State
 						println("RBR | ready to work...")
 					}
-					 transition(edgeName="t00",targetState="exPrepareHP",cond=whenDispatch("prepare"))
+					 transition(edgeName="t07",targetState="exPrepareHP",cond=whenDispatch("prepare"))
 				}	 
 				state("exPrepareHP") { //this:State
 					action { //it:State
@@ -69,16 +72,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 												Food = payloadArg(1)
 						}
 						println("RBR | executing task 'Prepare the room' ( Crockery = $Dishes; Foods = $Food ) :")
-						solve("getPantryFromCurPosXYCoordinate($RHCoordinate,XPantry,YPantry)","") //set resVar	
+						solve("getPantryFromCurPosXYCoordinateAndDir($RHCoordinate,XPantry,YPantry,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for pantry in (${getCurSol("XPantry")}, ${getCurSol("YPantry")})")
 						}
 						else
 						{println("RBR | Error getting pantry coordinates...")
 						}
 						println("RBR | going to pantry...")
-						request("setGoal", "setGoal(${getCurSol("XPantry")},${getCurSol("YPantry")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XPantry")},${getCurSol("YPantry")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t11",targetState="exPreparePT",cond=whenReply("goalState"))
+					 transition(edgeName="t18",targetState="exPreparePT",cond=whenReply("goalState"))
 				}	 
 				state("exPreparePT") { //this:State
 					action { //it:State
@@ -92,16 +95,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached pantry. Taking dishes...")
 						forward("changeState", "changeState(remove,$Dishes)" ,"pantry" ) 
 						delay(300) 
-						solve("getTableFromCurPosXYCoordinate($CurrentPos,XTable,YTable)","") //set resVar	
+						solve("getTableFromCurPosXYCoordinateAndDir($CurrentPos,XTable,YTable,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for table in (${getCurSol("XTable")}, ${getCurSol("YTable")})")
 						}
 						else
 						{println("RBR | Error getting table coordinates...")
 						}
 						println("RBR | going to table...")
-						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t22",targetState="exPrepareTF",cond=whenReply("goalState"))
+					 transition(edgeName="t29",targetState="exPrepareTF",cond=whenReply("goalState"))
 				}	 
 				state("exPrepareTF") { //this:State
 					action { //it:State
@@ -115,16 +118,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached table. Adding dishes...")
 						forward("changeState", "changeState(add,$Dishes)" ,"table" ) 
 						delay(300) 
-						solve("getFridgeFromCurPosXYCoordinate($CurrentPos,XFridge,YFridge)","") //set resVar	
+						solve("getFridgeFromCurPosXYCoordinateAndDir($CurrentPos,XFridge,YFridge,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for fridge in (${getCurSol("XFridge")}, ${getCurSol("YFridge")})")
 						}
 						else
 						{println("RBR | Error getting fridge coordinates...")
 						}
 						println("RBR | going to fridge...")
-						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t33",targetState="exPrepareFT",cond=whenReply("goalState"))
+					 transition(edgeName="t310",targetState="exPrepareFT",cond=whenReply("goalState"))
 				}	 
 				state("exPrepareFT") { //this:State
 					action { //it:State
@@ -138,16 +141,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached fridge. Taking food...")
 						forward("changeState", "changeState(remove,$Food)" ,"fridge" ) 
 						delay(300) 
-						solve("getTableFromCurPosXYCoordinate($CurrentPos,XTable,YTable)","") //set resVar	
+						solve("getTableFromCurPosXYCoordinateAndDir($CurrentPos,XTable,YTable,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for table in (${getCurSol("XTable")}, ${getCurSol("YTable")})")
 						}
 						else
 						{println("RBR | Error getting table coordinates...")
 						}
 						println("RBR | going to table...")
-						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t44",targetState="addFoodTable",cond=whenReply("goalState"))
+					 transition(edgeName="t411",targetState="addFoodTable",cond=whenReply("goalState"))
 				}	 
 				state("addFoodTable") { //this:State
 					action { //it:State
@@ -167,11 +170,11 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("goToHome") { //this:State
 					action { //it:State
 						println("RBR | coming back to RH...")
-						 request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second})", "rbrwalker")  
+						 request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second}, $RHDir)", "rbrwalker")  
 					}
-					 transition(edgeName="t55",targetState="wait",cond=whenReplyGuarded("goalState",{ !Cleared  
+					 transition(edgeName="t512",targetState="wait",cond=whenReplyGuarded("goalState",{ !Cleared  
 					}))
-					transition(edgeName="t56",targetState="terminateRbr",cond=whenReplyGuarded("goalState",{ Cleared  
+					transition(edgeName="t513",targetState="terminateRbr",cond=whenReplyGuarded("goalState",{ Cleared  
 					}))
 				}	 
 				state("wait") { //this:State
@@ -186,8 +189,8 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached RH. Finished executing task")
 						println("RBR | waiting for a command...")
 					}
-					 transition(edgeName="t67",targetState="checkFood",cond=whenRequest("addFood"))
-					transition(edgeName="t68",targetState="exClearHT",cond=whenDispatch("clear"))
+					 transition(edgeName="t614",targetState="checkFood",cond=whenRequest("addFood"))
+					transition(edgeName="t615",targetState="exClearHT",cond=whenDispatch("clear"))
 				}	 
 				state("checkFood") { //this:State
 					action { //it:State
@@ -198,7 +201,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						forward("askFood", "askFood($FoodCode)" ,"fridge" ) 
 						println("RBR | asked fridge if it contains the food with food-code = $FoodCode")
 					}
-					 transition(edgeName="t79",targetState="handleAnswer",cond=whenEvent("observerfridge"))
+					 transition(edgeName="t716",targetState="handleAnswer",cond=whenEvent("observerfridge"))
 				}	 
 				state("handleAnswer") { //this:State
 					action { //it:State
@@ -220,7 +223,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("waitAnswer") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t810",targetState="handleAnswer",cond=whenEvent("observerfridge"))
+					 transition(edgeName="t817",targetState="handleAnswer",cond=whenEvent("observerfridge"))
 				}	 
 				state("checkAnswer") { //this:State
 					action { //it:State
@@ -241,16 +244,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("exAddFoodHF") { //this:State
 					action { //it:State
 						println("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
-						solve("getFridgeFromCurPosXYCoordinate($RHCoordinate,XFridge,YFridge)","") //set resVar	
+						solve("getFridgeFromCurPosXYCoordinateAndDir($RHCoordinate,XFridge,YFridge,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for fridge in (${getCurSol("XFridge")}, ${getCurSol("YFridge")})")
 						}
 						else
 						{println("RBR | Error getting fridge coordinates...")
 						}
 						println("RBR | going to fridge...")
-						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t911",targetState="exAddFoodFT",cond=whenReply("goalState"))
+					 transition(edgeName="t918",targetState="exAddFoodFT",cond=whenReply("goalState"))
 				}	 
 				state("exAddFoodFT") { //this:State
 					action { //it:State
@@ -264,16 +267,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached fridge. Taking food...")
 						forward("changeState", "changeState(remove,$Food)" ,"fridge" ) 
 						delay(300) 
-						solve("getTableFromCurPosXYCoordinate($CurrentPos,XTable,YTable)","") //set resVar	
+						solve("getTableFromCurPosXYCoordinateAndDir($CurrentPos,XTable,YTable,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for table in (${getCurSol("XTable")}, ${getCurSol("YTable")})")
 						}
 						else
 						{println("RBR | Error getting table coordinates...")
 						}
 						println("RBR | going to table...")
-						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1012",targetState="addFoodTable",cond=whenReply("goalState"))
+					 transition(edgeName="t1019",targetState="addFoodTable",cond=whenReply("goalState"))
 				}	 
 				state("exClearHT") { //this:State
 					action { //it:State
@@ -284,18 +287,18 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 												Food = payloadArg(1)
 						}
 						println("RBR | executing task 'Clear the room':")
-						solve("getTableFromCurPosXYCoordinate($RHCoordinate,XTable,YTable)","") //set resVar	
+						solve("getTableFromCurPosXYCoordinateAndDir($RHCoordinate,XTable,YTable,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for table in (${getCurSol("XTable")}, ${getCurSol("YTable")})")
 						}
 						else
 						{println("RBR | Error getting table coordinates...")
 						}
 						println("RBR | going to table...")
-						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1113",targetState="exClearTF",cond=whenReplyGuarded("goalState",{ Food != "[]"  
+					 transition(edgeName="t1120",targetState="exClearTF",cond=whenReplyGuarded("goalState",{ Food != "[]"  
 					}))
-					transition(edgeName="t1114",targetState="exClearTD",cond=whenReplyGuarded("goalState",{ Food == "[]"  
+					transition(edgeName="t1121",targetState="exClearTD",cond=whenReplyGuarded("goalState",{ Food == "[]"  
 					}))
 				}	 
 				state("exClearTF") { //this:State
@@ -310,16 +313,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached table. Taking food...")
 						forward("changeState", "changeState(remove,$Food)" ,"table" ) 
 						delay(300) 
-						solve("getFridgeFromCurPosXYCoordinate($CurrentPos,XFridge,YFridge)","") //set resVar	
+						solve("getFridgeFromCurPosXYCoordinateAndDir($CurrentPos,XFridge,YFridge,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for fridge in (${getCurSol("XFridge")}, ${getCurSol("YFridge")})")
 						}
 						else
 						{println("RBR | Error getting fridge coordinates...")
 						}
 						println("RBR | going to fridge...")
-						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1215",targetState="exClearFT",cond=whenReply("goalState"))
+					 transition(edgeName="t1222",targetState="exClearFT",cond=whenReply("goalState"))
 				}	 
 				state("exClearFT") { //this:State
 					action { //it:State
@@ -333,16 +336,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached fridge. Adding food...")
 						forward("changeState", "changeState(add,$Food)" ,"fridge" ) 
 						delay(300) 
-						solve("getTableFromCurPosXYCoordinate($CurrentPos,XTable,YTable)","") //set resVar	
+						solve("getTableFromCurPosXYCoordinateAndDir($CurrentPos,XTable,YTable,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for table in (${getCurSol("XTable")}, ${getCurSol("YTable")})")
 						}
 						else
 						{println("RBR | Error getting table coordinates...")
 						}
 						println("RBR | going to table...")
-						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1316",targetState="exClearTD",cond=whenReply("goalState"))
+					 transition(edgeName="t1323",targetState="exClearTD",cond=whenReply("goalState"))
 				}	 
 				state("exClearTD") { //this:State
 					action { //it:State
@@ -356,16 +359,16 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached table. Taking dishes...")
 						forward("changeState", "changeState(remove,$Dishes)" ,"table" ) 
 						delay(300) 
-						solve("getDishwasherFromCurPosXYCoordinate($CurrentPos,XDishwasher,YDishwasher)","") //set resVar	
+						solve("getDishwasherFromCurPosXYCoordinateAndDir($CurrentPos,XDishwasher,YDishwasher,Dir)","") //set resVar	
 						if( currentSolution.isSuccess() ) {println("RBR | Found nearest goal for dishwasher in (${getCurSol("XDishwasher")}, ${getCurSol("YDishwasher")})")
 						}
 						else
 						{println("RBR | Error getting dishwasher coordinates...")
 						}
 						println("RBR | going to dishwasher...")
-						request("setGoal", "setGoal(${getCurSol("XDishwasher")},${getCurSol("YDishwasher")})" ,"rbrwalker" )  
+						request("setGoal", "setGoal(${getCurSol("XDishwasher")},${getCurSol("YDishwasher")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1417",targetState="exClearD",cond=whenReply("goalState"))
+					 transition(edgeName="t1424",targetState="exClearD",cond=whenReply("goalState"))
 				}	 
 				state("exClearD") { //this:State
 					action { //it:State

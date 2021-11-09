@@ -30,21 +30,23 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("WALKER | waits a goal...")
 					}
-					 transition(edgeName="t018",targetState="goToGoal",cond=whenRequest("setGoal"))
-					transition(edgeName="t019",targetState="terminateWalker",cond=whenDispatch("end"))
+					 transition(edgeName="t025",targetState="goToGoal",cond=whenRequest("setGoal"))
+					transition(edgeName="t026",targetState="terminateWalker",cond=whenDispatch("end"))
 				}	 
 				state("goToGoal") { //this:State
 					action { //it:State
 						
 									var X = ""
-									var Y = ""	
+									var Y = ""
+									var Dir = ""	
 									var Ac = "empty"
 									var CurPos : Pair<Int, Int> ?= null
-						if( checkMsgContent( Term.createTerm("setGoal(X,Y)"), Term.createTerm("setGoal(X,Y)"), 
+						if( checkMsgContent( Term.createTerm("setGoal(X,Y,DIR)"), Term.createTerm("setGoal(X,Y,DIR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
 												X = payloadArg(0)
 												Y = payloadArg(1)
+												Dir = payloadArg(2)
 						}
 						println("WALKER | received the goal ($X, $Y)...")
 						itunibo.planner.plannerUtil.planForGoal( X, Y  )
@@ -52,16 +54,28 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 									Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									while(Ac!="") {
 						if(  Ac == "w"  
-						 ){request("step", "step(770)" ,"basicrobot" )  
+						 ){request("step", "step(647)" ,"basicrobot" )  
 						}
 						else
 						 {forward("cmd", "cmd($Ac)" ,"basicrobot" ) 
 						 }
+						delay(1000) 
 						itunibo.planner.plannerUtil.updateMap( Ac  )
 						 
 										Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 									}
 									
+									//Turn the robot to be in front of the resource
+									while ( itunibo.planner.plannerUtil.getDirection() != Dir) {
+						forward("cmd", "cmd(l)" ,"basicrobot" ) 
+						itunibo.planner.plannerUtil.updateMap( "l"  )
+						delay(1000) 
+						
+									}
+						forward("cmd", "cmd(h)" ,"basicrobot" ) 
+						itunibo.planner.plannerUtil.updateMap( "h"  )
+						delay(800) 
+							
 									CurPos = itunibo.planner.plannerUtil.get_curPos() 
 						itunibo.planner.plannerUtil.showMap(  )
 						println("WALKER | arrived to the goal")

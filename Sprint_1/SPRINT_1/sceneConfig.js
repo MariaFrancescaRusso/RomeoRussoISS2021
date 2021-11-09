@@ -1,13 +1,14 @@
 const config = {
     floor: {
-        size: { x: 36, y: 36 }
-        /* map of 9x9 cells of dim 4;
-           rbr can walk in floor size is 7x7 cells of dim 4 */
+        size: { x: 33.75, y: 33.75 }
+        /* map of 9x9 cells of dim 3.75;
+           rbr can walk in floor size is 7x7 cells of dim 3.75 */
     },
     
     player: {
     	/* position in interval [0, 1]. --> so if in cell (0, 0) in 7x7 map: the center is in 0.5 / 7 =~ 0.07 */
         position: { x: 0.17, y: 0.17 },		// center of RH cell (1.5, 1.5) / 9 =~ (0.17, 0.17)
+        /* speed in interval [0, 100] */
         speed: 0.2
     },
     

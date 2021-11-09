@@ -14,7 +14,7 @@ Dispatch clear:clear(X, Y)
 Reply warning:warning(ARG)	//void
 
 //RBR - RBRWalker
-Request setGoal:setGoal(X, Y)
+Request setGoal:setGoal(X, Y, DIR)
 Reply goalState:goalState(X)
 
 //Maitre - Fridge/Resources
@@ -42,7 +42,7 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 ExternalQActor basicrobot context ctxbasicrobot  
 
 /* Actor maitre is used as a mock client */
-/*
+
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -180,7 +180,7 @@ QActor maitre context ctxsystem {
 //		terminate 0
 	} 
 }
-*/
+
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
@@ -190,6 +190,7 @@ QActor rbr context ctxsystem {
 		var FoodCode = ""
 		var FoodPresence = "" 
 		var RHCoordinate : Pair<String,String> ?= null	// X = column; Y = row
+		var RHDir = ""
 		var CurrentPos = ""
 		var Cleared = false
 	#]	
@@ -202,9 +203,12 @@ QActor rbr context ctxsystem {
 		
 		solve( consult("ResourcesCoordinates.pl") )
 					
-		solve( getRHXYCoordinates(XRH, YRH) )
+		solve( getRHXYCoordinatesAndDir(XRH, YRH, Dir) )
 		ifSolved {	
-			[# RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}") #]
+			[# 
+				RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}") 
+				RHDir = "${getCurSol("Dir")}"
+			#]
 			println ("RBR | RH in $RHCoordinate")				
 		}
 		else {
@@ -238,7 +242,7 @@ QActor rbr context ctxsystem {
 		}
  		println ("RBR | executing task 'Prepare the room' ( Crockery = $Dishes; Foods = $Food ) :" )
  		
- 		solve( getPantryFromCurPosXYCoordinate($RHCoordinate, XPantry, YPantry) )
+ 		solve( getPantryFromCurPosXYCoordinateAndDir($RHCoordinate, XPantry, YPantry, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for pantry in (${getCurSol(\"XPantry\")}, ${getCurSol(\"YPantry\")})")				
 		}
@@ -247,7 +251,7 @@ QActor rbr context ctxsystem {
 		}
 				
 		println ("RBR | going to pantry...")		
-		request rbrwalker -m setGoal : setGoal($getCurSol("XPantry"), $getCurSol("YPantry"))
+		request rbrwalker -m setGoal : setGoal($getCurSol("XPantry"), $getCurSol("YPantry"), $getCurSol("Dir"))
 	}	
 	Transition t1 
 		whenReply goalState -> exPreparePT
@@ -264,7 +268,7 @@ QActor rbr context ctxsystem {
 		forward pantry -m changeState : changeState(remove, $Dishes)
 		delay 300
 		
-		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
@@ -273,7 +277,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))
 	}
 	Transition t2 
 		whenReply goalState -> exPrepareTF
@@ -290,7 +294,7 @@ QActor rbr context ctxsystem {
 		forward table -m changeState : changeState(add, $Dishes)
 		delay 300	
 		
-		solve( getFridgeFromCurPosXYCoordinate($CurrentPos, XFridge, YFridge) )
+		solve( getFridgeFromCurPosXYCoordinateAndDir($CurrentPos, XFridge, YFridge, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
 		}
@@ -299,7 +303,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | going to fridge...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge")) 		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir")) 		
 	}
 	Transition t3 
 		whenReply goalState -> exPrepareFT
@@ -316,7 +320,7 @@ QActor rbr context ctxsystem {
 		forward fridge -m changeState : changeState(remove, $Food)	
 		delay 300
 		
-		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
@@ -325,7 +329,7 @@ QActor rbr context ctxsystem {
 		}
 	
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))		
 	}
 	Transition t4 
 		whenReply goalState -> addFoodTable
@@ -347,8 +351,8 @@ QActor rbr context ctxsystem {
 	// State that sets RH goal	
 	State goToHome {			
 		println ("RBR | coming back to RH...")
-//		request rbrwalker -m setgoal : setgoal("${RHCoordinate!!.first}", "${RHCoordinate!!.second}")
-		[# request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second})", "rbrwalker") #] 
+//		request rbrwalker -m setgoal : setgoal("${RHCoordinate!!.first}", "${RHCoordinate!!.second}", $RHDir)
+		[# request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second}, $RHDir)", "rbrwalker") #] 
 	}
 	Transition t5
 		whenReply goalState and [# !Cleared #] -> wait
@@ -414,7 +418,7 @@ QActor rbr context ctxsystem {
 	State exAddFoodHF {		
 		println ("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
 		
-		solve( getFridgeFromCurPosXYCoordinate($RHCoordinate, XFridge, YFridge) )
+		solve( getFridgeFromCurPosXYCoordinateAndDir($RHCoordinate, XFridge, YFridge, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
 		}
@@ -423,7 +427,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | going to fridge...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"))		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir"))		
 	}
 	Transition t9
 		whenReply goalState -> exAddFoodFT
@@ -440,7 +444,7 @@ QActor rbr context ctxsystem {
 		forward fridge -m changeState : changeState(remove, $Food)
 		delay 300
 		
-		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
@@ -449,7 +453,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable")) 		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir")) 		
 	}
 	Transition t10
 		whenReply goalState -> addFoodTable 
@@ -464,7 +468,7 @@ QActor rbr context ctxsystem {
  		}
 		println ("RBR | executing task 'Clear the room':")
 		
-		solve( getTableFromCurPosXYCoordinate($RHCoordinate, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinateAndDir($RHCoordinate, XTable, YTable, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
@@ -473,7 +477,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))		
 	}
 	Transition t11 
 		whenReply goalState and [# Food != "[]" #] -> exClearTF
@@ -491,7 +495,7 @@ QActor rbr context ctxsystem {
 		forward table -m changeState : changeState(remove, $Food)
 		delay 300
 		
-		solve( getFridgeFromCurPosXYCoordinate($CurrentPos, XFridge, YFridge) )
+		solve( getFridgeFromCurPosXYCoordinateAndDir($CurrentPos, XFridge, YFridge, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
 		}
@@ -500,7 +504,7 @@ QActor rbr context ctxsystem {
 		}
 		
 		println ("RBR | going to fridge...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge")) 		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir")) 		
 	}		
 	Transition t12 
 		whenReply goalState -> exClearFT
@@ -517,7 +521,7 @@ QActor rbr context ctxsystem {
 		forward fridge -m changeState : changeState(add, $Food)
 		delay 300
 		
-		solve( getTableFromCurPosXYCoordinate($CurrentPos, XTable, YTable) )
+		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
 		}
@@ -525,7 +529,7 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting table coordinates...")
 		}
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"))
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))
 	}			
 	Transition t13 
 		whenReply goalState -> exClearTD
@@ -542,7 +546,7 @@ QActor rbr context ctxsystem {
 		forward table -m changeState : changeState(remove, $Dishes)	
 		delay 300
 		
-		solve( getDishwasherFromCurPosXYCoordinate($CurrentPos, XDishwasher, YDishwasher) )
+		solve( getDishwasherFromCurPosXYCoordinateAndDir($CurrentPos, XDishwasher, YDishwasher, Dir) )
 		ifSolved {	
 			println ("RBR | Found nearest goal for dishwasher in (${getCurSol(\"XDishwasher\")}, ${getCurSol(\"YDishwasher\")})")				
 		}
@@ -550,7 +554,7 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting dishwasher coordinates...")
 		}
 		println ("RBR | going to dishwasher...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XDishwasher"), $getCurSol("YDishwasher")) 		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XDishwasher"), $getCurSol("YDishwasher"), $getCurSol("Dir")) 		
 	}
 	Transition t14 
 		whenReply goalState -> exClearD
@@ -613,15 +617,17 @@ QActor rbrwalker context ctxsystem {
 	State goToGoal {
 		[#
 			var X = ""
-			var Y = ""	
+			var Y = ""
+			var Dir = ""	
 			var Ac = "empty"
 			var CurPos : Pair<Int, Int> ?= null
 		#]
 		
-		onMsg( setGoal : setGoal(X, Y) ) {
+		onMsg( setGoal : setGoal(X, Y, DIR) ) {
 			[#
 				X = payloadArg(0)
 				Y = payloadArg(1)
+				Dir = payloadArg(2)
 			#]
 		}
 		println ("WALKER | received the goal ($X, $Y)...")
@@ -632,18 +638,30 @@ QActor rbrwalker context ctxsystem {
 			while(Ac!="") {
 		#]
 				if [# Ac == "w" #] {
-					request basicrobot -m step : step(770) 
+					request basicrobot -m step : step(647)
 				}
 				else {
 					forward basicrobot -m cmd : cmd($Ac)
-//					delay 770
 				}
-				
+				delay 1000
 				run itunibo.planner.plannerUtil.updateMap(Ac) 
 		[# 
 				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
 			}
 			
+			//Turn the robot to be in front of the resource
+			while ( itunibo.planner.plannerUtil.getDirection() != Dir) {
+		#]	 
+				forward basicrobot -m cmd : cmd(l)
+				run itunibo.planner.plannerUtil.updateMap("l") 
+				delay 1000
+		[#
+			}
+		#]
+		forward basicrobot -m cmd : cmd(h)
+		run itunibo.planner.plannerUtil.updateMap("h") 
+		delay 800
+		[#	
 			CurPos = itunibo.planner.plannerUtil.get_curPos() 
 		#]
 		run itunibo.planner.plannerUtil.showMap()
