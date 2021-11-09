@@ -181,6 +181,38 @@ QActor maitre context ctxsystem {
 	} 
 }
 
+//QActor foodconsumer context ctxmaitre {
+QActor foodconsumer context ctxsystem {
+	[# var FoodToConsume = "[[s001, bread, 1], [s002, sandwich, 5]]" #]
+	
+	State s0 initial {
+			println ("FOODCONSUMER | STARTS and it's very hungry...")
+//TODO Prlog load			
+			solve( consult("Consumer.pl") )
+			solve( getFoodToConsume(Foods) )
+			ifSolved {	
+				[# 
+					FoodToConsume = "${getCurSol("XRH")}" 
+				#]
+				println ("RBR | RH in $RHCoordinate")				
+			}
+			else {
+				println ("RBR | Error getting RH coordinates...")
+			}
+			println ("FOODCONSUMER | chooses the food he wants to eat")
+			
+			delay 50000
+		}
+		Goto eat
+		
+	State eat {
+		println ("FOODCONSUMER | eating from table")
+		forward table -m changeState:changeState(remove, $FoodToConsume)
+		println ("FOODCONSUMER | is now happy")
+//		terminate 0
+	}
+}
+
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
@@ -639,7 +671,7 @@ QActor rbrwalker context ctxsystem {
 			while(Ac!="") {
 		#]
 				if [# Ac == "w" #] {
-					request basicrobot -m step : step(647)
+					request basicrobot -m step : step(350)
 				}
 				else {
 					forward basicrobot -m cmd : cmd($Ac)
