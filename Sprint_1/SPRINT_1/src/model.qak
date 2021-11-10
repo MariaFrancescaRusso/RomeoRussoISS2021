@@ -29,8 +29,9 @@ Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to cha
 //RBRWalker - basicRobot
 Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
 Request step:step(TIME)
-Reply 	stepdone   : stepdone(V)  
-Reply   stepfail   : stepfail(DURATION, CAUSE)  
+Reply 	stepdone:stepdone(V)  
+Reply   stepfail:stepfail(DURATION, CAUSE)  
+
 //RBRWalker - basicRobot/RBRWalker
 Dispatch end:end(ARG)	//void
 
@@ -184,32 +185,27 @@ QActor maitre context ctxsystem {
 
 //QActor foodconsumer context ctxmaitre {
 QActor foodconsumer context ctxsystem {
-	[# var FoodToConsume = "[[s001, bread, 1], [s002, sandwich, 5]]" #]
 	
 	State s0 initial {
-			println ("FOODCONSUMER | STARTS and it's very hungry...")
-//TODO Prlog load			
-//			solve( consult("Consumer.pl") )
-//			solve( getFoodToConsume(Foods) )
-//			ifSolved {	
-//				[# 
-//					FoodToConsume = "${getCurSol("XRH")}" 
-//				#]
-//				println ("RBR | RH in $RHCoordinate")				
-//			}
-//			else {
-//				println ("RBR | Error getting RH coordinates...")
-//			}
-			println ("FOODCONSUMER | chooses the food he wants to eat")
-			
-			delay 50000
-		}
-		Goto eat
+		println ("FOODCONSUMER | STARTS and it's very hungry...")
+		
+		solve( consult("Consumer.pl") )
+		delay 50000
+	}
+	Goto eat
 		
 	State eat {
-		println ("FOODCONSUMER | eating from table")
-		forward table -m changeState:changeState(remove, $FoodToConsume)
-		println ("FOODCONSUMER | is now happy")
+		println ("FOODCONSUMER | chooses the food he wants to eat")
+		solve( getFoodEl(Foods) )
+		ifSolved {	
+			println ("FOODCONSUMER | eating from table ${getCurSol(\"Foods\")}...")
+			forward table -m changeState : changeState(remove, $getCurSol("Foods")) 
+			println ("FOODCONSUMER | is now happy")			
+		}
+		else {
+			println ("FOODCONSUMER | Error getting food to consume...")
+		}
+			
 		terminate 1
 	}
 }
@@ -665,44 +661,47 @@ QActor rbrwalker context ctxsystem {
 			println ("WALKER | received the goal ($X, $Y)...")
 		}
 
-		[# CurrMov= itunibo.planner.plannerUtil.getNextPlannedMove() #]		 
-	} Goto correctDirection if[# CurrMov == "" #] else doMove
+		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]		 
+	}
+	Goto correctDirection if[# CurrMov == "" #] else doMove
 	
-	State doMove{
+	State doMove {
 	
 	}
-	Goto doStep if [#CurrMov== "w" #] else doTurn
+	Goto doStep if [# CurrMov == "w" #] else doTurn
 	
-	State doStep{
-		request basicrobot -m step : step(290)
+	State doStep {
+		request basicrobot -m step : step(647)//(290)
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 		delay 1000
 	}
 	Transition t1
-	whenReply stepdone -> handleAnswer 
-	whenReply stepfail -> handleAnswer
+		whenReply stepdone -> handleAnswer 
+		whenReply stepfail -> handleAnswer
 	
 	State doTurn {
 		forward basicrobot -m cmd : cmd($CurrMov)
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 		delay 1000
-	}Goto goToGoal
+	}
+	Goto goToGoal
 	
-	State handleAnswer{
-	[#var C = "" #]
-		onMsg(stepfail:stepfail(D, C)){
+	State handleAnswer {
+		[# var C = "" #]
+		onMsg( stepfail : stepfail(D, C) ){
 			[# C = payloadArg(1) #]
-			println("Obstacle found $C")
+			println ("WALKER | failed execution move: found $C")
 		}
-	}Goto goToGoal
+	}
+	Goto goToGoal
 	
-	State correctDirection{	
+	State correctDirection {	
 		[#
 			var CurDir = ""
 			var CurPos : Pair<Int, Int> ?= null
 
 			CurDir = itunibo.planner.plannerUtil.getDirection()
-			while ( CurDir != Dir) {
+			while (CurDir != Dir) {
 		#]	 
 				if [# (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
 				   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir") #] {

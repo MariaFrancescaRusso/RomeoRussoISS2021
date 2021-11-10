@@ -145,6 +145,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
 						forward("clear", "clear($ClearDish,$ClearFood)" ,"rbr" ) 
 						println("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
+						terminate(1)
 					}
 				}	 
 			}

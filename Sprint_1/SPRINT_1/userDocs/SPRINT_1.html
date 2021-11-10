@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<link rel="stylesheet" type="text/css" href="./utils/style.css">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<base href=".">
+<title>RomeoRussoStandingBuffetService</title>
+</head>
+
+<body>
+
+<div id="top">
+<h1>SPRINT 1 - STANDING BUFFET SERVICE | Ingegneria dei Sistemi Software</h1>
+</div>
+
+<div class="body">
+
+<h2>Introduction</h2>
+
+The starting point for this SPRINT is the resulting model from the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnModel" target="_blank">problem analysis</a>:
+<br><br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text">
+		<a href="../../../ProblemAnalysisModel/src/model.qak" target="_blank">ProblemAnalysisModel.qak</a><br>
+		<pre><iframe class="qakProblem" src="../../../ProblemAnalysisModel/src/model.qak" title="ProblemAnalysisModel">Model of Problem Analysis</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ProblemAnalysis/ModelProblemAnalysisLegend.png" alt="Legend of the Logical Architecture System Model from Problem Analysis"><br>
+		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ProblemAnalysis/ModelFromProblemAnalysis.png" alt="Logical Architecture System Model from Problem Analysis">
+	</td>
+</tr>
+</table>
+
+<h2>Goal</h2>
+
+<div class="remark">
+<ol>
+	<li><ks>Table</ks> state: consumption of food</li>
+	<li>Planning: insert an initial map representation and use of Planner</li>
+	<li>Integration of <k>basicRobot</k> with the <k>rbr</k></li>
+	<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+	<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+	<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+</ol>
+</div>
+
+<h2>Problem/Goal Analysis</h2>
+
+The goals set by problem analysis <k>[Inserire link a table-analisi problema]</k> for this sprint introduce new problems, which are addressed below.
+
+<h3>Food Consumption</h3>
+
+By requirements, to execute the Clear the room task, the RBR must take non-consumed food from the table and bring it to the fridge.<br>
+
+In problem analysis <k>[Inserire link a table-analisi problema]</k>, various solutions about this problem have been exposed. From these solutions and after some reflections, the most suited solution seem to be the following: the consumption of food on the table can be managed by simulating people in the room, which consume the food on the table, so as to make it no longer available on it.<br>
+To do this, it can be introduced a new mock actor which interacts, after the prepare the room task and before the clear the room task, with the table to change its state.
+<br>
+<img src="./utils/img/FoodConsumerAnalysis.png" alt="Food Consumer">
+
+<h3>Planning</h3>
+
+As already said in problem analysis <k>[Inserire link a table-analisi problema]</k>, it's available a support, it.unibo.planner20-1.0.jar, which allows rbr, at its boot, to create a map of the room or to load an existing one. This allows the rbr to know where the elements which he has to interact (fridge, dishwasher, pantry, table) and the RH are situated in the room, so it can reach them.
+<br><br>
+The planning feature (documented in the <a href = "https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.cautiousExplorer/userDocs/LabPlanner2021.html">LabPlanner2021</a>) is the capability to plan actions in a logical space. This space is a map described by a set of square cells whose edges are robot sized. So it's possible to see a step of the robot as the ingress in a new cell. Furthermore, the planner keeps track of the current logical position of the robot in the map.
+<br><br>
+Some of the most useful operations provided by the planner (in it.unibo.plannerUtil <k>[Inserire link]</k>) are:
+<ul>
+	<li><em>initAI()</em>, which initializes the planner assuming that the robot is in the robot home position;</li>
+	<li><em>loadRoomMap(fname:String)</em>, which allows the system to load a map;</li>
+	<li><em>showMap()</em>, which allow the system to print the map;</li>
+	<li><em>planGoal(x:int, y:int)</em>, which allows the system to set a goal to be reached providing the coordinates of the goal cell;</li>
+	<li><em>doPlan()</em>, which allows the system to get the moves, as a list of actions, to reach the goal from the current position;</li>
+	<li><em>getNextPlannedMove()</em>, which allows to get the next move from the list of actions;</li>
+	<li><em>planForGoal(x:String, y:String)</em>, which executes in sequence planGoal and doPlan operations;</li>
+	<li><em>updateMap(move:String, msg:String="")</em>, which allows to realize a move of the robot updating its position in the logical map;</li>
+	<li><em>get_curPos()</em>, which returns the current logical position of the robot in the map;</li>
+	<li><em>getDirection()</em>, which returns the current logical direction of the robot in the map.</li>
+</ul>
+
+<h3>basicRobot</h3>
+
+As already said in problem analysis <k>[Inserire link a table-analisi problema]</k>, the basicRobot (basicrobot2021.html), provided by the customer in the library it.unibo.qak21.basicrobot-1.0.jar, is a component useful for the execution of the movements of the robot, which, in this Sprint, will be a virtual robot (VirtualRobot2021.html) running on its own WEnv (Web Environment) to solve the goals about the execution of the tasks.
+<br><br>
+In particular, the actor basicRobot (<k>[Inserire link a basicRobot.qak]</k>) is able to execute basic move commands received through:
+<ul>
+	<li>a dispatch <em>cmd:cmd(MOVE)</em>, where MOVE can be w to move forward, s to move backward, l to turn left, r to turn right or h to stop the robot;</li>
+	<li>a request <em>step:step(TIME)</em>, to move forward the robot for a prefixed time TIME. At this request the basicRobot can reply with stepdone:stepdone(V) if the command execution ends successfully or with stepfail:stepfail(DURATION, CAUSE) if it fails after the time DURATION for some reason CAUSE.</li>
+</ul>
+<br><br>
+<k>[Inserire img: rbr --> (dispatch e request) --> basicRobot -->? WEnv]</k>
+
+<h2>Test Plans</h2>
+
+With reference to the problem analysis test plans, below it's reported a functional tests planning related to the goals of this sprint:
+<br><br>
+<ul>
+	<li>Tests of the position of the RBR that must be on its RH when system starts and at the end of each task;</li>
+	<li>Tests of the path carried out by the RBR that must be the one expected to execute the task required by the Maître de Salle.</li>
+</ul>
+
+<h2>Project</h2>
+
+<h3>Table State: Consumption of Food / Food Consumption on Table Resource / FoodConsumer Actor</h3>
+
+<h4>FoodConsumer Actor??</h4>
+(As said above/before in the goal/problem analysis of this sprint,) To make possible the consumption of the food on the table, it has been added a mock actor FoodConsumer in the maitre context which send a dispatch message (changeState(remove, FOOD)) to change the state of the table, so to remove some food. The elements to remove from the table are loaded from a prolog file (NAME.pl).<br>
+
+[IMG: actor part from qak?]<br>
+[IMG: ctxmaitre: FoodConsumer --> dispatch --> Table --> updateState --> obsTable --> event]
+
+<h3>Planning: insert an initial map representation and use of Planner / Planning / Planner</h3>
+
+Come abbiamo fatto? --> creato progetto per creare mappa; aggiunto un attore Walker che si occupa di eseguire i path (al momento per planner) e per i goal utilizzo file prolog
+
+[titoli o definizioni??]
+
+<h4>MapBinGenerator</h4>
+
+To emulate the room enviroment, it has been realized a small application which/that provides/creates a map.bin (and a map.txt??) file used as input map for the planner, creating a cell based map 7x7 and adding an obstacle in center of the map like the table.
+
+To emulate the room enviroment, a small application has been realize that provides a map.bin file used as a input map for the planner, creating a cell based map 7x7 and adding an obstacle in center of the map like the table.
+
+<h4>rbrWalker Actor</h4>
+  To realize the movement of the rbr we introduces another component the rbrWalker. This component recives the setGoal(X,Y,DIR) message from rbr. The Walker manages the movement aspect updating the map of the planner and sending messages to basicrobot to make him moves; in particular he sends a "step(TIME)" request  to ask robot to moves ahed for TIME ms and a dispathc  "cmd (command)" to ask him to turn left or right.  
+  DISEGNO RBR --> RBRWALKER->BASICROBOT
+  
+    - Prolog coordinate
+To make the system aware of the resources position (Robot home, pantry, dishwahser, table, fridge)  a prolog file is used. That file provide to rbr the nearest coordinates of the resource cell  (keeping i mind that the resources can be represented by more than one cell ).
+
+<h3>Integration of basicRobot with the rbr</h3>
+
+walker si occupa di inviare i comandi al basicRobot: step per i movimenti in avanti, gestendo la risposta, e cmd per gli altri movimenti.
+
+inoltre per far si che il robot una volta arrivato al goal guardi/sia rivolto verso la risorsa/di esso, walker esegue un controllo sulla direction del robot cambiandola quando necessario.
+
+<h3>Tasks execution through Virtual robot</h3>
+
+partendo dall'esempio di una scena fornita dal cliente, è stata realizzata una scena concorde con la mappa? per il WEnv.
+
+<h2>Testing</h2>
+
+lista dei test fatti funzionali e non
+
+<h2>Deployment</h2>
+
+Deploy dell'applicazione per il virtual robot:
+
+caricamento della scena situata all'interno del progetto tramite: docker cp ...
+
+avviamento dell'ambiente virtuale tramite docker-compose
+
+avviamento del progetto
+
+<h2>Maintenance</h2>
+
+</div>
+<br><br>
+<div class="endpage">
+By Romeo Stefano (stefano.romeo@studio.unibo.it) and Russo Maria (maria.russo10@studio.unibo.it)<br>
+<img class="photo" src="./utils/img/StefanoRomeo.png" alt="Stefano Romeo image">
+<img class="photo" src="./utils/img/MariaRusso.png" alt="Maria Russo image">
+</div>
+
+<div hidden="hidden">elementi utili:
+Table:
+<table>
+<tr>
+	<td></td>
+	<td></td>
+</tr>
+</table>
+Sorted List:
+<ol>
+<li></li>
+<li></li>
+</ol>
+Unordered List:
+<ul>
+<li></li>
+<li></li>
+</ul>
+Definition list:
+<dl>
+<dt></dt>
+<dd></dd>
+</dl>
+Link:
+<a href="" target="_blank"></a>
+Link in pagina:
+<a name="link"></a> + <a href="./Analysis.html#link">text</a>
+IFrame:
+<iframe src="./src" title="title">"Link"/Cosa c'è nel frame</iframe>
+<br>Image:
+<img src="./utils/img/Nome.png" alt="description">
+</div>
+
+</body>
+</html>
