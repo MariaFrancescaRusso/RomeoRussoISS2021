@@ -26,11 +26,12 @@ Dispatch askFood:askFood(FOOD_CODE)
 //RBR - Resources
 Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to change
 
-//RBR - basicRobot
+//RBRWalker - basicRobot
 Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
 Request step:step(TIME)
-
-//RBR - basicRobot/RBRWalker
+Reply 	stepdone   : stepdone(V)  
+Reply   stepfail   : stepfail(DURATION, CAUSE)  
+//RBRWalker - basicRobot/RBRWalker
 Dispatch end:end(ARG)	//void
 
 Context ctxsystem ip [host="localhost" port=8040]
@@ -177,7 +178,7 @@ QActor maitre context ctxsystem {
 		forward rbr -m clear : clear($ClearDish, $ClearFood)
 		println ("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
 		
-//		terminate 0
+		terminate 1
 	} 
 }
 
@@ -188,17 +189,17 @@ QActor foodconsumer context ctxsystem {
 	State s0 initial {
 			println ("FOODCONSUMER | STARTS and it's very hungry...")
 //TODO Prlog load			
-			solve( consult("Consumer.pl") )
-			solve( getFoodToConsume(Foods) )
-			ifSolved {	
-				[# 
-					FoodToConsume = "${getCurSol("XRH")}" 
-				#]
-				println ("RBR | RH in $RHCoordinate")				
-			}
-			else {
-				println ("RBR | Error getting RH coordinates...")
-			}
+//			solve( consult("Consumer.pl") )
+//			solve( getFoodToConsume(Foods) )
+//			ifSolved {	
+//				[# 
+//					FoodToConsume = "${getCurSol("XRH")}" 
+//				#]
+//				println ("RBR | RH in $RHCoordinate")				
+//			}
+//			else {
+//				println ("RBR | Error getting RH coordinates...")
+//			}
 			println ("FOODCONSUMER | chooses the food he wants to eat")
 			
 			delay 50000
@@ -209,7 +210,7 @@ QActor foodconsumer context ctxsystem {
 		println ("FOODCONSUMER | eating from table")
 		forward table -m changeState:changeState(remove, $FoodToConsume)
 		println ("FOODCONSUMER | is now happy")
-//		terminate 0
+		terminate 1
 	}
 }
 
@@ -628,6 +629,10 @@ QActor rbr context ctxsystem {
 
 //QActor rbrwalker context ctxrbr {
 QActor rbrwalker context ctxsystem {
+	[#
+		var Dir = ""		
+		var CurrMov = "empty"
+	#]
 	
 	State s0 initial {
 		run itunibo.planner.plannerUtil.initAI()
@@ -644,16 +649,10 @@ QActor rbrwalker context ctxsystem {
 		whenRequest setGoal -> goToGoal
 		whenMsg end -> terminateWalker
 	
-//TODO inserire uno stato di errore
-//TODO goal posizione risorsa e mangia ultima soluzione
 	State goToGoal {
 		[#
 			var X = ""
 			var Y = ""
-			var Dir = ""	
-			var Ac = "empty"
-			var CurDir = ""
-			var CurPos : Pair<Int, Int> ?= null
 		#]
 		
 		onMsg( setGoal : setGoal(X, Y, DIR) ) {
@@ -662,27 +661,46 @@ QActor rbrwalker context ctxsystem {
 				Y = payloadArg(1)
 				Dir = payloadArg(2)
 			#]
+			run	itunibo.planner.plannerUtil.planForGoal(X, Y)
+			println ("WALKER | received the goal ($X, $Y)...")
 		}
-		println ("WALKER | received the goal ($X, $Y)...")
-		
-		run	itunibo.planner.plannerUtil.planForGoal(X, Y)
-		[#	
-			Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			while(Ac!="") {
-		#]
-				if [# Ac == "w" #] {
-					request basicrobot -m step : step(350)
-				}
-				else {
-					forward basicrobot -m cmd : cmd($Ac)
-				}
-				delay 1000
-				run itunibo.planner.plannerUtil.updateMap(Ac) 
-		[# 
-				Ac = itunibo.planner.plannerUtil.getNextPlannedMove()
-			}
-			
-			//Turn the robot to be in front of the resource
+
+		[# CurrMov= itunibo.planner.plannerUtil.getNextPlannedMove() #]		 
+	} Goto correctDirection if[# CurrMov == "" #] else doMove
+	
+	State doMove{
+	
+	}
+	Goto doStep if [#CurrMov== "w" #] else doTurn
+	
+	State doStep{
+		request basicrobot -m step : step(290)
+		run itunibo.planner.plannerUtil.updateMap(CurrMov)
+		delay 1000
+	}
+	Transition t1
+	whenReply stepdone -> handleAnswer 
+	whenReply stepfail -> handleAnswer
+	
+	State doTurn {
+		forward basicrobot -m cmd : cmd($CurrMov)
+		run itunibo.planner.plannerUtil.updateMap(CurrMov)
+		delay 1000
+	}Goto goToGoal
+	
+	State handleAnswer{
+	[#var C = "" #]
+		onMsg(stepfail:stepfail(D, C)){
+			[# C = payloadArg(1) #]
+			println("Obstacle found $C")
+		}
+	}Goto goToGoal
+	
+	State correctDirection{	
+		[#
+			var CurDir = ""
+			var CurPos : Pair<Int, Int> ?= null
+
 			CurDir = itunibo.planner.plannerUtil.getDirection()
 			while ( CurDir != Dir) {
 		#]	 
@@ -699,18 +717,13 @@ QActor rbrwalker context ctxsystem {
 		[#
 				CurDir = itunibo.planner.plannerUtil.getDirection()
 			}
+				CurPos = itunibo.planner.plannerUtil.get_curPos()		
 		#]
-		forward basicrobot -m cmd : cmd(h)
-		run itunibo.planner.plannerUtil.updateMap("h") 
-		delay 800
-		[# CurPos = itunibo.planner.plannerUtil.get_curPos() #]
-		run itunibo.planner.plannerUtil.showMap()
-			
-		println ("WALKER | arrived to the goal")
-		replyTo setGoal with goalState : goalState($CurPos)
-		updateResource [# "$CurPos" #]
-	}
-	Goto wait
+			run itunibo.planner.plannerUtil.showMap()
+			println ("WALKER | arrived to the goal $CurPos")
+			replyTo setGoal with goalState : goalState($CurPos)
+			updateResource [# "$CurPos" #]
+	} Goto wait
 	
 	State terminateWalker {
 		println ("WALKER | terminate...")
