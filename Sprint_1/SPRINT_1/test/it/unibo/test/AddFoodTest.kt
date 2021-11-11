@@ -146,7 +146,6 @@ class AddFoodTest {
 		runBlocking {
 			delay(200)
 			println ("===============TEST | sending $msg")
-
 			MsgUtil.sendMsg(msg, rbrActor!!)
 			
 			StateFridge = channelForObserverFridge.receive()
@@ -158,7 +157,6 @@ class AddFoodTest {
 		//reading the result of the operation of adding the food on the table
 		runBlocking {
 			delay(200)
-			println ("===============TEST | sending $msg")	
 			
 			StateTable = channelForObserverTable.receive()	
 		}
@@ -166,9 +164,7 @@ class AddFoodTest {
 		testingObserverRbr!!.addObserver( channelForObserver,expected )
 		//reading the position of the rbr
 		runBlocking {
-			delay(200)
-			println ("===============TEST | sending $msg")	
-			
+			delay(200)			
 			State = channelForObserver.receive()	
 		}
 
