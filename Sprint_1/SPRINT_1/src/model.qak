@@ -13,12 +13,12 @@ Dispatch clear:clear(X, Y)
 
 Reply warning:warning(ARG)	//void
 
+//Maitre - Fridge/Resources
+Dispatch consult:consult(ARG)	//void
+
 //RBR - RBRWalker
 Request setGoal:setGoal(X, Y, DIR)
 Reply goalState:goalState(X)
-
-//Maitre - Fridge/Resources
-Dispatch consult:consult(ARG)	//void
 
 //RBR - Fridge
 Dispatch askFood:askFood(FOOD_CODE) 
@@ -32,7 +32,7 @@ Request step:step(TIME)
 Reply 	stepdone:stepdone(V)  
 Reply   stepfail:stepfail(DURATION, CAUSE)  
 
-//RBRWalker - basicRobot/RBRWalker
+//RBR - basicRobot/RBRWalker
 Dispatch end:end(ARG)	//void
 
 Context ctxsystem ip [host="localhost" port=8040]
@@ -628,6 +628,8 @@ QActor rbrwalker context ctxsystem {
 	[#
 		var Dir = ""		
 		var CurrMov = "empty"
+		var X = ""
+		var Y = ""
 	#]
 	
 	State s0 initial {
@@ -646,10 +648,6 @@ QActor rbrwalker context ctxsystem {
 		whenMsg end -> terminateWalker
 	
 	State goToGoal {
-		[#
-			var X = ""
-			var Y = ""
-		#]
 		
 		onMsg( setGoal : setGoal(X, Y, DIR) ) {
 			[#
@@ -657,8 +655,8 @@ QActor rbrwalker context ctxsystem {
 				Y = payloadArg(1)
 				Dir = payloadArg(2)
 			#]
-			run	itunibo.planner.plannerUtil.planForGoal(X, Y)
 			println ("WALKER | received the goal ($X, $Y)...")
+			run	itunibo.planner.plannerUtil.planForGoal(X, Y)
 		}
 
 		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]		 

@@ -19,6 +19,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 		
 				var Dir = ""		
 				var CurrMov = "empty"
+				var X = ""
+				var Y = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -38,17 +40,14 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("goToGoal") { //this:State
 					action { //it:State
-						
-									var X = ""
-									var Y = ""
 						if( checkMsgContent( Term.createTerm("setGoal(X,Y,DIR)"), Term.createTerm("setGoal(X,Y,DIR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
 												X = payloadArg(0)
 												Y = payloadArg(1)
 												Dir = payloadArg(2)
-								itunibo.planner.plannerUtil.planForGoal( X, Y  )
 								println("WALKER | received the goal ($X, $Y)...")
+								itunibo.planner.plannerUtil.planForGoal( X, Y  )
 						}
 						 CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove()  
 					}
