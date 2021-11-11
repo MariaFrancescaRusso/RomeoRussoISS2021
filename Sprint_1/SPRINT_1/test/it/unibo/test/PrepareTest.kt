@@ -23,10 +23,12 @@ class PrepareTest {
 		var rbrActor : ActorBasic? = null
 		var systemStarted = false
 		var testingObserverRbr: CoapObserverForTest ? = null
+		var testingObserverTable: CoapObserverForTest ? = null
 		val channelSyncStart = Channel<String>()
 		var ip = "localhost"
 		var ctx = "ctxsystem"
 		var actname = "rbr"
+		var actname2 = "table"
 		var port = "8040"
 
 		@JvmStatic
@@ -50,7 +52,14 @@ class PrepareTest {
 					 testingObserverRbr= CoapObserverForTest("testingObserverRbr","$ip", "$ctx", "$actname", "$port") 		
 					println ("testingObserverRbr=$testingObserverRbr")
 				}
-				
+				channelSyncStart.send("starttesting")
+			}
+			
+			GlobalScope.launch {
+				if( testingObserverTable== null){
+					 testingObserverTable= CoapObserverForTest("testingObserverTable","$ip", "$ctx", "$actname2", "$port") 		
+					println ("testingObserverTable=$testingObserverTable")
+				}
 				channelSyncStart.send("starttesting")
 			}
 		}
@@ -67,6 +76,7 @@ class PrepareTest {
 
 		if( ! systemStarted ) {
 			runBlocking {
+				channelSyncStart.receive()
 				channelSyncStart.receive()
 				systemStarted = true
 				println ("===============TEST | checkSystemStarted resumed")
@@ -87,19 +97,39 @@ class PrepareTest {
 	fun PrepareTest() {
 		var Crockerys =  arrayListOf(arrayListOf("dishes", "10"))
 		var Foods= arrayListOf(arrayListOf("s001", "bread", "1")) 
-
 		var msg = MsgUtil.buildDispatch("tester", "prepare", "prepare($Crockerys, $Foods)", "rbr")
 		var State = ""
+		var StateTable = ""
 		var expected = "(0,0)"
 		var Prevision = expected
+		var expectedTable = "Added "
+		var previsionTableFood= "Added [[s001,bread,1]] with success!"
+		var previsionTableDish= "Added [[dishes,10]] with success!"
 		val channelForObserver = Channel<String>()
+		val channelForObserverTable = Channel<String>()
 		
+	
+		testingObserverTable!!.addObserver( channelForObserverTable,expectedTable)
 		testingObserverRbr!!.addObserver( channelForObserver,expected )
-		
+		//reading the result of the operation of adding the food on the table
 		runBlocking {
 			delay(200)
-			println ("===============TEST | sending $msg")
+			println ("===============TEST | sending $msg")	
 			MsgUtil.sendMsg(msg, rbrActor!!)
+			StateTable = channelForObserverTable.receive()
+			assertEquals(previsionTableDish,StateTable)
+		}
+
+		runBlocking {
+			delay(200)	
+			
+			StateTable = channelForObserverTable.receive()
+			assertEquals(previsionTableFood,StateTable)	
+		}
+		channelForObserverTable.close()
+	
+		runBlocking {
+			delay(200)
 			State = channelForObserver.receive()	
 			
 			println ("===============TEST | RESULT=$State for $msg")

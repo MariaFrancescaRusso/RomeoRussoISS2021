@@ -81,7 +81,7 @@ class GoalTest {
 	@Test
 	fun GoToGoalTest() {
 		var Prevision = "(5, 5)"
-		var msg = MsgUtil.buildRequest("tester", "setGoal", "setGoal(5,5)", "rbrwalker")
+		var msg = MsgUtil.buildRequest("tester", "setGoal", "setGoal(5,5,upDir)", "rbrwalker")
 		var State = ""
 		var expected = Prevision
 		val channelForObserver = Channel<String>()		
