@@ -74,13 +74,13 @@ The planning feature (documented at <a href="https://htmlpreview.github.io/?http
 Some of the most useful operations provided by the <tt>Planner</tt> (in <a href="https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.cautiousExplorer/app/src/main/kotlin/itunibo/planner/plannerUtil.kt" target="_blank">it.unibo.plannerUtil</a>) are:
 <ul>
 	<li><em>initAI()</em>, which initializes the <tt>Planner</tt> assuming that the robot is in the robot home position;</li>
-	<li><em>loadRoomMap(fname:String)</em>, which allows the system to load a map;</li>
+	<li><em>loadRoomMap(<ac>fname:String</ac>)</em>, which allows the system to load a map;</li>
 	<li><em>showMap()</em>, which allow the system to print the map;</li>
-	<li><em>planGoal(x:int, y:int)</em>, which allows the system to set a goal to be reached providing the coordinates of the goal cell;</li>
+	<li><em>planGoal(<ac>x:int</ac>, <ac>y:int</ac>)</em>, which allows the system to set a goal to be reached providing the coordinates of the goal cell;</li>
 	<li><em>doPlan()</em>, which allows the system to get the moves, as a list of actions, to reach the goal from the current position;</li>
 	<li><em>getNextPlannedMove()</em>, which allows to get the next move from the list of actions;</li>
-	<li><em>planForGoal(x:String, y:String)</em>, which executes in sequence <em>planGoal</em> and <em>doPlan</em> operations;</li>
-	<li><em>updateMap(move:String, msg:String="")</em>, which allows to realize a move of the robot updating its position in the logical map;</li>
+	<li><em>planForGoal(<ac>x:String</ac>, <ac>y:String</ac>)</em>, which executes in sequence <em>planGoal</em> and <em>doPlan</em> operations;</li>
+	<li><em>updateMap(<ac>move:String</ac>, <ac>msg:String=""</ac>)</em>, which allows to realize a move of the robot updating its position in the logical map;</li>
 	<li><em>get_curPos()</em>, which returns the current logical position of the robot in the map;</li>
 	<li><em>getDirection()</em>, which returns the current logical direction of the robot in the map.</li>
 </ul>
@@ -91,8 +91,8 @@ As already said in the previous problem analysis <k>[Inserire link a basicRobot-
 <br><br>
 In particular, the <tt>actor</tt> <a href="https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/src/basicrobot.qak" target="_blank"><k>basicrobot</k></a> is able to execute basic move commands received through:
 <ul>
-	<li>a <ko>dispatch</ko> <em>cmd:cmd(MOVE)</em>, where <>MOVE</> can be <>w</> to move forward, <>s</> to move backward, <>l</> to turn left, <>r</> to turn right or <>h</> to stop the robot;</li>
-	<li>a <ko>request</ko> <em>step:step(TIME)</em>, to move forward the robot for a prefixed time <>TIME</>. At this request the <k>basicrobot</k> can <ko>reply</ko> with <em>stepdone:stepdone(V)</em> if the command execution ends successfully or with <em>stepfail:stepfail(DURATION, CAUSE)</em> if it fails after the time <>DURATION</> for some reason <>CAUSE</>.</li>
+	<li>a <ko>dispatch</ko> <em>cmd:cmd(<ac>MOVE</ac>)</em>, where <ac>MOVE</ac> can be <ac>w</ac> to move forward, <ac>s</ac> to move backward, <ac>l</ac> to turn left, <ac>r</ac> to turn right or <ac>h</ac> to stop the robot;</li>
+	<li>a <ko>request</ko> <em>step:step(<ac>TIME</ac>)</em>, to move forward the robot for a prefixed time <ac>TIME</ac>. At this request the <k>basicrobot</k> can <ko>reply</ko> with <em>stepdone:stepdone(<ac>V</ac>)</em> if the command execution ends successfully or with <em>stepfail:stepfail(<ac>DURATION</ac>, <ac>CAUSE</ac>)</em> if it fails after the time <ac>DURATION</ac> for some reason <ac>CAUSE</ac>.</li>
 </ul>
 <br>
 <k>[Inserire img: rbr --> (dispatch e request) --> basicRobot -->? WEnv]</k>
@@ -110,7 +110,7 @@ With reference to the previous problem analysis test plans <k>[Inserire link]</k
 
 <h3>Food Consumption</h3>
 
-To make possible the consumption of the food on the <ks>table</ks>, it has been added a <tt>mock actor</tt> <k>foodconsumer</k> in the <k>[COME SCRIVERE CONTEXT]</k> maitre context which send a <ko>dispatch</ko> message (<em>changeState(remove, FOOD)</em>) to change the state of the <k>table</k>, so to remove some food <>FOOD</>. The elements to remove from the <k>table</k> are loaded from a <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/Consumer.pl" target="_blank">Consumer.pl</a>).
+To make possible the consumption of the food on the <ks>table</ks>, it has been added a <tt>mock actor</tt> <k>foodconsumer</k> in the <k>[COME SCRIVERE CONTEXT]</k> maitre context which send a <ko>dispatch</ko> message (<em>changeState(remove, <ac>FOOD</ac>)</em>) to change the state of the <k>table</k>, so to remove some food <ac>FOOD</ac>. The elements to remove from the <k>table</k> are loaded from a <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/Consumer.pl" target="_blank">Consumer.pl</a>).
 <br><br>
 <k>[IMG: mock actor part from qak?]</k><br>
 <k>[IMG: ctxmaitre: FoodConsumer --> dispatch --> Table --> updateState --> obsTable --> event + IMG STATI Attore]</k>
@@ -125,7 +125,7 @@ To take the coordinates of the possible goals for the <ks>tasks</ks> paths, also
 
 <h4>MapBinGenerator</h4>
 
-To emulate the <ks>room</ks> enviroment, it has been realized a small application <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> <k>LINK AL FILE .kt???</k> that, taking in input the dimension of the map to create and the coordinates of the obstacles, provides a <k>[EVIDENZIO??]</k>.txt file and a <k>[EVIDENZIO??]</k>.bin file of the map; the last one must be used as input map for the <tt>Planner</tt>, creating, for this sprint project, a cells based map with dimension 7x7 and adding, in the center of the map, an obstacle which represents the <ks>table</ks>.
+To emulate the <ks>room</ks> enviroment, it has been realized a small application <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> <k>LINK AL FILE .kt???</k> that, taking in input the dimension of the map to create and the coordinates of the obstacles, provides a <k>[EVIDENZIO??]</k>.txt file and a <k>[EVIDENZIO??]</k>.bin file of the map; the last one must be used as input map for the <tt>Planner</tt>, creating, for this sprint project, a cells based map with dimension 7x7 <ac>7x7</ac> <k>[SCRIVO COME GLI ARG??]</k> and adding, in the center of the map, an obstacle which represents the <ks>table</ks>.
 <br><br>
 <k>[IMAGE OF THE ROOM PLAN + AFFIANCATA A + DISEGNO DATO DA PROFF NEI REQUISITI]</k>
 
@@ -133,11 +133,11 @@ To emulate the <ks>room</ks> enviroment, it has been realized a small applicatio
 
 To integrare the planning and movement feature for the robot, it has been introduced a new <tt>actor</tt>, that is the <k>rbrwalker</k>.<br>
 At its start, this component load the <k>[EVIDENZIO??]</k>.bin file of the map <a href="../roomMap.txt" target="_blank">roomMap</a> <k>[LINK txt???]</k>, obtained previously thanks to <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> <k>LINK AL FILE .kt???</k> project, running the <tt>Planner</tt> command <em>loadRoomMap</em>.<br>
-This actor receives as a <ko>request</ko> from the <tt>actor</tt> <k>rbr</k> the <em>setGoal(X, Y, DIR)</em> message, where <>X</> and <>Y</> are the coordinates of the goal and <>DIR</> is the direction expected of the robot, which it's supposed to be in front of the goal resource.<br>
+This actor receives as a <ko>request</ko> from the <tt>actor</tt> <k>rbr</k> the <em>setGoal(<ac>X</ac>, <ac>Y</ac>, <ac>DIR</ac>)</em> message, where <ac>X</ac> and <ac>Y</ac> are the coordinates of the goal and <ac>DIR</ac> is the direction expected of the robot, which it's supposed to be in front of the goal resource.<br>
 After that, the <k>rbrwalker</k> executes the <tt>Planner</tt> command <em>planForGoal</em>, obtaining a list of actions that represent the movements the robot must execute, at the end of each which it updates the logical map using <tt>Planner</tt> command <em>updateMap</em>.<br>
 To make possible these movement for the robot, the <k>rbrwalker</k> communicates with the <tt>actor</tt> <k>basicrobot</k>, sending it a <ko>request</ko> message <em>step</em> for forward movement, by waiting for the <ko>reply</ko> <em>stepdone</em> or <em>stepfail</em> respectively in case of success or fail, and a <ko>dispatch</ko> message <em>cmd</em> for the other movements.<br>
-Furthermore, the <k>rbrwalker</k> makes a check on the robot direction once it has reached the goal, turning it if the current direction, taken thanks to the <tt>Planner</tt> command <em>getDirection</em>, isn't equal to the expected one (<>DIR</>).<br>
-Reached the required goal, the <k>rbrwalker</k> <tt>actor</tt> <ko>reply</ko> to the <k>rbr</k> with the message <em>goalState(POS)</em>, where <>POS</> is the current position of the robot taken thanks to the <tt>Planner</tt> command <em>get_curPos</em>.
+Furthermore, the <k>rbrwalker</k> makes a check on the robot direction once it has reached the goal, turning it if the current direction, taken thanks to the <tt>Planner</tt> command <em>getDirection</em>, isn't equal to the expected one (<ac>DIR</ac>).<br>
+Reached the required goal, the <k>rbrwalker</k> <tt>actor</tt> <ko>reply</ko> to the <k>rbr</k> with the message <em>goalState(<ac>POS</ac>)</em>, where <ac>POS</ac> is the current position of the robot taken thanks to the <tt>Planner</tt> command <em>get_curPos</em>.
 <br><br>
 <k>[qak + DISEGNO RBR --> RBRWALKER -> basicRobot + FSM di RBR? e Walker]</k>
 
@@ -182,8 +182,17 @@ qak + disegno
 Deploy of the application for the <tt>virtual robot</tt>:
 <br><br>
 <ul>
-	<li>The first time after that, it could be necessary to add the <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> file related to the simulated room in the <tt>WEnv</tt> / to load the scene (<a href="../sceneConfig.js" target="_blank">sceneConfig.js</a>) realized for the <tt>WEnv</tt> it must execute the following command in the folder where is situated the scene file: <pre>docker cp sceneConfig.js 6fc85fc771de:/home/node/WEnv/WebGLScene/sceneConfig.js</pre>, where <>6fc85fc771de</> is the <>CONTAINER ID</>, which can be found through a command that shows a list of containers and selecting the <>ID</> abount the containter of <>natbodocker/virtualrobotdisi:2.0</>:<pre>docker ps -a</pre></li>
-	<li>to launch the <tt>WEnv</tt>: <pre>docker-compose -f basicrobotVirtual.yaml up</pre></li>
+	<li>The first time, it could be necessary to add the <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> file related to the simulated room in the <tt>WEnv</tt> / to load the scene (<a href="../sceneConfig.js" target="_blank">sceneConfig.js</a>) realized for the <tt>WEnv</tt> it must execute the following command in the folder where is situated the scene file:
+		<pre>docker cp sceneConfig.js 6fc85fc771de:/home/node/WEnv/WebGLScene/sceneConfig.js</pre>
+	where <ac>6fc85fc771de</ac> is the <ac>CONTAINER ID</ac>, which can be found through a command that shows a list of containers and selecting the <ac>ID</ac> abount the containter of <ac>natbodocker/virtualrobotdisi:2.0</ac>:
+		<pre>docker ps -a</pre>
+	</li>
+	<br>
+	<li>to launch the <tt>WEnv</tt> run in a terminal:
+		<pre>docker-compose -f basicrobotVirtual.yaml up</pre>
+	(it could be useful see <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/BuildDeployWEnv.html" target="_blank">BuildDeployWEnv.html</a> or the part related to the deploy of the <tt>virtual robot</tt> in <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>)
+	</li>
+	<br><br>
 	<li>Finally run the project</li>
 </ul>
 

@@ -122,6 +122,14 @@ pre {
 	white-space: pre-wrap;
 }
 
+/*for commands arguments and words code style*/
+ac {
+	font-family: "Consolas";
+	color: #2f4f4f;
+	font-size: 85%;
+	font-style: italic;
+}
+
 /*for libraries*/
 m {
 	font-family: "Helvetica";
