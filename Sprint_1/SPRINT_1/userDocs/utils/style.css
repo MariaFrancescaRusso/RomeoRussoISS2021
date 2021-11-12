@@ -195,6 +195,10 @@ div.endpage {
 	color:white
 }
 
+div.center {
+	text-align:center;
+}
+
 table, th, td {
 	border-collapse: collapse;
 	border: 1px solid black;
@@ -264,13 +268,23 @@ iframe.qakProblem {
 	height: 675px;
 }
 
+iframe.map {
+	height: 136px;
+	width: 50%;
+}
+
 img {
 	border: none;
 	width: 100%;
 }
 
-img.photo{
+img.photo {
 	width: 5%;
 	height: 5%;
 	border: none;
+}
+
+img.resizeMin {
+	width: 55%;
+	height: 55%;
 }

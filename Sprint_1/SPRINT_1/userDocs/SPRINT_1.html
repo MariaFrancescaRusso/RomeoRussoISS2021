@@ -62,8 +62,8 @@ By requirements, to execute the <ks>Clear the room</ks> <ks>task</ks>, the <ks>R
 
 In the previous problem analysis <k>[Inserire link a table-analisi problema]</k>, various solutions about this problem have been exposed. From these solutions and after some reflections, the most suited solution seem to be the following: the consumption of food on the <ks>table</ks> could be managed by simulating people in the <ks>room</ks>, which consume the food on the <ks>table</ks>, so as to make it no longer available.<br>
 To do this, it can be introduced a new <tt>mock</tt> <k>actor</k> which interacts, after the <ks>Prepare the room</ks> <ks>task</ks> and before the <ks>Clear the room</ks> <ks>task</ks>, with the <k>table</k> to change its state.
-<br>
-<img src="./utils/img/FoodConsumerAnalysis.png" alt="Food Consumer">
+<br><br>
+<div class="center"><img class="resizeMin" src="./utils/img/FoodConsumerAnalysis.png" alt="Food Consumer"></div>
 
 <h3>Planning</h3>
 
@@ -95,7 +95,7 @@ In particular, the <tt>actor</tt> <a href="https://raw.githubusercontent.com/ana
 	<li>a <ko>request</ko> <em>step:step(<ac>TIME</ac>)</em>, to move forward the robot for a prefixed time <ac>TIME</ac>. At this request the <k>basicrobot</k> can <ko>reply</ko> with <em>stepdone:stepdone(<ac>V</ac>)</em> if the command execution ends successfully or with <em>stepfail:stepfail(<ac>DURATION</ac>, <ac>CAUSE</ac>)</em> if it fails after the time <ac>DURATION</ac> for some reason <ac>CAUSE</ac>.</li>
 </ul>
 <br>
-<k>[Inserire img: rbr --> (dispatch e request) --> basicRobot -->? WEnv]</k>
+<img src="./utils/img/basicRobotInRBRctx.png" alt="basicRobot in RBR context">
 
 <h2>Test Plans</h2>
 
@@ -112,8 +112,29 @@ With reference to the previous problem analysis test plans <k>[Inserire link]</k
 
 To make possible the consumption of the food on the <ks>table</ks>, it has been added a <tt>mock actor</tt> <k>foodconsumer</k> in the <k>[COME SCRIVERE CONTEXT]</k> maitre context which send a <ko>dispatch</ko> message (<em>changeState(remove, <ac>FOOD</ac>)</em>) to change the state of the <k>table</k>, so to remove some food <ac>FOOD</ac>. The elements to remove from the <k>table</k> are loaded from a <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/Consumer.pl" target="_blank">Consumer.pl</a>).
 <br><br>
-<k>[IMG: mock actor part from qak?]</k><br>
-<k>[IMG: ctxmaitre: FoodConsumer --> dispatch --> Table --> updateState --> obsTable --> event + IMG STATI Attore]</k>
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text" rowspan="3">
+		<a href="../src/model.qak#:~:text=//QActor%20foodconsumer%20context,consume...%22)%0A%09%09%7D%0A%09%09%09%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>foodconsumer</k> in model.qak</a><br>
+		<img src="./utils/img/FoodConsumerQActor.png" alt="Food Consumer QActor from model.qak">
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/FoodConsumerAnalysis.png" alt="Food Consumer">
+	</td>
+</tr>
+<tr class="text">
+	<th>Moore State Machine Diagram</th>
+</tr>
+<tr>
+	<td class="imageSchema">
+		<img src="./utils/img/FSM_FoodConsumerQActorMock.png" alt="Representation of the behavior of mock QActor foodconsumer, modeled as a Moore state machine">
+	</td>
+</tr>
+</table>
 
 <h3>Planning and BasicRobot</h3>
 
@@ -127,7 +148,27 @@ To take the coordinates of the possible goals for the <ks>tasks</ks> paths, also
 
 To emulate the <ks>room</ks> enviroment, it has been realized a small application <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> <k>LINK AL FILE .kt???</k> that, taking in input the dimension of the map to create and the coordinates of the obstacles, provides a <k>[EVIDENZIO??]</k>.txt file and a <k>[EVIDENZIO??]</k>.bin file of the map; the last one must be used as input map for the <tt>Planner</tt>, creating, for this sprint project, a cells based map with dimension 7x7 <ac>7x7</ac> <k>[SCRIVO COME GLI ARG??]</k> and adding, in the center of the map, an obstacle which represents the <ks>table</ks>.
 <br><br>
-<k>[IMAGE OF THE ROOM PLAN + AFFIANCATA A + DISEGNO DATO DA PROFF NEI REQUISITI]</k>
+<table>
+<tr class="text">
+	<th>Starting room layout from requirements text</th>
+	<th>Map generated with the MapBinGenerator</th>
+	<th>MapBinGenerator</th>
+</tr>
+<tr>
+	<td class="imageScenario">
+		<img src="../../../userDocs/utils/tf/roomLayout.png" alt="Room Layout from requirements text">
+	</td>
+	<td class="image">
+		<a href="../roomMap.txt" target="_blank">roomMap.txt</a><br>
+		<pre><iframe class="map" src="../roomMap.txt" title="roomMap">roomMap.txt</iframe>
+		<img src="./utils/img/MapLegend.png" alt="Map Legend"></pre>
+	</td>
+	<td class="text">
+		<a href="../../MapBinGenerator/src/it/unibo/mapBinGenerator/mainGenerator.kt" target="_blank">mainGenerator.kt from MapBinGenerator</a><br>
+		<pre><iframe src="../../MapBinGenerator/src/it/unibo/mapBinGenerator/mainGenerator.kt" title="MapBinGenerator">mainGenerator.kt from MapBinGenerator</iframe></pre>
+	</td>
+</tr>
+</table>
 
 <h4>RBRWalker Actor</h4>
 
@@ -140,6 +181,33 @@ Furthermore, the <k>rbrwalker</k> makes a check on the robot direction once it h
 Reached the required goal, the <k>rbrwalker</k> <tt>actor</tt> <ko>reply</ko> to the <k>rbr</k> with the message <em>goalState(<ac>POS</ac>)</em>, where <ac>POS</ac> is the current position of the robot taken thanks to the <tt>Planner</tt> command <em>get_curPos</em>.
 <br><br>
 <k>[qak + DISEGNO RBR --> RBRWALKER -> basicRobot + FSM di RBR? e Walker]</k>
+
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text" rowspan="3">
+		<a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br>
+		<pre><iframe src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe></pre><br>
+		<a href="../src/model.qak#:~:text=//QActor%20rbr%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%20%0A%7D" target="_blank"><k>rbr</k> in model.qak</a><br>
+		<pre><iframe src="./utils/img/RBRQActor.png" title="RBR QActor from model.qak">RBR QActor from model.qak</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/RBRContext.png" alt="RBR Context">
+	</td>
+</tr>
+<tr class="text">
+	<th>Moore State Machine Diagram</th>
+</tr>
+<tr>
+	<td class="imageSchema">
+		<img src="./utils/img/FSM_RBRWalkerQActor.png" alt="Representation of the behavior of QActor rbrwalker, modeled as a Moore state machine"><br>
+		<img src="./utils/img/FSM_RBRQActor.png" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine">
+	</td>
+</tr>
+</table>
 
 <h3>WEnv Scene for Virtual Robot</h3>
 
