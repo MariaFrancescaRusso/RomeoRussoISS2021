@@ -24,11 +24,15 @@ class PrepareTest {
 		var systemStarted = false
 		var testingObserverRbr: CoapObserverForTest ? = null
 		var testingObserverTable: CoapObserverForTest ? = null
+		var testingObserverFridge: CoapObserverForTest ? = null
+		var testingObserverPantry: CoapObserverForTest ? = null
 		val channelSyncStart = Channel<String>()
 		var ip = "localhost"
 		var ctx = "ctxsystem"
 		var actname = "rbr"
-		var actname2 = "table"
+		var actname2 = "pantry"
+		var actname3 = "table"
+		var actname4 = "fridge"
 		var port = "8040"
 
 		@JvmStatic
@@ -41,7 +45,6 @@ class PrepareTest {
 			}			
 			
 			println ("===============TEST Init | Activating Observers")
-			
 			GlobalScope.launch {
 				rbrActor = QakContext.getActor("rbr")
 				while(  rbrActor == null ) {
@@ -49,16 +52,30 @@ class PrepareTest {
 					rbrActor = QakContext.getActor("rbr")
 				}
 				if( testingObserverRbr == null){
-					 testingObserverRbr= CoapObserverForTest("testingObserverRbr","$ip", "$ctx", "$actname", "$port") 		
+					 testingObserverRbr= CoapObserverForTest("testingObserver$actname","$ip", "$ctx", "$actname", "$port") 		
 					println ("testingObserverRbr=$testingObserverRbr")
 				}
 				channelSyncStart.send("starttesting")
 			}
 			
 			GlobalScope.launch {
-				if( testingObserverTable== null){
-					 testingObserverTable= CoapObserverForTest("testingObserverTable","$ip", "$ctx", "$actname2", "$port") 		
+				if( testingObserverPantry == null){
+					 testingObserverPantry = CoapObserverForTest("testingObserver$actname2","$ip", "$ctx", "$actname2", "$port") 		
+					println ("testingObserverPantry=$testingObserverPantry")
+				}
+				channelSyncStart.send("starttesting")
+			} 			
+			GlobalScope.launch {
+				if( testingObserverTable == null){
+					 testingObserverTable = CoapObserverForTest("testingObserver$actname3","$ip", "$ctx", "$actname3", "$port") 		
 					println ("testingObserverTable=$testingObserverTable")
+				}
+				channelSyncStart.send("starttesting")
+			}
+			GlobalScope.launch {
+				if( testingObserverFridge == null){
+					 testingObserverFridge = CoapObserverForTest("testingObserver$actname4","$ip", "$ctx", "$actname4", "$port") 		
+					println ("testingObserverFridge=$testingObserverFridge")
 				}
 				channelSyncStart.send("starttesting")
 			}
@@ -78,6 +95,8 @@ class PrepareTest {
 			runBlocking {
 				channelSyncStart.receive()
 				channelSyncStart.receive()
+				channelSyncStart.receive()
+				channelSyncStart.receive()
 				systemStarted = true
 				println ("===============TEST | checkSystemStarted resumed")
 			}
@@ -90,49 +109,117 @@ class PrepareTest {
 		testingObserverRbr!!.terminate()
 	}
 
-//h_testingObserverPantry | content=moveactivated(w)  expected=giancarlo RESP-CODE=2.05
-	//test movimenti
-	//test risorse
+// Send a prepare and wait the end of the task prepare
 	@Test
 	fun PrepareTest() {
 		var Crockerys =  arrayListOf(arrayListOf("dishes", "10"))
 		var Foods= arrayListOf(arrayListOf("s001", "bread", "1")) 
 		var msg = MsgUtil.buildDispatch("tester", "prepare", "prepare($Crockerys, $Foods)", "rbr")
 		var State = ""
-		var StateTable = ""
 		var expected = "(0,0)"
+		var expectedRBRPantry = "(0,6)"
+		var expectedRBRFridge = "(5,0)"
+		var expectedRBRTableP = "(1,3)"
+		var expectedRBRTableF = "(4,2)"
+		var expectedFridge = "Removed Food [[s001,bread,1]] with success!"
+		var expectedPantry = "Removed Crockery [[dishes,10]] with success!"
+		var expectedTableDish= "Added [[dishes,10]] with success!"
+		var expectedTableFood= "Added [[s001,bread,1]] with success!"
+		var PrevisionRBRPantry = expectedRBRPantry
+		var PrevisionRBRFridge = expectedRBRFridge
+		var PrevisionRBRTableP = expectedRBRTableP
+		var PrevisionRBRTableF = expectedRBRTableF
 		var Prevision = expected
-		var expectedTable = "Added "
-		var previsionTableFood= "Added [[s001,bread,1]] with success!"
-		var previsionTableDish= "Added [[dishes,10]] with success!"
-		val channelForObserver = Channel<String>()
-		val channelForObserverTable = Channel<String>()
-		
-	
-		testingObserverTable!!.addObserver( channelForObserverTable,expectedTable)
-		testingObserverRbr!!.addObserver( channelForObserver,expected )
-		//reading the result of the operation of adding the food on the table
-		runBlocking {
-			delay(200)
-			println ("===============TEST | sending $msg")	
-			MsgUtil.sendMsg(msg, rbrActor!!)
-			StateTable = channelForObserverTable.receive()
-			assertEquals(previsionTableDish,StateTable)
-		}
+		var PrevisionPantry = "Removed Crockery [[dishes,10]] with success!"
+		var PrevisionTableDish = expectedTableDish
+		var PrevisionFridge = "Removed Food [[s001,bread,1]] with success!"
+		var PrevisionTableFood = expectedTableFood
+		var channelForObserver = Channel<String>()
 
 		runBlocking {
-			delay(200)	
+			//Sending msg prepare
+			testingObserverRbr!!.addObserver( channelForObserver,expectedRBRPantry)
 			
-			StateTable = channelForObserverTable.receive()
-			assertEquals(previsionTableFood,StateTable)	
-		}
-		channelForObserverTable.close()
-	
-		runBlocking {
-			delay(200)
-			State = channelForObserver.receive()	
+			delay (500)
+			println ("===============TEST | sending $msg")
+			MsgUtil.sendMsg(msg, rbrActor!!)
 			
-			println ("===============TEST | RESULT=$State for $msg")
+			//check rbrwalker arrives to the pantry
+			//testingObserverRbr!!.addObserver( channelForObserver,expectedRBRPantry)		
+			
+			State = channelForObserver.receive()
+			testingObserverRbr!!.removeObserver()
+			assertEquals(PrevisionRBRPantry,State)
+
+			//check state pantry
+			channelForObserver.cancel()
+			channelForObserver = Channel<String>()
+			testingObserverPantry!!.addObserver( channelForObserver,expectedPantry)
+			
+			State = channelForObserver.receive()
+			assertEquals(PrevisionPantry,State)
+			testingObserverPantry!!.removeObserver()
+			
+			//check rbrwalker arrives to the table		
+			channelForObserver.cancel()
+			channelForObserver = Channel<String>()
+			testingObserverRbr!!.addObserver( channelForObserver,expectedRBRTableP )
+			
+			State = channelForObserver.receive()
+			assertEquals(PrevisionRBRTableP,State)
+			testingObserverRbr!!.removeObserver()
+
+			//check state table Dish
+			channelForObserver.cancel()
+			channelForObserver = Channel<String>()
+			testingObserverTable!!.addObserver( channelForObserver,expectedTableDish)
+			
+			State = channelForObserver.receive()
+			assertEquals(PrevisionTableDish,State)
+			testingObserverTable!!.removeObserver()
+			
+			//check rbrwalker arrives to the fridge
+			channelForObserver.cancel()
+			channelForObserver = Channel<String>()
+			testingObserverRbr!!.addObserver( channelForObserver,expectedRBRFridge )		
+			
+			State = channelForObserver.receive()
+			testingObserverRbr!!.removeObserver()
+			assertEquals(PrevisionRBRFridge,State)
+			
+			//check state fridge
+			channelForObserver.cancel()
+			channelForObserver= Channel<String>()
+			testingObserverFridge!!.addObserver( channelForObserver,expectedFridge)
+
+			State = channelForObserver.receive()
+			assertEquals(PrevisionFridge,State)			
+			testingObserverFridge!!.removeObserver()
+			
+			//check rbrwalker arrives to the table 
+			channelForObserver.cancel()
+			channelForObserver = Channel<String>()
+			testingObserverRbr!!.addObserver( channelForObserver,expectedRBRTableF )
+			
+			State = channelForObserver.receive()
+			assertEquals(PrevisionRBRTableF,State)
+			testingObserverRbr!!.removeObserver()
+
+			//check state table Food
+			channelForObserver.cancel()
+			channelForObserver= Channel<String>()
+			testingObserverTable!!.addObserver( channelForObserver,expectedTableFood)
+			
+			State = channelForObserver.receive()
+			assertEquals(PrevisionTableFood,State)
+			testingObserverTable!!.removeObserver()
+			
+			//check rbrwalker arrives to the RH
+			channelForObserver.cancel()
+			channelForObserver = Channel<String>()
+			testingObserverRbr!!.addObserver( channelForObserver,expected )
+		
+			State = channelForObserver.receive()
 			assertEquals(Prevision,State)
 		}
 		channelForObserver.close()
