@@ -720,7 +720,8 @@ QActor rbrwalker context ctxsystem {
 			println ("WALKER | arrived to the goal $CurPos")
 			replyTo setGoal with goalState : goalState($CurPos)
 			updateResource [# "$CurPos" #]
-	} Goto wait
+	}
+	Goto wait
 	
 	State terminateWalker {
 		println ("WALKER | terminate...")
