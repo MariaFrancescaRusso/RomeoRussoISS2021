@@ -396,11 +396,9 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 								)
 						}
 						println("RBR | ...reached RH. Finished executing task")
-						println("RBR | terminate Basic Robot...")
-						forward("end", "end(0)" ,"basicrobot" ) 
-						println("RBR | terminate RBR Walker...")
+						println("RBR | terminating RBR Walker...")
 						forward("end", "end(0)" ,"rbrwalker" ) 
-						println("RBR | terminate...")
+						println("RBR | terminating...")
 						terminate(1)
 					}
 				}	 

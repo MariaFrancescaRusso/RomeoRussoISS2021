@@ -29,10 +29,11 @@ Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to cha
 //RBRWalker - basicRobot
 Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
 Request step:step(TIME)
-Reply 	stepdone:stepdone(V)  
-Reply   stepfail:stepfail(DURATION, CAUSE)  
+Reply stepdone:stepdone(V)  
+Reply stepfail:stepfail(DURATION, CAUSE)  
 
-//RBR - basicRobot/RBRWalker
+//RBR - RBRWalker
+//RBRWalker - basicRobot
 Dispatch end:end(ARG)	//void
 
 Context ctxsystem ip [host="localhost" port=8040]
@@ -611,14 +612,11 @@ QActor rbr context ctxsystem {
 			updateResource [# "$CurrentPos" #] 
 		}
 		println ("RBR | ...reached RH. Finished executing task")
-		
-		println ("RBR | terminate Basic Robot...")
-		forward basicrobot -m end : end(0)
-		
-		println ("RBR | terminate RBR Walker...")
+				
+		println ("RBR | terminating RBR Walker...")
 		forward rbrwalker -m end : end(0)
 		 
-		println ("RBR | terminate...")
+		println ("RBR | terminating...")
 		terminate 1
 	} 
 }
@@ -724,7 +722,10 @@ QActor rbrwalker context ctxsystem {
 	Goto wait
 	
 	State terminateWalker {
-		println ("WALKER | terminate...")
+		println ("RBR | terminating Basic Robot...")
+		forward basicrobot -m end : end(0)
+		
+		println ("WALKER | terminating...")
 		terminate 1
 	}
 }

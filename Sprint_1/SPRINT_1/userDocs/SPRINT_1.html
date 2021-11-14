@@ -140,9 +140,10 @@ To make possible the consumption of the food on the <ks>table</ks>, it has been 
 
 To realize the project part about the planning it has been necessary, in a first phase, to design and create a project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> able to create a binary file of the logical map useful for the <tt>Planner</tt> component which take it as input for the command <em>loadRoomMap</em>.
 <br><br>
-In a second phase, it seems to be more appropriate to create an other <tt>actor</tt> (<k>rbrwalker</k>) in <k>rbr</k> <tt>context</tt> (<k>ctxrbr</k>) which takes care of the planning and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is <tt>virtual</tt> or <tt>real</tt>; in this case <tt>virtual</tt>.
+In a second phase, it seemed to be more appropriate to create another <tt>actor</tt> (<k>rbrwalker</k>) in <k>rbr</k> <tt>context</tt> (<k>ctxrbr</k>) which takes care of the planning and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is <tt>virtual</tt> or <tt>real</tt>; in this case <tt>virtual</tt>.<br>
+In this way, the <k>rbr</k> <tt>actor</tt> has the task of communicating the nearest goal coordinates to the <k>rbrwalker</k> <tt>actor</tt>, waiting for an answer and subsequently updating the goal resource state.
 <br><br>
-To take the coordinates of the possible goals for the <ks>tasks</ks> paths, also useful for the command <em>planForGoal</em> used by the <tt>Planner</tt> to found the sequence of actions the <k>basicrobot</k> must execute, it has been created a <tt>prolog</tt> file <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/ResourcesCoordinates.pl" target="_blank">ResourcesCoordinates.pl</a>. In particular, this file manages the possible goals, that are the coordinates of the <ks>RH</ks> cell and of the cells close to the resources (<ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks> and <ks>fridge</ks>) that the robot could occupy, and provides to the <k>rbr</k> the nearest goal to the robot current position.
+To take the coordinates of the possible goals for the <ks>tasks</ks> paths, it has been created a <tt>prolog</tt> file <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/ResourcesCoordinates.pl" target="_blank">ResourcesCoordinates.pl</a>. In particular, this file manages the possible goals, that are the coordinates of the <ks>RH</ks> cell and of the cells close to the resources (<ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks> and <ks>fridge</ks>) that the robot could occupy, and provides to the <k>rbr</k> the nearest goal to the robot current position.
 
 <h4><a name="mapBinGen"></a>MapBinGenerator</h4>
 
@@ -209,6 +210,12 @@ Reached the required goal, the <tt>actor</tt> <k>rbrwalker</k> <ko>reply</ko> to
 </tr>
 </table>
 
+<h4>Actors Termination</h4>
+
+As it can be seen from the images of the behavior of the two <tt>actors</tt>, modeled as a <tt>Moore state machine</tt>, termination states (<kc>terminateRbr</kc> and <kc>terminateWalker</kc>) has also been added. In the <kc>terminateRbr</kc> state, the <k>rbr</k> sends first a <ko>dispatch</ko> <em>end</em> to the <k>rbrwalker</k> and then it terminate itself. In the <kc>terminateWalker</kc> state, the <k>rbrwalker</k>, received the <ko>dispatch</ko> <em>end</em> from the <k>rbr</k>, sends a <ko>dispatch</ko> <em>end</em> to the <k>basicrobot</k> and then terminate itself.
+<br><br>
+Regarding the other actors, the <k>foodconsumer</k> and the <k>maitre</k>, which are <tt>mock actors</tt>, terminate themself after the execution of their task; while the resources <tt>actors</tt> never end.
+
 <h3>WEnv Scene for Virtual Robot</h3>
 
 To make possible the simulation of the <tt>virtual robot</tt> on its <tt>WEnv</tt>, starting from the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/sceneConfig.js" target="_blank">example</a> provided by the customer with the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, it's been realized a scene <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> that reflects the logic map as much as possible.
@@ -216,21 +223,20 @@ To make possible the simulation of the <tt>virtual robot</tt> on its <tt>WEnv</t
 <table>
 <tr class="text">
 	<th>WEnv</th>
-	<th>Starting room layout from requirements text</th>
 	<th>Map generated with the MapBinGenerator</th>
+	<th>Starting room layout from requirements text</th>
 </tr>
 <tr>
-	<td class="text">
-		<img src="./utils/img/WEnvGimp.png" alt="WEnv">
-		<img src="./utils/img/WEnv2.png" alt="WEnv">
+	<td>
+		<img src="./utils/img/WEnv.png" alt="WEnv">
 	</td>
-	<td class="imageScenario">
-		<img src="../../../userDocs/utils/tf/roomLayout.png" alt="Room Layout from requirements text">
+	<td class="wenv">
+		<a href="../roomMap.txt" target="_blank">roomMap.txt</a><br>
+		<pre><iframe class="mapWenv" src="../roomMap.txt" title="roomMap">roomMap.txt</iframe>
+		<img src="./utils/img/MapLegend.png" alt="Map Legend"></pre>
 	</td>
 	<td class="image">
-		<a href="../roomMap.txt" target="_blank">roomMap.txt</a><br>
-		<pre><iframe class="map" src="../roomMap.txt" title="roomMap">roomMap.txt</iframe>
-		<img src="./utils/img/MapLegend.png" alt="Map Legend"></pre>
+		<img src="../../../userDocs/utils/tf/roomLayout.png" alt="Room Layout from requirements text">
 	</td>
 </tr>
 </table>
@@ -247,7 +253,18 @@ Below there are exposed some tests made for this sprint project:
 	<br>
 	<dt><a href="../test/it/unibo/test/PrepareTest.kt" target="_blank">PrepareTest.kt</a></dt>
 	<dd>Functional tests about the correct execution of the <ks>Prepare the room</ks> <ks>task</ks>:<ol>
-		<li><em>PrepareTest</em>: after the send of a <em>prepare</em> command to the <k>rbr</k>, which runs the <ks>Prepare the room</ks> <ks>task</ks>, it's verified that the final robot position is the <ks>RH</ks> position.</li>
+		<li><em>PrepareTest</em>: after the send of a <em>prepare</em> command to the <k>rbr</k>, which runs the <ks>Prepare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular this test:<ol>
+			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
+			<li>Checks the robot position from the <k>rbrwalker</k> state is the expected cell in front of <ks>pantry</ks>;</li>
+			<li>Checks result of crockery remove from pantry</li>
+			<li>Checks rbrwalker position is the expected cell  in front of table</li>
+			<li>Checks result of crockery adding in table</li>
+			<li>Checks rbrwalker position is the expected cell  in front of fridge</li>
+			<li>Checks result of food removing in fridge</li>
+			<li>Checks rbrwalker position is the expected cell  in front of table</li>
+			<li>Checks result of food adding in table</li>
+			<li>Checks rbrwalker position is the Robot Home cell</li>
+		</ol></li>
 	</ol></dd>
 	<br>
 	<dt><a href="../test/it/unibo/test/AddFoodTest.kt" target="_blank">AddFoodTest.kt</a></dt>
@@ -260,6 +277,8 @@ Below there are exposed some tests made for this sprint project:
 		<li><em>ClearTest</em>: after the send of a <em>clear</em> command to the <k>rbr</k>, sent after the <em>prepare</em> command, which runs the <ks>Cleare the room</ks> <ks>task</ks>, it's verified that the final robot position is the <ks>RH</ks> position.</li>
 	</ol></dd>
 </dl>
+<br>
+These tests are executed on a single <tt>context</tt> (<k>ctxsystem</k>) and to execute them, it's necessary to comment the <k>maitre</k>, because it is a <tt>mock client</tt> and it could interfere with tests.
 
 <h2>Model of System's Logical Architecture</h2>
 

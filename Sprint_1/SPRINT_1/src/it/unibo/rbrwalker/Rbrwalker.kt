@@ -124,7 +124,9 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("terminateWalker") { //this:State
 					action { //it:State
-						println("WALKER | terminate...")
+						println("RBR | terminating Basic Robot...")
+						forward("end", "end(0)" ,"basicrobot" ) 
+						println("WALKER | terminating...")
 						terminate(1)
 					}
 				}	 

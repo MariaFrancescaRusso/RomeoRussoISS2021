@@ -103,7 +103,7 @@ ks {
 	font-size: 90%;
 }
 
-/*for the node names*/
+/*for the node names and FSM state*/
 kc {
 	font-family: "Arial";
 	font-weight: bold;
@@ -232,6 +232,11 @@ td.text {
 	text-align: center;
 }
 
+td.wenv {
+	text-align: center;
+	width: 20%;
+}
+
 tr.text {
 	text-align: center;
 }
@@ -269,7 +274,7 @@ iframe.qakProblem {
 }
 
 iframe.qakImage {
-	height: 500px;
+	height: 630px;
 }
 
 iframe.qakSprint {
@@ -279,6 +284,11 @@ iframe.qakSprint {
 iframe.map {
 	height: 136px;
 	width: 50%;
+}
+
+iframe.mapWenv {
+	height: 136px;
+	width: 78%;
 }
 
 img {
