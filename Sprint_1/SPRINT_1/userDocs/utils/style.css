@@ -21,9 +21,9 @@ a:hover {
 
 hr {
 	clear: both;
-	height: 1px;
-	color: #242424;
-	background-color: transparent;
+	height: 0.5px;
+	color: #2f4f4f;
+	background-color: #2f4f4f;
 }
 
 h1, h2, h3 {
@@ -266,6 +266,14 @@ iframe.qakReq {
 
 iframe.qakProblem {
 	height: 675px;
+}
+
+iframe.qakImage {
+	height: 500px;
+}
+
+iframe.qakSprint {
+	height: 550px;
 }
 
 iframe.map {

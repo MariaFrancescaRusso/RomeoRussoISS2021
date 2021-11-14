@@ -239,7 +239,7 @@ To make this, there were been found some problems, that will be addressed and so
 </tr>
 </table>
 
-<h2>Problem Analysis</h2>
+<h2><a name="ProblemAn"></a>Problem Analysis</h2>
 
 <h3>Identification of the Problems and the Corresponding Solutions</h3>
 
@@ -436,7 +436,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	The solution adopted is the <a href="./Analysis.html#sol2_uff">second</a>, so as to make the most of the integration between <tt>Prolog</tt> and the <tt>Qak-infrastructure</tt>.</dd>
 	<br>
 	
-	<dt>Table</dt>
+	<dt><a name="PrAnTable"></a>Table</dt>
 	<dd>An other problem could be represented from the management of the food consumption on the <ks>table</ks>. To do this, it's possibile to use different approaches:
 	<ol>
 		<li>using, for each food state on the <k>table</k>, a random consumption time, at the end of which the corresponding food will be consumed and therefore will be no longer available on the <k>table</k>;</li>
@@ -446,7 +446,7 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	The choose of a possible solution will be addressed next during the design phase after a consultation with the customer.</dd>
 	<br>
 	
-	<dt>RBR</dt>
+	<dt><a name="PrAnRBR"></a>RBR</dt>
 	<dd>To allow <k>rbr</k> to move, the customer provides a library <m>it.unibo.qak21.basicrobot-1.0.jar</m>. In particular, this framework provides the <tt>basicRobot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>) and its possible implementations: <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>), on its own <tt>WEnv</tt> (Web Environment), or real robot, that can be <tt>mbot</tt> (<a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).
 	<br>
 	Therefore to move the <k>rbr</k> must communicate through messages (<ko>dispatch</ko> or <ko>request</ko>) with the <tt>actor</tt> <k>basicRobot</k>, which performs the movements.</dd>
@@ -505,7 +505,7 @@ Furthermore, the <em>clear</em> command is managed, <k>maitre</k> side, by sendi
 </tr>
 </table>
 
-<h3>Test Plans</h3>
+<h3><a name="PrAnTestPlans"></a>Test Plans</h3>
 
 Below it's reported a functional tests planning starting from the <a href="./Analysis.html#reqATP">requirements analysis test plans</a>:
 <br><br>

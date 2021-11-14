@@ -54,20 +54,20 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 <h2>Problem Analysis</h2>
 
-The problems related to this sprint goals, that are already addressed in the previous problem analysis <k>[METTERE LINK]</k>, are detailed below.
+The problems related to this sprint goals, that are already addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">previous problem analysis</a>, are detailed below.
 
 <h3>Food Consumption</h3>
 
 By requirements, to execute the <ks>Clear the room</ks> <ks>task</ks>, the <ks>RBR</ks> must take non-consumed food from the <ks>table</ks> and bring it to the <ks>fridge</ks>. Therefore, it's necessary a way to simulate the food consumption.<br>
 
-In the previous problem analysis <k>[Inserire link a table-analisi problema]</k>, various solutions about this problem have been exposed. From these solutions and after some reflections, the most suited solution seem to be the following: the consumption of food on the <ks>table</ks> could be managed by simulating people in the <ks>room</ks>, which consume the food on the <ks>table</ks>, so as to make it no longer available.<br>
+In the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTable" target="_blank">previous problem analysis</a>, various solutions about this problem have been exposed. From these solutions and after some reflections, the most suited solution seem to be the following: the consumption of food on the <ks>table</ks> could be managed by simulating people in the <ks>room</ks>, which consume the food on the <ks>table</ks>, so as to make it no longer available.<br>
 To do this, it can be introduced a new <tt>mock</tt> <k>actor</k> which interacts, after the <ks>Prepare the room</ks> <ks>task</ks> and before the <ks>Clear the room</ks> <ks>task</ks>, with the <k>table</k> to change its state.
 <br><br>
 <div class="center"><img class="resizeMin" src="./utils/img/FoodConsumerAnalysis.png" alt="Food Consumer"></div>
 
 <h3>Planning</h3>
 
-As already said in the previous problem analysis <k>[Inserire link a planner-analisi problema]</k>, it's available a support, <m>it.unibo.planner20-1.0.jar</m>, which allows <k>rbr</k>, at its boot, to create a map of the <ks>room</ks> or to load an existing one. This allows the <k>rbr</k> to know where the elements which he has to interact (<ks>fridge</ks>, <ks>dishwasher</ks>, <ks>pantry</ks>, <ks>table</ks>) and the <ks>RH</ks> are situated in the <ks>room</ks>, so it can reach them.
+As already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, it's available a support, <m>it.unibo.planner20-1.0.jar</m>, which allows <k>rbr</k>, at its boot, to create a map of the <ks>room</ks> or to load an existing one. This allows the <k>rbr</k> to know where the elements which he has to interact (<ks>fridge</ks>, <ks>dishwasher</ks>, <ks>pantry</ks>, <ks>table</ks>) and the <ks>RH</ks> are situated in the <ks>room</ks>, so it can reach them.
 <br><br>
 The planning feature (documented at <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.cautiousExplorer/userDocs/LabPlanner2021.html" target="_blank">LabPlanner2021.html</a>) is the capability to plan actions in a logical space. This space is a map described by a set of square cells whose edges are robot sized. So it's possible to see a step of the robot as the ingress in a new cell. Furthermore, the <tt>Planner</tt> keeps track of the current logical position of the robot in the map.
 <br><br>
@@ -87,7 +87,7 @@ Some of the most useful operations provided by the <tt>Planner</tt> (in <a href=
 
 <h3>basicRobot</h3>
 
-As already said in the previous problem analysis <k>[Inserire link a basicRobot-analisi problema]</k>, the <tt>basicRobot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), provided by the customer in the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, is a component useful for the execution of the movements of the robot, which, in this Sprint, will be a <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) running on its own <tt>WEnv</tt> (Web Environment) to solve the goals about the execution of the <ks>tasks</ks>.
+As already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, the <tt>basicRobot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), provided by the customer in the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, is a component useful for the execution of the movements of the robot, which, in this Sprint, will be a <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) running on its own <tt>WEnv</tt> (Web Environment) to solve the goals about the execution of the <ks>tasks</ks>.
 <br><br>
 In particular, the <tt>actor</tt> <a href="https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/src/basicrobot.qak" target="_blank"><k>basicrobot</k></a> is able to execute basic move commands received through:
 <ul>
@@ -99,7 +99,7 @@ In particular, the <tt>actor</tt> <a href="https://raw.githubusercontent.com/ana
 
 <h2>Test Plans</h2>
 
-With reference to the previous problem analysis test plans <k>[Inserire link]</k>, below it's reported a functional tests planning related to the goals of this sprint:
+With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTestPlans" target="_blank">previous problem analysis test plans</a>, below it's reported a functional tests planning related to the goals of this sprint:
 <br><br>
 <ul>
 	<li>Tests of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>;</li>
@@ -110,7 +110,7 @@ With reference to the previous problem analysis test plans <k>[Inserire link]</k
 
 <h3>Food Consumption</h3>
 
-To make possible the consumption of the food on the <ks>table</ks>, it has been added a <tt>mock actor</tt> <k>foodconsumer</k> in the <k>[COME SCRIVERE CONTEXT]</k> maitre context which send a <ko>dispatch</ko> message (<em>changeState(remove, <ac>FOOD</ac>)</em>) to change the state of the <k>table</k>, so to remove some food <ac>FOOD</ac>. The elements to remove from the <k>table</k> are loaded from a <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/Consumer.pl" target="_blank">Consumer.pl</a>).
+To make possible the consumption of the food on the <ks>table</ks>, it has been added a <tt>mock actor</tt> <k>foodconsumer</k> in the <k>maitre</k> <tt>context</tt> (<k>ctxmaitre</k>) which send a <ko>dispatch</ko> message (<em>changeState(remove, <ac>FOOD</ac>)</em>) to change the state of the <k>table</k>, so to remove some food <ac>FOOD</ac>. The elements to remove from the <k>table</k> are loaded from a <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/Consumer.pl" target="_blank">Consumer.pl</a>).
 <br><br>
 <table>
 <tr class="text">
@@ -119,11 +119,11 @@ To make possible the consumption of the food on the <ks>table</ks>, it has been 
 </tr>
 <tr>
 	<td class="text" rowspan="3">
-		<a href="../src/model.qak#:~:text=//QActor%20foodconsumer%20context,consume...%22)%0A%09%09%7D%0A%09%09%09%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>foodconsumer</k> in model.qak</a><br>
+		<br><a href="../src/model.qak#:~:text=//QActor%20foodconsumer%20context,consume...%22)%0A%09%09%7D%0A%09%09%09%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>foodconsumer</k> in model.qak</a><br><br>
 		<img src="./utils/img/FoodConsumerQActor.png" alt="Food Consumer QActor from model.qak">
 	</td>
 	<td class="imageSchema">
-		<img src="./utils/img/FoodConsumerAnalysis.png" alt="Food Consumer">
+		<img src="./utils/img/FoodConsumerProject.png" alt="Food Consumer">
 	</td>
 </tr>
 <tr class="text">
@@ -138,15 +138,15 @@ To make possible the consumption of the food on the <ks>table</ks>, it has been 
 
 <h3>Planning and BasicRobot</h3>
 
-To realize the project part about the planning it has been necessary, in a first phase, to design and create a project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> able to create a <k>[EVIDENZIO??]</k>.bin file of the logical map useful for the <tt>Planner</tt> component which take it as input for the command <em>loadRoomMap</em>.
+To realize the project part about the planning it has been necessary, in a first phase, to design and create a project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> able to create a binary file of the logical map useful for the <tt>Planner</tt> component which take it as input for the command <em>loadRoomMap</em>.
 <br><br>
-In a second phase it seems to be more appropriate to create an other <tt>actor</tt> (<k>rbrwalker</k>) in rbr context <k>[COME SCRIVERE CONTEXT]</k> which takes care of the planning and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is <tt>virtual</tt> or <tt>real</tt>; in this case <tt>virtual</tt>.
+In a second phase, it seems to be more appropriate to create an other <tt>actor</tt> (<k>rbrwalker</k>) in <k>rbr</k> <tt>context</tt> (<k>ctxrbr</k>) which takes care of the planning and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is <tt>virtual</tt> or <tt>real</tt>; in this case <tt>virtual</tt>.
 <br><br>
 To take the coordinates of the possible goals for the <ks>tasks</ks> paths, also useful for the command <em>planForGoal</em> used by the <tt>Planner</tt> to found the sequence of actions the <k>basicrobot</k> must execute, it has been created a <tt>prolog</tt> file <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_1/SPRINT_1/ResourcesCoordinates.pl" target="_blank">ResourcesCoordinates.pl</a>. In particular, this file manages the possible goals, that are the coordinates of the <ks>RH</ks> cell and of the cells close to the resources (<ks>pantry</ks>, <ks>dishwasher</ks>, <ks>table</ks> and <ks>fridge</ks>) that the robot could occupy, and provides to the <k>rbr</k> the nearest goal to the robot current position.
 
-<h4>MapBinGenerator</h4>
+<h4><a name="mapBinGen"></a>MapBinGenerator</h4>
 
-To emulate the <ks>room</ks> enviroment, it has been realized a small application <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> <k>LINK AL FILE .kt???</k> that, taking in input the dimension of the map to create and the coordinates of the obstacles, provides a <k>[EVIDENZIO??]</k>.txt file and a <k>[EVIDENZIO??]</k>.bin file of the map; the last one must be used as input map for the <tt>Planner</tt>, creating, for this sprint project, a cells based map with dimension 7x7 <ac>7x7</ac> <k>[SCRIVO COME GLI ARG??]</k> and adding, in the center of the map, an obstacle which represents the <ks>table</ks>.
+To emulate the <ks>room</ks> enviroment, it has been realized a small application <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> that, taking in input the dimension of the map to create and the coordinates of the obstacles, provides a text file (<a href="../roomMap.txt" target="_blank">roomMap.txt</a>) and a binary file (<a href="../roomMap.bin" target="_blank">roomMap.bin</a>) of the map; the last one must be used as input map for the <tt>Planner</tt>, creating, for this sprint project, a cells based map with dimension 7x7 and adding, in the center of the map, an obstacle which represents the <ks>table</ks>.
 <br><br>
 <table>
 <tr class="text">
@@ -173,15 +173,13 @@ To emulate the <ks>room</ks> enviroment, it has been realized a small applicatio
 <h4>RBRWalker Actor</h4>
 
 To integrare the planning and movement feature for the robot, it has been introduced a new <tt>actor</tt>, that is the <k>rbrwalker</k>.<br>
-At its start, this component load the <k>[EVIDENZIO??]</k>.bin file of the map <a href="../roomMap.txt" target="_blank">roomMap</a> <k>[LINK txt???]</k>, obtained previously thanks to <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1/MapBinGenerator" target="_blank">MapBinGenerator</a> <k>LINK AL FILE .kt???</k> project, running the <tt>Planner</tt> command <em>loadRoomMap</em>.<br>
+At its start, this component load the binary file of the map, obtained previously thanks to <a href="./SPRINT_1.html#mapBinGen">MapBinGenerator</a> project, running the <tt>Planner</tt> command <em>loadRoomMap</em>.<br>
 This actor receives as a <ko>request</ko> from the <tt>actor</tt> <k>rbr</k> the <em>setGoal(<ac>X</ac>, <ac>Y</ac>, <ac>DIR</ac>)</em> message, where <ac>X</ac> and <ac>Y</ac> are the coordinates of the goal and <ac>DIR</ac> is the direction expected of the robot, which it's supposed to be in front of the goal resource.<br>
 After that, the <k>rbrwalker</k> executes the <tt>Planner</tt> command <em>planForGoal</em>, obtaining a list of actions that represent the movements the robot must execute, at the end of each which it updates the logical map using <tt>Planner</tt> command <em>updateMap</em>.<br>
 To make possible these movement for the robot, the <k>rbrwalker</k> communicates with the <tt>actor</tt> <k>basicrobot</k>, sending it a <ko>request</ko> message <em>step</em> for forward movement, by waiting for the <ko>reply</ko> <em>stepdone</em> or <em>stepfail</em> respectively in case of success or fail, and a <ko>dispatch</ko> message <em>cmd</em> for the other movements.<br>
 Furthermore, the <k>rbrwalker</k> makes a check on the robot direction once it has reached the goal, turning it if the current direction, taken thanks to the <tt>Planner</tt> command <em>getDirection</em>, isn't equal to the expected one (<ac>DIR</ac>).<br>
-Reached the required goal, the <k>rbrwalker</k> <tt>actor</tt> <ko>reply</ko> to the <k>rbr</k> with the message <em>goalState(<ac>POS</ac>)</em>, where <ac>POS</ac> is the current position of the robot taken thanks to the <tt>Planner</tt> command <em>get_curPos</em>.
+Reached the required goal, the <tt>actor</tt> <k>rbrwalker</k> <ko>reply</ko> to the <k>rbr</k> with the message <em>goalState(<ac>POS</ac>)</em>, where <ac>POS</ac> is the current position of the robot taken thanks to the <tt>Planner</tt> command <em>get_curPos</em>.
 <br><br>
-<k>[qak + DISEGNO RBR --> RBRWALKER -> basicRobot + FSM di RBR? e Walker]</k>
-
 <table>
 <tr class="text">
 	<th>Machine Understandable Architecture Model</th>
@@ -189,10 +187,11 @@ Reached the required goal, the <k>rbrwalker</k> <tt>actor</tt> <ko>reply</ko> to
 </tr>
 <tr>
 	<td class="text" rowspan="3">
-		<a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br>
-		<iframe src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe><br>
-		<a href="../src/model.qak#:~:text=//QActor%20rbr%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%20%0A%7D" target="_blank"><k>rbr</k> in model.qak</a><br>
-		<iframe src="./utils/img/RBRQActor.png" title="RBR QActor from model.qak">RBR QActor from model.qak</iframe>
+		<br><a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
+		<iframe class="qakImage" src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe>
+		<br><br><hr><br>
+		<a href="../src/model.qak#:~:text=//QActor%20rbr%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%20%0A%7D" target="_blank"><k>rbr</k> in model.qak</a><br><br>
+		<iframe class="qakImage" src="./utils/img/RBRQActor.png" title="RBR QActor from model.qak">RBR QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
 		<img src="./utils/img/RBRContext.png" alt="RBR Context">
@@ -203,6 +202,7 @@ Reached the required goal, the <k>rbrwalker</k> <tt>actor</tt> <ko>reply</ko> to
 </tr>
 <tr>
 	<td class="imageSchema">
+		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
 		<img src="./utils/img/FSM_RBRWalkerQActor.png" alt="Representation of the behavior of QActor rbrwalker, modeled as a Moore state machine"><br>
 		<img src="./utils/img/FSM_RBRQActor.png" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine">
 	</td>
@@ -211,9 +211,29 @@ Reached the required goal, the <k>rbrwalker</k> <tt>actor</tt> <ko>reply</ko> to
 
 <h3>WEnv Scene for Virtual Robot</h3>
 
-To make possible the simulation of the <tt>virtual robot</tt> on its <tt>WEnv</tt>, starting from the example <k>[LINK AL FILE DEL PROFF???]</k> provided by the customer with the requirements text <k>[LINK A REQ TEXT??]</k>, it's been realized a scene <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> that reflects the logic map as much as possible.
+To make possible the simulation of the <tt>virtual robot</tt> on its <tt>WEnv</tt>, starting from the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/sceneConfig.js" target="_blank">example</a> provided by the customer with the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, it's been realized a scene <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> that reflects the logic map as much as possible.
 <br><br>
-<k>[IMG WEnv]</k>
+<table>
+<tr class="text">
+	<th>WEnv</th>
+	<th>Starting room layout from requirements text</th>
+	<th>Map generated with the MapBinGenerator</th>
+</tr>
+<tr>
+	<td class="text">
+		<img src="./utils/img/WEnvGimp.png" alt="WEnv">
+		<img src="./utils/img/WEnv2.png" alt="WEnv">
+	</td>
+	<td class="imageScenario">
+		<img src="../../../userDocs/utils/tf/roomLayout.png" alt="Room Layout from requirements text">
+	</td>
+	<td class="image">
+		<a href="../roomMap.txt" target="_blank">roomMap.txt</a><br>
+		<pre><iframe class="map" src="../roomMap.txt" title="roomMap">roomMap.txt</iframe>
+		<img src="./utils/img/MapLegend.png" alt="Map Legend"></pre>
+	</td>
+</tr>
+</table>
 
 <h2>Testing</h2>
 
@@ -243,7 +263,22 @@ Below there are exposed some tests made for this sprint project:
 
 <h2>Model of System's Logical Architecture</h2>
 
-qak + disegno
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text">
+		<a href="../src/model.qak" target="_blank">Sprint_1.qak</a><br>
+		<pre><iframe class="qakSprint" src="../src/model.qak" title="ModelSprint_1">Model of Sprint 1</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/ModelSprint1_Legend.png" alt="Legend of the Logical Architecture System Model from Sprint 1"><br>
+		<img src="./utils/img/ModelSprint_1.png" alt="Logical Architecture System Model from Sprint 1">
+	</td>
+</tr>
+</table>
 
 <h2>Deployment</h2>
 
@@ -260,6 +295,8 @@ Deploy of the application for the <tt>virtual robot</tt>:
 		<pre>docker-compose -f basicrobotVirtual.yaml up</pre>
 	(it could be useful see <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/BuildDeployWEnv.html" target="_blank">BuildDeployWEnv.html</a> or the part related to the deploy of the <tt>virtual robot</tt> in <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>)
 	</li>
+	<br>
+	<li>Then, open the WEnv in a browser at <a href="http://localhost:8090" target="_blank">http://localhost:8090</a></li>
 	<br><br>
 	<li>Finally run the project</li>
 </ul>
@@ -300,7 +337,7 @@ Definition list:
 Link:
 <a href="" target="_blank"></a>
 Link in pagina:
-<a name="link"></a> + <a href="./Analysis.html#link">text</a>
+<a name="link"></a> + <a href="./SPRINT_1.html#link">text</a>
 IFrame:
 <iframe src="./src" title="title">"Link"/Cosa c'è nel frame</iframe>
 <br>Image:
