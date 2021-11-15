@@ -449,11 +449,11 @@ Starting from the requirements analysis, it's now necessary to found the main pr
 	<dt><a name="PrAnRBR"></a>RBR</dt>
 	<dd>To allow <k>rbr</k> to move, the customer provides a library <m>it.unibo.qak21.basicrobot-1.0.jar</m>. In particular, this framework provides the <tt>basicRobot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>) and its possible implementations: <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>), on its own <tt>WEnv</tt> (Web Environment), or real robot, that can be <tt>mbot</tt> (<a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).
 	<br>
-	Therefore to move the <k>rbr</k> must communicate through messages (<ko>dispatch</ko> or <ko>request</ko>) with the <tt>actor</tt> <k>basicRobot</k>, which performs the movements.</dd>
+	Therefore to move the <k>rbr</k> must communicate through messages (<ko>dispatch</ko> or <ko>request</ko>) with the <tt>actor</tt> <k>basicrobot</k>, which performs the movements.</dd>
 	<br>
 	<dd>To execute the <ks>tasks</ks>, the <k>rbr</k> must be able to reach every element in the <ks>room</ks> with which he has to interact (<ks>fridge</ks>, <ks>dishwasher</ks>, <ks>pantry</ks>, <ks>table</ks>) and also it must be able to return on its <ks>RH</ks>. Therefore, to know where the elements and the <ks>RH</ks> are situated in the <ks>room</ks>, it's available a support, <m>it.unibo.planner20-1.0.jar</m>, which allows <k>rbr</k>, at its boot, to create a map of the <ks>room</ks> or to load an existing one.</dd>
 	<br>
-	<dd>To be able to map the <ks>room</ks> and to satisfy the requirement <i><em>avoid</em> the impact with obstacles</i>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicRobot</k>.</dd>
+	<dd>To be able to map the <ks>room</ks> and to satisfy the requirement <i><em>avoid</em> the impact with obstacles</i>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicrobot</k>.</dd>
 	<br>
 	<dd>To manage the the <em>stop</em>/<em>reactivate</em> commands received by the <k>maitre</k>, during the execution of each <ks>task</ks>, it's possible to split the path, the <k>rbr</k> must execute, in a steps sequence. In this way, at the end of each step the <k>rbr</k> checks if it has received a <em>stop</em> command and in this case it saves its state and waits for the <em>reactivate</em> command, otherwise it carries out the next step.</dd>
 	<br>
@@ -574,7 +574,7 @@ A first Product Backlog could have these elements:
 	<li><ks>Add Food</ks> <ks>task</ks></li>
 	<li><ks>Clear the room</ks> <ks>task</ks></li>
 	<li>Planning</li>
-	<li>Integration of <k>basicRobot</k> with the <k>rbr</k></li>
+	<li>Integration of <k>basicrobot</k> with the <k>rbr</k></li>
 	<li><tt>Sonar</tt></li>
 	<li>Mapping</li>
 	<li><em>Stop</em>/<em>Reactivate</em></li>
@@ -605,8 +605,8 @@ A possibile set of next SPRINT could be:
 	<dt>SPRINT 1</dt>
 	<dd><ol>
 		<li><ks>Table</ks> state: consumption of food</li>
-		<li>Planning: insert an initial map representation and use of Planner</li>
-		<li>Integration of <k>basicRobot</k> with the <k>rbr</k></li>
+		<li>Planning: insert an initial map representation and use of <tt>Planner</tt></li>
+		<li>Integration of <k>basicrobot</k> with the <k>rbr</k></li>
 		<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
 		<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
 		<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
@@ -649,12 +649,82 @@ A possibile set of next SPRINT could be:
 	</ol></dd>
 </dl>
 
-<h2>Test plans</h2>
-
 <h2>Project</h2>
 
-<h2>Testing</h2>
+<h3>SPRINT 1</h3>
 
+The project part related to this Sprint is available <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_1" target="_blank">here</a> and it's documented in <a href="../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html" target="_blank">SPRINT_1.html</a>.
+
+<h4>Goal</h4>
+
+The Goal for this Sprint are:
+<div class="remark">
+<ol>
+	<li>Consumption of food on the <ks>table</ks></li>
+	<li>Planning: using the <tt>Planner</tt> loading an initial map representation</li>
+	<li>Integration of <k>basicrobot</k> with the <k>rbr</k></li>
+	<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+	<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+	<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt></li>
+</ol>
+</div>
+
+<h4>Result</h4>
+
+The resulting model of system's logical architecture for this Sprint is:
+<br><br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text">
+		<a href="../Sprint_1/SPRINT_1/src/model.qak" target="_blank">Sprint_1.qak</a><br>
+		<pre><iframe class="qakSprint" src="../Sprint_1/SPRINT_1/src/model.qak" title="ModelSprint_1">Model of Sprint 1</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="../Sprint_1/SPRINT_1/userDocs/utils/img/ModelSprint1_Legend.png" alt="Legend of the Logical Architecture System Model from Sprint 1"><br>
+		<img src="../Sprint_1/SPRINT_1/userDocs/utils/img/ModelSprint_1.png" alt="Logical Architecture System Model from Sprint 1">
+	</td>
+</tr>
+</table>
+
+<div hidden="hidden">
+<h3>SPRINT 2</h3>
+
+The project part related to this Sprint is available <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/SPRINT_2" target="_blank">here</a> and it's documented in <a href="../SPRINT_2/userDocs/SPRINT_2.html" target="_blank">SPRINT_2.html</a>.
+
+<h4>Goal</h4>
+
+The Goal for this Sprint are:
+<div class="remark">
+<ol>
+	<li></li>
+</ol>
+</div>
+
+<h4>Result</h4>
+
+The resulting model of system's logical architecture for this Sprint is:
+<br><br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text">
+		<a href="../SPRINT_2/src/model.qak" target="_blank">Sprint_2.qak</a><br>
+		<pre><iframe class="qakSprint" src="../SPRINT_2/src/model.qak" title="ModelSprint_2">Model of Sprint 2</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="../SPRINT_2/userDocs/utils/img/ModelSprint2_Legend.png" alt="Legend of the Logical Architecture System Model from Sprint 2"><br>
+		<img src="../SPRINT_2/userDocs/utils/img/ModelSprint_2.png" alt="Logical Architecture System Model from Sprint 2">
+	</td>
+</tr>
+</table>
+</div>
 <h2>Deployment</h2>
 
 <h2>Maintenance</h2>

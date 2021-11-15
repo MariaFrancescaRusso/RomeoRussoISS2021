@@ -253,31 +253,55 @@ Below there are exposed some tests made for this sprint project:
 	<br>
 	<dt><a href="../test/it/unibo/test/PrepareTest.kt" target="_blank">PrepareTest.kt</a></dt>
 	<dd>Functional tests about the correct execution of the <ks>Prepare the room</ks> <ks>task</ks>:<ol>
-		<li><em>PrepareTest</em>: after the send of a <em>prepare</em> command to the <k>rbr</k>, which runs the <ks>Prepare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular this test:<ol>
+		<li><em>PrepareTest</em>: after the send of a <em>prepare</em> command to the <k>rbr</k>, which runs the <ks>Prepare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
 			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
-			<li>Checks the robot position from the <k>rbrwalker</k> state is the expected cell in front of <ks>pantry</ks>;</li>
-			<li>Checks result of crockery remove from pantry</li>
-			<li>Checks rbrwalker position is the expected cell  in front of table</li>
-			<li>Checks result of crockery adding in table</li>
-			<li>Checks rbrwalker position is the expected cell  in front of fridge</li>
-			<li>Checks result of food removing in fridge</li>
-			<li>Checks rbrwalker position is the expected cell  in front of table</li>
-			<li>Checks result of food adding in table</li>
-			<li>Checks rbrwalker position is the Robot Home cell</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>pantry</ks>;</li>
+			<li>Checks that the crockery removed from the <k>pantry</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
+			<li>Checks that the crockery added on the <k>table</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>fridge</ks>;</li>
+			<li>Checks that the food removed from the <k>fridge</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
+			<li>Checks that the food added on the <k>table</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the the <ks>RH</ks> position.</li>
 		</ol></li>
 	</ol></dd>
 	<br>
 	<dt><a href="../test/it/unibo/test/AddFoodTest.kt" target="_blank">AddFoodTest.kt</a></dt>
 	<dd>Functional tests about the correct execution of the <ks>Add food</ks> <ks>task</ks>:<ol>
-		<li><em>AddFoodTest</em>: after the send of an <em>addFood</em> command, sent after the <em>prepare</em> command, to the <k>rbr</k>, which runs the <ks>Add food</ks> <ks>task</ks>, it's verified that the final robot position is the <ks>RH</ks> position.</li>
+		<li><em>AddFoodTest</em>: after the send of an <em>addFood</em> command, sent after the <em>prepare</em> command and the execution of the related <ks>task</ks>, to the <k>rbr</k>, which runs the <ks>Add food</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
+			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
+			<li>Waits the end of <ks>Prepare the room</ks> <ks>task</ks> checking the <k>rbrwalker</k> is in the <ks>RH</ks> position;</li>
+			<li>Sends a <em>addFood</em> message to <k>rbr</k> <tt>actor</tt>;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>fridge</ks>;</li>
+			<li>Checks that the food removed from the <k>fridge</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
+			<li>Checks that the food added on the <k>table</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the the <ks>RH</ks> position.</li>
+		</ol></li>
 	</ol></dd>
 	<br>
 	<dt><a href="../test/it/unibo/test/ClearTest.kt" target="_blank">ClearTest.kt</a></dt>
 	<dd>Functional tests about the correct execution of the <ks>Clear the room</ks> <ks>task</ks>:<ol>
-		<li><em>ClearTest</em>: after the send of a <em>clear</em> command to the <k>rbr</k>, sent after the <em>prepare</em> command, which runs the <ks>Cleare the room</ks> <ks>task</ks>, it's verified that the final robot position is the <ks>RH</ks> position.</li>
+		<li><em>ClearTest</em>: after the send of a <em>clear</em> command, sent after the <em>prepare</em> command and the execution of the related <ks>task</ks>, to the <k>rbr</k>, which runs the <ks>Cleare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
+			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
+			<li>Waits the end of <ks>Prepare the room</ks> <ks>task</ks> checking the <k>rbrwalker</k> is in the <ks>RH</ks> position;</li>
+			<li>Sends a <em>clear</em> message to <k>rbr</k> <tt>actor</tt>;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
+			<li>Checks that the food removed from the <k>table</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>fridge</ks>;</li>
+			<li>Checks that the food added in the <k>fridge</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
+			<li>Checks that the crockery removed frome the <k>table</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>dishwasher</ks>;</li>
+			<li>Checks that the crockery added in the <k>dishwasher</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the the <ks>RH</ks> position.</li>
+		</ol></li>
 	</ol></dd>
 </dl>
 <br>
+These tests are used to test the internal components of this sprint project and not the externals, like the <k>basicrobot</k>. The <tt>virtual robot</tt> movements, commanded by the <k>basicrobot</k>, can be visually verified by running the project and the <tt>WEnv</tt>.
+<br><br>
 These tests are executed on a single <tt>context</tt> (<k>ctxsystem</k>) and to execute them, it's necessary to comment the <k>maitre</k>, because it is a <tt>mock client</tt> and it could interfere with tests.
 
 <h2>Model of System's Logical Architecture</h2>
@@ -304,7 +328,7 @@ These tests are executed on a single <tt>context</tt> (<k>ctxsystem</k>) and to 
 Deploy of the application for the <tt>virtual robot</tt>:
 <br><br>
 <ul>
-	<li>The first time, it could be necessary to add the <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> file related to the simulated room in the <tt>WEnv</tt> / to load the scene (<a href="../sceneConfig.js" target="_blank">sceneConfig.js</a>) realized for the <tt>WEnv</tt> it must execute the following command in the folder where is situated the scene file:
+	<li>The first time, it could be necessary to load the <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> file related to the simulated room in the <tt>WEnv</tt>. To do this, the following command must execute in the folder where is situated the scene file:
 		<pre>docker cp sceneConfig.js 6fc85fc771de:/home/node/WEnv/WebGLScene/sceneConfig.js</pre>
 	where <ac>6fc85fc771de</ac> is the <ac>CONTAINER ID</ac>, which can be found through a command that shows a list of containers and selecting the <ac>ID</ac> abount the containter of <ac>natbodocker/virtualrobotdisi:2.0</ac>:
 		<pre>docker ps -a</pre>
@@ -319,6 +343,61 @@ Deploy of the application for the <tt>virtual robot</tt>:
 	<br><br>
 	<li>Finally run the project</li>
 </ul>
+
+<h2>SCRUM Context</h2>
+
+<h3>Product Backlog</h3>
+
+The Product Backlog listed after the problem analysis showed these elements:
+<br><br>
+<ol>
+	<li>Resources representation</li>
+	<li>Resources state</li>
+	<li><tt>CoAP</tt> integration</li>
+	<li><em>Consult</em></li>
+	<li><ks>Prepare the room</ks> <ks>task</ks></li>
+	<li><ks>Add Food</ks> <ks>task</ks></li>
+	<li><ks>Clear the room</ks> <ks>task</ks></li>
+	<li>Planning</li>
+	<li>Integration of <k>basicrobot</k> with the <k>rbr</k></li>
+	<li><tt>Sonar</tt></li>
+	<li>Mapping</li>
+	<li><em>Stop</em>/<em>Reactivate</em></li>
+	<li><tt>GUI</tt> <ks>maître's smartphone</ks> software</li>
+	<li>Deployment</li>
+	<li>Maintenance</li>
+</ol>
+
+<h3>SPRINT Sequence</h3>
+
+After this Sprint, a possibile set of next Sprint could be:
+<dl>
+	<dt>SPRINT 2</dt>
+	<dd><ol>
+		<li>Mapping: use of <k>basicrobot</k> and <tt>sonar</tt> to map the <ks>room</ks></li>
+		<li><i><em>Avoid</em> the impact with obstacles</i> requirement</li>
+		<li><em>Stop</em>/<em>Reactivate</em> feature</li>
+		<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles and receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+		<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles and receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+		<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles and receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+		<li>Tests</li>
+	</ol></dd>
+	<br>
+	<dt>SPRINT 3</dt>
+	<dd><ol>
+		<li><tt>GUI</tt> <ks>maître's smartphone</ks> software</li>
+		<li>Tests</li>
+	</ol></dd>
+	<br>
+	<dt>SPRINT 4</dt>
+	<dd><ol>
+		<li>Deploy on <tt>Raspberry</tt></li>
+		<li><ks>Prepare the room</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li><ks>Add Food</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li><ks>Clear the room</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li>Tests</li>
+	</ol></dd>
+</dl>
 
 <h2>Maintenance</h2>
 

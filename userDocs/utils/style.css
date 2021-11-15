@@ -21,9 +21,9 @@ a:hover {
 
 hr {
 	clear: both;
-	height: 1px;
-	color: #242424;
-	background-color: transparent;
+	height: 0.5px;
+	color: #2f4f4f;
+	background-color: #2f4f4f;
 }
 
 h1, h2, h3 {
@@ -103,7 +103,7 @@ ks {
 	font-size: 90%;
 }
 
-/*for the node names*/
+/*for the node names and FSM state*/
 kc {
 	font-family: "Arial";
 	font-weight: bold;
@@ -120,6 +120,14 @@ pre {
 	padding: 5px;
 	word-wrap: break-word;
 	white-space: pre-wrap;
+}
+
+/*for commands arguments and words code style*/
+ac {
+	font-family: "Consolas";
+	color: #2f4f4f;
+	font-size: 85%;
+	font-style: italic;
 }
 
 /*for libraries*/
@@ -187,6 +195,10 @@ div.endpage {
 	color:white
 }
 
+div.center {
+	text-align:center;
+}
+
 table, th, td {
 	border-collapse: collapse;
 	border: 1px solid black;
@@ -218,6 +230,11 @@ td.imageSchema {
 
 td.text {
 	text-align: center;
+}
+
+td.wenv {
+	text-align: center;
+	width: 20%;
 }
 
 tr.text {
@@ -256,13 +273,36 @@ iframe.qakProblem {
 	height: 675px;
 }
 
+iframe.qakImage {
+	height: 630px;
+}
+
+iframe.qakSprint {
+	height: 550px;
+}
+
+iframe.map {
+	height: 136px;
+	width: 50%;
+}
+
+iframe.mapWenv {
+	height: 136px;
+	width: 78%;
+}
+
 img {
 	border: none;
 	width: 100%;
 }
 
-img.photo{
+img.photo {
 	width: 5%;
 	height: 5%;
 	border: none;
+}
+
+img.resizeMin {
+	width: 55%;
+	height: 55%;
 }
