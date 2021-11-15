@@ -18,7 +18,7 @@ import kotlinx.coroutines.channels.Channel
 import util.CoapObserverForTest
 
 
-class ClaerTest {
+class ClearTest {
 	companion object {
 		var rbrActor : ActorBasic? = null
 		var systemStarted = false

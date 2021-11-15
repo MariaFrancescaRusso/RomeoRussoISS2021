@@ -114,7 +114,7 @@ To make possible the consumption of the food on the <ks>table</ks>, it has been 
 <br><br>
 <table>
 <tr class="text">
-	<th>Machine Understandable Architecture Model</th>
+	<th>Machine Understandable Model</th>
 	<th>A Possible Graphic Representation</th>
 </tr>
 <tr>
@@ -151,8 +151,8 @@ To emulate the <ks>room</ks> enviroment, it has been realized a small applicatio
 <br><br>
 <table>
 <tr class="text">
-	<th>Starting room layout from requirements text</th>
-	<th>Map generated with the MapBinGenerator</th>
+	<th>Room Layout from <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">Requirements Text</a></th>
+	<th>Map Generated with the MapBinGenerator</th>
 	<th>MapBinGenerator</th>
 </tr>
 <tr>
@@ -165,7 +165,7 @@ To emulate the <ks>room</ks> enviroment, it has been realized a small applicatio
 		<img src="./utils/img/MapLegend.png" alt="Map Legend"></pre>
 	</td>
 	<td class="text">
-		<a href="../../MapBinGenerator/src/it/unibo/mapBinGenerator/mainGenerator.kt" target="_blank">mainGenerator.kt from MapBinGenerator</a><br>
+		<a href="../../MapBinGenerator/src/it/unibo/mapBinGenerator/mainGenerator.kt" target="_blank">mainGenerator.kt</a> from MapBinGenerator<br>
 		<pre><iframe src="../../MapBinGenerator/src/it/unibo/mapBinGenerator/mainGenerator.kt" title="MapBinGenerator">mainGenerator.kt from MapBinGenerator</iframe></pre>
 	</td>
 </tr>
@@ -183,15 +183,15 @@ Reached the required goal, the <tt>actor</tt> <k>rbrwalker</k> <ko>reply</ko> to
 <br><br>
 <table>
 <tr class="text">
-	<th>Machine Understandable Architecture Model</th>
+	<th>Machine Understandable Models</th>
 	<th>A Possible Graphic Representation</th>
 </tr>
 <tr>
 	<td class="text" rowspan="3">
-		<br><a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
+		<br><a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
 		<iframe class="qakImage" src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe>
 		<br><br><hr><br>
-		<a href="../src/model.qak#:~:text=//QActor%20rbr%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%20%0A%7D" target="_blank"><k>rbr</k> in model.qak</a><br><br>
+		<a href="../src/model.qak#:~:text=//QActor%20rbr%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%20%0A%7D" target="_blank"><k>rbr</k> in model.qak</a><br><br>
 		<iframe class="qakImage" src="./utils/img/RBRQActor.png" title="RBR QActor from model.qak">RBR QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
@@ -199,7 +199,7 @@ Reached the required goal, the <tt>actor</tt> <k>rbrwalker</k> <ko>reply</ko> to
 	</td>
 </tr>
 <tr class="text">
-	<th>Moore State Machine Diagram</th>
+	<th>Moore State Machine Diagrams</th>
 </tr>
 <tr>
 	<td class="imageSchema">
@@ -214,17 +214,17 @@ Reached the required goal, the <tt>actor</tt> <k>rbrwalker</k> <ko>reply</ko> to
 
 As it can be seen from the images of the behavior of the two <tt>actors</tt>, modeled as a <tt>Moore state machine</tt>, termination states (<kc>terminateRbr</kc> and <kc>terminateWalker</kc>) has also been added. In the <kc>terminateRbr</kc> state, the <k>rbr</k> sends first a <ko>dispatch</ko> <em>end</em> to the <k>rbrwalker</k> and then it terminate itself. In the <kc>terminateWalker</kc> state, the <k>rbrwalker</k>, received the <ko>dispatch</ko> <em>end</em> from the <k>rbr</k>, sends a <ko>dispatch</ko> <em>end</em> to the <k>basicrobot</k> and then terminate itself.
 <br><br>
-Regarding the other actors, the <k>foodconsumer</k> and the <k>maitre</k>, which are <tt>mock actors</tt>, terminate themself after the execution of their task; while the resources <tt>actors</tt> never end.
+Regarding the other actors, the <k>foodconsumer</k> and the <k>maitre</k>, which are <tt>mock actors</tt>, terminate themself after the execution of their tasks; while the resources <tt>actors</tt> never end.
 
 <h3>WEnv Scene for Virtual Robot</h3>
 
-To make possible the simulation of the <tt>virtual robot</tt> on its <tt>WEnv</tt>, starting from the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/sceneConfig.js" target="_blank">example</a> provided by the customer with the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, it's been realized a scene <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> that reflects the logic map as much as possible.
+To make possible the simulation of the <tt>virtual robot</tt> on its <tt>WEnv</tt>, starting from the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/sceneConfig.js" target="_blank">example</a> provided by the customer with the <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, it's been realized a scene (<a href="../sceneConfig.js" target="_blank">sceneConfig.js</a>) that reflects the logic map as much as possible.
 <br><br>
 <table>
 <tr class="text">
 	<th>WEnv</th>
-	<th>Map generated with the MapBinGenerator</th>
-	<th>Starting room layout from requirements text</th>
+	<th>Map Generated with the MapBinGenerator</th>
+	<th>Room Layout from <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">Requirements Text</a></th>
 </tr>
 <tr>
 	<td>
@@ -263,29 +263,29 @@ Below there are exposed some tests made for this sprint project:
 			<li>Checks that the food removed from the <k>fridge</k> are the expected;</li>
 			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
 			<li>Checks that the food added on the <k>table</k> are the expected;</li>
-			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the the <ks>RH</ks> position.</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the <ks>RH</ks> position.</li>
 		</ol></li>
 	</ol></dd>
 	<br>
 	<dt><a href="../test/it/unibo/test/AddFoodTest.kt" target="_blank">AddFoodTest.kt</a></dt>
 	<dd>Functional tests about the correct execution of the <ks>Add food</ks> <ks>task</ks>:<ol>
-		<li><em>AddFoodTest</em>: after the send of an <em>addFood</em> command, sent after the <em>prepare</em> command and the execution of the related <ks>task</ks>, to the <k>rbr</k>, which runs the <ks>Add food</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
+		<li><em>AddFoodTest</em>: after the send of an <em>addFood</em> command (sent after the <em>prepare</em> command and the execution of the related <ks>task</ks>) to the <k>rbr</k>, which runs the <ks>Add food</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
 			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
-			<li>Waits the end of <ks>Prepare the room</ks> <ks>task</ks> checking the <k>rbrwalker</k> is in the <ks>RH</ks> position;</li>
+			<li>Waits the end of <ks>Prepare the room</ks> <ks>task</ks> checking the robot position, taken from the <k>rbrwalker</k> state, is the <ks>RH</ks> position;</li>
 			<li>Sends a <em>addFood</em> message to <k>rbr</k> <tt>actor</tt>;</li>
 			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>fridge</ks>;</li>
 			<li>Checks that the food removed from the <k>fridge</k> are the expected;</li>
 			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
 			<li>Checks that the food added on the <k>table</k> are the expected;</li>
-			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the the <ks>RH</ks> position.</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the <ks>RH</ks> position.</li>
 		</ol></li>
 	</ol></dd>
 	<br>
 	<dt><a href="../test/it/unibo/test/ClearTest.kt" target="_blank">ClearTest.kt</a></dt>
 	<dd>Functional tests about the correct execution of the <ks>Clear the room</ks> <ks>task</ks>:<ol>
-		<li><em>ClearTest</em>: after the send of a <em>clear</em> command, sent after the <em>prepare</em> command and the execution of the related <ks>task</ks>, to the <k>rbr</k>, which runs the <ks>Cleare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
+		<li><em>ClearTest</em>: after the send of a <em>clear</em> command (sent after the <em>prepare</em> command and the execution of the related <ks>task</ks>) to the <k>rbr</k>, which runs the <ks>Cleare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
 			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
-			<li>Waits the end of <ks>Prepare the room</ks> <ks>task</ks> checking the <k>rbrwalker</k> is in the <ks>RH</ks> position;</li>
+			<li>Waits the end of <ks>Prepare the room</ks> <ks>task</ks> checking the robot position, taken from the <k>rbrwalker</k> state, is the <ks>RH</ks> position;</li>
 			<li>Sends a <em>clear</em> message to <k>rbr</k> <tt>actor</tt>;</li>
 			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>table</ks>;</li>
 			<li>Checks that the food removed from the <k>table</k> are the expected;</li>
@@ -295,7 +295,7 @@ Below there are exposed some tests made for this sprint project:
 			<li>Checks that the crockery removed frome the <k>table</k> are the expected;</li>
 			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>dishwasher</ks>;</li>
 			<li>Checks that the crockery added in the <k>dishwasher</k> are the expected;</li>
-			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the the <ks>RH</ks> position.</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the <ks>RH</ks> position.</li>
 		</ol></li>
 	</ol></dd>
 </dl>
@@ -330,47 +330,25 @@ Deploy of the application for the <tt>virtual robot</tt>:
 <ul>
 	<li>The first time, it could be necessary to load the <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> file related to the simulated room in the <tt>WEnv</tt>. To do this, the following command must execute in the folder where is situated the scene file:
 		<pre>docker cp sceneConfig.js 6fc85fc771de:/home/node/WEnv/WebGLScene/sceneConfig.js</pre>
-	where <ac>6fc85fc771de</ac> is the <ac>CONTAINER ID</ac>, which can be found through a command that shows a list of containers and selecting the <ac>ID</ac> abount the containter of <ac>natbodocker/virtualrobotdisi:2.0</ac>:
+	where <ac>6fc85fc771de</ac> is the <ac>CONTAINER ID</ac>, which can be found through a command that shows a list of containers and selecting the <ac>ID</ac> about the container of <ac>natbodocker/virtualrobotdisi:2.0</ac>:
 		<pre>docker ps -a</pre>
 	</li>
 	<br>
-	<li>to launch the <tt>WEnv</tt> run in a terminal:
+	<li>to launch the <tt>WEnv</tt> it must be run in a terminal:
 		<pre>docker-compose -f basicrobotVirtual.yaml up</pre>
 	(it could be useful see <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/BuildDeployWEnv.html" target="_blank">BuildDeployWEnv.html</a> or the part related to the deploy of the <tt>virtual robot</tt> in <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>)
 	</li>
 	<br>
-	<li>Then, open the WEnv in a browser at <a href="http://localhost:8090" target="_blank">http://localhost:8090</a></li>
+	<li>Then, it must be opened the WEnv in a browser at <a href="http://localhost:8090" target="_blank">http://localhost:8090</a></li>
 	<br><br>
 	<li>Finally run the project</li>
 </ul>
 
 <h2>SCRUM Context</h2>
 
-<h3>Product Backlog</h3>
-
-The Product Backlog listed after the problem analysis showed these elements:
-<br><br>
-<ol>
-	<li>Resources representation</li>
-	<li>Resources state</li>
-	<li><tt>CoAP</tt> integration</li>
-	<li><em>Consult</em></li>
-	<li><ks>Prepare the room</ks> <ks>task</ks></li>
-	<li><ks>Add Food</ks> <ks>task</ks></li>
-	<li><ks>Clear the room</ks> <ks>task</ks></li>
-	<li>Planning</li>
-	<li>Integration of <k>basicrobot</k> with the <k>rbr</k></li>
-	<li><tt>Sonar</tt></li>
-	<li>Mapping</li>
-	<li><em>Stop</em>/<em>Reactivate</em></li>
-	<li><tt>GUI</tt> <ks>maître's smartphone</ks> software</li>
-	<li>Deployment</li>
-	<li>Maintenance</li>
-</ol>
-
 <h3>SPRINT Sequence</h3>
 
-After this Sprint, a possibile set of next Sprint could be:
+After this Sprint and according to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProdBack" target="_blank">Product Backlog</a>, listed after the problem analysis, a possibile set of next Sprint could be:
 <dl>
 	<dt>SPRINT 2</dt>
 	<dd><ol>
