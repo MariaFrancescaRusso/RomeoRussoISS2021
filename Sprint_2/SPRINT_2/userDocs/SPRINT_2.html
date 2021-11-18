@@ -1,0 +1,160 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+
+<html>
+
+<link rel="stylesheet" type="text/css" href="./utils/style.css">
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<base href=".">
+<title>RomeoRussoStandingBuffetService</title>
+</head>
+
+<body>
+
+<div id="top">
+<h1>SPRINT 2 - STANDING BUFFET SERVICE | Ingegneria dei Sistemi Software</h1>
+</div>
+
+<div class="body">
+
+<h2>Introduction</h2>
+
+The starting point for this SPRINT is the resulting model from the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#Sprint1Mod" target="_blank">previous Sprint 1</a>:
+<br><br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Architecture Model</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text">
+		SPRINT_1 <a href="../../../Sprint_1/SPRINT_1/src/model.qak" target="_blank">model.qak</a><br>
+		<pre><iframe class="qakSprint" src="../../../Sprint_1/SPRINT_1/src/model.qak" title="Sprint_1_Model">Model of Sprint 1</iframe></pre>
+	</td>
+	<td class="imageSchema">
+		<img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/ModelSprint1_Legend.png" alt="Legend of the Logical Architecture System Model from Sprint 1"><br>
+		<img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/ModelSprint_1.png" alt="Logical Architecture System Model from Sprint 1">
+	</td>
+</tr>
+</table>
+
+<h2>Goal</h2>
+
+<div class="remark">
+<ol>
+	<li>Mapping: use of <k>basicrobot</k> and <tt>sonar</tt> to map the <ks>room</ks></li>
+	<li><i><em>Avoid</em> the impact with obstacles</i> requirement</li>
+	<li><em>Stop</em>/<em>Reactivate</em> feature</li>
+	<li><ks>Prepare the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles and receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+	<li><ks>Add Food</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles and receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+	<li><ks>Clear the room</ks> <ks>task</ks>: path execution by the <tt>virtual robot</tt> <em>avoiding</em> the obstacles and receiving <em>stop</em> and then <em>reactivate</em> commands</li>
+</ol>
+</div>
+
+<h2>Problem Analysis</h2>
+
+The problems related to this sprint goals, that are already addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">previous problem analysis</a>, are detailed below.
+
+<h3></h3>
+
+
+
+<h2>Test Plans</h2>
+
+With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTestPlans" target="_blank">previous problem analysis test plans</a>, below it's reported a functional tests planning related to the goals of this sprint:
+<br><br>
+<ul>
+	<li>Tests of the position of the <ks>RBR</ks> that must be on its <ks>RH</ks> when system starts and at the end of each <ks>task</ks>;</li>
+	<li>Tests of the path carried out by the <ks>RBR</ks> that must be the one expected to execute the <ks>task</ks> required by the <ks>Maître de Salle</ks>;</li>
+	<li>Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactivate</em> command;</li>
+	<li>Test of the capability of the <ks>RBR</ks> to <em>avoid</em> all the possible obstacles.</li>
+</ul>
+
+<h2>Project</h2>
+
+<h3></h3>
+
+
+
+<h2>Testing</h2>
+
+Below there are exposed some tests made for this sprint project:
+
+
+
+<h2>Model of System's Logical Architecture</h2>
+
+
+
+<h2>Deployment</h2>
+
+
+
+<h2>SCRUM Context</h2>
+
+<h3>SPRINT Sequence</h3>
+
+After this Sprint and according to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProdBack" target="_blank">Product Backlog</a>, listed after the problem analysis, a possibile set of next Sprint could be:
+<dl>
+	<dt>SPRINT 3</dt>
+	<dd><ol>
+		<li><tt>GUI</tt> <ks>maître's smartphone</ks> software</li>
+		<li>Tests</li>
+	</ol></dd>
+	<br>
+	<dt>SPRINT 4</dt>
+	<dd><ol>
+		<li>Deploy on <tt>Raspberry</tt></li>
+		<li><ks>Prepare the room</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li><ks>Add Food</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li><ks>Clear the room</ks> <ks>task</ks>: execution by the <tt>real robot</tt></li>
+		<li>Tests</li>
+	</ol></dd>
+</dl>
+
+<h2>Maintenance</h2>
+
+</div>
+<br><br>
+<div class="endpage">
+By Romeo Stefano (stefano.romeo@studio.unibo.it) and Russo Maria (maria.russo10@studio.unibo.it)<br>
+<img class="photo" src="../../../userDocs/utils/img/StefanoRomeo.png" alt="Stefano Romeo image">
+<img class="photo" src="../../../userDocs/utils/img/MariaRusso.png" alt="Maria Russo image">
+</div>
+
+<div hidden="hidden">elementi utili:
+Table:
+<table>
+<tr>
+	<td></td>
+	<td></td>
+</tr>
+</table>
+Sorted List:
+<ol>
+<li></li>
+<li></li>
+</ol>
+Unordered List:
+<ul>
+<li></li>
+<li></li>
+</ul>
+Definition list:
+<dl>
+<dt></dt>
+<dd></dd>
+</dl>
+Link:
+<a href="" target="_blank"></a>
+Link in pagina:
+<a name="link"></a> + <a href="./SPRINT_1.html#link">text</a>
+IFrame:
+<iframe src="./src" title="title">"Link"/Cosa c'è nel frame</iframe>
+<br>Image:
+<img src="./utils/img/Nome.png" alt="description">
+</div>
+
+</body>
+</html>

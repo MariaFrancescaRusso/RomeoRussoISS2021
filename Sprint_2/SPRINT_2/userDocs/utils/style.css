@@ -1,0 +1,308 @@
+body {
+	margin-left:  30px;
+	margin-right: 30px;
+}
+
+P {
+	font-family: Tahoma;
+	font-size: 10pt;
+}
+
+a, a:visited, a:active, a:link, a:hover {
+	text-decoration: underline;
+	color: #545454;
+	background-color: transparent;
+	font-size: 93%;
+}
+
+a:hover {
+	background-color: #cccccc;
+}
+
+hr {
+	clear: both;
+	height: 0.5px;
+	color: #2f4f4f;
+	background-color: #2f4f4f;
+}
+
+h1, h2, h3 {
+	color: #242424;
+	clear: left;
+	font: 100% Tahoma, Helvetica, Arial, sans-serif;
+	margin-bottom: 0.5em;
+	padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+h1 {
+	font-size: 150%;
+	background-color: #b2c0ff;
+	padding: 10px;
+}
+
+h2 {
+	font-size: 130%;
+	background-color: #9ed8ff;
+}
+
+h3 {
+	font-size: 100%;
+	background-color: #e6ccff;
+}
+
+h4 {
+	font-size: 100%;
+	background-color: #ccffcc;
+	width: 95%;
+	border-radius: 5px;
+	padding: 2px;
+}
+
+h5 {
+	font-size: 100%;
+	background-color: #d5ffb0;
+}
+
+#i {
+	color: #ff1010;
+}
+
+/*for utilities*/
+tt {
+	font-family: "Arial";
+	font-size: 90%;
+	color: #006600;
+}
+
+/*for commands (and command verbs)*/
+em {
+	font-family: "Arial";
+	font-size: 80%;
+	font-weight: bold;
+	border-style:solid;
+	border-color: #abe876;
+	color: #1632cc;
+}
+
+/*highlighted words in red*/
+bc {
+	font-family: "Arial";
+	font-size: 90%;
+	font-weight: bold;
+	color: #990000;
+	background-color: #fcf8c7;
+}
+
+/*for key words*/
+ks {
+	font-family: "Arial";
+	font-weight: bold;
+	color: #0000CD;
+	font-size: 90%;
+}
+
+/*for the node names and FSM state*/
+kc {
+	font-family: "Arial";
+	font-weight: bold;
+	color: #008000;
+	font-size: 90%;
+}
+
+/*for code*/
+pre {
+	font-family: "Consolas";
+	font-size: 85%;
+	background-color: #f5f5f5;
+	border: 1.5px solid silver;
+	padding: 5px;
+	word-wrap: break-word;
+	white-space: pre-wrap;
+}
+
+/*for commands arguments and words code style*/
+ac {
+	font-family: "Consolas";
+	color: #2f4f4f;
+	font-size: 85%;
+	font-style: italic;
+}
+
+/*for libraries*/
+m {
+	font-family: "Helvetica";
+	line-height: 100%;
+	font-size: 80%;
+	color: #4b0082;
+}
+
+/*for actors and contexts*/
+k {
+	color: #990000;
+	font-weight: bold;
+	font-size: 90%;
+}
+
+/*for messages*/
+ko {
+	color: #d2691e;
+	font-weight: bold;
+	font-size: 90%;
+}
+
+top {
+	width: 100%;
+}
+
+div.body {
+	font-size: 18px;
+	text-align: justify;
+}
+
+div.req {
+	background-color: #d9ffb3;
+	font-size: 18px;
+	width: 700px;
+	border: 3px solid green;
+	padding: 15px;
+	margin: 10px;
+}
+
+div.remark {
+	background-color: #E3F2FD;
+	border: 1.5px solid #d5f2ed;
+	padding: 15px;
+	margin: 10px;
+	border-radius: 25px;
+}
+
+div.wrapdesc {
+	width: 90%;
+	margin: auto;
+}
+
+div.imagedesc {
+	width: 85%;
+	margin: auto;
+}
+
+div.endpage {
+	background-color:rgba(86, 56, 253, 0.9);
+	width:100%;
+	text-align:center;
+	color:white
+}
+
+div.center {
+	text-align:center;
+}
+
+table, th, td {
+	border-collapse: collapse;
+	border: 1px solid black;
+	padding: 5px;
+}
+
+table {
+	width: 100%;
+}
+
+td.title {
+	width: 20%;
+}
+
+td.image {
+	width: 30%;
+	text-align: center;
+}
+
+td.imageScenario {
+	width: 35%;
+	text-align: center;
+}
+
+td.imageSchema {
+	width: 50%;
+	text-align: center;
+}
+
+td.text {
+	text-align: center;
+}
+
+td.wenv {
+	text-align: center;
+	width: 20%;
+}
+
+tr.text {
+	text-align: center;
+}
+
+ol, ul, li {
+	margin: 0;
+	margin-left: 10px;
+	padding: 0;
+}
+
+ul {
+	list-style-type: disc;
+}
+
+dl {
+	margin-bottom: 0;
+}
+
+dt {
+	font-weight: bold;
+}
+
+iframe {
+	border: none;
+	width: 100%;
+	height: 347px;
+}
+
+iframe.qakReq {
+	height: 1210px;
+}
+
+iframe.qakProblem {
+	height: 675px;
+}
+
+iframe.qakImage {
+	height: 630px;
+}
+
+iframe.qakSprint {
+	height: 550px;
+}
+
+iframe.map {
+	height: 136px;
+	width: 50%;
+}
+
+iframe.mapWenv {
+	height: 136px;
+	width: 78%;
+}
+
+img {
+	border: none;
+	width: 100%;
+}
+
+img.photo {
+	width: 5%;
+	height: 5%;
+	border: none;
+}
+
+img.resizeMin {
+	width: 55%;
+	height: 55%;
+}
