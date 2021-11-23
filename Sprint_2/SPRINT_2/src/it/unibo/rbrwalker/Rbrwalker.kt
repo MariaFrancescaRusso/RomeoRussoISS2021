@@ -17,11 +17,13 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
 		
-				var Dir = ""		
+				var Dir = ""
 				var CurrMov = "empty"
 				var X = ""
 				var Y = ""
+				var StopTimer = 1000L
 				var FirstStart = true
+				var Step = 647 //290
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -33,8 +35,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("WALKER | waits a goal...")
 					}
-					 transition(edgeName="t028",targetState="goToGoal",cond=whenRequest("setGoal"))
-					transition(edgeName="t029",targetState="terminateWalker",cond=whenDispatch("end"))
+					 transition(edgeName="t035",targetState="goToGoal",cond=whenRequest("setGoal"))
+					transition(edgeName="t036",targetState="terminateWalker",cond=whenDispatch("end"))
 				}	 
 				state("goToGoal") { //this:State
 					action { //it:State
@@ -42,7 +44,7 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						 ){itunibo.planner.plannerUtil.initAI(  )
 						itunibo.planner.plannerUtil.loadRoomMap( "roomMap"  )
 						itunibo.planner.plannerUtil.showMap(  )
-						 FirstStart = false 
+						 FirstStart = false  
 						}
 						if( checkMsgContent( Term.createTerm("setGoal(X,Y,DIR)"), Term.createTerm("setGoal(X,Y,DIR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -51,9 +53,13 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 												Y = payloadArg(1)
 												Dir = payloadArg(2)
 								println("WALKER | received the goal ($X, $Y)...")
-								itunibo.planner.plannerUtil.startTimer(  )
 								itunibo.planner.plannerUtil.planForGoal( X, Y  )
-								itunibo.planner.plannerUtil.getDuration(  )
+						}
+						if( checkMsgContent( Term.createTerm("reactivate(ARG)"), Term.createTerm("reactivate(ARG)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("WALKER | reactivated...")
+								updateResourceRep( "Reactivated"  
+								)
 						}
 						 CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove()  
 					}
@@ -72,31 +78,52 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				}	 
 				state("doStep") { //this:State
 					action { //it:State
-						request("step", "step(650)" ,"basicrobot" )  
-						itunibo.planner.plannerUtil.updateMap( CurrMov  )
+						request("step", "step($Step)" ,"basicrobot" )  
 						delay(1000) 
 					}
-					 transition(edgeName="t130",targetState="handleAnswer",cond=whenReply("stepdone"))
-					transition(edgeName="t131",targetState="handleAnswer",cond=whenReply("stepfail"))
+					 transition(edgeName="t137",targetState="handleAnswer",cond=whenReply("stepdone"))
+					transition(edgeName="t138",targetState="handleAnswer",cond=whenReply("stepfail"))
 				}	 
 				state("doTurn") { //this:State
 					action { //it:State
 						forward("cmd", "cmd($CurrMov)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( CurrMov  )
-						delay(1000) 
+						stateTimer = TimerActor("timer_doTurn", 
+							scope, context!!, "local_tout_rbrwalker_doTurn", StopTimer )
 					}
-					 transition( edgeName="goto",targetState="goToGoal", cond=doswitch() )
+					 transition(edgeName="t239",targetState="goToGoal",cond=whenTimeout("local_tout_rbrwalker_doTurn"))   
+					transition(edgeName="t240",targetState="handleStop",cond=whenRequest("stop"))
 				}	 
 				state("handleAnswer") { //this:State
 					action { //it:State
-						 var C = ""  
+						if( checkMsgContent( Term.createTerm("stepdone(V)"), Term.createTerm("stepdone(V)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								itunibo.planner.plannerUtil.updateMap( CurrMov  )
+						}
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(D,C)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								 C = payloadArg(1)  
-								println("WALKER | failed execution move: found $C")
+								 
+												var Duration = payloadArg(0)
+												var Cause = payloadArg(1)
+								println("WALKER | failed execution move: found $Cause")
+								itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection(  )
+								println("WALKER | finding a new path for the goal ($X, $Y)...")
+								itunibo.planner.plannerUtil.planForGoal( X, Y  )
+								itunibo.planner.plannerUtil.updateMap( "w"  )
+								itunibo.planner.plannerUtil.updateMap( "s"  )
 						}
+						stateTimer = TimerActor("timer_handleAnswer", 
+							scope, context!!, "local_tout_rbrwalker_handleAnswer", StopTimer )
 					}
-					 transition( edgeName="goto",targetState="goToGoal", cond=doswitch() )
+					 transition(edgeName="t341",targetState="goToGoal",cond=whenTimeout("local_tout_rbrwalker_handleAnswer"))   
+					transition(edgeName="t342",targetState="handleStop",cond=whenRequest("stop"))
+				}	 
+				state("handleStop") { //this:State
+					action { //it:State
+						println("WALKER | stopped. Waiting for a reactivate command...")
+						answer("stop", "stopped", "stopped(0)"   )  
+					}
+					 transition(edgeName="t443",targetState="goToGoal",cond=whenDispatch("reactivate"))
 				}	 
 				state("correctDirection") { //this:State
 					action { //it:State

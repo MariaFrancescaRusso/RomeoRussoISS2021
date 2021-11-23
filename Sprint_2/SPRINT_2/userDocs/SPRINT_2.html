@@ -56,8 +56,34 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 The problems related to this sprint goals, that are already addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">previous problem analysis</a>, are detailed below.
 
-<h3></h3>
+<h3>Mapping</h3>
 
+As already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, to be able to map the <ks>room</ks>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot; in this Sprint, it will be a <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) running on its own <tt>WEnv</tt> (Web Environment) to solve the goals about the execution of the <ks>tasks</ks>). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicrobot</k>.
+<br><br>
+
+To map the room, in this case the virtual room in the WEnv, the rbr could communicate with the basicrobot to move it, as already said in the Sprint 1 problem analysis, and to know if it founds some obstacles or wall.<br>
+For/To make possible the mapping it's necessary also to update the room map and to do that it's useful the Planner support available in the library <m>it.unibo.planner20-1.0.jar</m> and discussed in the Sprint 1 problem analysis.
+
+<br><br>
+Con il mapping si vuole creare una nuova mappa concorde con la stanza virtuale e per farlo si potrebbe fare comunicare l'rbr con il basicrobot il quale risponde ... e ad ogni passo aggiornare la mappa logica tramite il planner ...<br>
+
+
+
+<h3><i><em>Avoid</em> the impact with obstacles</i> requirement</h3>
+
+As already said above and in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, to satisfy the requirement <i><em>avoid</em> the impact with obstacles</i>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicrobot</k>.
+<br><br>
+il basicrobot infatti quando incontra un ostacolo risponde tramite stepfail indicando...
+
+Pertanto come soluzione a questo problema potrebbe essere sufficiente/necessario gestire tale messaggio e per farlo ci possono essere diversi scenari:
+1. reinviando uno step command al basicrobot di durata DURATION in modo da arrivare di fronte all'ostacolo e settare temporaneamente l'ostacolo nella mappa logica e ricalcolare il percorso per il goal in modo da aggirare l'ostacolo;
+2. attendere che l'ostacolo mobile si sposti e ritentare il passo e poi continuare la sequenza di passi fino a raggiungere il goal
+
+
+<h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
+
+--------PROBLEM ANALYSIS-----------
+To manage the the stop/reactivate commands received by the maitre, during the execution of each task, it's possible to split the path, the rbr must execute, in a steps sequence. In this way, at the end of each step the rbr checks if it has received a stop command and in this case it saves its state and waits for the reactivate command, otherwise it carries out the next step.
 
 
 <h2>Test Plans</h2>
@@ -72,6 +98,12 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 </ul>
 
 <h2>Project</h2>
+
+<h3>Mapping</h3>
+
+<h3><i><em>Avoid</em> the impact with obstacles</i> requirement</h3>
+
+<h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
 
 <h3></h3>
 

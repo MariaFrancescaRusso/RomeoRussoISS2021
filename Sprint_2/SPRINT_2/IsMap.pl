@@ -5,7 +5,7 @@
 %% ONLY for "https://swish.swi-prolog.org/"
 %:- dynamic (isMap/1).
 
-isMap(false).
+isMap(true).
 
 %% To obtain the value element
 getValue(Res) :-

@@ -23,12 +23,15 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				var AnsExpose2 = ""
 				var ClearDish = ""
 				var ClearFood = ""
+				var StopTime = 3000L
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("MAITRE | STARTS...")
 						solve("consult('Prepare.pl')","") //set resVar	
 						delay(2000) 
+						request("stop", "stop(0)" ,"rbrwalker" )  
+						println("MAITRE | send stop to Walker")
 					}
 					 transition( edgeName="goto",targetState="sendPrepare", cond=doswitch() )
 				}	 
@@ -58,8 +61,8 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t17",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
-					transition(edgeName="t18",targetState="handleWarning",cond=whenReply("warning"))
+					 transition(edgeName="t10",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					transition(edgeName="t11",targetState="handleWarning",cond=whenReply("warning"))
 				}	 
 				state("handleWarning") { //this:State
 					action { //it:State
@@ -84,10 +87,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("MAITRE | waiting answers from resources...")
 					}
-					 transition(edgeName="t29",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
-					transition(edgeName="t210",targetState="handleExpose",cond=whenEvent("observerfridge"))
-					transition(edgeName="t211",targetState="handleExpose",cond=whenEvent("observerpantry"))
-					transition(edgeName="t212",targetState="handleExpose",cond=whenEvent("observertable"))
+					 transition(edgeName="t22",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
+					transition(edgeName="t23",targetState="handleExpose",cond=whenEvent("observerfridge"))
+					transition(edgeName="t24",targetState="handleExpose",cond=whenEvent("observerpantry"))
+					transition(edgeName="t25",targetState="handleExpose",cond=whenEvent("observertable"))
 				}	 
 				state("handleExpose") { //this:State
 					action { //it:State
@@ -131,7 +134,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						forward("consult", "consult(0)" ,"table" ) 
 						println("MAITRE | send consult command to Table for 'Clear the room' task")
 					}
-					 transition(edgeName="t313",targetState="sendClear",cond=whenEvent("observertable"))
+					 transition(edgeName="t36",targetState="sendClear",cond=whenEvent("observertable"))
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State
@@ -145,6 +148,31 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
 						forward("clear", "clear($ClearDish,$ClearFood)" ,"rbr" ) 
 						println("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
+					}
+					 transition( edgeName="goto",targetState="sendStop", cond=doswitch() )
+				}	 
+				state("sendStop") { //this:State
+					action { //it:State
+						delay(5000) 
+						request("stop", "stop(0)" ,"rbrwalker" )  
+						println("MAITRE | send stop command to RBR WALKER")
+						stateTimer = TimerActor("timer_sendStop", 
+							scope, context!!, "local_tout_maitre_sendStop", StopTime )
+					}
+					 transition(edgeName="t47",targetState="termination",cond=whenTimeout("local_tout_maitre_sendStop"))   
+					transition(edgeName="t48",targetState="sendReactivate",cond=whenReply("stopped"))
+				}	 
+				state("sendReactivate") { //this:State
+					action { //it:State
+						delay(3000) 
+						forward("reactivate", "reactivate(0)" ,"rbrwalker" ) 
+						println("MAITRE | send reactivate command to RBR WALKER")
+					}
+					 transition( edgeName="goto",targetState="termination", cond=doswitch() )
+				}	 
+				state("termination") { //this:State
+					action { //it:State
+						println("MAITRE | terminating...")
 						terminate(1)
 					}
 				}	 
