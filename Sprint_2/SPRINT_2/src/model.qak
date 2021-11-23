@@ -1,6 +1,6 @@
-System standingbuffetservice 
+System standingbuffetservice
 
-//Observer Resources - Maitre/RBR 
+//Observer Resources - Maitre/RBR
 Event observerfridge:observerfridge(X)
 Event observerpantry:observerpantry(X)
 Event observertable:observertable(X)
@@ -8,7 +8,7 @@ Event observerdishwasher:observerdishwasher(X)
 
 //Maitre - RBR
 Dispatch prepare:prepare(X, Y)
-Request addFood:addFood(FOODE_CODE)	
+Request addFood:addFood(FOODE_CODE)
 Dispatch clear:clear(X, Y)
 
 Reply warning:warning(ARG)	//void
@@ -21,7 +21,7 @@ Request setGoal:setGoal(X, Y, DIR)
 Reply goalState:goalState(X)
 
 //RBR - Fridge
-Dispatch askFood:askFood(FOOD_CODE) 
+Dispatch askFood:askFood(FOOD_CODE)
 
 //RBR - Resources
 Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to change
@@ -29,8 +29,8 @@ Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to cha
 //RBRWalker - basicRobot
 Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
 Request step:step(TIME)
-Reply stepdone:stepdone(V)  
-Reply stepfail:stepfail(DURATION, CAUSE)  
+Reply stepdone:stepdone(V)
+Reply stepfail:stepfail(DURATION, CAUSE)
 
 //RBR - RBRWalker
 //RBRWalker - basicRobot
@@ -40,23 +40,23 @@ Dispatch end:end(ARG)	//void
 Request map:map(ARG)	//void
 Reply mapdone:mapdone(ARG)	//void
 Dispatch endmapper:endmapper(ARG)	//void
- 
+
 Context ctxsystem ip [host="localhost" port=8040]
 //Context ctxmaitre ip [host="192.168.1.171" port=8070]
 //Context ctxfridge ip [host="127.0.0.1" port=8060]
 //Context ctxrbr ip [host="localhost" port=8050]
-Context ctxbasicrobot ip [host="127.0.0.1" port=8020]  
+Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 
-ExternalQActor basicrobot context ctxbasicrobot  
+ExternalQActor basicrobot context ctxbasicrobot
 
 QActor mapper context ctxsystem {
-	[# var CurrMov = "empty" 
-		var CurrEdge =0	
+	[# var CurrMov = "empty"
+		var CurrEdge =0
 		var NameFile = "roomMap"
 		var Table = false
 		var Step = 290 //647
 	#]
-	
+
 	State s0 initial {
 		println ("MAPPER | STARTS...")
 		run itunibo.planner.plannerUtil.initAI()
@@ -64,43 +64,43 @@ QActor mapper context ctxsystem {
 		delay 2000
 	}
 	Goto wait
-	
+
 	State wait {
 		println ("MAPPER | waits...")
 	}Transition t1
 		whenRequest map -> findNextWall
 		whenMsg endmapper -> endState
 
-//We assume that the table is not near to the wall	
+//We assume that the table is not near to the wall
 	State findNextWall{
 		request basicrobot -m step : step($Step)
 		delay 1000
-	}Transition t2 
+	}Transition t2
 		whenReply stepdone -> succesStep
-		whenReply stepfail -> obstacleFound 
+		whenReply stepfail -> obstacleFound
 
-//The map is upadated when a stepDone is received	
+//The map is upadated when a stepDone is received
 	State succesStep {
 		run itunibo.planner.plannerUtil.updateMap('w')
 		run itunibo.planner.plannerUtil.showMap()
 	}Goto findNextWall if [# Table == false #] else visitInternalCell
-	
+
 	State obstacleFound{
 		[# var D = ""
 			var C = ""
 		#]
 		onMsg( stepfail : stepfail(D, C) ){
 		[# 	D = payloadArg(0)
-		 	C = payloadArg(1) 	
-		#]			
+		 	C = payloadArg(1)
+		#]
 			request basicrobot -m step : step($D)
 		}
 		delay 1000
-	}Transition t3 
+	}Transition t3
 	 whenReply stepdone and [# Table == false #] -> turnLeft
 	 whenReply stepdone and [# Table == true #] -> tableFound
 	 whenReply stepfail-> obstacleFound
-	 
+
 	State turnLeft{
 		println ("WALKER | Found a wall")
 		forward basicrobot -m cmd : cmd(l)
@@ -110,35 +110,33 @@ QActor mapper context ctxsystem {
 	}
 	Goto findNextWall if  [# CurrEdge<4 #] else saveMap
 
-//This step is necessary to make usable	planForNextDirty otherwise the planner doesn't create the not visited cells 
+//This step is necessary to make usable	planForNextDirty otherwise the planner doesn't create the not visited cells
 	State saveMap{
 		run itunibo.planner.plannerUtil.showMap()
-		
+
 		run itunibo.planner.plannerUtil.saveRoomMap(NameFile)
-		run itunibo.planner.plannerUtil.loadRoomMap(NameFile)	
+		run itunibo.planner.plannerUtil.loadRoomMap(NameFile)
 	}
 	Goto planNextDirty
 
 	State planNextDirty{
 		[# Table = true #]
 		run itunibo.planner.plannerUtil.planForNextDirty()
-		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #] 
-		println("Next move $CurrMov")
+		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]
 		run itunibo.planner.plannerUtil.showMap()
 	}Goto endState if [# CurrMov == "" #] else doMove
 
-	State visitInternalCell{	
-		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #] 
+	State visitInternalCell{
+		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]
 	}Goto planNextDirty if [# CurrMov == "" #] else doMove
-	
+
 	State doMove {
 	run itunibo.planner.plannerUtil.showMap()
 	}
 	Goto doStep if [# CurrMov == "w" #] else doTurn
-	
+
 	State doStep {
 		request basicrobot -m step : step($Step)
-		println('w')
 		delay 1000
 	}
 	Transition t4
@@ -147,7 +145,6 @@ QActor mapper context ctxsystem {
 
 	State doTurn {
 		forward basicrobot -m cmd : cmd($CurrMov)
-		println('$CurrMov')
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 		delay 1000
 	}
@@ -155,7 +152,6 @@ QActor mapper context ctxsystem {
 
 	State tableFound {
 		run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
-		println("tavolo = $Table ")
 	}Goto visitInternalCell
 
 	State endState {
@@ -168,71 +164,71 @@ QActor mapper context ctxsystem {
 /* Actor maitre is used as a mock client */
 //
 ////QActor maitre context ctxmaitre {
-/* 
+/*
 QActor maitre context ctxsystem {
-	[#	
-		var AddFoodtime = 20000L 
+	[#
+		var AddFoodtime = 20000L
 		var Nexp = 0
 		var AnsExpose1 = ""
 		var AnsExpose2 = ""
 		var ClearDish = ""
 		var ClearFood = ""
-	#]	
-	
+	#]
+
 	State s0 initial {
 		println ("MAITRE | STARTS...")
-		
+
 		solve( consult("Prepare.pl") )
-		
+
 		delay 2000
 	}
 	Goto sendPrepare
-	
-	State sendPrepare {		
+
+	State sendPrepare {
 		solve( getAllEl(Crockery, Foods) )
-		ifSolved {			
+		ifSolved {
 			forward rbr -m prepare : prepare($getCurSol("Crockery"), $getCurSol("Foods"))
 			println ("MAITRE | send prepare command to RBR: ${getCurSol(\"Crockery\")}, ${getCurSol(\"Foods\")}")
 		}
 		else {
 			println ("MAITRE | Error getting 'Prepare the room' elements...")
 		}
-		
-		delay 6000		
+
+		delay 6000
 	}
 	Goto sendAddFood
-	
-	State sendAddFood {		
+
+	State sendAddFood {
 		solve( getFoodCodeEl(FoodCode) )
-		ifSolved {			
+		ifSolved {
 			request rbr -m addFood : addFood($getCurSol("FoodCode"))
-			println ("MAITRE | send addFood(${getCurSol(\"FoodCode\")}) command to RBR")				
+			println ("MAITRE | send addFood(${getCurSol(\"FoodCode\")}) command to RBR")
 		}
 		else {
 			println ("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
 		}
-		
+
 		delay 6000
 	}
-	Transition t1 
+	Transition t1
 		whenTimeVar AddFoodtime -> sendConsult	//Time waiting for warning otherwise the food is present
 		whenReply warning -> handleWarning
-			
-	State handleWarning {		
+
+	State handleWarning {
 		println ("MAITRE | received warning from RBR")
 	}
 	Goto sendConsult
 
-	State sendConsult {	
+	State sendConsult {
 		forward fridge -m consult : consult(0)
 		println ("MAITRE | send consult command to Fridge")
-		
+
 		forward dishwasher -m consult : consult(0)
 		println ("MAITRE | send consult command to Dishwasher")
-		
+
 		forward pantry -m consult : consult(0)
 		println ("MAITRE | send consult command to Pantry")
-		
+
 		forward table -m consult : consult(0)
 		println ("MAITRE | send consult command to Table")
 	}
@@ -248,11 +244,11 @@ QActor maitre context ctxsystem {
 		whenEvent observertable -> handleExpose
 
 	State handleExpose {
-		[#  
+		[#
 			var Sender = currentMsg.msgSender().removePrefix("observer")
-			Nexp++ 
+			Nexp++
 		#]
-		
+
 		onMsg( observerdishwasher : observerdishwasher(X) ) {
 	 		[# AnsExpose1 = payloadArg(0) #]
  		}
@@ -263,23 +259,23 @@ QActor maitre context ctxsystem {
 	 		[# AnsExpose1 = payloadArg(0) #]
  		}
  		onMsg( observertable : observertable(X) ) {
-	 		[# 
+	 		[#
 	 			var Temp = payloadArg(0).split(";")
 	 			AnsExpose1 = Temp.get(0)
 	 			AnsExpose2 = Temp.get(1)
-	 		#] 
+	 		#]
  		}
- 		
+
  		if [# Sender == "table" #] {
 			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
  		}
- 		else { 
+ 		else {
  			println ("MAITRE | status of $Sender: $AnsExpose1")
  		}
 	}
 	Goto preSendClear if [#	Nexp == 4 #] else waitExpose
-	
-	// maitre sends a consult command to table before sending clear command to rbr 
+
+	// maitre sends a consult command to table before sending clear command to rbr
 	State preSendClear {
 		delay 40000
 		forward table -m consult : consult(0)
@@ -287,105 +283,105 @@ QActor maitre context ctxsystem {
 	}
 	Transition t3
 		whenEvent observertable -> sendClear
-	
+
 	State sendClear {
-		onMsg( observertable : observertable(X) ) {	 		
-	 		[# 
+		onMsg( observertable : observertable(X) ) {
+	 		[#
 	 			var Temp = payloadArg(0).split(";")
 	 			ClearDish = Temp.get(0)
 	 			ClearFood = Temp.get(1)
 	 		#]
  		}
- 				
+
 		println ("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
-		
+
 		forward rbr -m clear : clear($ClearDish, $ClearFood)
 		println ("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
-		
+
 		terminate 1
-	} 
+	}
 }
 
 //QActor foodconsumer context ctxmaitre {
 QActor foodconsumer context ctxsystem {
-	
+
 	State s0 initial {
 		println ("FOODCONSUMER | STARTS and it's very hungry...")
-		
+
 		solve( consult("Consumer.pl") )
 		delay 50000
 	}
 	Goto eat
-		
+
 	State eat {
 		println ("FOODCONSUMER | chooses the food he wants to eat")
 		solve( getFoodEl(Foods) )
-		ifSolved {	
+		ifSolved {
 			println ("FOODCONSUMER | eating from table ${getCurSol(\"Foods\")}...")
-			forward table -m changeState : changeState(remove, $getCurSol("Foods")) 
-			println ("FOODCONSUMER | is now happy")			
+			forward table -m changeState : changeState(remove, $getCurSol("Foods"))
+			println ("FOODCONSUMER | is now happy")
 		}
 		else {
 			println ("FOODCONSUMER | Error getting food to consume...")
 		}
-			
+
 		terminate 1
 	}
 }
 */
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
-	[# 	
+	[#
 		var IsMap = false
 		var Dishes = ""
 		var Food = ""
 		var FoodCode = ""
-		var FoodPresence = "" 
+		var FoodPresence = ""
 		var RHCoordinate : Pair<String,String> ?= null	// X = column; Y = row
 		var RHDir = ""
 		var CurrentPos = ""
 		var Cleared = false
-	#]	
-	
+	#]
+
 	/* Initialization of planner and loading map if available */
-	State s0 initial {		
+	State s0 initial {
 		println ("RBR | STARTS and it's placed in RH position...")
-			
-		//To know if the room has been already mapped	
-		solve( consult("IsMap.pl") )				
+
+		//To know if the room has been already mapped
+		solve( consult("IsMap.pl") )
 		solve( getValue(Value) )
-		ifSolved {	
+		ifSolved {
 			[# IsMap = "${getCurSol("Value")}".toBoolean() #]
-			println ("RBR | IsMap value $IsMap")				
+			println ("RBR | IsMap value $IsMap")
 		}
 		else {
 			println ("RBR | Error getting ...")
-		}	
-		//Load resources coordinates file 
+		}
+		//Load resources coordinates file
 		solve( consult("ResourcesCoordinates.pl") )
-			
+
 		solve( getRHXYCoordinatesAndDir(XRH, YRH, Dir) )
-		ifSolved {	
-			[# 
-				RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}") 
+		ifSolved {
+			[#
+				RHCoordinate = Pair("${getCurSol("XRH")}", "${getCurSol("YRH")}")
 				RHDir = "${getCurSol("Dir")}"
 			#]
-			println ("RBR | RH in $RHCoordinate")				
+			println ("RBR | RH in $RHCoordinate")
 		}
 		else {
 			println ("RBR | Error getting RH coordinates...")
 		}
 	}
 	Goto working if [# IsMap #] else mapping
-	
+
 	State mapping {
 		println ("RBR | initializing planner...")
 		println ("RBR | start mapping room...")
-		delay 300 
+		delay 300
 		request mapper -m map:map(0)
 	}Transition t1
 		whenReply mapdone -> working
- 
+
 	State working {
 		if[#IsMap == false #]{
 			println ("RBR | end mapping step")
@@ -395,140 +391,140 @@ QActor rbr context ctxsystem {
 	}
 	Transition t0
 		whenMsg prepare -> exPrepareHP
-	
+
 	// State that receives prepare command and sets nearest pantry goal from home
 	State exPrepareHP {
 		onMsg( prepare : prepare(X,Y) ) {
-	 		[# 	
+	 		[#
 	 			Dishes = payloadArg(0)
 				Food = payloadArg(1)
 			#]
 		}
  		println ("RBR | executing task 'Prepare the room' ( Crockery = $Dishes; Foods = $Food ) :" )
- 		
+
  		solve( getPantryFromCurPosXYCoordinateAndDir($RHCoordinate, XPantry, YPantry, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for pantry in (${getCurSol(\"XPantry\")}, ${getCurSol(\"YPantry\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for pantry in (${getCurSol(\"XPantry\")}, ${getCurSol(\"YPantry\")})")
 		}
 		else {
 			println ("RBR | Error getting pantry coordinates...")
 		}
-				
-		println ("RBR | going to pantry...")		
+
+		println ("RBR | going to pantry...")
 		request rbrwalker -m setGoal : setGoal($getCurSol("XPantry"), $getCurSol("YPantry"), $getCurSol("Dir"))
-	}	
-	Transition t1 
+	}
+	Transition t1
 		whenReply goalState -> exPreparePT
 
 	// State that changes pantry state and sets nearest table goal from pantry
-	State exPreparePT {		
+	State exPreparePT {
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
-		}		
-		
+		}
+
 		println ("RBR | ...reached pantry. Taking dishes...")
 		forward pantry -m changeState : changeState(remove, $Dishes)
 		delay 300
-		
+
 		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
-		
+
 		println ("RBR | going to table...")
 		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))
 	}
-	Transition t2 
+	Transition t2
 		whenReply goalState -> exPrepareTF
 
-	// State that changes table state and sets nearest fridge goal from table		
-	State exPrepareTF {	
+	// State that changes table state and sets nearest fridge goal from table
+	State exPrepareTF {
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
-		}	
-	
+		}
+
 		println ("RBR | ...reached table. Adding dishes...")
 		forward table -m changeState : changeState(add, $Dishes)
-		delay 300	
-		
+		delay 300
+
 		solve( getFridgeFromCurPosXYCoordinateAndDir($CurrentPos, XFridge, YFridge, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")
 		}
 		else {
 			println ("RBR | Error getting fridge coordinates...")
 		}
-		
+
 		println ("RBR | going to fridge...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir")) 		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir"))
 	}
-	Transition t3 
+	Transition t3
 		whenReply goalState -> exPrepareFT
 
-	// State that changes fridge state and sets nearest table goal from fridge		
-	State exPrepareFT {	
+	// State that changes fridge state and sets nearest table goal from fridge
+	State exPrepareFT {
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
 		}
-		
+
 		println ("RBR | ...reached fridge. Taking food...")
-		forward fridge -m changeState : changeState(remove, $Food)	
+		forward fridge -m changeState : changeState(remove, $Food)
 		delay 300
-		
+
 		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
-	
+
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))
 	}
-	Transition t4 
+	Transition t4
 		whenReply goalState -> addFoodTable
 
-	// State that changes table state	
+	// State that changes table state
 	State addFoodTable {
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
 		}
 
 		println ("RBR | ...reached table. Adding food...")
 		forward table -m changeState : changeState(add, $Food)
-		delay 300				
+		delay 300
 	}
 	Goto goToHome
-	
-	// State that sets RH goal	
-	State goToHome {			
+
+	// State that sets RH goal
+	State goToHome {
 		println ("RBR | coming back to RH...")
 //		request rbrwalker -m setgoal : setgoal("${RHCoordinate!!.first}", "${RHCoordinate!!.second}", $RHDir)
-		[# request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second}, $RHDir)", "rbrwalker") #] 
+		[# request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second}, $RHDir)", "rbrwalker") #]
 	}
 	Transition t5
 		whenReply goalState and [# !Cleared #] -> wait
-		whenReply goalState and [# Cleared #] -> terminateRbr 
-		
+		whenReply goalState and [# Cleared #] -> terminateRbr
+
 	State wait {
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
-			updateResource [# "$CurrentPos" #] 
+			println("RBR | current position: $CurrentPos")
+			updateResource [# "$CurrentPos" #]
 		}
-		
+
 		println ("RBR | ...reached RH. Finished executing task")
 		println ("RBR | waiting for a command...")
 	}
@@ -536,7 +532,7 @@ QActor rbr context ctxsystem {
 		whenRequest addFood -> checkFood
 		whenMsg clear -> exClearHT
 
-	State checkFood {		
+	State checkFood {
 		onMsg( addFood : addFood(ARG) ) {
 	 		[# FoodCode = payloadArg(0).removeSurrounding("[", "]") #]
  		}
@@ -546,27 +542,27 @@ QActor rbr context ctxsystem {
 	}
 	Transition t7
 		whenEvent observerfridge -> handleAnswer
-			
-	State handleAnswer {		
-		onMsg( observerfridge : observerfridge(X) ) { 		
-	 		[# 
+
+	State handleAnswer {
+		onMsg( observerfridge : observerfridge(X) ) {
+	 		[#
 	 			var Temp = payloadArg(0).split(";")
 	 			FoodPresence = Temp.get(0)
 	 		#]
 
 	 		if [# Temp.size == 2 #] {
-	 			[# Food = Temp.get(1) #]	
+	 			[# Food = Temp.get(1) #]
  			}
  		}
-	} 
+	}
 	Goto waitAnswer if [# FoodPresence != "true" && FoodPresence != "false" #] else checkAnswer
 
 	/* Waiting state of the expected event --> for example to manage the case of "consult" sent by maitre before the "addFood" */
-	State waitAnswer {	
+	State waitAnswer {
 	}
 	Transition t8
 		whenEvent observerfridge -> handleAnswer
-		
+
 	State checkAnswer {
 		println ("RBR | received answer from fridge via CoAP: $FoodPresence")
 	}
@@ -577,210 +573,210 @@ QActor rbr context ctxsystem {
 		println ("RBR | send warning to maitre")
 	}
 	Goto wait
-	
+
 	// State that sets nearest fridge goal from home
-	State exAddFoodHF {		
+	State exAddFoodHF {
 		println ("RBR | executing task 'Add food' for food $Food with food_code $FoodCode :")
-		
+
 		solve( getFridgeFromCurPosXYCoordinateAndDir($RHCoordinate, XFridge, YFridge, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")
 		}
 		else {
 			println ("RBR | Error getting fridge coordinates...")
 		}
-		
+
 		println ("RBR | going to fridge...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir"))		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir"))
 	}
 	Transition t9
 		whenReply goalState -> exAddFoodFT
-	
+
 	// State that changes fridge state and sets nearest table goal from fridge
-	State exAddFoodFT {	
+	State exAddFoodFT {
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
 		}
-			
+
 		println ("RBR | ...reached fridge. Taking food...")
 		forward fridge -m changeState : changeState(remove, $Food)
 		delay 300
-		
+
 		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
-		
+
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir")) 		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))
 	}
 	Transition t10
-		whenReply goalState -> addFoodTable 
+		whenReply goalState -> addFoodTable
 
 	// State that receives clear command and sets nearest table goal from home
-	State exClearHT {	    
+	State exClearHT {
 		onMsg( clear:clear(X,Y) ) {
-	 		[# 	
+	 		[#
 	 			Dishes = payloadArg(0)
 				Food = payloadArg(1)
 			#]
  		}
 		println ("RBR | executing task 'Clear the room':")
-		
+
 		solve( getTableFromCurPosXYCoordinateAndDir($RHCoordinate, XTable, YTable, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
-		
+
 		println ("RBR | going to table...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))
 	}
-	Transition t11 
+	Transition t11
 		whenReply goalState and [# Food != "[]" #] -> exClearTF
 		whenReply goalState and [# Food == "[]" #] -> exClearTD
 
-	// State that changes table state and sets nearest fridge goal from table		
+	// State that changes table state and sets nearest fridge goal from table
 	State exClearTF	{
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
-		}	
-		
+		}
+
 		println ("RBR | ...reached table. Taking food...")
 		forward table -m changeState : changeState(remove, $Food)
 		delay 300
-		
+
 		solve( getFridgeFromCurPosXYCoordinateAndDir($CurrentPos, XFridge, YFridge, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for fridge in (${getCurSol(\"XFridge\")}, ${getCurSol(\"YFridge\")})")
 		}
 		else {
 			println ("RBR | Error getting fridge coordinates...")
 		}
-		
+
 		println ("RBR | going to fridge...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir")) 		
-	}		
-	Transition t12 
+		request rbrwalker -m setGoal : setGoal($getCurSol("XFridge"), $getCurSol("YFridge"), $getCurSol("Dir"))
+	}
+	Transition t12
 		whenReply goalState -> exClearFT
 
-	// State that changes fridge state and sets nearest table goal from fridge		
+	// State that changes fridge state and sets nearest table goal from fridge
 	State exClearFT	{
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
-		}		
-		
+		}
+
 		println ("RBR | ...reached fridge. Adding food...")
 		forward fridge -m changeState : changeState(add, $Food)
 		delay 300
-		
+
 		solve( getTableFromCurPosXYCoordinateAndDir($CurrentPos, XTable, YTable, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for table in (${getCurSol(\"XTable\")}, ${getCurSol(\"YTable\")})")
 		}
 		else {
 			println ("RBR | Error getting table coordinates...")
 		}
 		println ("RBR | going to table...")
 		request rbrwalker -m setGoal : setGoal($getCurSol("XTable"), $getCurSol("YTable"), $getCurSol("Dir"))
-	}			
-	Transition t13 
+	}
+	Transition t13
 		whenReply goalState -> exClearTD
 
-	// State that changes table state and sets nearest dishwasher goal from table		
+	// State that changes table state and sets nearest dishwasher goal from table
 	State exClearTD	{
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
-		}	
-			
+		}
+
 		println ("RBR | ...reached table. Taking dishes...")
-		forward table -m changeState : changeState(remove, $Dishes)	
+		forward table -m changeState : changeState(remove, $Dishes)
 		delay 300
-		
+
 		solve( getDishwasherFromCurPosXYCoordinateAndDir($CurrentPos, XDishwasher, YDishwasher, Dir) )
-		ifSolved {	
-			println ("RBR | Found nearest goal for dishwasher in (${getCurSol(\"XDishwasher\")}, ${getCurSol(\"YDishwasher\")})")				
+		ifSolved {
+			println ("RBR | Found nearest goal for dishwasher in (${getCurSol(\"XDishwasher\")}, ${getCurSol(\"YDishwasher\")})")
 		}
 		else {
 			println ("RBR | Error getting dishwasher coordinates...")
 		}
 		println ("RBR | going to dishwasher...")
-		request rbrwalker -m setGoal : setGoal($getCurSol("XDishwasher"), $getCurSol("YDishwasher"), $getCurSol("Dir")) 		
+		request rbrwalker -m setGoal : setGoal($getCurSol("XDishwasher"), $getCurSol("YDishwasher"), $getCurSol("Dir"))
 	}
-	Transition t14 
+	Transition t14
 		whenReply goalState -> exClearD
 
-	// State that changes dishwasher state		
+	// State that changes dishwasher state
 	State exClearD	{
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
+			println("RBR | current position: $CurrentPos")
 			updateResource [# "$CurrentPos" #]
 		}
-		
+
 		println ("RBR | ...reached dishwasher. Adding dishes...")
-		forward dishwasher -m changeState : changeState(add, $Dishes)	
+		forward dishwasher -m changeState : changeState(add, $Dishes)
 		delay 300
-		
+
 		[# Cleared = true #]
 	}
 	Goto goToHome
-		
-	State terminateRbr {		
+
+	State terminateRbr {
 		onMsg( goalState : goalState(X) ) {
 			[# CurrentPos = payloadArg(0).removePrefix(",") #]
-			println("RBR | current position: $CurrentPos")		
-			updateResource [# "$CurrentPos" #] 
+			println("RBR | current position: $CurrentPos")
+			updateResource [# "$CurrentPos" #]
 		}
 		println ("RBR | ...reached RH. Finished executing task")
-				
+
 		println ("RBR | terminating RBR Walker...")
 		forward rbrwalker -m end : end(0)
-		 
+
 		println ("RBR | terminating...")
 		terminate 1
-	} 
+	}
 }
 
 //QActor rbrwalker context ctxrbr {
 QActor rbrwalker context ctxsystem {
 	[#
-		var Dir = ""		
+		var Dir = ""
 		var CurrMov = "empty"
 		var X = ""
 		var Y = ""
 		var FirstStart = true
 	#]
-	
+
 	State s0 initial {
-		println ("WALKER | STARTS...")	
+		println ("WALKER | STARTS...")
 	}
 	Goto wait
-	
+
 	State wait {
 		println ("WALKER | waits a goal...")
 	}
-	Transition t0 
+	Transition t0
 		whenRequest setGoal -> goToGoal
 		whenMsg end -> terminateWalker
-	
+
 	State goToGoal {
-		if [# FirstStart #]{ 
+		if [# FirstStart #]{
 			run itunibo.planner.plannerUtil.initAI()
-			run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
+			run itunibo.planner.plannerUtil.loadRoomMap("roomMap")
 			run itunibo.planner.plannerUtil.showMap()
 			[# FirstStart = false#]
 		}
@@ -796,31 +792,31 @@ QActor rbrwalker context ctxsystem {
 			run itunibo.planner.plannerUtil.getDuration()
 		}
 
-		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]		 
+		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]
 	}
 	Goto correctDirection if[# CurrMov == "" #] else doMove
-	
+
 	State doMove {
-	
+
 	}
 	Goto doStep if [# CurrMov == "w" #] else doTurn
-	
+
 	State doStep {
 		request basicrobot -m step : step(650)//(647)//(290)
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 		delay 1000
 	}
 	Transition t1
-		whenReply stepdone -> handleAnswer 
+		whenReply stepdone -> handleAnswer
 		whenReply stepfail -> handleAnswer
-	
+
 	State doTurn {
 		forward basicrobot -m cmd : cmd($CurrMov)
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 		delay 1000
 	}
 	Goto goToGoal
-	
+
 	State handleAnswer {
 		[# var C = "" #]
 		onMsg( stepfail : stepfail(D, C) ){
@@ -829,29 +825,29 @@ QActor rbrwalker context ctxsystem {
 		}
 	}
 	Goto goToGoal
-	
-	State correctDirection {	
+
+	State correctDirection {
 		[#
 			var CurDir = ""
 			var CurPos : Pair<Int, Int> ?= null
 
 			CurDir = itunibo.planner.plannerUtil.getDirection()
 			while (CurDir != Dir) {
-		#]	 
-				if [# (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
+		#]
+				if [# (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir")
 				   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir") #] {
 					forward basicrobot -m cmd : cmd(l)
-					run itunibo.planner.plannerUtil.updateMap("l") 
+					run itunibo.planner.plannerUtil.updateMap("l")
 				}
 				else {
 					forward basicrobot -m cmd : cmd(r)
-					run itunibo.planner.plannerUtil.updateMap("r") 
+					run itunibo.planner.plannerUtil.updateMap("r")
 				}
 				delay 1000
 		[#
 				CurDir = itunibo.planner.plannerUtil.getDirection()
 			}
-				CurPos = itunibo.planner.plannerUtil.get_curPos()		
+				CurPos = itunibo.planner.plannerUtil.get_curPos()
 		#]
 			run itunibo.planner.plannerUtil.showMap()
 			println ("WALKER | arrived to the goal $CurPos")
@@ -859,11 +855,11 @@ QActor rbrwalker context ctxsystem {
 			updateResource [# "$CurPos" #]
 	}
 	Goto wait
-	
+
 	State terminateWalker {
 		println ("RBR | terminating Basic Robot...")
 		forward basicrobot -m end : end(0)
-		
+
 		println ("WALKER | terminating...")
 		terminate 1
 	}
@@ -875,25 +871,25 @@ QActor pantry context ctxsystem {
 		val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
 //		val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
 	#]
-	
+
 	State s0 initial {
 		println ("PANTRY | STARTS and it's filled with a proper set of items...")
-		
+
 		solve( consult("PantryState.pl") )
-		println ("PANTRY | loaded initial state")	
-		
+		println ("PANTRY | loaded initial state")
+
 		[# PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("PANTRY | activated PantryObserver")
 	}
 	Goto work
-	
+
 	State work {
 		println ("PANTRY| working...")
 	}
 	Transition t0
 		whenMsg consult -> exposeState
 		whenMsg changeState -> handleChangeState
-			
+
 	State exposeState {
 		solve( getAllEl(Crockery) )
 		ifSolved {
@@ -904,73 +900,73 @@ QActor pantry context ctxsystem {
 			println ("PANTRY | Error consulting pantry...")
 			updateResource [# "ERROR" #]
 		}
-		
+
 		println ("PANTRY| sending state informations/exposed content to maitre...")
  	}
  	Goto work
-	
+
 	State handleChangeState {
 		[# var Crockery = "" #]
-		
-		onMsg( changeState : changeState(add, ARG) ) { 
+
+		onMsg( changeState : changeState(add, ARG) ) {
 	 		[# Crockery = payloadArg(1) #]
-	 		
+
 	 		solve( add($Crockery) )
 			ifSolved {
 				println ("PANTRY | added Crockery : $Crockery...")
 				updateResource [# "Added Crockery $Crockery with success!" #]
 			}
 			else {
-				println ("PANTRY | Error adding Crockery : $Crockery...")				
+				println ("PANTRY | Error adding Crockery : $Crockery...")
 				updateResource [# "Fail adding Crockery $Crockery!" #]
 			}
  		}
- 		
- 		onMsg( changeState : changeState(remove, ARG) ) { 
+
+ 		onMsg( changeState : changeState(remove, ARG) ) {
 			[# Crockery = payloadArg(1) #]
-			
+
 			solve( remove($Crockery) )
 			ifSolved {
 				println ("PANTRY | removed Crockery : $Crockery...")
 				updateResource [# "Removed Crockery $Crockery with success!" #]
 			}
 			else {
-				println ("PANTRY | Error removing Crockery : $Crockery...")				
+				println ("PANTRY | Error removing Crockery : $Crockery...")
 				updateResource [# "Fail removing Crockery $Crockery!" #]
 			}
- 		}	
+ 		}
  	}
- 	Goto work	
+ 	Goto work
 }
 
 //QActor table context ctxmaitre {
 QActor table context ctxsystem {
 	[#
 		val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
-//		val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
+//		val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")
 	#]
-	
+
 	State s0 initial {
 		println ("TABLE | STARTS and it's empty...")
-		
+
 		solve( consult("TableState.pl") )
-		println ("TABLE| loaded initial state") 
-		
+		println ("TABLE| loaded initial state")
+
 		[# TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("TABLE | activated TableObserver")
 	}
 	Goto work
-	
+
 	State work {
 		println ("TABLE| working...")
 	}
 	Transition t0
 		whenMsg consult -> exposeState
 		whenMsg changeState -> handleChangeState
-		
+
 	State exposeState {
 		solve( getAllEl(Crockery, Foods) )
-		ifSolved {			
+		ifSolved {
 			println ("TABLE | Crockery = ${getCurSol(\"Crockery\")} Foods = ${getCurSol(\"Foods\")}")
 			updateResource [# "${getCurSol("Crockery")};${getCurSol("Foods")}" #]
 		}
@@ -982,30 +978,30 @@ QActor table context ctxsystem {
 		println ("TABLE| sending state informations/exposed content to maitre...")
  	}
  	Goto work
-	
+
 	State handleChangeState {
 		[# var CrockeryOrFood = "" #]
-		
-		onMsg( changeState : changeState(add, ARG) ) { 
+
+		onMsg( changeState : changeState(add, ARG) ) {
 			[# CrockeryOrFood = payloadArg(1) #]
-			
+
 			solve( add($CrockeryOrFood) )
 			ifSolved {
-				println ("TABLE | added $CrockeryOrFood...")				
+				println ("TABLE | added $CrockeryOrFood...")
 				updateResource [# "Added $CrockeryOrFood with success!" #]
 			}
 			else {
-				println ("TABLE | Error adding $CrockeryOrFood...")				
+				println ("TABLE | Error adding $CrockeryOrFood...")
 				updateResource [# "Fail adding $CrockeryOrFood!" #]
 			}
  		}
- 		
+
  		onMsg( changeState : changeState(remove, ARG) ) {
 			[# CrockeryOrFood = payloadArg(1) #]
-			
+
 			solve( remove($CrockeryOrFood) )
 			ifSolved {
-				println ("TABLE | removed $CrockeryOrFood...")	
+				println ("TABLE | removed $CrockeryOrFood...")
 				updateResource [# "Removed $CrockeryOrFood with success!" #]
 			}
 			else {
@@ -1021,27 +1017,27 @@ QActor table context ctxsystem {
 QActor dishwasher context ctxsystem {
 	[#
 		val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
-//		val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")	
+//		val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")
 	#]
-	
+
 	State s0 initial {
 		println ("DISHWASHER | STARTS and it's empty...")
-		
+
 		solve( consult("DishwasherState.pl") )
 		println ("DISHWASHER | loaded initial state")
-		
+
 		[# DishwasherObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("DISHWASHER | activated DishwasherObserver")
 	}
-	Goto work 
-		
+	Goto work
+
 	State work {
 		println ("DISHWASHER| working...")
 	}
 	Transition t0
 		whenMsg consult -> exposeState
-		whenMsg changeState -> handleChangeState	
-	
+		whenMsg changeState -> handleChangeState
+
 	State exposeState {
 		solve( getAllEl(Crockery) )
 		ifSolved {
@@ -1052,17 +1048,17 @@ QActor dishwasher context ctxsystem {
 			println ("DISHWASHER | Error consulting dishwasher...")
 			updateResource [# "ERROR" #]
 		}
- 
+
 		println ("DISHWASHER | sending state informations/exposed content to maitre...")
  	}
  	Goto work
-	
+
 	State handleChangeState {
 		[# var Crockery = "" #]
 
- 		onMsg( changeState : changeState(add, ARG) ) { 
+ 		onMsg( changeState : changeState(add, ARG) ) {
 	 		[# Crockery = payloadArg(1) #]
-	 		
+
 	 		solve( add($Crockery) )
 			ifSolved {
 				println ("DISHWASHER | added Crockery : $Crockery...")
@@ -1073,10 +1069,10 @@ QActor dishwasher context ctxsystem {
 				updateResource [# "Fail adding Crockery $Crockery!" #]
 			}
  		}
- 		
- 		onMsg( changeState : changeState(remove, ARG) ) { 
+
+ 		onMsg( changeState : changeState(remove, ARG) ) {
 			[# Crockery = payloadArg(1) #]
-			
+
 			solve( remove($Crockery) )
 			ifSolved {
 				println ("DISHWASHER | removed Crockery : $Crockery...")
@@ -1086,7 +1082,7 @@ QActor dishwasher context ctxsystem {
 				println ("DISHWASHER | Error removing Crockery : $Crockery...")
 				updateResource [# "Fail removing Crockery $Crockery!" #]
 			}
- 		}	
+ 		}
 	}
 	Goto work
 }
@@ -1097,13 +1093,13 @@ QActor fridge context ctxsystem {
 		val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
 //		val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
 	#]
-	
+
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food...")
-		
+
 		solve( consult("FridgeState.pl") )
 		println ("FRIDGE | loaded initial state")
-		
+
 		[# FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
 		println ("FRIDGE | activated FridgeObserver")
 		delay 300
@@ -1112,18 +1108,18 @@ QActor fridge context ctxsystem {
 
 	State wait {
 		println ("FRIDGE | is waiting for a command...")
-	} 
-	Transition t1 
+	}
+	Transition t1
 		whenMsg askFood -> answerFood
 		whenMsg consult -> exposeState
 		whenMsg changeState -> handleChangeState
-	
+
 	State answerFood {
-		[# 
+		[#
 			var FoodCode = ""
 			var FoodPresence = false
 		#]
-		
+
 		onMsg( askFood : askFood(FOOD_CODE) ) {
 	 		[# FoodCode = payloadArg(0) #]
  		}
@@ -1131,21 +1127,21 @@ QActor fridge context ctxsystem {
 		println ("FRIDGE | searching food with Food_Code = $FoodCode...")
 
 		solve( checkFoodByCode($FoodCode, Food) )
-		ifSolved {	
+		ifSolved {
 			[# FoodPresence = true #]
-					
-	 		println ("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol(\"Food\")}")	
+
+	 		println ("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol(\"Food\")}")
 			updateResource [# "$FoodPresence;${getCurSol("Food")}" #]
 		}
 		else {
 			println ("FRIDGE | Error searching food : not found existing or available food with Food_Code = $FoodCode...")
 			updateResource [# "$FoodPresence" #]
-		}	
-		
+		}
+
 		println ("FRIDGE | answered to RBR about food presence via CoAP")
 	}
 	Goto wait
-		 
+
 	State exposeState {
 		solve( getAllEl(Foods) )
 		ifSolved {
@@ -1155,18 +1151,18 @@ QActor fridge context ctxsystem {
 		else {
 			println ("FRIDGE | Error consulting fridge...")
 			updateResource [# "ERROR" #]
-		} 
-		 
+		}
+
 		println ("FRIDGE | sending state informations/exposed content to maitre...")
  	}
  	Goto wait
- 	
+
  	State handleChangeState {
 		[# var Food = "" #]
 
 		onMsg( changeState : changeState(add, ARG) ) {
 			[# Food = payloadArg(1) #]
-			
+
 			solve( add($Food) )
 	 		ifSolved {
 				println ("FRIDGE | added Food : $Food...")
@@ -1177,16 +1173,16 @@ QActor fridge context ctxsystem {
 				updateResource [# "Fail adding Food $Food!" #]
 			}
  		}
- 		
+
  		onMsg( changeState : changeState(remove, ARG) ) {
 			[# Food = payloadArg(1) #]
-			
+
 			solve( remove($Food) )
 	 		ifSolved {
 				println ("FRIDGE | removed Food : $Food...")
 				updateResource [# "Removed Food $Food with success!" #]
 			}
-			else { 
+			else {
 				println ("FRIDGE | Error removing Food : $Food...")
 				updateResource [# "Fail removing Food $Food!" #]
 			}
