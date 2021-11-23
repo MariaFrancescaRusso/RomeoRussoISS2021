@@ -36,6 +36,11 @@ Reply stepfail:stepfail(DURATION, CAUSE)
 //RBRWalker - basicRobot
 Dispatch end:end(ARG)	//void
 
+//RBR - Mapper
+Request map:map(ARG)	//void
+Reply mapdone:mapdone(ARG)	//void
+Dispatch endmapper:endmapper(ARG)	//void
+ 
 Context ctxsystem ip [host="localhost" port=8040]
 //Context ctxmaitre ip [host="192.168.1.171" port=8070]
 //Context ctxfridge ip [host="127.0.0.1" port=8060]
@@ -44,9 +49,126 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 
 ExternalQActor basicrobot context ctxbasicrobot  
 
-/* Actor maitre is used as a mock client */
+QActor mapper context ctxsystem {
+	[# var CurrMov = "empty" 
+		var CurrEdge =0	
+		var NameFile = "roomMap"
+		var Table = false
+		var Step = 290 //647
+	#]
+	
+	State s0 initial {
+		println ("MAPPER | STARTS...")
+		run itunibo.planner.plannerUtil.initAI()
+		run itunibo.planner.plannerUtil.showMap()
+		delay 2000
+	}
+	Goto wait
+	
+	State wait {
+		println ("MAPPER | waits...")
+	}Transition t1
+		whenRequest map -> findNextWall
+		whenMsg endmapper -> endState
 
-//QActor maitre context ctxmaitre {
+//We assume that the table is not near to the wall	
+	State findNextWall{
+		request basicrobot -m step : step($Step)
+		delay 1000
+	}Transition t2 
+		whenReply stepdone -> succesStep
+		whenReply stepfail -> obstacleFound 
+
+//The map is upadated when a stepDone is received	
+	State succesStep {
+		run itunibo.planner.plannerUtil.updateMap('w')
+		run itunibo.planner.plannerUtil.showMap()
+	}Goto findNextWall if [# Table == false #] else visitInternalCell
+	
+	State obstacleFound{
+		[# var D = ""
+			var C = ""
+		#]
+		onMsg( stepfail : stepfail(D, C) ){
+		[# 	D = payloadArg(0)
+		 	C = payloadArg(1) 	
+		#]			
+			request basicrobot -m step : step($D)
+		}
+		delay 1000
+	}Transition t3 
+	 whenReply stepdone and [# Table == false #] -> turnLeft
+	 whenReply stepdone and [# Table == true #] -> tableFound
+	 whenReply stepfail-> obstacleFound
+	 
+	State turnLeft{
+		println ("WALKER | Found a wall")
+		forward basicrobot -m cmd : cmd(l)
+		run itunibo.planner.plannerUtil.updateMap('l')
+		delay 1000
+		[# CurrEdge++ #]
+	}
+	Goto findNextWall if  [# CurrEdge<4 #] else saveMap
+
+//This step is necessary to make usable	planForNextDirty otherwise the planner doesn't create the not visited cells 
+	State saveMap{
+		run itunibo.planner.plannerUtil.showMap()
+		
+		run itunibo.planner.plannerUtil.saveRoomMap(NameFile)
+		run itunibo.planner.plannerUtil.loadRoomMap(NameFile)	
+	}
+	Goto planNextDirty
+
+	State planNextDirty{
+		[# Table = true #]
+		run itunibo.planner.plannerUtil.planForNextDirty()
+		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #] 
+		println("Next move $CurrMov")
+		run itunibo.planner.plannerUtil.showMap()
+	}Goto endState if [# CurrMov == "" #] else doMove
+
+	State visitInternalCell{	
+		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #] 
+	}Goto planNextDirty if [# CurrMov == "" #] else doMove
+	
+	State doMove {
+	run itunibo.planner.plannerUtil.showMap()
+	}
+	Goto doStep if [# CurrMov == "w" #] else doTurn
+	
+	State doStep {
+		request basicrobot -m step : step($Step)
+		println('w')
+		delay 1000
+	}
+	Transition t4
+		whenReply stepdone -> succesStep
+		whenReply stepfail -> obstacleFound
+
+	State doTurn {
+		forward basicrobot -m cmd : cmd($CurrMov)
+		println('$CurrMov')
+		run itunibo.planner.plannerUtil.updateMap(CurrMov)
+		delay 1000
+	}
+	Goto visitInternalCell
+
+	State tableFound {
+		run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
+		println("tavolo = $Table ")
+	}Goto visitInternalCell
+
+	State endState {
+		run itunibo.planner.plannerUtil.saveRoomMap(NameFile)
+		replyTo map with mapdone:mapdone(0)
+		println ("MAPPER | terminate...")
+		terminate 1
+	}
+}
+/* Actor maitre is used as a mock client */
+//
+////QActor maitre context ctxmaitre {
+/* 
 QActor maitre context ctxsystem {
 	[#	
 		var AddFoodtime = 20000L 
@@ -210,7 +332,7 @@ QActor foodconsumer context ctxsystem {
 		terminate 1
 	}
 }
-
+*/
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
@@ -229,10 +351,19 @@ QActor rbr context ctxsystem {
 	State s0 initial {		
 		println ("RBR | STARTS and it's placed in RH position...")
 			
-		[# IsMap = true #]		
-		
+		//To know if the room has been already mapped	
+		solve( consult("IsMap.pl") )				
+		solve( getValue(Value) )
+		ifSolved {	
+			[# IsMap = "${getCurSol("Value")}".toBoolean() #]
+			println ("RBR | IsMap value $IsMap")				
+		}
+		else {
+			println ("RBR | Error getting ...")
+		}	
+		//Load resources coordinates file 
 		solve( consult("ResourcesCoordinates.pl") )
-					
+			
 		solve( getRHXYCoordinatesAndDir(XRH, YRH, Dir) )
 		ifSolved {	
 			[# 
@@ -251,12 +382,15 @@ QActor rbr context ctxsystem {
 		println ("RBR | initializing planner...")
 		println ("RBR | start mapping room...")
 		delay 300 
-		[# IsMap = true #]
-		println ("RBR | end mapping step")
-	}
-	Goto working
+		request mapper -m map:map(0)
+	}Transition t1
+		whenReply mapdone -> working
  
 	State working {
+		if[#IsMap == false #]{
+			println ("RBR | end mapping step")
+			[# IsMap = true #]
+		}
 		println ("RBR | ready to work...")
 	}
 	Transition t0
@@ -628,12 +762,10 @@ QActor rbrwalker context ctxsystem {
 		var CurrMov = "empty"
 		var X = ""
 		var Y = ""
+		var FirstStart = true
 	#]
 	
 	State s0 initial {
-		run itunibo.planner.plannerUtil.initAI()
-		run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
-		run itunibo.planner.plannerUtil.showMap()
 		println ("WALKER | STARTS...")	
 	}
 	Goto wait
@@ -646,7 +778,12 @@ QActor rbrwalker context ctxsystem {
 		whenMsg end -> terminateWalker
 	
 	State goToGoal {
-		
+		if [# FirstStart #]{ 
+			run itunibo.planner.plannerUtil.initAI()
+			run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
+			run itunibo.planner.plannerUtil.showMap()
+			[# FirstStart = false#]
+		}
 		onMsg( setGoal : setGoal(X, Y, DIR) ) {
 			[#
 				X = payloadArg(0)
@@ -731,8 +868,8 @@ QActor rbrwalker context ctxsystem {
 		terminate 1
 	}
 }
-
-//QActor pantry context ctxmaitre {
+//
+////QActor pantry context ctxmaitre {
 QActor pantry context ctxsystem {
 	[#
 		val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")

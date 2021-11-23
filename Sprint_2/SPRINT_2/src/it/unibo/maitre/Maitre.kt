@@ -58,8 +58,8 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t10",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
-					transition(edgeName="t11",targetState="handleWarning",cond=whenReply("warning"))
+					 transition(edgeName="t17",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					transition(edgeName="t18",targetState="handleWarning",cond=whenReply("warning"))
 				}	 
 				state("handleWarning") { //this:State
 					action { //it:State
@@ -84,10 +84,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("MAITRE | waiting answers from resources...")
 					}
-					 transition(edgeName="t22",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
-					transition(edgeName="t23",targetState="handleExpose",cond=whenEvent("observerfridge"))
-					transition(edgeName="t24",targetState="handleExpose",cond=whenEvent("observerpantry"))
-					transition(edgeName="t25",targetState="handleExpose",cond=whenEvent("observertable"))
+					 transition(edgeName="t29",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
+					transition(edgeName="t210",targetState="handleExpose",cond=whenEvent("observerfridge"))
+					transition(edgeName="t211",targetState="handleExpose",cond=whenEvent("observerpantry"))
+					transition(edgeName="t212",targetState="handleExpose",cond=whenEvent("observertable"))
 				}	 
 				state("handleExpose") { //this:State
 					action { //it:State
@@ -131,7 +131,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						forward("consult", "consult(0)" ,"table" ) 
 						println("MAITRE | send consult command to Table for 'Clear the room' task")
 					}
-					 transition(edgeName="t36",targetState="sendClear",cond=whenEvent("observertable"))
+					 transition(edgeName="t313",targetState="sendClear",cond=whenEvent("observertable"))
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State

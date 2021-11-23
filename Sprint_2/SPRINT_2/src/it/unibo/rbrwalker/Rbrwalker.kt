@@ -21,12 +21,10 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				var CurrMov = "empty"
 				var X = ""
 				var Y = ""
+				var FirstStart = true
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
-						itunibo.planner.plannerUtil.initAI(  )
-						itunibo.planner.plannerUtil.loadRoomMap( "roomMap"  )
-						itunibo.planner.plannerUtil.showMap(  )
 						println("WALKER | STARTS...")
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
@@ -35,11 +33,17 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("WALKER | waits a goal...")
 					}
-					 transition(edgeName="t025",targetState="goToGoal",cond=whenRequest("setGoal"))
-					transition(edgeName="t026",targetState="terminateWalker",cond=whenDispatch("end"))
+					 transition(edgeName="t028",targetState="goToGoal",cond=whenRequest("setGoal"))
+					transition(edgeName="t029",targetState="terminateWalker",cond=whenDispatch("end"))
 				}	 
 				state("goToGoal") { //this:State
 					action { //it:State
+						if(  FirstStart  
+						 ){itunibo.planner.plannerUtil.initAI(  )
+						itunibo.planner.plannerUtil.loadRoomMap( "roomMap"  )
+						itunibo.planner.plannerUtil.showMap(  )
+						 FirstStart = false 
+						}
 						if( checkMsgContent( Term.createTerm("setGoal(X,Y,DIR)"), Term.createTerm("setGoal(X,Y,DIR)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								
@@ -72,8 +76,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						itunibo.planner.plannerUtil.updateMap( CurrMov  )
 						delay(1000) 
 					}
-					 transition(edgeName="t127",targetState="handleAnswer",cond=whenReply("stepdone"))
-					transition(edgeName="t128",targetState="handleAnswer",cond=whenReply("stepfail"))
+					 transition(edgeName="t130",targetState="handleAnswer",cond=whenReply("stepdone"))
+					transition(edgeName="t131",targetState="handleAnswer",cond=whenReply("stepfail"))
 				}	 
 				state("doTurn") { //this:State
 					action { //it:State
