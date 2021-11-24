@@ -60,7 +60,7 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 ExternalQActor basicrobot context ctxbasicrobot  
 
 /* Actor maitre is used as a mock client */
-
+/*
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -70,7 +70,6 @@ QActor maitre context ctxsystem {
 		var AnsExpose2 = ""
 		var ClearDish = ""
 		var ClearFood = ""
-		var StopTime = 3000L
 	#]	
 	
 	State s0 initial {
@@ -79,10 +78,6 @@ QActor maitre context ctxsystem {
 		solve( consult("Prepare.pl") )
 		
 		delay 2000
-		
-		//FIXME: sterminare
-		request rbrwalker -m stop : stop(0)
-		println ("MAITRE | send stop to Walker")
 	}
 	Goto sendPrepare
 	
@@ -202,29 +197,31 @@ QActor maitre context ctxsystem {
 	}
 	Goto sendStop
 	
-	//FIXME
 	State sendStop {
-		delay 5000
+		delay 6000
 		request rbrwalker -m stop : stop(0)
 		println ("MAITRE | send stop command to RBR WALKER")
 	}
 	Transition t4
-		whenTimeVar StopTime -> termination
 		whenReply stopped -> sendReactivate
 	
-	State sendReactivate {
-		delay 3000
-		forward rbrwalker -m reactivate : reactivate(0)
-		println ("MAITRE | send reactivate command to RBR WALKER")
+	State sendReactivate {	
+		onMsg( stopped : stopped(true) ) {
+			delay 3000
+			forward rbrwalker -m reactivate : reactivate(0)
+			println ("MAITRE | send reactivate command to RBR WALKER")
+		}		
 	}
-	Goto termination
+	Goto terminateMaitre
 	
-	State termination {
+	State terminateMaitre {
 		println ("MAITRE | terminating...")
 		terminate 1
 	}
 }
-
+*/
+/* Actor foodconsumer is used as a mock client */
+/*
 //QActor foodconsumer context ctxmaitre {
 QActor foodconsumer context ctxsystem {
 	
@@ -251,7 +248,7 @@ QActor foodconsumer context ctxsystem {
 		terminate 1
 	}
 }
-
+*/
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
@@ -307,7 +304,7 @@ QActor rbr context ctxsystem {
 		whenReply mapdone -> working
  
 	State working {
-		if [# IsMap == false #] {
+		onMsg( mapdone : mapdone(ARG) ) {
 			println ("RBR | RBR Mapper ended mapping the room")
 			[# IsMap = true #]
 		}
@@ -687,14 +684,11 @@ QActor rbrmapper context ctxsystem {
 		var CurrEdge = 0
 		var NameFile = "roomMap"
 		var Table = false
-		var Step = 290 //647
+		var Step = 647 //290 //647
 	#]
 
 	State s0 initial {
 		println ("MAPPER | STARTS...")
-		run itunibo.planner.plannerUtil.initAI()
-		run itunibo.planner.plannerUtil.showMap()
-		delay 2000
 	}
 	Goto wait
 
@@ -708,7 +702,9 @@ QActor rbrmapper context ctxsystem {
 	//We assume that the table is not near the wall
 	State doStep {
 		onMsg( map : map(ARG) ) {
+			run itunibo.planner.plannerUtil.initAI()
 			println ("MAPPER | start mapping room...")
+			run itunibo.planner.plannerUtil.showMap()
 		}
 		
 		request basicrobot -m step : step($Step)
@@ -817,8 +813,15 @@ QActor rbrwalker context ctxsystem {
 	
 	State wait {
 		println ("WALKER | waits a goal...")
+		
+		onMsg( stop : stop(ARG) ) {
+			replyTo stop with stopped : stopped(false)
+			updateResource [# "Stop Fail" #]
+		}
 	}
-	Transition t0 
+	Transition t0
+		//the walker ignore the stop command if it received it before the task started
+		whenRequest stop and [# itunibo.planner.plannerUtil.atHome() #] -> wait 
 		whenRequest setGoal -> goToGoal
 		whenMsg end -> terminateWalker
 	
@@ -883,7 +886,7 @@ QActor rbrwalker context ctxsystem {
 			#]
 			println ("WALKER | failed execution move: found $Cause")
 			
-			//Sol 1. Manage of the mobile obstacle by finding a new goal path:
+			//Manage of the mobile obstacle by finding a new goal path:
 				//=> set the mobile obstacle
 			run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
 				//=> find the new path
@@ -895,23 +898,16 @@ QActor rbrwalker context ctxsystem {
 		} 
 	}
 	Transition t3
-		//Sol 1. Manage of the mobile obstacle by finding a new goal path
 		whenTimeVar StopTimer -> goToGoal	//Time waiting for stop command otherwise go on to goToGoal state
-		//Sol 2. Manage of the mobile obstacle by waiting to can reach the goal
-			//Need a separation between stepDone and stepFail states
-//		whenTimeVar StopTimer -> doStep	//Time waiting for stop command otherwise go on to doStep state
 		whenRequest stop -> handleStop
 	
 	State handleStop {
 		println ("WALKER | stopped. Waiting for a reactivate command...")
-		replyTo stop with stopped : stopped(0)
+		replyTo stop with stopped : stopped(true)
+		updateResource [# "Stopped" #]
 	}
 	Transition t4
-		//Sol 1. Manage of the mobile obstacle by finding a new goal path
 		whenMsg reactivate -> goToGoal
-		//Sol 2. Manage of the mobile obstacle by waiting to can reach the goal
-//		whenMsg reactivate and [# Failed == false #] -> goToGoal
-//		whenMsg reactivate and [# Failed == true #] -> doStep
 	
 	State correctDirection {	
 		[#
@@ -921,7 +917,6 @@ QActor rbrwalker context ctxsystem {
 			CurDir = itunibo.planner.plannerUtil.getDirection()
 			while (CurDir != Dir) {
 		#]	 
-		//TODO: gestire anche queste mosse con un altro stato? tipo doTurn? per lo stop!
 				if [# (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
 				   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir") #] {
 					forward basicrobot -m cmd : cmd(l)

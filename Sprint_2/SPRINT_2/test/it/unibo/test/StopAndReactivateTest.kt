@@ -78,20 +78,20 @@ class StopAndReactivateTest {
 	}
 
 	@Test
-	fun AddFoodTest() {
+	fun StopReactivateTest() {
 
-		var msg = MsgUtil.buildRequest("tester", "setGoal", "setGoal(5,5)", "rbrwalker")
-		var msgStop = MsgUtil.buildRequest("tester", "stop", "stop()", "rbrwalker")
-		var msgReactivate = MsgUtil.buildRequest("tester", "reactivate", "reactivate()", "rbrwalker")
+		var msg = MsgUtil.buildRequest("tester", "setGoal", "setGoal(5,5, downDir)", "rbrwalker")
+		var msgStop = MsgUtil.buildRequest("tester", "stop", "stop(0)", "rbrwalker")
+		var msgReactivate = MsgUtil.buildDispatch("tester", "reactivate", "reactivate(0)", "rbrwalker")
 		var State = ""
-		var expected = ""
-		var expectedStop= "Stopped"
-		var expectedStopFail= "Stop Fail"
+		var expected = "(5, 5)"
+		var expectedStop = "Stopped"
+		var expectedStopFail = "Stop Fail"
 		var expectedReactivate = "Reactivated"
-		var Prevision=expected
-		var PrevisionStop= expectedStop
-		var PrevisionStopFail= expectedStopFail
-		var PrevisionReactivate= expectedReactivate
+		var Prevision = expected
+		var PrevisionStop = expectedStop
+		var PrevisionStopFail = expectedStopFail
+		var PrevisionReactivate = expectedReactivate
 		var channelForObserver = Channel<String>()
 
 		
@@ -121,6 +121,7 @@ class StopAndReactivateTest {
 			assertEquals(PrevisionStop,State)			
 			testingObserverRbrWalker!!.removeObserver()
 			
+			delay (100)
 			//check rbrWalker is reactivated
 			channelForObserver.cancel()
 			channelForObserver = Channel<String>()

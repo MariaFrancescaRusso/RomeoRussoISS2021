@@ -23,15 +23,12 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				var AnsExpose2 = ""
 				var ClearDish = ""
 				var ClearFood = ""
-				var StopTime = 3000L
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("MAITRE | STARTS...")
 						solve("consult('Prepare.pl')","") //set resVar	
 						delay(2000) 
-						request("stop", "stop(0)" ,"rbrwalker" )  
-						println("MAITRE | send stop to Walker")
 					}
 					 transition( edgeName="goto",targetState="sendPrepare", cond=doswitch() )
 				}	 
@@ -153,24 +150,24 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("sendStop") { //this:State
 					action { //it:State
-						delay(5000) 
+						delay(6000) 
 						request("stop", "stop(0)" ,"rbrwalker" )  
 						println("MAITRE | send stop command to RBR WALKER")
-						stateTimer = TimerActor("timer_sendStop", 
-							scope, context!!, "local_tout_maitre_sendStop", StopTime )
 					}
-					 transition(edgeName="t47",targetState="termination",cond=whenTimeout("local_tout_maitre_sendStop"))   
-					transition(edgeName="t48",targetState="sendReactivate",cond=whenReply("stopped"))
+					 transition(edgeName="t47",targetState="sendReactivate",cond=whenReply("stopped"))
 				}	 
 				state("sendReactivate") { //this:State
 					action { //it:State
-						delay(3000) 
-						forward("reactivate", "reactivate(0)" ,"rbrwalker" ) 
-						println("MAITRE | send reactivate command to RBR WALKER")
+						if( checkMsgContent( Term.createTerm("stopped(ARG)"), Term.createTerm("stopped(true)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								delay(3000) 
+								forward("reactivate", "reactivate(0)" ,"rbrwalker" ) 
+								println("MAITRE | send reactivate command to RBR WALKER")
+						}
 					}
-					 transition( edgeName="goto",targetState="termination", cond=doswitch() )
+					 transition( edgeName="goto",targetState="terminateMaitre", cond=doswitch() )
 				}	 
-				state("termination") { //this:State
+				state("terminateMaitre") { //this:State
 					action { //it:State
 						println("MAITRE | terminating...")
 						terminate(1)

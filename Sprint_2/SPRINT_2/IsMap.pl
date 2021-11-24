@@ -1,5 +1,5 @@
 %% Boolean value of map represented with a boolean value which is
-%% true if the room has been already mapped, atherwise false:
+%% true if the room has been already mapped, otherwise false:
 %% 	 isMap(VALUE).
 
 %% ONLY for "https://swish.swi-prolog.org/"

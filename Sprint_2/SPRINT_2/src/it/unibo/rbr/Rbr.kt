@@ -59,21 +59,21 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						request("map", "map(0)" ,"rbrmapper" )  
 						println("RBR | sent to RBR Mapper the request to map the room...")
 					}
-					 transition(edgeName="t09",targetState="working",cond=whenReply("mapdone"))
+					 transition(edgeName="t00",targetState="working",cond=whenReply("mapdone"))
 				}	 
 				state("working") { //this:State
 					action { //it:State
-						if(  IsMap == false  
-						 ){println("RBR | RBR Mapper ended mapping the room")
-						 IsMap = true  
+						if( checkMsgContent( Term.createTerm("mapdone(ARG)"), Term.createTerm("mapdone(ARG)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("RBR | RBR Mapper ended mapping the room")
+								 IsMap = true  
+						}else{
+							println("RBR | terminating RBR Mapper...")
+							forward("end", "end(0)" ,"rbrmapper" ) 
 						}
-						else
-						 {println("RBR | terminating RBR Mapper...")
-						 forward("end", "end(0)" ,"rbrmapper" ) 
-						 }
 						println("RBR | ready to work...")
 					}
-					 transition(edgeName="t110",targetState="exPrepareHP",cond=whenDispatch("prepare"))
+					 transition(edgeName="t11",targetState="exPrepareHP",cond=whenDispatch("prepare"))
 				}	 
 				state("exPrepareHP") { //this:State
 					action { //it:State
@@ -93,7 +93,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to pantry...")
 						request("setGoal", "setGoal(${getCurSol("XPantry")},${getCurSol("YPantry")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t211",targetState="exPreparePT",cond=whenReply("goalState"))
+					 transition(edgeName="t22",targetState="exPreparePT",cond=whenReply("goalState"))
 				}	 
 				state("exPreparePT") { //this:State
 					action { //it:State
@@ -116,7 +116,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to table...")
 						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t312",targetState="exPrepareTF",cond=whenReply("goalState"))
+					 transition(edgeName="t33",targetState="exPrepareTF",cond=whenReply("goalState"))
 				}	 
 				state("exPrepareTF") { //this:State
 					action { //it:State
@@ -139,7 +139,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to fridge...")
 						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t413",targetState="exPrepareFT",cond=whenReply("goalState"))
+					 transition(edgeName="t44",targetState="exPrepareFT",cond=whenReply("goalState"))
 				}	 
 				state("exPrepareFT") { //this:State
 					action { //it:State
@@ -162,7 +162,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to table...")
 						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t514",targetState="addFoodTable",cond=whenReply("goalState"))
+					 transition(edgeName="t55",targetState="addFoodTable",cond=whenReply("goalState"))
 				}	 
 				state("addFoodTable") { //this:State
 					action { //it:State
@@ -184,9 +184,9 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | coming back to RH...")
 						 request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second}, $RHDir)", "rbrwalker")  
 					}
-					 transition(edgeName="t615",targetState="wait",cond=whenReplyGuarded("goalState",{ !Cleared  
+					 transition(edgeName="t66",targetState="wait",cond=whenReplyGuarded("goalState",{ !Cleared  
 					}))
-					transition(edgeName="t616",targetState="terminateRbr",cond=whenReplyGuarded("goalState",{ Cleared  
+					transition(edgeName="t67",targetState="terminateRbr",cond=whenReplyGuarded("goalState",{ Cleared  
 					}))
 				}	 
 				state("wait") { //this:State
@@ -201,8 +201,8 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | ...reached RH. Finished executing task")
 						println("RBR | waiting for a command...")
 					}
-					 transition(edgeName="t717",targetState="checkFood",cond=whenRequest("addFood"))
-					transition(edgeName="t718",targetState="exClearHT",cond=whenDispatch("clear"))
+					 transition(edgeName="t78",targetState="checkFood",cond=whenRequest("addFood"))
+					transition(edgeName="t79",targetState="exClearHT",cond=whenDispatch("clear"))
 				}	 
 				state("checkFood") { //this:State
 					action { //it:State
@@ -213,7 +213,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						forward("askFood", "askFood($FoodCode)" ,"fridge" ) 
 						println("RBR | asked fridge if it contains the food with food-code = $FoodCode")
 					}
-					 transition(edgeName="t819",targetState="handleAnswer",cond=whenEvent("observerfridge"))
+					 transition(edgeName="t810",targetState="handleAnswer",cond=whenEvent("observerfridge"))
 				}	 
 				state("handleAnswer") { //this:State
 					action { //it:State
@@ -235,7 +235,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				state("waitAnswer") { //this:State
 					action { //it:State
 					}
-					 transition(edgeName="t920",targetState="handleAnswer",cond=whenEvent("observerfridge"))
+					 transition(edgeName="t911",targetState="handleAnswer",cond=whenEvent("observerfridge"))
 				}	 
 				state("checkAnswer") { //this:State
 					action { //it:State
@@ -265,7 +265,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to fridge...")
 						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1021",targetState="exAddFoodFT",cond=whenReply("goalState"))
+					 transition(edgeName="t1012",targetState="exAddFoodFT",cond=whenReply("goalState"))
 				}	 
 				state("exAddFoodFT") { //this:State
 					action { //it:State
@@ -288,7 +288,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to table...")
 						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1122",targetState="addFoodTable",cond=whenReply("goalState"))
+					 transition(edgeName="t1113",targetState="addFoodTable",cond=whenReply("goalState"))
 				}	 
 				state("exClearHT") { //this:State
 					action { //it:State
@@ -308,9 +308,9 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to table...")
 						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1223",targetState="exClearTF",cond=whenReplyGuarded("goalState",{ Food != "[]"  
+					 transition(edgeName="t1214",targetState="exClearTF",cond=whenReplyGuarded("goalState",{ Food != "[]"  
 					}))
-					transition(edgeName="t1224",targetState="exClearTD",cond=whenReplyGuarded("goalState",{ Food == "[]"  
+					transition(edgeName="t1215",targetState="exClearTD",cond=whenReplyGuarded("goalState",{ Food == "[]"  
 					}))
 				}	 
 				state("exClearTF") { //this:State
@@ -334,7 +334,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to fridge...")
 						request("setGoal", "setGoal(${getCurSol("XFridge")},${getCurSol("YFridge")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1325",targetState="exClearFT",cond=whenReply("goalState"))
+					 transition(edgeName="t1316",targetState="exClearFT",cond=whenReply("goalState"))
 				}	 
 				state("exClearFT") { //this:State
 					action { //it:State
@@ -357,7 +357,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to table...")
 						request("setGoal", "setGoal(${getCurSol("XTable")},${getCurSol("YTable")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1426",targetState="exClearTD",cond=whenReply("goalState"))
+					 transition(edgeName="t1417",targetState="exClearTD",cond=whenReply("goalState"))
 				}	 
 				state("exClearTD") { //this:State
 					action { //it:State
@@ -380,7 +380,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 						println("RBR | going to dishwasher...")
 						request("setGoal", "setGoal(${getCurSol("XDishwasher")},${getCurSol("YDishwasher")},${getCurSol("Dir")})" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t1527",targetState="exClearD",cond=whenReply("goalState"))
+					 transition(edgeName="t1518",targetState="exClearD",cond=whenReply("goalState"))
 				}	 
 				state("exClearD") { //this:State
 					action { //it:State

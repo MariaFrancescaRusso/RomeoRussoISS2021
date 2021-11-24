@@ -21,14 +21,11 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				var CurrEdge = 0
 				var NameFile = "roomMap"
 				var Table = false
-				var Step = 290 //647
+				var Step = 647 //290 //647
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("MAPPER | STARTS...")
-						itunibo.planner.plannerUtil.initAI(  )
-						itunibo.planner.plannerUtil.showMap(  )
-						delay(2000) 
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
@@ -36,20 +33,22 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("MAPPER | waits...")
 					}
-					 transition(edgeName="t128",targetState="doStep",cond=whenRequest("map"))
-					transition(edgeName="t129",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t119",targetState="doStep",cond=whenRequest("map"))
+					transition(edgeName="t120",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("doStep") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("map(ARG)"), Term.createTerm("map(ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								itunibo.planner.plannerUtil.initAI(  )
 								println("MAPPER | start mapping room...")
+								itunibo.planner.plannerUtil.showMap(  )
 						}
 						request("step", "step($Step)" ,"basicrobot" )  
 						delay(1000) 
 					}
-					 transition(edgeName="t230",targetState="succesStep",cond=whenReply("stepdone"))
-					transition(edgeName="t231",targetState="obstacleFound",cond=whenReply("stepfail"))
+					 transition(edgeName="t221",targetState="succesStep",cond=whenReply("stepdone"))
+					transition(edgeName="t222",targetState="obstacleFound",cond=whenReply("stepfail"))
 				}	 
 				state("succesStep") { //this:State
 					action { //it:State
@@ -72,11 +71,11 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						}
 						delay(1000) 
 					}
-					 transition(edgeName="t332",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ Table == false  
+					 transition(edgeName="t323",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ Table == false  
 					}))
-					transition(edgeName="t333",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table == true  
+					transition(edgeName="t324",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table == true  
 					}))
-					transition(edgeName="t334",targetState="obstacleFound",cond=whenReply("stepfail"))
+					transition(edgeName="t325",targetState="obstacleFound",cond=whenReply("stepfail"))
 				}	 
 				state("turnLeft") { //this:State
 					action { //it:State
