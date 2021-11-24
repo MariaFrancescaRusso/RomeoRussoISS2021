@@ -4,6 +4,8 @@
 context(ctxsystem, "localhost",  "TCP", "8040").
 context(ctxbasicrobot, "127.0.0.1",  "TCP", "8020").
  qactor( basicrobot, ctxbasicrobot, "external").
+  qactor( maitre, ctxsystem, "it.unibo.maitre.Maitre").
+  qactor( foodconsumer, ctxsystem, "it.unibo.foodconsumer.Foodconsumer").
   qactor( rbr, ctxsystem, "it.unibo.rbr.Rbr").
   qactor( rbrmapper, ctxsystem, "it.unibo.rbrmapper.Rbrmapper").
   qactor( rbrwalker, ctxsystem, "it.unibo.rbrwalker.Rbrwalker").

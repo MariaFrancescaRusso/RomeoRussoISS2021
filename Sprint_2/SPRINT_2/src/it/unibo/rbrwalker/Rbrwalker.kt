@@ -23,7 +23,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				var Y = ""
 				var StopTimer = 1000L
 				var FirstStart = true
-				var Step = 647 //290
+				var Step = 650 //647 //290
+				var ObstGoal = false	
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -41,10 +42,10 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 								)
 						}
 					}
-					 transition(edgeName="t026",targetState="wait",cond=whenRequestGuarded("stop",{ itunibo.planner.plannerUtil.atHome()  
+					 transition(edgeName="t035",targetState="wait",cond=whenRequestGuarded("stop",{ itunibo.planner.plannerUtil.atHome()  
 					}))
-					transition(edgeName="t027",targetState="goToGoal",cond=whenRequest("setGoal"))
-					transition(edgeName="t028",targetState="terminateWalker",cond=whenDispatch("end"))
+					transition(edgeName="t036",targetState="goToGoal",cond=whenRequest("setGoal"))
+					transition(edgeName="t037",targetState="terminateWalker",cond=whenDispatch("end"))
 				}	 
 				state("goToGoal") { //this:State
 					action { //it:State
@@ -87,10 +88,9 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("doStep") { //this:State
 					action { //it:State
 						request("step", "step($Step)" ,"basicrobot" )  
-						delay(1000) 
 					}
-					 transition(edgeName="t129",targetState="handleAnswer",cond=whenReply("stepdone"))
-					transition(edgeName="t130",targetState="handleAnswer",cond=whenReply("stepfail"))
+					 transition(edgeName="t138",targetState="handleAnswer",cond=whenReply("stepdone"))
+					transition(edgeName="t139",targetState="handleAnswer",cond=whenReply("stepfail"))
 				}	 
 				state("doTurn") { //this:State
 					action { //it:State
@@ -99,14 +99,15 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						stateTimer = TimerActor("timer_doTurn", 
 							scope, context!!, "local_tout_rbrwalker_doTurn", StopTimer )
 					}
-					 transition(edgeName="t231",targetState="goToGoal",cond=whenTimeout("local_tout_rbrwalker_doTurn"))   
-					transition(edgeName="t232",targetState="handleStop",cond=whenRequest("stop"))
+					 transition(edgeName="t240",targetState="goToGoal",cond=whenTimeout("local_tout_rbrwalker_doTurn"))   
+					transition(edgeName="t241",targetState="handleStop",cond=whenRequest("stop"))
 				}	 
 				state("handleAnswer") { //this:State
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("stepdone(V)"), Term.createTerm("stepdone(V)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								itunibo.planner.plannerUtil.updateMap( CurrMov  )
+								 ObstGoal = false  
 						}
 						if( checkMsgContent( Term.createTerm("stepfail(DURATION,CAUSE)"), Term.createTerm("stepfail(D,C)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
@@ -114,17 +115,45 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 												var Duration = payloadArg(0)
 												var Cause = payloadArg(1)
 								println("WALKER | failed execution move: found $Cause")
-								itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection(  )
-								println("WALKER | finding a new path for the goal ($X, $Y)...")
-								itunibo.planner.plannerUtil.planForGoal( X, Y  )
-								itunibo.planner.plannerUtil.updateMap( "w"  )
-								itunibo.planner.plannerUtil.updateMap( "s"  )
+								
+												var CurDir = itunibo.planner.plannerUtil.getDirection()
+												var CurPosX = itunibo.planner.plannerUtil.getPosX()
+												var CurPosY = itunibo.planner.plannerUtil.getPosY()
+								if(  (CurDir == "upDir" && CurPosX == X.toInt() && (CurPosY - 1) == Y.toInt())
+											   || (CurDir == "downDir" && CurPosX == X.toInt() && (CurPosY + 1) == Y.toInt())
+											   || (CurDir == "leftDir" && (CurPosX - 1) == X.toInt() && CurPosY == Y.toInt())
+											   || (CurDir == "rightDir" && (CurPosX + 1) == X.toInt() && CurPosY == Y.toInt())  
+								 ){println("WALKER | found obstacle in goal cell. Waiting and try again to do the step...")
+								delay(1000) 
+								 ObstGoal = true  
+								}
+								else
+								 {itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection(  )
+								 itunibo.planner.plannerUtil.showMap(  )
+								 println("WALKER | finding a new path for the goal ($X, $Y)...")
+								 itunibo.planner.plannerUtil.planForGoal( X, Y  )
+								 itunibo.planner.plannerUtil.updateMap( "w"  )
+								 itunibo.planner.plannerUtil.updateMap( "l"  )
+								 itunibo.planner.plannerUtil.updateMap( "l"  )
+								 itunibo.planner.plannerUtil.updateMap( "w"  )
+								 itunibo.planner.plannerUtil.updateMap( "r"  )
+								 itunibo.planner.plannerUtil.updateMap( "r"  )
+								 itunibo.planner.plannerUtil.showMap(  )
+								 }
 						}
 						stateTimer = TimerActor("timer_handleAnswer", 
 							scope, context!!, "local_tout_rbrwalker_handleAnswer", StopTimer )
 					}
-					 transition(edgeName="t333",targetState="goToGoal",cond=whenTimeout("local_tout_rbrwalker_handleAnswer"))   
-					transition(edgeName="t334",targetState="handleStop",cond=whenRequest("stop"))
+					 transition(edgeName="t342",targetState="handleFail",cond=whenTimeout("local_tout_rbrwalker_handleAnswer"))   
+					transition(edgeName="t343",targetState="handleStop",cond=whenRequest("stop"))
+				}	 
+				state("handleFail") { //this:State
+					action { //it:State
+					}
+					 transition( edgeName="goto",targetState="doStep", cond=doswitchGuarded({ ObstGoal == true  
+					}) )
+					transition( edgeName="goto",targetState="goToGoal", cond=doswitchGuarded({! ( ObstGoal == true  
+					) }) )
 				}	 
 				state("handleStop") { //this:State
 					action { //it:State
@@ -133,15 +162,17 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						updateResourceRep( "Stopped"  
 						)
 					}
-					 transition(edgeName="t435",targetState="goToGoal",cond=whenDispatch("reactivate"))
+					 transition(edgeName="t444",targetState="doStep",cond=whenDispatchGuarded("reactivate",{ ObstGoal == true  
+					}))
+					transition(edgeName="t445",targetState="goToGoal",cond=whenDispatchGuarded("reactivate",{ ObstGoal == false  
+					}))
 				}	 
 				state("correctDirection") { //this:State
 					action { //it:State
 						
-									var CurDir = ""
 									var CurPos : Pair<Int, Int> ?= null
-						
-									CurDir = itunibo.planner.plannerUtil.getDirection()
+									var CurDir = itunibo.planner.plannerUtil.getDirection()
+									
 									while (CurDir != Dir) {
 						if(  (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
 										   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir")  

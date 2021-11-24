@@ -8,7 +8,7 @@ Event observerdishwasher:observerdishwasher(X)
 
 //Maitre - RBR
 Dispatch prepare:prepare(X, Y)
-Request addFood:addFood(FOODE_CODE)	
+Request addFood:addFood(FOODE_CODE)
 Dispatch clear:clear(X, Y)
 
 Reply warning:warning(ARG)	//void
@@ -23,6 +23,7 @@ Dispatch reactivate:reactivate(ARG)	//void
 Reply stopped:stopped(ARG)	//ARG = true | false
 
 //RBR - RBRWalker
+//RBRMapper - RBRWalker
 Request setGoal:setGoal(X, Y, DIR)
 
 Reply goalState:goalState(X)
@@ -60,7 +61,6 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 ExternalQActor basicrobot context ctxbasicrobot  
 
 /* Actor maitre is used as a mock client */
-/*
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -219,9 +219,8 @@ QActor maitre context ctxsystem {
 		terminate 1
 	}
 }
-*/
+
 /* Actor foodconsumer is used as a mock client */
-/*
 //QActor foodconsumer context ctxmaitre {
 QActor foodconsumer context ctxsystem {
 	
@@ -248,7 +247,7 @@ QActor foodconsumer context ctxsystem {
 		terminate 1
 	}
 }
-*/
+
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
@@ -437,7 +436,7 @@ QActor rbr context ctxsystem {
 	// State that sets RH goal	
 	State goToHome {			
 		println ("RBR | coming back to RH...")
-//		request rbrwalker -m setgoal : setgoal("${RHCoordinate!!.first}", "${RHCoordinate!!.second}", $RHDir)
+//		request rbrwalker -m setGoal : setGoal("${RHCoordinate!!.first}", "${RHCoordinate!!.second}", $RHDir)
 		[# request("setGoal", "setGoal(${RHCoordinate!!.first}, ${RHCoordinate!!.second}, $RHDir)", "rbrwalker") #] 
 	}
 	Transition t6
@@ -684,7 +683,7 @@ QActor rbrmapper context ctxsystem {
 		var CurrEdge = 0
 		var NameFile = "roomMap"
 		var Table = false
-		var Step = 647 //290 //647
+		var Step = 650 //290 //647
 	#]
 
 	State s0 initial {
@@ -737,7 +736,7 @@ QActor rbrmapper context ctxsystem {
 		whenReply stepfail -> obstacleFound
 
 	State turnLeft {
-		println ("WALKER | Found a wall")
+		println ("MAPPER | Found a wall")
 		forward basicrobot -m cmd : cmd(l)
 		run itunibo.planner.plannerUtil.updateMap('l')
 		delay 1000
@@ -760,7 +759,7 @@ QActor rbrmapper context ctxsystem {
 		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]
 		run itunibo.planner.plannerUtil.showMap()
 	}
-	Goto endState if [# CurrMov == "" #] else doMove
+	Goto turnHome if [# CurrMov == "" #] else doMove
 
 	State visitInternalCell {
 		[# CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove() #]
@@ -782,9 +781,19 @@ QActor rbrmapper context ctxsystem {
 		run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
 	}
 	Goto visitInternalCell
+	
+	State turnHome {
+		println ("MAPPER | coming back to RH...")
+		request rbrwalker -m setGoal : setGoal(0, 0, downDir) 
+	}
+	Transition t4
+		whenReply goalState -> endState
+		
 
 	State endState {
-		if [# Table == true #] {
+		onMsg( goalState : goalState(X) ) {
+			println ("MAPPER | ...reached RH.")
+			
 			run itunibo.planner.plannerUtil.saveRoomMap(NameFile)
 			replyTo map with mapdone:mapdone(0)
 		}
@@ -803,7 +812,8 @@ QActor rbrwalker context ctxsystem {
 		var Y = ""
 		var StopTimer = 1000L
 		var FirstStart = true
-		var Step = 647 //290
+		var Step = 650 //647 //290
+		var ObstGoal = false	
 	#]
 	
 	State s0 initial {
@@ -860,7 +870,6 @@ QActor rbrwalker context ctxsystem {
 	
 	State doStep {
 		request basicrobot -m step : step($Step)
-		delay 1000
 	}
 	Transition t1
 		whenReply stepdone -> handleAnswer
@@ -877,6 +886,7 @@ QActor rbrwalker context ctxsystem {
 	State handleAnswer {
 		onMsg( stepdone : stepdone(V) ) {
 			run itunibo.planner.plannerUtil.updateMap(CurrMov)
+			[# ObstGoal = false #]
 		}
 		
 		onMsg( stepfail : stepfail(D, C) ) {
@@ -886,20 +896,51 @@ QActor rbrwalker context ctxsystem {
 			#]
 			println ("WALKER | failed execution move: found $Cause")
 			
-			//Manage of the mobile obstacle by finding a new goal path:
-				//=> set the mobile obstacle
-			run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
-				//=> find the new path
-			println ("WALKER | finding a new path for the goal ($X, $Y)...")
-			run	itunibo.planner.plannerUtil.planForGoal(X, Y)
-				//=> remove the mobile obstacle
-			run itunibo.planner.plannerUtil.updateMap('w')
-			run itunibo.planner.plannerUtil.updateMap('s')
+			//TODO: gestire l'ostacolo nel caso in cui occupi il goal
+			
+			//if ( obstacleCoordinate == GoalCoordinate )
+			[#
+				var CurDir = itunibo.planner.plannerUtil.getDirection()
+				var CurPosX = itunibo.planner.plannerUtil.getPosX()
+				var CurPosY = itunibo.planner.plannerUtil.getPosY()
+			#]
+			if [# (CurDir == "upDir" && CurPosX == X.toInt() && (CurPosY - 1) == Y.toInt())
+			   || (CurDir == "downDir" && CurPosX == X.toInt() && (CurPosY + 1) == Y.toInt())
+			   || (CurDir == "leftDir" && (CurPosX - 1) == X.toInt() && CurPosY == Y.toInt())
+			   || (CurDir == "rightDir" && (CurPosX + 1) == X.toInt() && CurPosY == Y.toInt()) #] {
+				println ("WALKER | found obstacle in goal cell. Waiting and try again to do the step...")
+				delay 1000
+				[# ObstGoal = true #]		
+			}
+			else {	
+				//Manage of the mobile obstacle by finding a new goal path:
+					//=> set the mobile obstacle
+				run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
+				run itunibo.planner.plannerUtil.showMap()
+					//=> find the new path
+				println ("WALKER | finding a new path for the goal ($X, $Y)...")
+				run	itunibo.planner.plannerUtil.planForGoal(X, Y)
+					//=> remove the mobile obstacle
+				run itunibo.planner.plannerUtil.updateMap('w')
+	//			run itunibo.planner.plannerUtil.updateMap('s')	//--> In this way the cell wouldn't be cleaned 
+				//=> instead of using 's':
+				run itunibo.planner.plannerUtil.updateMap('l')
+				run itunibo.planner.plannerUtil.updateMap('l')
+				run itunibo.planner.plannerUtil.updateMap('w')
+				run itunibo.planner.plannerUtil.updateMap('r')
+				run itunibo.planner.plannerUtil.updateMap('r')
+				run itunibo.planner.plannerUtil.showMap()
+			}
 		} 
 	}
 	Transition t3
-		whenTimeVar StopTimer -> goToGoal	//Time waiting for stop command otherwise go on to goToGoal state
+		whenTimeVar StopTimer -> handleFail	//Time waiting for stop command otherwise go on to goToGoal state
+//		whenTimeVar StopTimer -> goToGoal	//Time waiting for stop command otherwise go on to goToGoal state
 		whenRequest stop -> handleStop
+	
+	State handleFail {
+	}
+	Goto doStep if [# ObstGoal == true #] else goToGoal
 	
 	State handleStop {
 		println ("WALKER | stopped. Waiting for a reactivate command...")
@@ -907,14 +948,15 @@ QActor rbrwalker context ctxsystem {
 		updateResource [# "Stopped" #]
 	}
 	Transition t4
-		whenMsg reactivate -> goToGoal
+		whenMsg reactivate and [# ObstGoal == true #] -> doStep
+		whenMsg reactivate and [# ObstGoal == false #] -> goToGoal
+//		whenMsg reactivate -> goToGoal
 	
 	State correctDirection {	
 		[#
-			var CurDir = ""
 			var CurPos : Pair<Int, Int> ?= null
-
-			CurDir = itunibo.planner.plannerUtil.getDirection()
+			var CurDir = itunibo.planner.plannerUtil.getDirection()
+			
 			while (CurDir != Dir) {
 		#]	 
 				if [# (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 

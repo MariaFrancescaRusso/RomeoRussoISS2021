@@ -24,26 +24,31 @@ const config = {
             position: { x: 0.94, y: 0.88},
             senseAxis: { x: true, y: false }
         }
-		*/
-      ],
+	*/
+    ],
       
     movingObstacles: [
-/*      {
+		{
             name: "movingobstacle",
             position: { x: .64, y: .42 },
             directionAxis: { x: true, y: true },
-            speed: 0.2,
-            range: 28
+            //speed: 0.2,
+            speed: 0.1, //--> to stay in the room
+            range: 28 
+            //range: 7 //--> to stay in the room
         },
  
         {
             name: "wall",
-            position: { x: 0.0, y: 0.6 },
+            //position: { x: 0.0, y: 0.6 },
+            position: { x: 0.5, y: 0.6 },	//--> to stay in the room
             directionAxis: { x: true, y: false },
-            speed: 0.0078,
-            range: 120
+            //speed: 0.0078,
+            speed: 0.07,	//--> to stay in the room
+            //range: 120
+            range: 12	//--> to stay in the room
+            
         }
-		 */
     ],
     
    staticObstacles: [
@@ -68,7 +73,8 @@ const config = {
         {
             name: "table",								
             centerPosition: { x: 0.5, y: 0.5 },			// (4.5, 4.5) / 9 =~ (0.5, 0.5)
-            size: { x: 0.33, y: 0.1 }					// dim: 3 x 1 (se /9 =~ (0.33, 0.1))
+            //size: { x: 0.33, y: 0.1 }					// dim: 3 x 1 (se /9 =~ (0.33, 0.1))
+            size: { x: 0.31, y: 0.09 }					// dim: 2.8 x 0.8 (se /9 =~ (0.31, 0.09))
 		},
 
         {

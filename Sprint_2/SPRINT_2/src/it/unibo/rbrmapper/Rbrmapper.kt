@@ -21,7 +21,7 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				var CurrEdge = 0
 				var NameFile = "roomMap"
 				var Table = false
-				var Step = 647 //290 //647
+				var Step = 650 //290 //647
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -33,8 +33,8 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("MAPPER | waits...")
 					}
-					 transition(edgeName="t119",targetState="doStep",cond=whenRequest("map"))
-					transition(edgeName="t120",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t127",targetState="doStep",cond=whenRequest("map"))
+					transition(edgeName="t128",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("doStep") { //this:State
 					action { //it:State
@@ -47,8 +47,8 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						request("step", "step($Step)" ,"basicrobot" )  
 						delay(1000) 
 					}
-					 transition(edgeName="t221",targetState="succesStep",cond=whenReply("stepdone"))
-					transition(edgeName="t222",targetState="obstacleFound",cond=whenReply("stepfail"))
+					 transition(edgeName="t229",targetState="succesStep",cond=whenReply("stepdone"))
+					transition(edgeName="t230",targetState="obstacleFound",cond=whenReply("stepfail"))
 				}	 
 				state("succesStep") { //this:State
 					action { //it:State
@@ -71,15 +71,15 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						}
 						delay(1000) 
 					}
-					 transition(edgeName="t323",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ Table == false  
+					 transition(edgeName="t331",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ Table == false  
 					}))
-					transition(edgeName="t324",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table == true  
+					transition(edgeName="t332",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table == true  
 					}))
-					transition(edgeName="t325",targetState="obstacleFound",cond=whenReply("stepfail"))
+					transition(edgeName="t333",targetState="obstacleFound",cond=whenReply("stepfail"))
 				}	 
 				state("turnLeft") { //this:State
 					action { //it:State
-						println("WALKER | Found a wall")
+						println("MAPPER | Found a wall")
 						forward("cmd", "cmd(l)" ,"basicrobot" ) 
 						itunibo.planner.plannerUtil.updateMap( "l"  )
 						delay(1000) 
@@ -105,7 +105,7 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						 CurrMov = itunibo.planner.plannerUtil.getNextPlannedMove()  
 						itunibo.planner.plannerUtil.showMap(  )
 					}
-					 transition( edgeName="goto",targetState="endState", cond=doswitchGuarded({ CurrMov == ""  
+					 transition( edgeName="goto",targetState="turnHome", cond=doswitchGuarded({ CurrMov == ""  
 					}) )
 					transition( edgeName="goto",targetState="doMove", cond=doswitchGuarded({! ( CurrMov == ""  
 					) }) )
@@ -141,11 +141,20 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					}
 					 transition( edgeName="goto",targetState="visitInternalCell", cond=doswitch() )
 				}	 
+				state("turnHome") { //this:State
+					action { //it:State
+						println("MAPPER | coming back to RH...")
+						request("setGoal", "setGoal(0,0,downDir)" ,"rbrwalker" )  
+					}
+					 transition(edgeName="t434",targetState="endState",cond=whenReply("goalState"))
+				}	 
 				state("endState") { //this:State
 					action { //it:State
-						if(  Table == true  
-						 ){itunibo.planner.plannerUtil.saveRoomMap( NameFile  )
-						answer("map", "mapdone", "mapdone(0)"   )  
+						if( checkMsgContent( Term.createTerm("goalState(X)"), Term.createTerm("goalState(X)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("MAPPER | ...reached RH.")
+								itunibo.planner.plannerUtil.saveRoomMap( NameFile  )
+								answer("map", "mapdone", "mapdone(0)"   )  
 						}
 						println("MAPPER | terminate...")
 						terminate(1)
