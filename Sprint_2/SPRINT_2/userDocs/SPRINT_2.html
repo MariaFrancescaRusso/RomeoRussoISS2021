@@ -73,19 +73,13 @@ As already said <a href="./SPRINT_2.html#S2mapping">above</a> and in the <a href
 <br><br>
 Indeed, as already detailed in the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1basicRobot" target="_blank">Sprint 1 problem analysis</a>, when the <k>basicrobot</k> meets an obstacle (fixed, mobile or wall) sends a <em>stepfail</em> message describing the cause of the failure and after how long it occured.
 <br><br>
-SO TO ADDRESS THIS PROBLEM TWO WAYS ARE POSSIBLE. 
-1. SETTING UP TEMPORARILY THE OBSTACLE IN THE MAP AND CALCULATING ANOTHER PLAN TO THE GAOL, BEFORE STARTING MOVING THE MOBILE OBSTACLE IT'S DELETED FROM THE MAP.
-2. AFTER THE MEETING WITH A MOBILE OBSTACLE THE RBR WAITS FOR THE OBSTACLE WALKS AWAY AND RETRY THE MOVEMENT PERIODICALY WHILE THE NEXT CELL IT'S FREE.
-<br><br>
-Pertanto come soluzione a questo problema potrebbe essere sufficiente/necessario gestire tale messaggio e per farlo ci possono essere diversi scenari:
-1. reinviando uno step command al basicrobot di durata DURATION in modo da arrivare di fronte all'ostacolo e settare temporaneamente l'ostacolo nella mappa logica e ricalcolare il percorso per il goal in modo da aggirare l'ostacolo;
-2. attendere che l'ostacolo mobile si sposti e ritentare il passo e poi continuare la sequenza di passi fino a raggiungere il goal
-<br><br>
-//TODO: gestire l'ostacolo nel caso in cui occupi il goal:
-				//Sol 1. fare in modo che il robot aspetti che si sposti l'ostacolo
-				//Sol 2. se il goal è la home allora sol 1; se il goal è una risorsa allora si cerca l altro goal più vicino?
-			//Si sceglie sol 1
+Therefore, to address this problem, it could be sufficient  manage the stepfail message received from the basicrobot and, to do this, there can be different ways:
+<ol>
+	<li>temporarily setting the obstacle in the logical map and planning a new path to reach the goal; so to get around the obstacle. Then, before starting the execution of the next steps,  the obstacle must be deleted from the logical map;</li>
+	<li>waiting for the mobile obstacle to move and so periodically carrying out the movement until the cell that must be occupied will be free.</li>
+</ol>
 
+WENV OSTACOLI
 
 <h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
 
@@ -114,6 +108,12 @@ The custumer requirements ask to do a mapping step to make the robot able to ada
 In the Mapper actor a map is obteined exploring the perimeter of the room and than exploring the internal space to found the table position.
 
 <h3><i><em>Avoid</em> the impact with obstacles</i> requirement</h3>
+
+<br><br>
+//TODO: gestire l'ostacolo nel caso in cui occupi il goal:
+				//Sol 1. fare in modo che il robot aspetti che si sposti l'ostacolo
+				//Sol 2. se il goal è la home allora sol 1; se il goal è una risorsa allora si cerca l altro goal più vicino?
+			//Si sceglie sol 1
 
 <h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
 
