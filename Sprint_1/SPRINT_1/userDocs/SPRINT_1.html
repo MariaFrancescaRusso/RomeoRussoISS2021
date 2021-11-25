@@ -58,14 +58,14 @@ The problems related to this sprint goals, that are already addressed in the <a 
 
 <h3>Food Consumption</h3>
 
-By requirements, to execute the <ks>Clear the room</ks> <ks>task</ks>, the <ks>RBR</ks> must take non-consumed food from the <ks>table</ks> and bring it to the <ks>fridge</ks>. Therefore, it's necessary a way to simulate the food consumption.<br>
+By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, to execute the <ks>Clear the room</ks> <ks>task</ks>, the <ks>RBR</ks> must take non-consumed food from the <ks>table</ks> and bring it to the <ks>fridge</ks>. Therefore, it's necessary a way to simulate the food consumption.<br>
 
 In the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTable" target="_blank">previous problem analysis</a>, various solutions about this problem have been exposed. From these solutions and after some reflections, the most suited solution seem to be the following: the consumption of food on the <ks>table</ks> could be managed by simulating people in the <ks>room</ks>, which consume the food on the <ks>table</ks>, so as to make it no longer available.<br>
 To do this, it can be introduced a new <tt>mock</tt> <k>actor</k> which interacts, after the <ks>Prepare the room</ks> <ks>task</ks> and before the <ks>Clear the room</ks> <ks>task</ks>, with the <k>table</k> to change its state.
 <br><br>
 <div class="center"><img class="resizeMin" src="./utils/img/FoodConsumerAnalysis.png" alt="Food Consumer"></div>
 
-<h3>Planning</h3>
+<h3><a name="S1planning"></a>Planning</h3>
 
 As already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, it's available a support, <m>it.unibo.planner20-1.0.jar</m>, which allows <k>rbr</k>, at its boot, to create a map of the <ks>room</ks> or to load an existing one. This allows the <k>rbr</k> to know where the elements which he has to interact (<ks>fridge</ks>, <ks>dishwasher</ks>, <ks>pantry</ks>, <ks>table</ks>) and the <ks>RH</ks> are situated in the <ks>room</ks>, so it can reach them.
 <br><br>
@@ -85,7 +85,7 @@ Some of the most useful operations provided by the <tt>Planner</tt> (in <a href=
 	<li><em>getDirection()</em>, which returns the current logical direction of the robot in the map.</li>
 </ul>
 
-<h3>basicRobot</h3>
+<h3><a name="S1basicRobot"></a>basicRobot</h3>
 
 As already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, the <tt>basicRobot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), provided by the customer in the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, is a component useful for the execution of the movements of the robot, which, in this Sprint, will be a <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) running on its own <tt>WEnv</tt> (Web Environment) to solve the goals about the execution of the <ks>tasks</ks>.
 <br><br>

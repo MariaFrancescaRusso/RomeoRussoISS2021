@@ -54,31 +54,33 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 <h2>Problem Analysis</h2>
 
-The problems related to this sprint goals, that are already addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">previous problem analysis</a>, are detailed below.
+The problems related to this sprint goals, that are already addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">initial problem analysis</a>, are detailed below.
 
-<h3>Mapping</h3>
+<h3><a name="S2mapping"></a>Mapping</h3>
 
-As already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, to be able to map the <ks>room</ks>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot; in this Sprint, it will be a <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) running on its own <tt>WEnv</tt> (Web Environment) to solve the goals about the execution of the <ks>tasks</ks>). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicrobot</k>.
+As already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">initial problem analysis</a>, to be able to map the <ks>room</ks>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot; in this Sprint, it will be a <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) running on its own <tt>WEnv</tt> (Web Environment) to solve the goals about the execution of the <ks>tasks</ks>). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicrobot</k>.
 <br><br>
-
-To map the room, in this case the virtual room in the WEnv, the rbr could communicate with the basicrobot to move it, as already said in the Sprint 1 problem analysis, and to know if it founds some obstacles or wall.<br>
-For/To make possible the mapping it's necessary also to update the room map and to do that it's useful the Planner support available in the library <m>it.unibo.planner20-1.0.jar</m> and discussed in the Sprint 1 problem analysis.
-
+Therefore, the mapping goal is to create a new <ks>room</ks> map, which in this sprint will be the virtual <ks>room</ks> in the <tt>WEnv</tt>, and to make possible this, it's necessary to communicate with the <k>basicrobot</k>, which, as already detailed in the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1basicRobot" target="_blank">Sprint 1 problem analysis</a>, replies with a <em>stepfail</em> message in case it should find some obstacles (fixed, mobile or wall; in mapping case it will be sufficient to consider only fixed obstacles and walls).<br>
+Furthermore, at each step carried out by the robot it's necessary also to update the <ks>room</ks> logical map and to do that it's useful the <tt>Planner</tt> support available in the library <m>it.unibo.planner20-1.0.jar</m> and discussed in the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1planning" target="_blank">Sprint 1 problem analysis</a>.
 <br><br>
-Con il mapping si vuole creare una nuova mappa concorde con la stanza virtuale e per farlo si potrebbe fare comunicare l'rbr con il basicrobot il quale risponde ... e ad ogni passo aggiornare la mappa logica tramite il planner ...<br>
+<img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/basicRobotInRBRctx.png" alt="basicRobot in RBR context">
 
+<h3><i>Avoid the Impact with Obstacles</i> Requirement</h3>
 
+By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the <ks>RBR</ks> must be able to <i><em>avoid</em> the impact with obstacles</i>; in particular, with mobile obstacles because walls and fixed obstacles (the <ks>table</ks>) are included in the <ks>room</ks> map, which in this sprint is produced by the <a href="./SPRINT_2.html#S2mapping">mapping</a>.<br>
 
-<h3><i><em>Avoid</em> the impact with obstacles</i> requirement</h3>
-
-As already said above and in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">previous problem analysis</a>, to satisfy the requirement <i><em>avoid</em> the impact with obstacles</i>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicrobot</k>.
+As already said <a href="./SPRINT_2.html#S2mapping">above</a> and in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">initial problem analysis</a>, to satisfy the requirement <i><em>avoid</em> the impact with obstacles</i>, it's possible to use data collected from a <tt>sensor</tt>, which can be represented by a <tt>sonar</tt> (in both virtual and real robot; in this Sprint, it will be a <tt>virtual robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.virtualRobot2020/userDocs/VirtualRobot2021.html" target="_blank">VirtualRobot2021.html</a>) running on its own <tt>WEnv</tt> (Web Environment) to solve the goals about the execution of the <ks>tasks</ks>). In the library <m>it.unibo.qak21.basicrobot-1.0.jar</m>, provided by the customer, the <tt>sonar</tt> is already integrated and used by the <k>basicrobot</k>.
 <br><br>
-il basicrobot infatti quando incontra un ostacolo risponde tramite stepfail indicando...
-
+Indeed, as already detailed in the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1basicRobot" target="_blank">Sprint 1 problem analysis</a>, when the <k>basicrobot</k> meets an obstacle (fixed, mobile or wall) sends a <em>stepfail</em> message describing the cause of the failure and after how long it occured.
+<br><br>
+SO TO ADDRESS THIS PROBLEM TWO WAYS ARE POSSIBLE. 
+1. SETTING UP TEMPORARILY THE OBSTACLE IN THE MAP AND CALCULATING ANOTHER PLAN TO THE GAOL, BEFORE STARTING MOVING THE MOBILE OBSTACLE IT'S DELETED FROM THE MAP.
+2. AFTER THE MEETING WITH A MOBILE OBSTACLE THE RBR WAITS FOR THE OBSTACLE WALKS AWAY AND RETRY THE MOVEMENT PERIODICALY WHILE THE NEXT CELL IT'S FREE.
+<br><br>
 Pertanto come soluzione a questo problema potrebbe essere sufficiente/necessario gestire tale messaggio e per farlo ci possono essere diversi scenari:
 1. reinviando uno step command al basicrobot di durata DURATION in modo da arrivare di fronte all'ostacolo e settare temporaneamente l'ostacolo nella mappa logica e ricalcolare il percorso per il goal in modo da aggirare l'ostacolo;
 2. attendere che l'ostacolo mobile si sposti e ritentare il passo e poi continuare la sequenza di passi fino a raggiungere il goal
-
+<br><br>
 //TODO: gestire l'ostacolo nel caso in cui occupi il goal:
 				//Sol 1. fare in modo che il robot aspetti che si sposti l'ostacolo
 				//Sol 2. se il goal è la home allora sol 1; se il goal è una risorsa allora si cerca l altro goal più vicino?
@@ -89,7 +91,8 @@ Pertanto come soluzione a questo problema potrebbe essere sufficiente/necessario
 
 --------PROBLEM ANALYSIS-----------
 To manage the the stop/reactivate commands received by the maitre, during the execution of each task, it's possible to split the path, the rbr must execute, in a steps sequence. In this way, at the end of each step the rbr checks if it has received a stop command and in this case it saves its state and waits for the reactivate command, otherwise it carries out the next step.
-
+<br><br>
+TO MANAGE THE STOP/REACTIVATE COMMANDS RECEIVED BY THE MAITRE, IT'S SUFFICIENT TO WAIT FOR A STOP MESSAGE IN THE RBRWALKER ACTOR BEFORE THE EXECUTION OF ANY MOVE, AND WHILE IT 'S WAITING FOR A NEW GOAL AND IT'S NOT IN THE RH.
 
 <h2>Test Plans</h2>
 
@@ -106,6 +109,10 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 <h3>Mapping</h3>
 
+# Mapper
+The custumer requirements ask to do a mapping step to make the robot able to adapt its movements to any room enviroment. To get this behaviur the Mapper actor is builted.
+In the Mapper actor a map is obteined exploring the perimeter of the room and than exploring the internal space to found the table position.
+
 <h3><i><em>Avoid</em> the impact with obstacles</i> requirement</h3>
 
 <h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
@@ -118,7 +125,32 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 Below there are exposed some tests made for this sprint project:
 
+<dl>
+	<dt><a href="../test/it/unibo/test/StopAndReactivateTest.kt" target="_blank">StopAndReactivateTest.kt</a></dt>
+	<dd>Tests about the correct execution of the stop/reactivate feature:<ol>
+		<li><em>StopAndReactivateTest</em>: it's tested that the stop command fail when the rbrwalker it's in a wait state and that has success when it's in moving step than it's tested that the reactivate command works.
+		
+		after the send of a <em>prepare</em> command to the <k>rbr</k>, which runs the <ks>Prepare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
+			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>pantry</ks>;</li>
+			<li>Checks that the crockery removed from the <k>pantry</k> are the expected;</li>
+			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the <ks>RH</ks> position.</li>
+		</ol></li>
+	</ol></dd>
+</dl>
 
+Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactivate</em> command.
+
+Test about the stop message:
+ StopAndReactivateTest: it's tested that the stop command fail when the rbrwalker it's in a wait state and that has success when it's in moving step than it's tested that the reactivate command works.
+ 1. Sends a stop request to rbrwalker actor;
+ 2. Checks that stop request fails;
+ 3. Sends a setGaol message
+ 4. Sends a stop request to rbrwalker actor;
+ 5. Checks that stop request works;
+ 6. Sends a reactivate message;
+ 7.  Checks that reactivate request works;
+ 8. Checks that the final robot position, taken from the rbrwalker state, is the expected one;
 
 <h2>Model of System's Logical Architecture</h2>
 
@@ -186,7 +218,7 @@ Definition list:
 Link:
 <a href="" target="_blank"></a>
 Link in pagina:
-<a name="link"></a> + <a href="./SPRINT_1.html#link">text</a>
+<a name="link"></a> + <a href="./SPRINT_2.html#link">text</a>
 IFrame:
 <iframe src="./src" title="title">"Link"/Cosa c'è nel frame</iframe>
 <br>Image:
