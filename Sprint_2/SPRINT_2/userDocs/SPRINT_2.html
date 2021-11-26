@@ -89,11 +89,17 @@ Therefore, referring to the result of the Sprint 1 and to hypothesis/solution at
 <br><br>
 The communications for sending these commands could be implemented in different ways:
 <ol>
-	<li>maitre - rbr - rbrwalker</li>
-	<li>maitre - rbrwalker</li>
-	<li>maitre evento - ricevuto da rbrwalker ma in futuro se ci fosse qualcun altro interessato potrebbe riceverlo</li>
+  <li>The maitre could send the stop and reactivate commands to the rbr  which takes care of sending these commands to the rbrwalker</li>
+  <li>The maitre could send the stop and reactivate commands as dispatch directly to the rbrwalker </li>
+  <li>The maitre could send the stop command as a request, waiting for a failing or success response , and reactivate as dispatch directly to the rbrwalker</li>
+  <li>The maitre sends a stop event  recived by all the interessed actors, that, for now, it's  the  rbrwalker.</li>
 </ol>
+The better chose, in this step, looks to be the third one. In future, if the system complexity will evolve and there will be more actors interessed to the command ,it would be reppresented as an event.
+So this chose  ma in futuro se ci fosse qualcun altro interessato potrebbe riceverlo
+
 + immagini
+
+In questo step è più oppurtuno far dialogare il maitre direttamente con l rbrwalker. In futuro potrebbe essere più conveniente rappresentare il comando con un evento.
 
 <h2>Test Plans</h2>
 
