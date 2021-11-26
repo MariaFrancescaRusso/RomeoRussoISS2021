@@ -73,20 +73,27 @@ As already said <a href="./SPRINT_2.html#S2mapping">above</a> and in the <a href
 <br><br>
 Indeed, as already detailed in the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1basicRobot" target="_blank">Sprint 1 problem analysis</a>, when the <k>basicrobot</k> meets an obstacle (fixed, mobile or wall) sends a <em>stepfail</em> message describing the cause of the failure and after how long it occured.
 <br><br>
-Therefore, to address this problem, it could be sufficient  manage the stepfail message received from the basicrobot and, to do this, there can be different ways:
+Therefore, to address this problem, it could be sufficient to manage the <em>stepfail</em> message received from the <k>basicrobot</k> and, to do this, there can be different ways:
 <ol>
-	<li>temporarily setting the obstacle in the logical map and planning a new path to reach the goal; so to get around the obstacle. Then, before starting the execution of the next steps,  the obstacle must be deleted from the logical map;</li>
+	<li>temporarily setting the obstacle in the logical map and planning a new path to reach the goal; so to get around the obstacle. Then, before starting the execution of the next steps, the obstacle must be deleted from the logical map;</li>
 	<li>waiting for the mobile obstacle to move and so periodically carrying out the movement until the cell that must be occupied will be free.</li>
 </ol>
 
-WENV OSTACOLI
+<h3><em>Stop</em>/<em>Reactivate</em> Feature</h3>
 
-<h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
-
---------PROBLEM ANALYSIS-----------
-To manage the the stop/reactivate commands received by the maitre, during the execution of each task, it's possible to split the path, the rbr must execute, in a steps sequence. In this way, at the end of each step the rbr checks if it has received a stop command and in this case it saves its state and waits for the reactivate command, otherwise it carries out the next step.
+By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an already activated <ks>task</ks>, otherwise these commands have no effect.
+<br>
+In Sprint 1 it has been added a new actor (rbrwalker <ko>LINK</ko>) to manage the planning and communicating with the basicrobot actor to make the robot perform the movements, whether it is virtual or real; in this case virtual.
+<br>
+Therefore, referring to the result of the Sprint 1 and to hypothesis/solution at this problem advanced in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">initial problem analysis</a>, to manage the the stop/reactivate commands received by the maitre, during the execution of a task, a possible solution can be to use the rbrwalker actor which, splitting the path the robot must execute in a steps sequence, at the end of each step it can check if it has received a stop command and in this case it must wait for the reactivate command, otherwise it can carry out the next step.
 <br><br>
-TO MANAGE THE STOP/REACTIVATE COMMANDS RECEIVED BY THE MAITRE, IT'S SUFFICIENT TO WAIT FOR A STOP MESSAGE IN THE RBRWALKER ACTOR BEFORE THE EXECUTION OF ANY MOVE, AND WHILE IT 'S WAITING FOR A NEW GOAL AND IT'S NOT IN THE RH.
+The communications for sending these commands could be implemented in different ways:
+<ol>
+	<li>maitre - rbr - rbrwalker</li>
+	<li>maitre - rbrwalker</li>
+	<li>maitre evento - ricevuto da rbrwalker ma in futuro se ci fosse qualcun altro interessato potrebbe riceverlo</li>
+</ol>
++ immagini
 
 <h2>Test Plans</h2>
 
@@ -115,7 +122,11 @@ In the Mapper actor a map is obteined exploring the perimeter of the room and th
 				//Sol 2. se il goal è la home allora sol 1; se il goal è una risorsa allora si cerca l altro goal più vicino?
 			//Si sceglie sol 1
 
+WENV OSTACOLI
+
 <h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
+
+Furthermore, it must be manage the possibility to receive the command before the execution of a task and in this case the stop request must be ignored.
 
 <h3></h3>
 
