@@ -61,6 +61,7 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 ExternalQActor basicrobot context ctxbasicrobot  
 
 /* Actor maitre is used as a mock client */
+/*
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -219,9 +220,11 @@ QActor maitre context ctxsystem {
 		terminate 1
 	}
 }
-
+*/
 /* Actor foodconsumer is used as a mock client */
 //QActor foodconsumer context ctxmaitre {
+
+/* 
 QActor foodconsumer context ctxsystem {
 	
 	State s0 initial {
@@ -247,7 +250,7 @@ QActor foodconsumer context ctxsystem {
 		terminate 1
 	}
 }
-
+ */
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
@@ -683,7 +686,7 @@ QActor rbrmapper context ctxsystem {
 		var CurrEdge = 0
 		var NameFile = "roomMap"
 		var Table = false
-		var Step = 650 //290 //647
+		var Step = 290 //290 //647
 	#]
 
 	State s0 initial {
@@ -734,7 +737,7 @@ QActor rbrmapper context ctxsystem {
 		whenReply stepdone and [# Table == false #] -> turnLeft
 		whenReply stepdone and [# Table == true #] -> tableFound
 		whenReply stepfail -> obstacleFound
-
+		
 	State turnLeft {
 		println ("MAPPER | Found a wall")
 		forward basicrobot -m cmd : cmd(l)
@@ -812,7 +815,7 @@ QActor rbrwalker context ctxsystem {
 		var Y = ""
 		var StopTimer = 1000L
 		var FirstStart = true
-		var Step = 650 //647 //290
+		var Step = 290 //647 //290
 		var ObstGoal = false	
 	#]
 	
@@ -931,6 +934,7 @@ QActor rbrwalker context ctxsystem {
 				run itunibo.planner.plannerUtil.updateMap('r')
 				run itunibo.planner.plannerUtil.showMap()
 			}
+			updateResource [# "Obstacle Detected" #]
 		} 
 	}
 	Transition t3
