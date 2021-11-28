@@ -78,7 +78,7 @@ class AvoidMobileObstacleTest {
 	}
 
 	@Test
-	fun StopReactivateTest() {
+	fun AvoidMobileObstacleTest() {
 
 		var msg = MsgUtil.buildRequest("tester", "setGoal", "setGoal(0,5, downDir)", "rbrwalker")
 		var State = ""
