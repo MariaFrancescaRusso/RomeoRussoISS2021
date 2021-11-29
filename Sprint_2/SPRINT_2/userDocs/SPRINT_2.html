@@ -79,26 +79,38 @@ Therefore, to address this problem, it could be sufficient to manage the <em>ste
 	<li>waiting for the mobile obstacle to move and so periodically carrying out the movement until the cell that must be occupied will be free.</li>
 </ol>
 
-SCRIVERE CHE LA SCELTA VIENE FATTA IN FASE DI PROGETTAZIONE?
+<br><ko>SCRIVERE CHE LA SCELTA VIENE FATTA IN FASE DI PROGETTAZIONE? o che si potrebbe utilizzare la prima, ma nel caso in cui si trova l'ostacolo nella posizione del goal si potrebbe utilizzare la seconda soluzione.</ko>
 
 <h3><em>Stop</em>/<em>Reactivate</em> Feature</h3>
 
 By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an already activated <ks>task</ks>, otherwise these commands have no effect.
 <br>
-In Sprint 1 it has been added a new <tt>actor</tt> (<k>rbrwalker</k> <ko>LINK</ko>) to manage the planning and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is virtual or real; in this case virtual.
+In Sprint 1 it has been added a new <tt>actor</tt> (<a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1rbrWalker" target="_blank"><k>rbrwalker</k></a>) to manage the planning and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is virtual or real; in this case virtual.
 <br>
-Therefore, referring to the result of the Sprint 1 and to hypothesis/solution at this problem advanced in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">initial problem analysis</a>, to manage the the stop/reactivate commands received by the maitre, during the execution of a task, a possible solution can be to use the rbrwalker actor which, splitting the path the robot must execute in a steps sequence, at the end of each step it can check if it has received a stop command and in this case it must wait for the reactivate command, otherwise it can carry out the next step.
+Therefore, referring to the result of the Sprint 1 <ko>LINK a INTRODUZIONE sopra o a risultato SPRINT 1??</ko> and to hypothesis/solution at this problem advanced in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">initial problem analysis</a>, to manage the the <em>stop</em>/(and)<em>reactivate</em> commands received by the <k>maitre</k>, during the execution of a <ks>task</ks>, a possible solution can be to use the <k>rbrwalker</k> <tt>actor</tt> which, splitting the path the robot must execute in a steps sequence, at the end of each step it can check if it has received a <em>stop</em> command and in this case it must wait for the <em>reactivate</em> command, otherwise it can carry out the next step.
 <br><br>
 The communications for sending these commands could be implemented in different ways:
-<ol>
-  <li>The maitre could send the stop and reactivate commands to the rbr, which takes care of sending these commands to the rbrwalker;</li>
-  <li>The maitre could send directly to the rbrwalker the stop and reactivate commands as dispatch;</li>
-  <li>The maitre could send directly to the rbrwalker the stop command as a request, waiting for a failure or success reply, and the reactivate command as a dispatch;</li>
-  <li>The maitre could send the stop command as an event that can be received by all the interessed actors, that, for now, it's just the rbrwalker.</li>
-</ol>
-From these solutions, the better choose, in this step/sprint, looks to be the <ko>LINK</ko> third one, because it's the rbrwalker that is interessed to receive these commands since it takes care of communicating with the basicrobot to move the robot. In future, if the system complexity will evolve and there will be more actors interessed to these commands, it would be necessary to implement the <ko>LINK</ko> fourth solution.
-
-<ko>immagini per ogni soluzione?</ko>
+<br><br>
+<table>
+	<tr>
+		<td><ol><li>The <k>maitre</k> could send the <em>stop</em> and <em>reactivate</em> commands to the <k>rbr</k>, which takes care of sending these commands to the <k>rbrwalker</k>;</li></ol></td>
+		<td class="imageScenario"><img src="./utils/img/Sol1_StopReactivate.svg" alt="sol1_StopReactivate"></td>
+	</tr>
+	<tr>
+		<td><ol start="2"><li>The <k>maitre</k> could send directly to the <k>rbrwalker</k> the <em>stop</em> and <em>reactivate</em> commands as <ko>dispatch</ko>;</li></ol></td>
+		<td class="imageScenario"><img src="./utils/img/Sol2_StopReactivate.svg" alt="sol2_StopReactivate"></td>
+	</tr>
+	<tr>
+		<td><a name="sol3_stopReac"></a><ol start="3"><li>The <k>maitre</k> could send directly to the <k>rbrwalker</k> the <em>stop</em> command as a <ko>request</ko>, waiting for a failure or success <ko>reply</ko>, and the <em>reactivate</em> command as a <ko>dispatch</ko>;</li></ol></td>
+		<td class="imageScenario"><img src="./utils/img/Sol3_StopReactivate.svg" alt="sol3_StopReactivate"></td>
+	</tr>
+	<tr>
+		<td><a name="sol4_stopReac"></a><ol start="4"><li>The <k>maitre</k> could send the <em>stop</em> command as an <ko>event</ko> that can be received by all the interessed <tt>actors</tt>, that, for now, it's just the <k>rbrwalker</k>. <ko>AGGIUNGERE REACTIVATE!</ko></li></ol></td>
+		<td class="imageScenario"><img src="./utils/img/Sol4_StopReactivate.svg" alt="sol4_StopReactivate"></td>
+	</tr>
+</table>
+<br>
+From these solutions, the better choose, in this step/sprint, looks to be the <a href="./SPRINT_2.html#sol3_stopReac">third one</a>, because it's the <k>rbrwalker</k> that is interessed to receive these commands since it takes care of communicating with the <k>basicrobot</k> to move the robot. In future, if the system complexity will evolve and there will be more <tt>actors</tt> interessed to these commands, it would be necessary to implement the <a href="./SPRINT_2.html#sol4_stopReac">fourth solution</a>.
 
 <h2>Test Plans</h2>
 
@@ -114,32 +126,34 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 <h3>Mapping</h3>
 
-In Sprint 1, for the planning it has been created a project <ko>LINK</ko> MapBinGenerator which creats a room logical map taking in input the dimension of the map to create and the coordinates of the obstacles.<br>
-Instead, in this sprint, it has been introduced the mapping feature that provides a logical map of any type of room, either it is real or virtual, by exploiting the basicrobot to map it, without having to know the map dimensions or the obstacles positions.<br>
-To realize this behavior it seemed to be more appropriate to create a new <tt>actor</tt> (<k>rbrmapper</k>) in <k>rbr</k> <tt>context</tt> (<k>ctxrbr</k>) which, after receiving the request (map) from the rbr actor, takes care of the room mapping and communicating with the basicrobot actor to make the robot perform the movements, whether it is virtual or real (in this case virtual), and to detect when the robot meets a wall or a fixed obstacle (the table in this case). To create the new map it uses also the Planner support.
+In Sprint 1, for the planning it has been created a project (<a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#mapBinGen" target="_blank">MapBinGenerator</a>) which creats a <ks>room</ks> logical map taking in input the dimension of the map to create and the coordinates of the obstacles.<br>
+Instead, in this sprint, it has been introduced the mapping feature that provides a logical map of any type of room, either it is real or virtual, by exploiting the <k>basicrobot</k> to map it, without having to know the map dimensions or the obstacles positions.<br>
+To realize this behavior it seemed to be more appropriate to create a new <tt>actor</tt> (<k>rbrmapper</k>) in <k>rbr</k> <tt>context</tt> (<k>ctxrbr</k>) which, after receiving the <ko>request</ko> (<em>map</em>) from the <k>rbr</k> <tt>actor</tt>, takes care of the <ks>room</ks> mapping and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is virtual or real (in this case virtual), and to detect when the robot meets a wall or a fixed obstacle (the <ks>table</ks> in this case). To create the new map it uses also the <tt>Planner</tt> support.
 <br><br>
-In particular, after receiving a map request from the rbr actor, the rbrmapper communicates with the basicrobot to move the robot making him explore the perimeter of the room:
+In particular, after receiving a <em>map</em> <ko>request</ko> from the <k>rbr</k> <tt>actor</tt>, the <k>rbrmapper</k> communicates with the <k>basicrobot</k> to move the robot making him explore the perimeter of the <ks>room</ks>:
 <ol>
-	<li>sending to the basicrobot a request message step for forward movements until it receives the reply stepfail when the robot has met a wall; otherwise it updates the logical map using Planner command updateMap every time it receives the reply stepdone;</li>
-	<li>sending to the basicrobot, once received stepfail reply, a dispatch message cmd(l) to turn left the robot.</li>
+	<li>sending to the <k>basicrobot</k> a <ko>request</ko> message <em>step</em> for forward movements until it receives the <ko>reply</ko> <em>stepfail</em> when the robot has met a wall; otherwise it updates the logical map using <tt>Planner</tt> command <em>updateMap</em> every time it receives the <ko>reply</ko> <em>stepdone</em>;</li>
+	<li>sending to the <k>basicrobot</k>, once received <em>stepfail</em> <ko>reply</ko>, a <ko>dispatch</ko> message <em>cmd(<ac>l</ac>)</em> to turn left the robot.</li>
 </ol>
-The rbrmapper repeats this sequence of actions until it comes back to the RH position.<br>
-Then, this actor starts to explore the internal spaces of the room:
+The <k>rbrmapper</k> repeats this sequence of actions until it comes back to the <ks>RH</ks> position.<br>
+Then, this <tt>actor</tt> starts to explore the internal spaces of the <ks>room</ks>:
 <ol>
-	<li>using the Planner command planForNextDirty, which returns a list of actions to reach the first unexplored cell in the logical map;</li>
-	<li>sending a request message step for forward movement, by waiting for the reply stepdone or stepfail respectively in case of success or fail when the robot meets an obstacle (the table), and a dispatch message cmd for the other movements;</li>
-	<li>updating at each step the logical map using Planner command updateMap, when it receives the stepdone reply or when it sends the dispatch cmd, or the Planner command updateMapObstacleOnCurrentDirection when it receives the stepfail reply.</li>
+	<li>using the <tt>Planner</tt> command <em>planForNextDirty</em>, which returns a list of actions to reach the first unexplored cell in the logical map;</li>
+	<li>sending a <ko>request</ko> message <em>step</em> for forward movement, by waiting for the <ko>reply</ko> <em>stepdone</em> or <em>stepfail</em> respectively in case of success or fail when the robot meets an obstacle (the <ks>table</ks>), and a <ko>dispatch</ko> message <em>cmd</em> for the other movements;</li>
+	<li>updating at each step the logical map using <tt>Planner</tt> command <em>updateMap</em>, when it receives the <em>stepdone</em> <ko>reply</ko> or when it sends the <ko>dispatch</ko> <em>cmd</em>, or the <tt>Planner</tt> command <em>updateMapObstacleOnCurrentDirection</em> when it receives the <em>stepfail</em> <ko>reply</ko>.</li>
 </ol>
-The rbrmapper repeats this sequence of actions until it has explored every cell in the logical map.<br>
-After this, this actor sends a request message setGoal(0, 0, downDir) to the rbrwalker actor to make the robot to come back to the RH position with the correct direction.<br>
-Afterwards, when the rbrmapper receives the reply goalState from the rbrwalker, it saves the created map through the Planner command saveRoomMap and replies to the rbr actor with the message mapdone.<br>
+The <k>rbrmapper</k> repeats this sequence of actions until it has explored every cell in the logical map.<br>
+After this, this <tt>actor</tt> sends a <ko>request</ko> message <em>setGoal(<ac>0</ac>, <ac>0</ac>, <ac>downDir</ac>)</em> to the <k>rbrwalker</k> <tt>actor</tt> to make the robot to come back to the <ks>RH</ks> position with the correct direction.<br>
+Afterwards, when the <k>rbrmapper</k> receives the <ko>reply</ko> <em>goalState</em> from the <k>rbrwalker</k>, it saves the created map through the <tt>Planner</tt> command <em>saveRoomMap</em> and <ko>replies</ko> to the <k>rbr</k> <tt>actor</tt> with the message <em>mapdone</em>.<br>
 Finally, it terminates itself.
 <br><br>
-It was introduced also the possibility for the rbr to know if the room logical map it's already present by consulting a prolog file <ko>LINK</ko> IsMap.pl and in this case the rbr actor sends a dispatch end to the rbrmapper which terminate itself.
+It was introduced also the possibility for the <k>rbr</k> to know if the <ks>room</ks> logical map it's already present by consulting a prolog file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_2/SPRINT_2/IsMap.pl" target="_blank">IsMap.pl</a>) and in this case the <k>rbr</k> <tt>actor</tt> sends a <ko>dispatch</ko> <em>end</em> to the <k>rbrmapper</k> which terminate itself.
 
-<ko>LINK attore + image qak attore + immagine comunicazione tra attori + immagine rbr qak mapping + immagine a stati del mapper</ko>
+<br><br><ko>LINK attore + image qak attore + immagine comunicazione tra attori + immagine rbr qak mapping + immagine a stati del mapper</ko>
 
 <h3><i><em>Avoid</em> the impact with obstacles</i> requirement</h3>
+
+
 
 <br><br>
 //TODO: gestire l'ostacolo nel caso in cui occupi il goal:
@@ -188,7 +202,7 @@ Test about the stop message:
  7.  Checks that reactivate request works;
  8. Checks that the final robot position, taken from the rbrwalker state, is the expected one;
  
- <dl>
+<dl>
 	<dt><a href="../test/it/unibo/test/AvoidMobileObstacleTest.kt" target="_blank"> AvoidMobileObstacleTest.kt</a></dt>
 	<dd>Tests about the correct execution of the  feature avoid mobile obstacle:<ol>
 	<li>AvoidMobileObstacleTest: it's tested that  rbrwalker calculates a new path when meets an obstacle. For this test it's need the presence of an obstacle in the map, placed in the expected path walked by the robot.</li>
