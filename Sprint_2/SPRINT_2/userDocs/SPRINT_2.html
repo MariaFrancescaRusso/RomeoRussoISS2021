@@ -148,8 +148,34 @@ Afterwards, when the <k>rbrmapper</k> receives the <ko>reply</ko> <em>goalState<
 Finally, it terminates itself.
 <br><br>
 It was introduced also the possibility for the <k>rbr</k> to know if the <ks>room</ks> logical map it's already present by consulting a prolog file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_2/SPRINT_2/IsMap.pl" target="_blank">IsMap.pl</a>) and in this case the <k>rbr</k> <tt>actor</tt> sends a <ko>dispatch</ko> <em>end</em> to the <k>rbrmapper</k> which terminate itself.
-
-<br><br><ko>LINK attore + image qak attore + immagine comunicazione tra attori + immagine rbr qak mapping + immagine a stati del mapper</ko>
+<br><br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Models</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text" rowspan="3">
+		<br><a href="../src/model.qak#:~:text=//QActor%20rbrmapper%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrmapper</k> in model.qak</a><br><br>
+		<iframe class="qakImage" src="./utils/img/RBRMapperQActor.png" title="RBR Mapper QActor from model.qak">RBR Mapper QActor from model.qak</iframe>
+		<br><br><hr><br>
+		<a href="../src/model.qak#:~:text=//QActor%20rbr%20context,whenMsg%20prepare%20%2D%3E%20exPrepareHP" target="_blank">Portion of <k>rbr</k> in model.qak</a><br><br>
+		<iframe class="qakImage" src="./utils/img/RBRQActor.png" title="RBR QActor from model.qak">RBR QActor from model.qak</iframe>
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/MappingRBRContext.svg" alt="Mapping RBR Context">
+	</td>
+</tr>
+<tr class="text">
+	<th>Moore State Machine Diagrams</th>
+</tr>
+<tr>
+	<td class="imageSchema">
+		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
+		<img src="./utils/img/FSM_RBRMapperQActor.svg" alt="Representation of the behavior of QActor rbrmapper, modeled as a Moore state machine"><br>
+	</td>
+</tr>
+</table>
 
 <h3><i><em>Avoid</em> the impact with obstacles</i> requirement</h3>
 
@@ -160,12 +186,27 @@ It was introduced also the possibility for the <k>rbr</k> to know if the <ks>roo
 				//Sol 1. fare in modo che il robot aspetti che si sposti l'ostacolo
 				//Sol 2. se il goal è la home allora sol 1; se il goal è una risorsa allora si cerca l altro goal più vicino?
 			//Si sceglie sol 1
+			
+Avoid the mobile obstacles
+To develop this feature it's sufficient to extend the behavior of the rbrwalker; when the actor receives a stepfail two scenarios are distinguished:
+1. if the obstacle is in the goal position the rbrwalker retry the movent after waited for a timer;
+2. otherwise the obstacle it's temporarily added to the map, it's calculated a new path and the obstacle it's removed from the map before performing the next move.
 
 WENV OSTACOLI
 
 <h3><em>Stop</em>/<em>Reactivate</em> feature</h3>
 
 Furthermore, it must be manage the possibility to receive the command before the execution of a task and in this case the stop request must be ignored.
+
+
+Stop and reactivate
+STOP
+To develop this feature, among the four options that have been presented in the Problem Analysis section the third was chosen.
+To stop a task execution the maitre sends a stop request to the rbrwalker that controls for a stop request after sending cmd message to the basicrobot, or after having received a stepdone reply, or in waiting state . The rbrwalker confirms that it has  stopped with a reply stopped(fail) if it received the request in wait state otherwise answer tirh stopped(true) .
+REACTIVATE
+To reactivate the task the maitre sends a reactivate dispatch to the rbrwalker which waits for this message in the handleStop state. When rbrwalker receives the reactivate message try to execute a new movement going in the doStep state the goal is in the next cell and it's occupied by an obstacle otherwise go to goToGoal .
+
+
 
 <h3></h3>
 
