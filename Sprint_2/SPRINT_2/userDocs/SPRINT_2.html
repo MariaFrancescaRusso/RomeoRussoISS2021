@@ -172,33 +172,20 @@ It was introduced also the possibility for the <k>rbr</k> to know if the <ks>roo
 <tr>
 	<td class="imageSchema">
 		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
-		<img src="./utils/img/FSM_RBRMapperQActor.svg" alt="Representation of the behavior of QActor rbrmapper, modeled as a Moore state machine">
+		<img src="./utils/img/FSM_RBRMapperQActor.svg" alt="Representation of the behavior of QActor rbrmapper, modeled as a Moore state machine"><br>
+		<img src="./utils/img/FSM_RBRQActor.svg" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine">
 	</td>
 </tr>
 </table>
 
 <h3><i>Avoid the Impact with Obstacles</i> Requirement</h3>
 
-To solve the requirement <i><em>avoid</em> the impact with obstacles</i> requirement <ko>dove req??</ko> it has been sufficient to extend the behavior of the <k>rbrwalker</k> by managing the <ko>reply</ko> <em>stepfail</em> received by the <k>basicrobot</k> when the robot meets an obstacle. In particular, as proposed during the problem analysis of this goal <ko>LINK</ko>, two scenarios are distinguished:
+To solve the requirement <i><em>avoid</em> the impact with obstacles</i> requirement <ko>dove req??</ko> it has been sufficient to extend the behavior of the <k>rbrwalker</k> by managing the <ko>reply</ko> <em>stepfail</em> received by the <k>basicrobot</k> when the robot meets an obstacle.<br>
+In particular, as proposed during the problem analysis of this goal <ko>LINK</ko>, two scenarios are distinguished:
 <ul>
 	<li>if the obstacle is in the goal position then the <k>rbrwalker</k> retries the movement after some/a short time/periodically (until the cell that must be occupied will be free);</li>
 	<li>otherwise the obstacle it's temporarily added to the logical map <ko>by using the <tt>Planner</tt> command <em>updateMapObstacleOnCurrentDirection</em></ko> and it's calculated/planned a new path <ko>with the <tt>Planner</tt> command <em>planForGoal</em></ko> to reach the goal; so to get around the obstacle. Before performing the next move, the obstacle it's removed from the logical map <ko>with the <tt>Planner</tt> command <em>updateMap</em> and so moving the "logical" robot in the logical map??</ko>.</li>
 </ul>
-
-<br><br>
-STE:
-To develop this feature it's sufficient to extend the behavior of the rbrwalker; when the actor receives a stepfail two scenarios are distinguished:
-1. if the obstacle is in the goal position the rbrwalker retry the movent after waited for a timer;
-2. otherwise the obstacle it's temporarily added to the map, it's calculated a new path and the obstacle it's removed from the map before performing the next move.
-
-Problem:
-<ol>
-	<li>temporarily setting the obstacle in the logical map and planning a new path to reach the goal; so to get around the obstacle. Then, before starting the execution of the next steps, the obstacle must be deleted from the logical map;</li>
-	<li>waiting for the mobile obstacle to move and so periodically carrying out the movement until the cell that must be occupied will be free.</li>
-</ol>
-
-WENV OSTACOLI
-
 <br><br>
 <table>
 <tr class="text">
@@ -227,28 +214,15 @@ WENV OSTACOLI
 
 <h3><em>Stop</em>/<em>Reactivate</em> Feature</h3>
 
-With reference to the problem analysis about this goal, to solve the stop and reactivate feature, among the four solutions <ko>LINK</ko> presented for the design of the communications the third one <ko>LINK</ko> was chosen and so/in this way/where/in which the maitre communicates directly with the rbrwalker.<br>
-In particular, when the maitre sends a stop command to the rbrwalker as a request message:
+With reference to the problem analysis about this goal, to solve the <em>stop</em> and <em>reactivate</em> feature, among the four solutions <ko>LINK</ko> presented for the design of the communications the third one <ko>LINK</ko> was chosen and so/in this way/where/in which the <k>maitre</k> communicates directly with the <k>rbrwalker</k>.
+<br><br>
+In particular, the <k>maitre</k> can send a <em>stop</em> command to the <k>rbrwalker</k> as a <ko>request</ko> message.<br>
+Then, the rbrwalker manages this message:
 <ol>
-	<li>the rbrwalker ;</li>
-	<li>the rbrwalker, at the end of each step, during the execution of a task, checks if it has received a stop command and in this case it must wait for the reactivate command, otherwise it can carry out the next step;</li>
-	<li></li>
-	<li></li>
-	<li></li>
-	<li></li>
-	<li>when the maitre receive the reply stopped(VALUE) from the rbrwalker, if VALUE is true it sends the reactivate command as a dispatch;</li>
-	<li>when the rbrwalker receives the reactivate command then it ...</li>
+	<li>checking <ko>(in wait state)</ko> if it has received the stop command not during the execution of a task, controlling/verifying if the robot position in the logical map coincides with the RH position through/using the Planner command atHome and in this case answering/replying to the maitre with a stopped(false) message/reply; otherwise it procedes managing the setGoal or the end message;</li>
+	<li>checking, at the end of each step, during the execution of a task, if it has received a stop command and in this case it sends a reply stopped(true) to the maitre and waits for the reactivate command; otherwise it can carry out the next step.</li>
 </ol>
-
-
-To develop this feature, among the four options that have been presented in the Problem Analysis section the third was chosen.
-To stop a task execution the maitre sends a stop request to the rbrwalker that controls for a stop request after sending cmd message to the basicrobot, or after having received a stepdone reply, or in waiting state . The rbrwalker confirms that it has  stopped with a reply stopped(fail) if it received the request in wait state otherwise answer tirh stopped(true) .
-
-To reactivate the task the maitre sends a reactivate dispatch to the rbrwalker which waits for this message in the handleStop state. When rbrwalker receives the reactivate message try to execute a new movement going in the doStep state the goal is in the next cell and it's occupied by an obstacle otherwise go to goToGoal .
-
-
-Furthermore, it must be manage the possibility to receive the command before the execution of a task and in this case the stop request must be ignored.
-
+After that, when the maitre receives the reply stopped(VALUE) from the rbrwalker, only if VALUE is true it can send as a dispatch the reactivate command to the rbrwalker.
 <br><br>
 <table>
 <tr class="text">
@@ -264,7 +238,7 @@ Furthermore, it must be manage the possibility to receive the command before the
 		<iframe class="qakImage" src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
-		<img src="./utils/img/StopReactRBRContext.svg" alt="Stop/Reactivate RBR Context">
+		<img src="./utils/img/Sol3_StopReactivate.svg" alt="Stop/Reactivate RBR Context">
 	</td>
 </tr>
 <tr class="text">
@@ -273,13 +247,13 @@ Furthermore, it must be manage the possibility to receive the command before the
 <tr>
 	<td class="imageSchema">
 		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
-		<img src="./utils/img/FSM_MaitreMockQActor.svg" alt="Representation of the behavior of mock QActor maitre, modeled as a Moore state machine"><br>
+		<img src="./utils/img/FSM_MaitreQActorMock.svg" alt="Representation of the behavior of mock QActor maitre, modeled as a Moore state machine"><br>
 		<img src="./utils/img/FSM_RBRWalkerQActor.svg" alt="Representation of the behavior of QActor rbrwalker, modeled as a Moore state machine">
 	</td>
 </tr>
 </table>
 
-<h3></h3>
+<h3>WENV OSTACOLI</h3>
 
 <h2>Testing</h2>
 
@@ -332,12 +306,12 @@ Test about the stop message:
 </tr>
 <tr>
 	<td class="text">
-		<a href="../src/model.qak" target="_blank">Sprint_2.qak</a><br>
+		SPRINT_2 <a href="../src/model.qak" target="_blank">model.qak</a><br>
 		<pre><iframe class="qakSprint" src="../src/model.qak" title="ModelSprint_2">Model of Sprint 2</iframe></pre>
 	</td>
 	<td class="imageSchema">
 		<img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/ModelSprint1_Legend.png" alt="Legend of the Logical Architecture System Model from Sprint 2"><br>
-		<img src="./utils/img/ModelSprint_2.png" alt="Logical Architecture System Model from Sprint 2">
+		<img src="./utils/img/ModelSprint_2.svg" alt="Logical Architecture System Model from Sprint 2">
 	</td>
 </tr>
 </table>
