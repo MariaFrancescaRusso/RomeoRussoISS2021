@@ -1,5 +1,5 @@
 System standingbuffetservice 
-//TODO: argomenta gli argomenti
+
 //Observer Resources - Maitre/RBR 
 Event observerfridge:observerfridge(X)
 Event observerpantry:observerpantry(X)
@@ -60,8 +60,7 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 
 ExternalQActor basicrobot context ctxbasicrobot  
 
-/* Actor maitre is used as a mock client */
-/*
+// Actor maitre is used as a mock client
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -109,7 +108,8 @@ QActor maitre context ctxsystem {
 		delay 6000
 	}
 	Transition t1 
-		whenTimeVar AddFoodtime -> sendConsult //Time waiting for warning otherwise the food is present
+		// Time waiting for warning otherwise the food is present
+		whenTimeVar AddFoodtime -> sendConsult
 		whenReply warning -> handleWarning
 			
 	State handleWarning {		
@@ -207,6 +207,7 @@ QActor maitre context ctxsystem {
 		whenReply stopped -> sendReactivate
 	
 	State sendReactivate {	
+		// reactivate command is sent only if rbrwalker has answered with stopped(true)
 		onMsg( stopped : stopped(true) ) {
 			delay 3000
 			forward rbrwalker -m reactivate : reactivate(0)
@@ -220,11 +221,9 @@ QActor maitre context ctxsystem {
 		terminate 1
 	}
 }
-*/
-/* Actor foodconsumer is used as a mock client */
-//QActor foodconsumer context ctxmaitre {
 
-/* 
+// Actor foodconsumer is used as a mock client
+//QActor foodconsumer context ctxmaitre {
 QActor foodconsumer context ctxsystem {
 	
 	State s0 initial {
@@ -250,7 +249,7 @@ QActor foodconsumer context ctxsystem {
 		terminate 1
 	}
 }
- */
+
 //QActor rbr context ctxrbr {
 QActor rbr context ctxsystem {
 	[# 	
@@ -269,7 +268,7 @@ QActor rbr context ctxsystem {
 	State s0 initial {		
 		println ("RBR | STARTS...")
 			
-		//To know if the room has been already mapped
+		// To know if the room has been already mapped
 		solve( consult("IsMap.pl") )
 		solve( getValue(Value) )
 		ifSolved {
@@ -280,10 +279,10 @@ QActor rbr context ctxsystem {
 			println ("RBR | Error getting IsMap value...")
 		}
 		
-		//Load resources coordinates file		
+		// Load resources coordinates file		
 		solve( consult("ResourcesCoordinates.pl") )
 		
-		//Load RH coordinates			
+		// Load RH coordinates			
 		solve( getRHXYCoordinatesAndDir(XRH, YRH, Dir) )
 		ifSolved {	
 			[# 
@@ -485,7 +484,7 @@ QActor rbr context ctxsystem {
 	} 
 	Goto waitAnswer if [# FoodPresence != "true" && FoodPresence != "false" #] else checkAnswer
 
-	/* Waiting state of the expected event --> for example to manage the case of "consult" sent by maitre before the "addFood" */
+	// Waiting state of the expected event --> for example to manage the case of "consult" sent by maitre before the "addFood"
 	State waitAnswer {	
 	}
 	Transition t9
@@ -686,7 +685,7 @@ QActor rbrmapper context ctxsystem {
 		var CurrEdge = 0
 		var NameFile = "roomMap"
 		var Table = false
-		var Step = 290 //290 //647
+		var Step = 650 //290 //647
 	#]
 
 	State s0 initial {
@@ -701,11 +700,11 @@ QActor rbrmapper context ctxsystem {
 		whenRequest map -> doStep
 		whenMsg end -> endState
 
-	//We assume that the table is not near the wall
+	// It is assumed that the table is not near the wall
 	State doStep {
 		onMsg( map : map(ARG) ) {
 			run itunibo.planner.plannerUtil.initAI()
-			println ("MAPPER | start mapping room...")
+			println ("MAPPER | starts mapping room...")
 			run itunibo.planner.plannerUtil.showMap()
 		}
 		
@@ -716,12 +715,12 @@ QActor rbrmapper context ctxsystem {
 		whenReply stepdone -> succesStep
 		whenReply stepfail -> obstacleFound
 
-	//The map is updated when a stepdone is received
+	// The map is updated when a stepdone is received
 	State succesStep {
 		run itunibo.planner.plannerUtil.updateMap('w')
 		run itunibo.planner.plannerUtil.showMap()
 	}
-	Goto doStep if [# Table == false #] else visitInternalCell
+	Goto doStep if [# !Table #] else visitInternalCell
 
 	State obstacleFound {
 		onMsg( stepfail : stepfail(D, C) ) {
@@ -734,10 +733,10 @@ QActor rbrmapper context ctxsystem {
 		delay 1000
 	}
 	Transition t3
-		whenReply stepdone and [# Table == false #] -> turnLeft
-		whenReply stepdone and [# Table == true #] -> tableFound
+		whenReply stepdone and [# !Table #] -> turnLeft
+		whenReply stepdone and [# Table #] -> tableFound
 		whenReply stepfail -> obstacleFound
-		
+
 	State turnLeft {
 		println ("MAPPER | Found a wall")
 		forward basicrobot -m cmd : cmd(l)
@@ -747,7 +746,7 @@ QActor rbrmapper context ctxsystem {
 	}
 	Goto doStep if  [# CurrEdge < 4 #] else saveMap
 
-	//This step is necessary to make usable	planForNextDirty
+	// This step is necessary to make usable planForNextDirty
 	State saveMap {
 		run itunibo.planner.plannerUtil.showMap()
 
@@ -792,10 +791,9 @@ QActor rbrmapper context ctxsystem {
 	Transition t4
 		whenReply goalState -> endState
 		
-
 	State endState {
 		onMsg( goalState : goalState(X) ) {
-			println ("MAPPER | ...reached RH.")
+			println ("MAPPER | ...reached RH")
 			
 			run itunibo.planner.plannerUtil.saveRoomMap(NameFile)
 			replyTo map with mapdone:mapdone(0)
@@ -815,7 +813,7 @@ QActor rbrwalker context ctxsystem {
 		var Y = ""
 		var StopTimer = 1000L
 		var FirstStart = true
-		var Step = 290 //647 //290
+		var Step = 650 //647 //290
 		var ObstGoal = false	
 	#]
 	
@@ -833,13 +831,13 @@ QActor rbrwalker context ctxsystem {
 		}
 	}
 	Transition t0
-		//the walker ignore the stop command if it received it before the task started
+		// The walker ignore the stop command if it received it before the task started
 		whenRequest stop and [# itunibo.planner.plannerUtil.atHome() #] -> wait 
 		whenRequest setGoal -> goToGoal
 		whenMsg end -> terminateWalker
 	
 	State goToGoal {
-		//To avoid the walker loads the map before the mapping is finished
+		// To avoid the walker loads the map before the mapping is finished
 		if [# FirstStart #] {
 			run itunibo.planner.plannerUtil.initAI()
 			run itunibo.planner.plannerUtil.loadRoomMap("roomMap")	
@@ -883,7 +881,8 @@ QActor rbrwalker context ctxsystem {
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 	}
 	Transition t2
-		whenTimeVar StopTimer -> goToGoal	//Time waiting for stop command otherwise go on to goToGoal state
+		// Time waiting for stop command otherwise go on to goToGoal state
+		whenTimeVar StopTimer -> goToGoal
 		whenRequest stop -> handleStop
 	
 	State handleAnswer {
@@ -898,10 +897,8 @@ QActor rbrwalker context ctxsystem {
 				var Cause = payloadArg(1)
 			#]
 			println ("WALKER | failed execution move: found $Cause")
-			
-			//TODO: gestire l'ostacolo nel caso in cui occupi il goal
-			
-			//if ( obstacleCoordinate == GoalCoordinate )
+						
+			// If ( obstacle coordinate == goal coordinate )
 			[#
 				var CurDir = itunibo.planner.plannerUtil.getDirection()
 				var CurPosX = itunibo.planner.plannerUtil.getPosX()
@@ -916,17 +913,18 @@ QActor rbrwalker context ctxsystem {
 				[# ObstGoal = true #]		
 			}
 			else {	
-				//Manage of the mobile obstacle by finding a new goal path:
-					//=> set the mobile obstacle
+				// Manage of the mobile obstacle by finding a new goal path:
+					// => set the mobile obstacle
 				run itunibo.planner.plannerUtil.updateMapObstacleOnCurrentDirection()
 				run itunibo.planner.plannerUtil.showMap()
-					//=> find the new path
+					// => find the new path
 				println ("WALKER | finding a new path for the goal ($X, $Y)...")
 				run	itunibo.planner.plannerUtil.planForGoal(X, Y)
-					//=> remove the mobile obstacle
+					// => remove the mobile obstacle
 				run itunibo.planner.plannerUtil.updateMap('w')
-	//			run itunibo.planner.plannerUtil.updateMap('s')	//--> In this way the cell wouldn't be cleaned 
-				//=> instead of using 's':
+//				run itunibo.planner.plannerUtil.updateMap('s')	
+					// --> In this way the cell wouldn't be cleaned 
+					// => instead of using 's':
 				run itunibo.planner.plannerUtil.updateMap('l')
 				run itunibo.planner.plannerUtil.updateMap('l')
 				run itunibo.planner.plannerUtil.updateMap('w')
@@ -934,17 +932,18 @@ QActor rbrwalker context ctxsystem {
 				run itunibo.planner.plannerUtil.updateMap('r')
 				run itunibo.planner.plannerUtil.showMap()
 			}
+			
 			updateResource [# "Obstacle Detected" #]
 		} 
 	}
 	Transition t3
-		whenTimeVar StopTimer -> handleFail	//Time waiting for stop command otherwise go on to goToGoal state
-//		whenTimeVar StopTimer -> goToGoal	//Time waiting for stop command otherwise go on to goToGoal state
+		// Time waiting for stop command otherwise go on to goToGoal state
+		whenTimeVar StopTimer -> handleFail
 		whenRequest stop -> handleStop
 	
 	State handleFail {
 	}
-	Goto doStep if [# ObstGoal == true #] else goToGoal
+	Goto doStep if [# ObstGoal #] else goToGoal
 	
 	State handleStop {
 		println ("WALKER | stopped. Waiting for a reactivate command...")
@@ -952,9 +951,8 @@ QActor rbrwalker context ctxsystem {
 		updateResource [# "Stopped" #]
 	}
 	Transition t4
-		whenMsg reactivate and [# ObstGoal == true #] -> doStep
-		whenMsg reactivate and [# ObstGoal == false #] -> goToGoal
-//		whenMsg reactivate -> goToGoal
+		whenMsg reactivate and [# ObstGoal #] -> doStep
+		whenMsg reactivate and [# !ObstGoal #] -> goToGoal
 	
 	State correctDirection {	
 		[#

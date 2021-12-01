@@ -140,6 +140,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 								 itunibo.planner.plannerUtil.updateMap( "r"  )
 								 itunibo.planner.plannerUtil.showMap(  )
 								 }
+								updateResourceRep( "Obstacle Detected"  
+								)
 						}
 						stateTimer = TimerActor("timer_handleAnswer", 
 							scope, context!!, "local_tout_rbrwalker_handleAnswer", StopTimer )
@@ -150,9 +152,9 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("handleFail") { //this:State
 					action { //it:State
 					}
-					 transition( edgeName="goto",targetState="doStep", cond=doswitchGuarded({ ObstGoal == true  
+					 transition( edgeName="goto",targetState="doStep", cond=doswitchGuarded({ ObstGoal  
 					}) )
-					transition( edgeName="goto",targetState="goToGoal", cond=doswitchGuarded({! ( ObstGoal == true  
+					transition( edgeName="goto",targetState="goToGoal", cond=doswitchGuarded({! ( ObstGoal  
 					) }) )
 				}	 
 				state("handleStop") { //this:State
@@ -162,9 +164,9 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						updateResourceRep( "Stopped"  
 						)
 					}
-					 transition(edgeName="t444",targetState="doStep",cond=whenDispatchGuarded("reactivate",{ ObstGoal == true  
+					 transition(edgeName="t444",targetState="doStep",cond=whenDispatchGuarded("reactivate",{ ObstGoal  
 					}))
-					transition(edgeName="t445",targetState="goToGoal",cond=whenDispatchGuarded("reactivate",{ ObstGoal == false  
+					transition(edgeName="t445",targetState="goToGoal",cond=whenDispatchGuarded("reactivate",{ !ObstGoal  
 					}))
 				}	 
 				state("correctDirection") { //this:State

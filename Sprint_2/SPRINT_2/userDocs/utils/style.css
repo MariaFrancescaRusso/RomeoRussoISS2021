@@ -277,8 +277,20 @@ iframe.qakImage {
 	height: 630px;
 }
 
+iframe.qakImageMax {
+	height: 880px;
+}
+
 iframe.qakSprint {
 	height: 550px;
+}
+
+iframe.qakSprint2min {
+	height: 300px;
+}
+
+iframe.qakSprint2max {
+	height: 700px;
 }
 
 iframe.map {

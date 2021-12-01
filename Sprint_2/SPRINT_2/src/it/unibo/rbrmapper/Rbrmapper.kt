@@ -41,7 +41,7 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						if( checkMsgContent( Term.createTerm("map(ARG)"), Term.createTerm("map(ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								itunibo.planner.plannerUtil.initAI(  )
-								println("MAPPER | start mapping room...")
+								println("MAPPER | starts mapping room...")
 								itunibo.planner.plannerUtil.showMap(  )
 						}
 						request("step", "step($Step)" ,"basicrobot" )  
@@ -55,9 +55,9 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						itunibo.planner.plannerUtil.updateMap( "w"  )
 						itunibo.planner.plannerUtil.showMap(  )
 					}
-					 transition( edgeName="goto",targetState="doStep", cond=doswitchGuarded({ Table == false  
+					 transition( edgeName="goto",targetState="doStep", cond=doswitchGuarded({ !Table  
 					}) )
-					transition( edgeName="goto",targetState="visitInternalCell", cond=doswitchGuarded({! ( Table == false  
+					transition( edgeName="goto",targetState="visitInternalCell", cond=doswitchGuarded({! ( !Table  
 					) }) )
 				}	 
 				state("obstacleFound") { //this:State
@@ -71,9 +71,9 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						}
 						delay(1000) 
 					}
-					 transition(edgeName="t331",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ Table == false  
+					 transition(edgeName="t331",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ !Table  
 					}))
-					transition(edgeName="t332",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table == true  
+					transition(edgeName="t332",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table  
 					}))
 					transition(edgeName="t333",targetState="obstacleFound",cond=whenReply("stepfail"))
 				}	 
@@ -152,7 +152,7 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						if( checkMsgContent( Term.createTerm("goalState(X)"), Term.createTerm("goalState(X)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
-								println("MAPPER | ...reached RH.")
+								println("MAPPER | ...reached RH")
 								itunibo.planner.plannerUtil.saveRoomMap( NameFile  )
 								answer("map", "mapdone", "mapdone(0)"   )  
 						}

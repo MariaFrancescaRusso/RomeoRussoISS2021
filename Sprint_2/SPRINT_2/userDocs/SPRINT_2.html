@@ -155,10 +155,10 @@ It was introduced also the possibility for the <k>rbr</k> to know if the <ks>roo
 <tr>
 	<td class="text" rowspan="3">
 		<br><a href="../src/model.qak#:~:text=//QActor%20rbrmapper%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrmapper</k> in model.qak</a><br><br>
-		<iframe class="qakImage" src="./utils/img/RBRMapperQActor.png" title="RBR Mapper QActor from model.qak">RBR Mapper QActor from model.qak</iframe>
+		<iframe class="qakSprint2max" src="./utils/img/RBRMapperQActor.png" title="RBR Mapper QActor from model.qak">RBR Mapper QActor from model.qak</iframe>
 		<br><br><hr><br>
 		Portion of <a href="../src/model.qak#:~:text=//QActor%20rbr%20context,whenMsg%20prepare%20%2D%3E%20exPrepareHP" target="_blank"><k>rbr</k> in model.qak</a><br><br>
-		<iframe class="qakImage" src="./utils/img/RBRQActor.png" title="RBR QActor from model.qak">RBR QActor from model.qak</iframe>
+		<iframe class="qakSprint2max" src="./utils/img/RBR_Mapping.png" title="Mapping portion of RBR QActor from model.qak">Mapping portion of RBR QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
 		<img src="./utils/img/MappingRBRContext.svg" alt="Mapping RBR Context">
@@ -194,7 +194,7 @@ In particular, as proposed during the <a href="./SPRINT_2.html#S2PrAnAvoidObst">
 <tr>
 	<td class="text" rowspan="3">
 		<br>Portion of <a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
-		<iframe class="qakImage" src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe>
+		<iframe class="qakImageMax" src="./utils/img/RBRWalker_AvoidObst.png" title="Avoid obstacles portion of RBR Walker QActor from model.qak">Avoid obstacles portion of RBR Walker QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
 		<img src="./utils/img/AvoidObsRBRContext.svg" alt="Avoid Mobile Obstacle RBR Context">
@@ -230,11 +230,11 @@ After that, when the <k>maitre</k> receives the <ko>reply</ko> <em>stopped(<ac>V
 </tr>
 <tr>
 	<td class="text" rowspan="3">
-		<br>Portion of <a href="../src/model.qak" target="_blank"><k>maitre</k> in model.qak</a><br><br>
-		<iframe class="qakImage" src="./utils/img/MaitreMockQActor.png" title="Maitre Mock QActor from model.qak">Maitre Mock QActor from model.qak</iframe>
+		<br>Portion of <a href="../src/model.qak#:~:text=//%20Actor%20maitre%20is,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>maitre</k> in model.qak</a><br><br>
+		<iframe class="qakSprint2min" src="./utils/img/Maitre_StopReactivate.png" title="Stop/Reactivate portion of Maitre Mock QActor from model.qak">Stop/Reactivate portion of Maitre Mock QActor from model.qak</iframe>
 		<br><br><hr><br>
-		<a href="../src/model.qak" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
-		<iframe class="qakImage" src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe>
+		<a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
+		<iframe class="qakSprint" src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
 		<img src="./utils/img/Sol3_StopReactivate.svg" alt="Stop/Reactivate RBR Context">
@@ -263,19 +263,17 @@ Obliviously, during the mapping phase, the scene represented in the <tt>WEnv</tt
 <table>
 <tr class="text">
 	<th>WEnv</th>
-	<th>WEnv with mobile obstacles</th>
+	<th>WEnv with Mobile Obstacles</th>
 </tr>
 <tr>
 	<td class="imageSchema">
 		<img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/WEnv.png" alt="WEnv">
 	</td>
 	<td class="imageSchema">
-		<img src="./utils/img/WEnvObst.png" alt="WEnv with mobile obstacles">
+		<img src="./utils/img/WEnv_Obst.png" alt="WEnv with mobile obstacles">
 	</td>
 </tr>
 </table>
-
-
 
 <h2>Testing</h2>
 
