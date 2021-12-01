@@ -65,7 +65,7 @@ Furthermore, at each step carried out by the robot it's necessary also to update
 <br><br>
 <img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/basicRobotInRBRctx.png" alt="basicRobot in RBR context">
 
-<h3><i>Avoid the Impact with Obstacles</i> Requirement</h3>
+<h3><a name="S2PrAnAvoidObst"></a><i>Avoid the Impact with Obstacles</i> Requirement</h3>
 
 By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the <ks>RBR</ks> must be able to <i><em>avoid</em> the impact with obstacles</i>; in particular, with mobile obstacles because walls and fixed obstacles (the <ks>table</ks>) are included in the <ks>room</ks> map, which in this sprint is produced by the <a href="./SPRINT_2.html#S2mapping">mapping</a>.<br>
 
@@ -79,17 +79,15 @@ Therefore, to address this problem, it could be sufficient to manage the <em>ste
 	<li>waiting for the mobile obstacle to move and so periodically carrying out the movement until the cell that must be occupied will be free.</li>
 </ol>
 
-<br><ko>SCRIVERE CHE LA SCELTA VIENE FATTA IN FASE DI PROGETTAZIONE? o che si potrebbe utilizzare la prima, ma nel caso in cui si trova l'ostacolo nella posizione del goal si potrebbe utilizzare la seconda soluzione.</ko>
+<h3><a name="S2PrAnStopReact"></a>Stop and Reactivate Feature</h3>
 
-<h3><em>Stop</em>/<em>Reactivate</em> Feature</h3>
+By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an already activated <ks>task</ks>, otherwise these commands have no effect.<br>
 
-By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the <ks>Maître de Salle</ks> can use the <em>stop</em> or <em>reactivate</em> command to stop or restart an already activated <ks>task</ks>, otherwise these commands have no effect.
-<br>
-In Sprint 1 it has been added a new <tt>actor</tt> (<a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1rbrWalker" target="_blank"><k>rbrwalker</k></a>) to manage the planning and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is virtual or real; in this case virtual.
-<br>
-Therefore, referring to the result of the Sprint 1 <ko>LINK a INTRODUZIONE sopra o a risultato SPRINT 1??</ko> and to hypothesis/solution at this problem advanced in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">initial problem analysis</a>, to manage the the <em>stop</em>/(and)<em>reactivate</em> commands received by the <k>maitre</k>, during the execution of a <ks>task</ks>, a possible solution can be to use the <k>rbrwalker</k> <tt>actor</tt> which, splitting the path the robot must execute in a steps sequence, at the end of each step it can check if it has received a <em>stop</em> command and in this case it must wait for the <em>reactivate</em> command, otherwise it can carry out the next step.
+In Sprint 1 it has been added a new <tt>actor</tt> (<a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1rbrWalker" target="_blank"><k>rbrwalker</k></a>) to manage the planning and the communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is virtual or real; in this case virtual.
 <br><br>
-The communications for sending these commands could be implemented in different ways:
+Therefore, referring to the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#Sprint1Mod" target="_blank">result of the Sprint 1</a> and to the solution at this problem advanced in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnRBR" target="_blank">initial problem analysis</a>, to manage the the <em>stop</em> and <em>reactivate</em> commands received by the <k>maitre</k>, during the execution of a <ks>task</ks>, a possible solution can be to use the <k>rbrwalker</k> <tt>actor</tt> which, splitting the path the robot must execute in a steps sequence, at the end of each step it can check if it has received a <em>stop</em> command and in this case it must wait for the <em>reactivate</em> command, otherwise it can carry out the next step.
+<br><br>
+The communications for sending these commands could be implemented in different ways<a name="S2PrAnSR4Sols"></a>:
 <br><br>
 <table>
 	<tr>
@@ -101,16 +99,16 @@ The communications for sending these commands could be implemented in different 
 		<td class="imageScenario"><img src="./utils/img/Sol2_StopReactivate.svg" alt="sol2_StopReactivate"></td>
 	</tr>
 	<tr>
-		<td><a name="sol3_stopReac"></a><ol start="3"><li>The <k>maitre</k> could send directly to the <k>rbrwalker</k> the <em>stop</em> command as a <ko>request</ko>, waiting for a failure or success <ko>reply</ko>, and the <em>reactivate</em> command as a <ko>dispatch</ko>;</li></ol></td>
+		<td><a name="sol3_stopReac"></a><ol start="3"><li>The <k>maitre</k> could send directly to the <k>rbrwalker</k> the <em>stop</em> command as a <ko>request</ko>, waiting for a failure or success <ko>reply</ko>, and, in the latter case, the <em>reactivate</em> command as a <ko>dispatch</ko>;</li></ol></td>
 		<td class="imageScenario"><img src="./utils/img/Sol3_StopReactivate.svg" alt="sol3_StopReactivate"></td>
 	</tr>
 	<tr>
-		<td><a name="sol4_stopReac"></a><ol start="4"><li>The <k>maitre</k> could send the <em>stop</em> command as an <ko>event</ko> that can be received by all the interessed <tt>actors</tt>, that, for now, it's just the <k>rbrwalker</k>. <ko>AGGIUNGERE REACTIVATE!</ko></li></ol></td>
+		<td><a name="sol4_stopReac"></a><ol start="4"><li>The <k>maitre</k> could send the <em>stop</em> and <em>reactivate</em> commands as <ko>events</ko> that can be received by all the interessed <tt>actors</tt>, that, for now, it's just the <k>rbrwalker</k>.</li></ol></td>
 		<td class="imageScenario"><img src="./utils/img/Sol4_StopReactivate.svg" alt="sol4_StopReactivate"></td>
 	</tr>
 </table>
 <br>
-From these solutions, the better choose, in this step/sprint, looks to be the <a href="./SPRINT_2.html#sol3_stopReac">third one</a>, because it's the <k>rbrwalker</k> that is interessed to receive these commands since it takes care of communicating with the <k>basicrobot</k> to move the robot. In future, if the system complexity will evolve and there will be more <tt>actors</tt> interessed to these commands, it would be necessary to implement the <a href="./SPRINT_2.html#sol4_stopReac">fourth solution</a>.
+From these solutions, the better choose, in this sprint, looks to be the <a href="./SPRINT_2.html#sol3_stopReac">third one</a>, because it's the <k>rbrwalker</k> that is interessed to receive these commands since it takes care of communicating with the <k>basicrobot</k> to move the robot. In future, if the system complexity will evolve and there will be more <tt>actors</tt> interessed to these commands, it would be necessary to implement the <a href="./SPRINT_2.html#sol4_stopReac">fourth solution</a>.
 
 <h2>Test Plans</h2>
 
@@ -127,8 +125,8 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 <h3>Mapping</h3>
 
 In Sprint 1, for the planning it has been created a project (<a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#mapBinGen" target="_blank">MapBinGenerator</a>) which creats a <ks>room</ks> logical map taking in input the dimension of the map to create and the coordinates of the obstacles.<br>
-Instead, in this sprint, it has been introduced the mapping feature that provides a logical map of any type of room, either it is real or virtual <ko>(in this case virtual)</ko>, by exploiting the <k>basicrobot</k> to map it, without having to know the map dimensions or the obstacles positions.<br>
-To realize this behavior it seemed to be more appropriate to create a new <tt>actor</tt> (<k>rbrmapper</k>) in <k>rbr</k> <tt>context</tt> (<k>ctxrbr</k>) which, after receiving the <ko>request</ko> (<em>map</em>) from the <k>rbr</k> <tt>actor</tt>, takes care of the <ks>room</ks> mapping and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is virtual or real (in this case virtual <ko>evidenzio in verde virtual robot?</ko>), and to detect when the robot meets a wall or a fixed obstacle (the <ks>table</ks> in this case). To create the new map it uses/has been used also the <tt>Planner</tt> support.
+Instead, in this sprint, it has been introduced the mapping feature that provides a logical map of any type of room, either it is real or virtual, by exploiting the <k>basicrobot</k> to map it, without having to know the map dimensions or the obstacles positions.<br>
+To realize this behavior it seemed to be more appropriate to create a new <tt>actor</tt> (<k>rbrmapper</k>) in <k>rbr</k> <tt>context</tt> (<k>ctxrbr</k>) which, after receiving the <ko>request</ko> <em>map</em> from the <k>rbr</k> <tt>actor</tt>, takes care of the <ks>room</ks> mapping and communicating with the <k>basicrobot</k> <tt>actor</tt> to make the robot perform the movements, whether it is virtual or real (in this case virtual), and to detect when the robot meets a wall or a fixed obstacle (the <ks>table</ks> in this case). To create the new map it has been used also the <tt>Planner</tt> support.
 <br><br>
 In particular, after receiving a <em>map</em> <ko>request</ko> from the <k>rbr</k> <tt>actor</tt>, the <k>rbrmapper</k> communicates with the <k>basicrobot</k> to move the robot making him explore the perimeter of the <ks>room</ks>:
 <ol>
@@ -147,7 +145,7 @@ After this, this <tt>actor</tt> sends a <ko>request</ko> message <em>setGoal(<ac
 Afterwards, when the <k>rbrmapper</k> receives the <ko>reply</ko> <em>goalState</em> from the <k>rbrwalker</k>, it saves the created map through the <tt>Planner</tt> command <em>saveRoomMap</em> and <ko>replies</ko> to the <k>rbr</k> <tt>actor</tt> with the message <em>mapdone</em>.<br>
 Finally, it terminates itself.
 <br><br>
-It was introduced also the possibility for the <k>rbr</k> to know if the <ks>room</ks> logical map it's already present by consulting a prolog file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_2/SPRINT_2/IsMap.pl" target="_blank">IsMap.pl</a>) and <ko>(when?)</ko> in this case the <k>rbr</k> <tt>actor</tt> sends a <ko>dispatch</ko> <em>end</em> to the <k>rbrmapper</k> which terminate itself <ko>(without executing the room mapping?)</ko>.
+It was introduced also the possibility for the <k>rbr</k> to know if the <ks>room</ks> logical map it's already present by consulting a prolog file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_2/SPRINT_2/IsMap.pl" target="_blank">IsMap.pl</a>) and in this case the <k>rbr</k> <tt>actor</tt> sends a <ko>dispatch</ko> <em>end</em> to the <k>rbrmapper</k> which terminate itself without executing the room mapping.
 <br><br>
 <table>
 <tr class="text">
@@ -159,7 +157,7 @@ It was introduced also the possibility for the <k>rbr</k> to know if the <ks>roo
 		<br><a href="../src/model.qak#:~:text=//QActor%20rbrmapper%20context,terminate...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrmapper</k> in model.qak</a><br><br>
 		<iframe class="qakImage" src="./utils/img/RBRMapperQActor.png" title="RBR Mapper QActor from model.qak">RBR Mapper QActor from model.qak</iframe>
 		<br><br><hr><br>
-		<a href="../src/model.qak#:~:text=//QActor%20rbr%20context,whenMsg%20prepare%20%2D%3E%20exPrepareHP" target="_blank">Portion of <k>rbr</k> in model.qak</a><br><br>
+		Portion of <a href="../src/model.qak#:~:text=//QActor%20rbr%20context,whenMsg%20prepare%20%2D%3E%20exPrepareHP" target="_blank"><k>rbr</k> in model.qak</a><br><br>
 		<iframe class="qakImage" src="./utils/img/RBRQActor.png" title="RBR QActor from model.qak">RBR QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
@@ -180,13 +178,14 @@ It was introduced also the possibility for the <k>rbr</k> to know if the <ks>roo
 
 <h3><i>Avoid the Impact with Obstacles</i> Requirement</h3>
 
-To solve the requirement <i><em>avoid</em> the impact with obstacles</i> requirement <ko>dove req??</ko> it has been sufficient to extend the behavior of the <k>rbrwalker</k> by managing the <ko>reply</ko> <em>stepfail</em> received by the <k>basicrobot</k> when the robot meets an obstacle.<br>
-In particular, as proposed during the problem analysis of this goal <ko>LINK</ko>, two scenarios are distinguished:
-<ul>
-	<li>if the obstacle is in the goal position then the <k>rbrwalker</k> retries the movement after some/a short time/periodically (until the cell that must be occupied will be free);</li>
-	<li>otherwise the obstacle it's temporarily added to the logical map <ko>by using the <tt>Planner</tt> command <em>updateMapObstacleOnCurrentDirection</em></ko> and it's calculated/planned a new path <ko>with the <tt>Planner</tt> command <em>planForGoal</em></ko> to reach the goal; so to get around the obstacle. Before performing the next move, the obstacle it's removed from the logical map <ko>with the <tt>Planner</tt> command <em>updateMap</em> and so moving the "logical" robot in the logical map??</ko>.</li>
-</ul>
+To solve the requirement <i><em>avoid</em> the impact with obstacles</i> it has been sufficient to extend the behavior of the <k>rbrwalker</k> by managing the <ko>reply</ko> <em>stepfail</em> received by the <k>basicrobot</k> when the robot meets an obstacle.
 <br><br>
+In particular, as proposed during the <a href="./SPRINT_2.html#S2PrAnAvoidObst">problem analysis of this goal</a>, two scenarios are distinguished:
+<ul>
+	<li>if the obstacle is in the goal position then the <k>rbrwalker</k> retries periodically the movement until the cell that must be occupied will be free;</li>
+	<li>otherwise the obstacle it's temporarily added to the logical map by using the <tt>Planner</tt> command <em>updateMapObstacleOnCurrentDirection</em> and it's planned a new path with the <tt>Planner</tt> command <em>planForGoal</em> to reach the goal; so to get around the obstacle. Before performing the next move, the obstacle it's removed from the logical map.</li>
+</ul>
+<br>
 <table>
 <tr class="text">
 	<th>Machine Understandable Models</th>
@@ -194,7 +193,7 @@ In particular, as proposed during the problem analysis of this goal <ko>LINK</ko
 </tr>
 <tr>
 	<td class="text" rowspan="3">
-		<br><a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
+		<br>Portion of <a href="../src/model.qak#:~:text=//QActor%20rbrwalker%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
 		<iframe class="qakImage" src="./utils/img/RBRWalkerQActor.png" title="RBR Walker QActor from model.qak">RBR Walker QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
@@ -212,17 +211,17 @@ In particular, as proposed during the problem analysis of this goal <ko>LINK</ko
 </tr>
 </table>
 
-<h3><em>Stop</em>/<em>Reactivate</em> Feature</h3>
+<h3>Stop and Reactivate Feature</h3>
 
-With reference to the problem analysis about this goal, to solve the <em>stop</em> and <em>reactivate</em> feature, among the four solutions <ko>LINK</ko> presented for the design of the communications the third one <ko>LINK</ko> was chosen and so/in this way/where/in which the <k>maitre</k> communicates directly with the <k>rbrwalker</k>.
+With reference to the <a href="./SPRINT_2.html#S2PrAnStopReact">problem analysis about this goal</a>, to solve the <em>stop</em> and <em>reactivate</em> feature, among the <a href="./SPRINT_2.html#S2PrAnSR4Sols">four solutions</a> presented, the <a href="./SPRINT_2.html#sol3_stopReac">third one</a> was chosen, where the <k>maitre</k> communicates directly with the <k>rbrwalker</k>.
 <br><br>
 In particular, the <k>maitre</k> can send a <em>stop</em> command to the <k>rbrwalker</k> as a <ko>request</ko> message.<br>
-Then, the rbrwalker manages this message:
+Then, the <k>rbrwalker</k> manages this message:
 <ol>
-	<li>checking <ko>(in wait state)</ko> if it has received the stop command not during the execution of a task, controlling/verifying if the robot position in the logical map coincides with the RH position through/using the Planner command atHome and in this case answering/replying to the maitre with a stopped(false) message/reply; otherwise it procedes managing the setGoal or the end message;</li>
-	<li>checking, at the end of each step, during the execution of a task, if it has received a stop command and in this case it sends a reply stopped(true) to the maitre and waits for the reactivate command; otherwise it can carry out the next step.</li>
+	<li>checking if it has received the <em>stop</em> command not during the execution of a <ks>task</ks>, by verifying if the robot position in the logical map coincides with the <ks>RH</ks> position using the <tt>Planner</tt> command <em>atHome</em> and in this case answering to the <k>maitre</k> with a <em>stopped(<ac>false</ac>)</em> <ko>reply</ko>; otherwise it procedes managing the <em>setGoal</em> or the <em>end</em> message;</li>
+	<li>checking, at the end of each step, during the execution of a <ks>task</ks>, if it has received a <em>stop</em> command and in this case it sends a <ko>reply</ko> <em>stopped(<ac>true</ac>)</em> to the <k>maitre</k> and waits for the <em>reactivate</em> command; otherwise it can carry out the next step.</li>
 </ol>
-After that, when the maitre receives the reply stopped(VALUE) from the rbrwalker, only if VALUE is true it can send as a dispatch the reactivate command to the rbrwalker.
+After that, when the <k>maitre</k> receives the <ko>reply</ko> <em>stopped(<ac>VALUE</ac>)</em> from the <k>rbrwalker</k>, only if <ac>VALUE</ac> is <ac>true</ac> it can send as a <ko>dispatch</ko> the <em>reactivate</em> command to the <k>rbrwalker</k>.
 <br><br>
 <table>
 <tr class="text">
@@ -231,7 +230,7 @@ After that, when the maitre receives the reply stopped(VALUE) from the rbrwalker
 </tr>
 <tr>
 	<td class="text" rowspan="3">
-		<br><a href="../src/model.qak" target="_blank">Portion of <k>maitre</k> in model.qak</a><br><br>
+		<br>Portion of <a href="../src/model.qak" target="_blank"><k>maitre</k> in model.qak</a><br><br>
 		<iframe class="qakImage" src="./utils/img/MaitreMockQActor.png" title="Maitre Mock QActor from model.qak">Maitre Mock QActor from model.qak</iframe>
 		<br><br><hr><br>
 		<a href="../src/model.qak" target="_blank"><k>rbrwalker</k> in model.qak</a><br><br>
@@ -253,7 +252,30 @@ After that, when the maitre receives the reply stopped(VALUE) from the rbrwalker
 </tr>
 </table>
 
-<h3>WENV OSTACOLI</h3>
+<h3>WEnv Scene for Virtual Robot</h3>
+
+To make possible the simulation of the <tt>virtual robot</tt> on its <tt>WEnv</tt>, can be use the <a href="../../../Sprint_1/SPRINT_1/sceneConfig.js" target="_blank">sceneConfig.js</a> file used in <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1WEnv" target="_blank">Sprint 1</a>.
+<br><br>
+To add mobile obstacles in the <tt>WEnv</tt>, starting from this file, it's possible to uncomment and in case modify the part related to the <i>movingObstacles</i>. An example can be the scene represented below using the <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a>.
+<br><br>
+Obliviously, during the mapping phase, the scene represented in the <tt>WEnv</tt> should be without mobile obstacles.
+<br><br>
+<table>
+<tr class="text">
+	<th>WEnv</th>
+	<th>WEnv with mobile obstacles</th>
+</tr>
+<tr>
+	<td class="imageSchema">
+		<img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/WEnv.png" alt="WEnv">
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/WEnvObst.png" alt="WEnv with mobile obstacles">
+	</td>
+</tr>
+</table>
+
+
 
 <h2>Testing</h2>
 
@@ -261,41 +283,32 @@ Below there are exposed some tests made for this sprint project:
 
 <dl>
 	<dt><a href="../test/it/unibo/test/StopAndReactivateTest.kt" target="_blank">StopAndReactivateTest.kt</a></dt>
-	<dd>Tests about the correct execution of the stop/reactivate feature:<ol>
-		<li><em>StopAndReactivateTest</em>: it's tested that the stop command fail when the rbrwalker it's in a wait state and that has success when it's in moving step than it's tested that the reactivate command works.
-		
-		after the send of a <em>prepare</em> command to the <k>rbr</k>, which runs the <ks>Prepare the room</ks> <ks>task</ks>, it's verified that, for each sub-path the robot must execute, the final position of the robot is the expected one and that the reached resource state has been changed. In particular, this test:<ol>
-			<li>Sends a <em>prepare</em> message to <k>rbr</k> <tt>actor</tt>;</li>
-			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the expected cell in front of <ks>pantry</ks>;</li>
-			<li>Checks that the crockery removed from the <k>pantry</k> are the expected;</li>
-			<li>Checks that the robot position, taken from the <k>rbrwalker</k> state, is the <ks>RH</ks> position.</li>
+	<dd>Tests about the correct execution of the <em>stop</em> and <em>reactivate</em> feature:<ol>
+		<li><em>StopAndReactivateTest</em>: after the send of a <em>stop</em> command to the <k>rbrwalker</k>, it's verified that the <em>stop</em> command fails when the <k>rbrwalker</k> is not executing a <ks>task</ks> and that has success when the <k>rbrwalker</k> is executing a <ks>task</ks>, stopping and waiting for a <em>reactivate</em> command. Then, after a send of a <em>reactivate</em> command, it's verified that the <k>rbrwalker</k> resumes <ks>task</ks> execution reaching the expected goal. In particular, this test:<ol>
+			<li>Sends a <em>stop</em> <ko>request</ko> to <k>rbrwalker</k> <tt>actor</tt>;</li>
+			<li>Checks that <em>stop</em> <ko>request</ko> fails;</li>
+			<li>Sends a <em>setGoal</em> <ko>request</ko> to the <k>rbrwalker</k>;</li>
+			<li>Sends again a <em>stop</em> <ko>request</ko> to the <k>rbrwalker</k>;</li>
+			<li>Checks that <em>stop</em> <ko>request</ko> has success;</li>
+			<li>Sends a <em>reactivate</em> <ko>dispatch</ko> to <k>rbrwalker</k>;</li>
+			<li>Checks that <em>reactivate</em> <ko>request</ko> has success;</li>
+			<li>Checks that the final robot position, taken from the <k>rbrwalker</k> state, is the expected one.</li>
 		</ol></li>
 	</ol></dd>
-</dl>
-
-Tests of the state of the <ks>RBR</ks> to verify that it is stopped after receiving <em>stop</em> command and to verify that it resumes <ks>task</ks> execution after receiving the <em>reactivate</em> command.
-
-Test about the stop message:
- StopAndReactivateTest: it's tested that the stop command fail when the rbrwalker it's in a wait state and that has success when it's in moving step than it's tested that the reactivate command works.
- 1. Sends a stop request to rbrwalker actor;
- 2. Checks that stop request fails;
- 3. Sends a setGaol message
- 4. Sends a stop request to rbrwalker actor;
- 5. Checks that stop request works;
- 6. Sends a reactivate message;
- 7.  Checks that reactivate request works;
- 8. Checks that the final robot position, taken from the rbrwalker state, is the expected one;
- 
-<dl>
+	<br>
 	<dt><a href="../test/it/unibo/test/AvoidMobileObstacleTest.kt" target="_blank"> AvoidMobileObstacleTest.kt</a></dt>
-	<dd>Tests about the correct execution of the  feature avoid mobile obstacle:<ol>
-	<li>AvoidMobileObstacleTest: it's tested that  rbrwalker calculates a new path when meets an obstacle. For this test it's need the presence of an obstacle in the map, placed in the expected path walked by the robot.</li>
-		<li> Sends a setGaol message;</li>
-		<li> Cheks that an obstacle is met:</li>
-		<li> Checks that the final robot position, taken from the rbrwalker state, is the expected one.</li>
+	<dd>Tests about the correct execution of the requirement <i><em>avoid</em> the impact with mobile obstacles</i>:<ol>
+	<li><em>AvoidMobileObstacleTest</em>: after placing an obstacle in the <tt>WEnv</tt>, in the expected path walked by the robot, it's verified that <k>rbrwalker</k>, even if meets an obstacle, reaches the expected goal. In particular, this test:<ol>
+		<li>Sends a <em>setGoal</em> <ko>request</ko>;</li>
+		<li>Cheks that an obstacle is met;</li>
+		<li>Checks that the final robot position, taken from the <k>rbrwalker</k> state, is the expected one.</li>
 		</ol></li>
 	</ol></dd>
 </dl>
+<br>
+These tests are used to test the internal components of this sprint project and not the externals, like the <k>basicrobot</k>. The <tt>virtual robot</tt> movements, commanded by the <k>basicrobot</k>, can be visually verified by running the project and the <tt>WEnv</tt>.
+<br><br>
+These tests are executed on a single <tt>context</tt> (<k>ctxsystem</k>) and to execute them, it's necessary to comment the <k>maitre</k>, because it is a <tt>mock client</tt> and it could interfere with tests.
 
 <h2><a name="Sprint2Mod"></a>Model of System's Logical Architecture</h2>
 
@@ -318,7 +331,10 @@ Test about the stop message:
 
 <h2>Deployment</h2>
 
-
+The deployment of the application for the <tt>virtual robot</tt> can be done at the same way of the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#Sprint1Deploy" target="_blank">deployment explained in Sprint 1</a>.
+<br><br>
+As said in the previous sections of this sprint, the scene of the <tt>WEnv</tt> can be modify to introduce mobile obstacles and in this case the <a href="../sceneConfig.js" target="_blank">sceneConfig.js</a> file must be reload.<br>
+Furthermore, to execute the mapping operation there must not be mobile obstacles in the <ks>room</ks> and it must be modify the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_2/SPRINT_2/IsMap.pl" target="_blank">IsMap.pl</a> file, setting <ac>isMap</ac> value on <ac>false</ac>; otherwise on <ac>true</ac>.
 
 <h2>SCRUM Context</h2>
 
@@ -328,7 +344,7 @@ After this Sprint and according to the <a href="../../../ProblemAnalysisModel/us
 <dl>
 	<dt>SPRINT 3</dt>
 	<dd><ol>
-		<li><tt>GUI</tt> <ks>maître's smartphone</ks> software</li>
+		<li><tt>GUI</tt> for <ks>maître's smartphone</ks> software</li>
 		<li>Tests</li>
 	</ol></dd>
 	<br>
@@ -342,7 +358,9 @@ After this Sprint and according to the <a href="../../../ProblemAnalysisModel/us
 	</ol></dd>
 </dl>
 
+<div hidden="hidden">
 <h2>Maintenance</h2>
+</div>
 
 </div>
 <br><br>
