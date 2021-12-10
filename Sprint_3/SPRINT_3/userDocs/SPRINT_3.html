@@ -51,6 +51,10 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 The problems related to this sprint goal, that are already <ko>partially</ko> addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">initial problem analysis</a>, are detailed below.
 
+The main goal in this Sprint is the development of a software, to make the maitre user interact with the system software, and providing it a GUI.
+The maitre software sends and recevies the same messages and events of the mock maitre in the previuous Sprint. To realize it, it's possible to develop an actor which recives through messages the commands to send to the other system elements. A GUI for this kind of actor would be developed with a MVC pattern where an object a, as a use case, able to send messages to the maitre actor; this architecture could respect the hexagonal architecture where the front end communicate with the back end through the adapter object.
+Ref: https://www.tripled.io/08/11/2017/mvc-architecture/
+
 <h3><a name=""></a></h3>
 
 
