@@ -7,9 +7,9 @@ Event observertable:observertable(X)
 Event observerdishwasher:observerdishwasher(X)
 
 //Maitre - RBR
-Dispatch prepare:prepare(X, Y)
+Dispatch prepare:prepare(X, Y)	//X = Crockery elements ; Y = Food elements
 Request addFood:addFood(FOODE_CODE)
-Dispatch clear:clear(X, Y)
+Dispatch clear:clear(X, Y)	//X = Crockery elements ; Y = Food elements
 
 Reply warning:warning(ARG)	//void
 
@@ -60,7 +60,6 @@ Context ctxbasicrobot ip [host="127.0.0.1" port=8020]
 
 ExternalQActor basicrobot context ctxbasicrobot  
 
-// Actor maitre is used as a mock client
 //QActor maitre context ctxmaitre {
 QActor maitre context ctxsystem {
 	[#	
@@ -70,18 +69,59 @@ QActor maitre context ctxsystem {
 		var AnsExpose2 = ""
 		var ClearDish = ""
 		var ClearFood = ""
-	#]	
+		var Prepared = false
+		var Cleared = false
+		var Stopped = false
+	#]
 	
 	State s0 initial {
 		println ("MAITRE | STARTS...")
 		
+		// To load crockery and food elements for prepare command
 		solve( consult("Prepare.pl") )
-		
-		delay 2000
 	}
-	Goto sendPrepare
+	Goto wait
 	
-	State sendPrepare {		
+	State wait {
+		println ("MAITRE | waiting...")
+	}
+	Transition t0
+		whenMsg prepare and [# !Prepared #] -> sendPrepare
+		whenMsg consult -> sendConsult
+		whenRequest addFood and [# Prepared && !Cleared #] -> sendAddFood
+		whenMsg clear and [# Prepared && !Cleared #] -> sendClear
+		whenRequest stop -> sendStop 
+		whenMsg end -> terminateMaitre
+	
+	State sendPrepare {	
+		// Prepare control if the user want to change the arguments:
+		onMsg ( prepare : prepare(X, Y) ) {
+			[#
+				var Crockery = payloadArg(0)
+				var Food = payloadArg(1)
+			#]
+			
+			if [# Crockery != "" #] {
+				solve( replace($Crockery) )
+				ifSolved {			
+					println ("MAITRE | updated crockery elements for prepare command with ${getCurSol(\"Crockery\")}")
+				}
+				else {
+					println ("MAITRE | Error updating 'Prepare the room' elements...")
+				}
+			}
+			
+			if [# Food != "" #] {
+				solve( replace($Food) )
+				ifSolved {			
+					println ("MAITRE | updated crockery elements for prepare command with ${getCurSol(\"Crockery\")}")
+				}
+				else {
+					println ("MAITRE | Error updating 'Prepare the room' elements...")
+				}
+			}
+		}
+			
 		solve( getAllEl(Crockery, Foods) )
 		ifSolved {			
 			forward rbr -m prepare : prepare($getCurSol("Crockery"), $getCurSol("Foods"))
@@ -89,11 +129,11 @@ QActor maitre context ctxsystem {
 		}
 		else {
 			println ("MAITRE | Error getting 'Prepare the room' elements...")
-		}
+		}	
 		
-		delay 6000		
+		[# Prepared = true #]
 	}
-	Goto sendAddFood
+	Goto wait
 	
 	State sendAddFood {		
 		solve( getFoodCodeEl(FoodCode) )
@@ -104,18 +144,17 @@ QActor maitre context ctxsystem {
 		else {
 			println ("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
 		}
-		
-		delay 6000
 	}
 	Transition t1 
 		// Time waiting for warning otherwise the food is present
-		whenTimeVar AddFoodtime -> sendConsult
+		whenTimeVar AddFoodtime -> wait
 		whenReply warning -> handleWarning
 			
 	State handleWarning {		
 		println ("MAITRE | received warning from RBR")
+		updateResource [# "Warning! The fridge doesn't contain the food required!" #]
 	}
-	Goto sendConsult
+	Goto wait
 
 	State sendConsult {	
 		forward fridge -m consult : consult(0)
@@ -166,16 +205,17 @@ QActor maitre context ctxsystem {
  		
  		if [# Sender == "table" #] {
 			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
+			updateResource [# "$Sender;$AnsExpose1;$AnsExpose2" #]
  		}
  		else { 
  			println ("MAITRE | status of $Sender: $AnsExpose1")
+ 			updateResource [# "$Sender;$AnsExpose1" #]
  		}
 	}
-	Goto preSendClear if [#	Nexp == 4 #] else waitExpose
+	Goto wait if [#	Nexp == 4 #] else waitExpose
 	
 	// maitre sends a consult command to table before sending clear command to rbr 
 	State preSendClear {
-		delay 40000
 		forward table -m consult : consult(0)
 		println ("MAITRE | send consult command to Table for 'Clear the room' task")
 	}
@@ -195,26 +235,43 @@ QActor maitre context ctxsystem {
 		
 		forward rbr -m clear : clear($ClearDish, $ClearFood)
 		println ("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
+		
+		[# Cleared = true #]
 	}
-	Goto sendStop
+	Goto wait
 	
 	State sendStop {
-		delay 6000
 		request rbrwalker -m stop : stop(0)
 		println ("MAITRE | send stop command to RBR WALKER")
 	}
 	Transition t4
-		whenReply stopped -> sendReactivate
+		whenReply stopped -> handleStop
+	
+	State handleStop {		
+		onMsg( stopped : stopped(false) ) {
+			println ("MAITRE | Failed stop: there is no activated task!")
+			updateResource [# "There is NO activated task!" #]
+			[# Stopped = false #]
+		}	
+		
+		onMsg( stopped : stopped(true) ) {
+			[# Stopped = true #]
+		}	
+	}
+	Goto waitReactivate if [# Stopped #] else wait
+	
+	State waitReactivate {
+		println ("MAITRE | waiting for reactivate command...")
+	}
+	Transition t5
+		whenMsg reactivate -> sendReactivate
 	
 	State sendReactivate {	
-		// reactivate command is sent only if rbrwalker has answered with stopped(true)
-		onMsg( stopped : stopped(true) ) {
-			delay 3000
-			forward rbrwalker -m reactivate : reactivate(0)
-			println ("MAITRE | send reactivate command to RBR WALKER")
-		}		
+		forward rbrwalker -m reactivate : reactivate(0)
+		println ("MAITRE | send reactivate command to RBR WALKER")
+		[# Stopped = false #]		
 	}
-	Goto terminateMaitre
+	Goto wait
 	
 	State terminateMaitre {
 		println ("MAITRE | terminating...")

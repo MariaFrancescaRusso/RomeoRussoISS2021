@@ -23,17 +23,55 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				var AnsExpose2 = ""
 				var ClearDish = ""
 				var ClearFood = ""
+				var Prepared = false
+				var Cleared = false
+				var Stopped = false
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("MAITRE | STARTS...")
 						solve("consult('Prepare.pl')","") //set resVar	
-						delay(2000) 
 					}
-					 transition( edgeName="goto",targetState="sendPrepare", cond=doswitch() )
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
+				}	 
+				state("wait") { //this:State
+					action { //it:State
+						println("MAITRE | waiting...")
+					}
+					 transition(edgeName="t00",targetState="sendPrepare",cond=whenDispatchGuarded("prepare",{ !Prepared  
+					}))
+					transition(edgeName="t01",targetState="sendConsult",cond=whenDispatch("consult"))
+					transition(edgeName="t02",targetState="sendAddFood",cond=whenRequestGuarded("addFood",{ Prepared && !Cleared  
+					}))
+					transition(edgeName="t03",targetState="sendClear",cond=whenDispatchGuarded("clear",{ Prepared && !Cleared  
+					}))
+					transition(edgeName="t04",targetState="sendStop",cond=whenRequest("stop"))
+					transition(edgeName="t05",targetState="terminateMaitre",cond=whenDispatch("end"))
 				}	 
 				state("sendPrepare") { //this:State
 					action { //it:State
+						if( checkMsgContent( Term.createTerm("prepare(X,Y)"), Term.createTerm("prepare(X,Y)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								
+												var Crockery = payloadArg(0)
+												var Food = payloadArg(1)
+								if(  Crockery != ""  
+								 ){solve("replace($Crockery)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("MAITRE | updated crockery elements for prepare command with ${getCurSol("Crockery")}")
+								}
+								else
+								{println("MAITRE | Error updating 'Prepare the room' elements...")
+								}
+								}
+								if(  Food != ""  
+								 ){solve("replace($Food)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("MAITRE | updated crockery elements for prepare command with ${getCurSol("Crockery")}")
+								}
+								else
+								{println("MAITRE | Error updating 'Prepare the room' elements...")
+								}
+								}
+						}
 						solve("getAllEl(Crockery,Foods)","") //set resVar	
 						if( currentSolution.isSuccess() ) {forward("prepare", "prepare(${getCurSol("Crockery")},${getCurSol("Foods")})" ,"rbr" ) 
 						println("MAITRE | send prepare command to RBR: ${getCurSol("Crockery")}, ${getCurSol("Foods")}")
@@ -41,9 +79,9 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						else
 						{println("MAITRE | Error getting 'Prepare the room' elements...")
 						}
-						delay(6000) 
+						 Prepared = true  
 					}
-					 transition( edgeName="goto",targetState="sendAddFood", cond=doswitch() )
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("sendAddFood") { //this:State
 					action { //it:State
@@ -54,18 +92,19 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						else
 						{println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
 						}
-						delay(6000) 
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t10",targetState="sendConsult",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
-					transition(edgeName="t11",targetState="handleWarning",cond=whenReply("warning"))
+					 transition(edgeName="t16",targetState="wait",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					transition(edgeName="t17",targetState="handleWarning",cond=whenReply("warning"))
 				}	 
 				state("handleWarning") { //this:State
 					action { //it:State
 						println("MAITRE | received warning from RBR")
+						updateResourceRep( "Warning! The fridge doesn't contain the food required!"  
+						)
 					}
-					 transition( edgeName="goto",targetState="sendConsult", cond=doswitch() )
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("sendConsult") { //this:State
 					action { //it:State
@@ -84,10 +123,10 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("MAITRE | waiting answers from resources...")
 					}
-					 transition(edgeName="t22",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
-					transition(edgeName="t23",targetState="handleExpose",cond=whenEvent("observerfridge"))
-					transition(edgeName="t24",targetState="handleExpose",cond=whenEvent("observerpantry"))
-					transition(edgeName="t25",targetState="handleExpose",cond=whenEvent("observertable"))
+					 transition(edgeName="t28",targetState="handleExpose",cond=whenEvent("observerdishwasher"))
+					transition(edgeName="t29",targetState="handleExpose",cond=whenEvent("observerfridge"))
+					transition(edgeName="t210",targetState="handleExpose",cond=whenEvent("observerpantry"))
+					transition(edgeName="t211",targetState="handleExpose",cond=whenEvent("observertable"))
 				}	 
 				state("handleExpose") { //this:State
 					action { //it:State
@@ -115,23 +154,26 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						}
 						if(  Sender == "table"  
 						 ){println("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
+						updateResourceRep( "$Sender;$AnsExpose1;$AnsExpose2"  
+						)
 						}
 						else
 						 {println("MAITRE | status of $Sender: $AnsExpose1")
+						 updateResourceRep( "$Sender;$AnsExpose1"  
+						 )
 						 }
 					}
-					 transition( edgeName="goto",targetState="preSendClear", cond=doswitchGuarded({	Nexp == 4  
+					 transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({	Nexp == 4  
 					}) )
 					transition( edgeName="goto",targetState="waitExpose", cond=doswitchGuarded({! (	Nexp == 4  
 					) }) )
 				}	 
 				state("preSendClear") { //this:State
 					action { //it:State
-						delay(40000) 
 						forward("consult", "consult(0)" ,"table" ) 
 						println("MAITRE | send consult command to Table for 'Clear the room' task")
 					}
-					 transition(edgeName="t36",targetState="sendClear",cond=whenEvent("observertable"))
+					 transition(edgeName="t312",targetState="sendClear",cond=whenEvent("observertable"))
 				}	 
 				state("sendClear") { //this:State
 					action { //it:State
@@ -145,27 +187,49 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("MAITRE | status of Table: Crockery = $ClearDish and Food = $ClearFood")
 						forward("clear", "clear($ClearDish,$ClearFood)" ,"rbr" ) 
 						println("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
+						 Cleared = true  
 					}
-					 transition( edgeName="goto",targetState="sendStop", cond=doswitch() )
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("sendStop") { //this:State
 					action { //it:State
-						delay(6000) 
 						request("stop", "stop(0)" ,"rbrwalker" )  
 						println("MAITRE | send stop command to RBR WALKER")
 					}
-					 transition(edgeName="t47",targetState="sendReactivate",cond=whenReply("stopped"))
+					 transition(edgeName="t413",targetState="handleStop",cond=whenReply("stopped"))
+				}	 
+				state("handleStop") { //this:State
+					action { //it:State
+						if( checkMsgContent( Term.createTerm("stopped(ARG)"), Term.createTerm("stopped(false)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("MAITRE | Failed stop: there is no activated task!")
+								updateResourceRep( "There is NO activated task!"  
+								)
+								 Stopped = false  
+						}
+						if( checkMsgContent( Term.createTerm("stopped(ARG)"), Term.createTerm("stopped(true)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 Stopped = true  
+						}
+					}
+					 transition( edgeName="goto",targetState="waitReactivate", cond=doswitchGuarded({ Stopped  
+					}) )
+					transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({! ( Stopped  
+					) }) )
+				}	 
+				state("waitReactivate") { //this:State
+					action { //it:State
+						println("MAITRE | waiting for reactivate command...")
+					}
+					 transition(edgeName="t514",targetState="sendReactivate",cond=whenDispatch("reactivate"))
 				}	 
 				state("sendReactivate") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("stopped(ARG)"), Term.createTerm("stopped(true)"), 
-						                        currentMsg.msgContent()) ) { //set msgArgList
-								delay(3000) 
-								forward("reactivate", "reactivate(0)" ,"rbrwalker" ) 
-								println("MAITRE | send reactivate command to RBR WALKER")
-						}
+						forward("reactivate", "reactivate(0)" ,"rbrwalker" ) 
+						println("MAITRE | send reactivate command to RBR WALKER")
+						 Stopped = false  
 					}
-					 transition( edgeName="goto",targetState="terminateMaitre", cond=doswitch() )
+					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
 				state("terminateMaitre") { //this:State
 					action { //it:State

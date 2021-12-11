@@ -35,9 +35,9 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					action { //it:State
 						println("FRIDGE | is waiting for a command...")
 					}
-					 transition(edgeName="t152",targetState="answerFood",cond=whenDispatch("askFood"))
-					transition(edgeName="t153",targetState="exposeState",cond=whenDispatch("consult"))
-					transition(edgeName="t154",targetState="handleChangeState",cond=whenDispatch("changeState"))
+					 transition(edgeName="t159",targetState="answerFood",cond=whenDispatch("askFood"))
+					transition(edgeName="t160",targetState="exposeState",cond=whenDispatch("consult"))
+					transition(edgeName="t161",targetState="handleChangeState",cond=whenDispatch("changeState"))
 				}	 
 				state("answerFood") { //this:State
 					action { //it:State
