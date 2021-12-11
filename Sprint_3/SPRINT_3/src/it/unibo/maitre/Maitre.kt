@@ -56,16 +56,16 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 												var Crockery = payloadArg(0)
 												var Food = payloadArg(1)
 								if(  Crockery != ""  
-								 ){solve("replace($Crockery)","") //set resVar	
-								if( currentSolution.isSuccess() ) {println("MAITRE | updated crockery elements for prepare command with ${getCurSol("Crockery")}")
+								 ){solve("replaceCrockery($Crockery)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("MAITRE | updated crockery elements for prepare command with $Crockery")
 								}
 								else
 								{println("MAITRE | Error updating 'Prepare the room' elements...")
 								}
 								}
 								if(  Food != ""  
-								 ){solve("replace($Food)","") //set resVar	
-								if( currentSolution.isSuccess() ) {println("MAITRE | updated crockery elements for prepare command with ${getCurSol("Crockery")}")
+								 ){solve("replaceFood($Food)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("MAITRE | updated food elements for prepare command with $Food")
 								}
 								else
 								{println("MAITRE | Error updating 'Prepare the room' elements...")
@@ -85,6 +85,18 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				}	 
 				state("sendAddFood") { //this:State
 					action { //it:State
+						if( checkMsgContent( Term.createTerm("addFood(FOOD_CODE)"), Term.createTerm("addFood(FOODCODE)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								 var FoodCode = payloadArg(0)  
+								if(  FoodCode != ""  
+								 ){solve("replaceFoodCode($FoodCode)","") //set resVar	
+								if( currentSolution.isSuccess() ) {println("MAITRE | updated food_code element for addFood command with $FoodCode")
+								}
+								else
+								{println("MAITRE | Error updating 'Add food' element...")
+								}
+								}
+						}
 						solve("getFoodCodeEl(FoodCode)","") //set resVar	
 						if( currentSolution.isSuccess() ) {request("addFood", "addFood(${getCurSol("FoodCode")})" ,"rbr" )  
 						println("MAITRE | send addFood(${getCurSol("FoodCode")}) command to RBR")

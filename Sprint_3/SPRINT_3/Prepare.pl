@@ -6,7 +6,7 @@
 %% 	 food(CODE, NAME, QUANTITY).
 
 %% ONLY for "https://swish.swi-prolog.org/"
-%:- dynamic (crockery/2, food/3).
+%:- dynamic (crockery/2, food/3, foodCode/1).
 
 crockery(dishes, 10).
 crockery(glasses, 10).
@@ -79,3 +79,49 @@ getFoodCode(Res) :-
 %% To obtain a list of food_code elements
 getFoodCodeEl(Res) :-
     findall(FOOD_CODE, foodCode(FOOD_CODE), Res).
+
+%% To replace crockery
+replaceCrockery(Crockery) :-
+    getCrockeryEl(Res),
+    removeEl(Res),
+    addEl(Crockery).
+%% To replace food
+replaceFood(Food) :-
+    getFoodEl(Res),
+    removeEl(Res),
+    addEl(Food).
+%% To replace food_code
+replaceFoodCode(FoodCode) :-
+    getFoodCodeEl(Res),
+    removeEl(Res),
+    addEl(FoodCode).
+
+%% To remove some elements
+removeEl([]).
+	%% of crockery
+removeEl([[NAME, QUANTITY] | T]) :-
+    retractall(crockery(NAME, QUANTITY)),
+	removeEl(T).
+	%% of food
+removeEl([[CODE, NAME, QUANTITY] | T]) :-
+    retractall(food(CODE, NAME, QUANTITY)),
+	removeEl(T).
+	%% of food_code
+removeEl([FOODCODE | T]) :-
+    retractall(foodCode(FOODCODE)),
+	removeEl(T).
+
+%% To add some elements
+addEl([]).
+	%% of crockery
+addEl([[NAME, QUANTITY] | T]) :-
+    assertz(crockery(NAME, QUANTITY)),
+    addEl(T).
+	%% of food
+addEl([[CODE, NAME, QUANTITY] | T]) :-
+    assertz(food(CODE, NAME, QUANTITY)),
+    addEl(T).
+	%% of food_code
+addEl([FOODCODE | T]) :-
+    assertz(foodCode(FOODCODE)),
+    addEl(T).

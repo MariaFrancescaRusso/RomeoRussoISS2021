@@ -8,7 +8,7 @@ Event observerdishwasher:observerdishwasher(X)
 
 //Maitre - RBR
 Dispatch prepare:prepare(X, Y)	//X = Crockery elements ; Y = Food elements
-Request addFood:addFood(FOODE_CODE)
+Request addFood:addFood(FOOD_CODE)
 Dispatch clear:clear(X, Y)	//X = Crockery elements ; Y = Food elements
 
 Reply warning:warning(ARG)	//void
@@ -102,9 +102,9 @@ QActor maitre context ctxsystem {
 			#]
 			
 			if [# Crockery != "" #] {
-				solve( replace($Crockery) )
+				solve( replaceCrockery($Crockery) )
 				ifSolved {			
-					println ("MAITRE | updated crockery elements for prepare command with ${getCurSol(\"Crockery\")}")
+					println ("MAITRE | updated crockery elements for prepare command with $Crockery")
 				}
 				else {
 					println ("MAITRE | Error updating 'Prepare the room' elements...")
@@ -112,9 +112,9 @@ QActor maitre context ctxsystem {
 			}
 			
 			if [# Food != "" #] {
-				solve( replace($Food) )
+				solve( replaceFood($Food) )
 				ifSolved {			
-					println ("MAITRE | updated crockery elements for prepare command with ${getCurSol(\"Crockery\")}")
+					println ("MAITRE | updated food elements for prepare command with $Food")
 				}
 				else {
 					println ("MAITRE | Error updating 'Prepare the room' elements...")
@@ -136,6 +136,20 @@ QActor maitre context ctxsystem {
 	Goto wait
 	
 	State sendAddFood {		
+		// AddFood control if the user want to change the Food_Code:
+		onMsg ( addFood : addFood(FOODCODE) ) {
+			[# var FoodCode = payloadArg(0) #]
+			if [# FoodCode != "" #] {
+				solve( replaceFoodCode($FoodCode) )
+				ifSolved {			
+					println ("MAITRE | updated food_code element for addFood command with $FoodCode")
+				}
+				else {
+					println ("MAITRE | Error updating 'Add food' element...")
+				}
+			}
+		}
+		
 		solve( getFoodCodeEl(FoodCode) )
 		ifSolved {			
 			request rbr -m addFood : addFood($getCurSol("FoodCode"))

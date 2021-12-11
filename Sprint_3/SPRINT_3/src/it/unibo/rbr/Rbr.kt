@@ -206,7 +206,7 @@ class Rbr ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scope 
 				}	 
 				state("checkFood") { //this:State
 					action { //it:State
-						if( checkMsgContent( Term.createTerm("addFood(FOODE_CODE)"), Term.createTerm("addFood(ARG)"), 
+						if( checkMsgContent( Term.createTerm("addFood(FOOD_CODE)"), Term.createTerm("addFood(ARG)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
 								 FoodCode = payloadArg(0).removeSurrounding("[", "]")  
 						}
