@@ -6,21 +6,32 @@ Event observerpantry:observerpantry(X)
 Event observertable:observertable(X)
 Event observerdishwasher:observerdishwasher(X)
 
+//vs Maitre
+Dispatch addFood:addFood(FOOD_CODE)
+Dispatch stop:stop(ARG)	//void
+
+//vs Maitre
 //Maitre - RBR
 Dispatch prepare:prepare(X, Y)	//X = Crockery elements ; Y = Food elements
-Request addFood:addFood(FOOD_CODE)
 Dispatch clear:clear(X, Y)	//X = Crockery elements ; Y = Food elements
+
+//Maitre - RBR
+Request addFood:addFood(FOOD_CODE)
 
 Reply warning:warning(ARG)	//void
 
+//vs Maitre
 //Maitre - Fridge/Resources
 Dispatch consult:consult(ARG)	//void
 
 //Maitre - RBRWalker
 Request stop:stop(ARG)	//void
-Dispatch reactivate:reactivate(ARG)	//void
 
 Reply stopped:stopped(ARG)	//ARG = true | false
+
+//vs Maitre
+//Maitre - RBRWalker
+Dispatch reactivate:reactivate(ARG)	//void
 
 //RBR - RBRWalker
 //RBRMapper - RBRWalker
@@ -39,6 +50,7 @@ Dispatch askFood:askFood(FOOD_CODE)
 //RBR - Resources
 Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to change
 
+//vs Maitre
 //RBR - RBRMapper
 //RBR - RBRWalker
 //RBRWalker - basicRobot
@@ -88,9 +100,9 @@ QActor maitre context ctxsystem {
 	Transition t0
 		whenMsg prepare and [# !Prepared #] -> sendPrepare
 		whenMsg consult -> sendConsult
-		whenRequest addFood and [# Prepared && !Cleared #] -> sendAddFood
+		whenMsg addFood and [# Prepared && !Cleared #] -> sendAddFood
 		whenMsg clear and [# Prepared && !Cleared #] -> sendClear
-		whenRequest stop -> sendStop 
+		whenMsg stop -> sendStop 
 		whenMsg end -> terminateMaitre
 	
 	State sendPrepare {	

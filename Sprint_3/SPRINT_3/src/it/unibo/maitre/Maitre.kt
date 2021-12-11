@@ -41,11 +41,11 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					 transition(edgeName="t00",targetState="sendPrepare",cond=whenDispatchGuarded("prepare",{ !Prepared  
 					}))
 					transition(edgeName="t01",targetState="sendConsult",cond=whenDispatch("consult"))
-					transition(edgeName="t02",targetState="sendAddFood",cond=whenRequestGuarded("addFood",{ Prepared && !Cleared  
+					transition(edgeName="t02",targetState="sendAddFood",cond=whenDispatchGuarded("addFood",{ Prepared && !Cleared  
 					}))
 					transition(edgeName="t03",targetState="sendClear",cond=whenDispatchGuarded("clear",{ Prepared && !Cleared  
 					}))
-					transition(edgeName="t04",targetState="sendStop",cond=whenRequest("stop"))
+					transition(edgeName="t04",targetState="sendStop",cond=whenDispatch("stop"))
 					transition(edgeName="t05",targetState="terminateMaitre",cond=whenDispatch("end"))
 				}	 
 				state("sendPrepare") { //this:State
