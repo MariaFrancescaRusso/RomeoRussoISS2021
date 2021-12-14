@@ -1,16 +1,65 @@
-<html xmlns="http://www.w3.org/1999/xhtml" 
-    xmlns:th="http://www.thymeleaf.org" 
-    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3"
-    xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
-    
-<meta charset="utf-8" />
+<html xmlns:th="http://www.thymeleaf.org">
 
+	<link rel="stylesheet" type="text/css" href="./utils/style.css">
 
-	<head><title>STANDING BUFFET SERVICE</title></head>
+	<head>
+		<meta charset="utf-8">
+		<title>STANDING BUFFET SERVICE</title>
+	</head>
 	
 	<body>
 		<h1>STANDING BUFFET SERVICE</h1>
+		<hr>
 		
-		<p>Welcome to <b><span th:text="${arg}">Our Arg</span></b>.</p>
+		<form name="HomePageForm" action="/prepare" method="get">
+			<fieldset>
+				<legend>Tasks:</legend>
+				<input type="submit" name="prepareChoose" value="Prepare the Room"/>
+				<div id="prepareMenù" hidden="hidden">
+					<input type="submit" name="prepareButton" value="Default Prepare"/>
+					<input type="submit" name="prepareSelEl" value="Select Prepare Elements"/>
+					<div id="prepareElements" hidden="hidden">
+						<select name="prepareSelOpt" multiple="multiple"></select>
+							
+						<input type="submit" name="prepareButton" value="Prepare the Room"/>
+					</div>
+				</div>
+			</fieldset>	
+		</form>
+		
+		<form name="HomePageForm" action="/consult" method="post">
+			<fieldset>
+				<legend>Management:</legend>
+				<input type="submit" name="consultButton" value="Consult Room Resources"/>
+				<div id="consultRes"></div>
+			</fieldset>	
+		</form>	
+			
+<div hidden="hidden">
+	<form name="HomePageForm" method="post" enctype="multipart/form-data"></form>
+	<form name="aggiungiArticoloForm" action="gestisciCliente.jsp" method="post"></form>
+	<p id="">
+		
+	</p>
+	Readonly: <input type="text" name="calendario" size="60" readonly="readonly"> <br>
+	text: <input type="text" name="nome"> <br>
+	Password: <input type="password" name="password"> <br>
+	textArea readonly:<br>
+		<textarea name="eventi" rows="25" cols="90" readonly="readonly"></textarea> <br>
+	Pulsanti:	<br>
+	<input type="button"  name="pulsante-eventi" value="Svuota Eventi">
+	<input type="submit" name="pulsante-submit" value="Invia">
+	<input type="reset" name="pulsante-reset" value="Azzera">
+	Scelta: <br>
+	<select name="passatempi" multiple="multiple">
+		<option value="musica"> Musica </option>
+		<option value="sport"> Sport </option>
+		<option value="viaggi"> Viaggi </option>
+		<option value="letture"> Letture </option>
+		<option value="cucina"> Cucina </option>
+	</select>
+				
+			</div>
+		</form>
 	</body>
-</html>
+</html>			

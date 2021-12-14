@@ -6,6 +6,6 @@ import org.springframework.boot.runApplication
 @SpringBootApplication
 class MaitreGuiApplication
 
-fun main(args: Array<String>) {
+fun main(args : Array<String>) {
 	runApplication<MaitreGuiApplication>(*args)
 }
