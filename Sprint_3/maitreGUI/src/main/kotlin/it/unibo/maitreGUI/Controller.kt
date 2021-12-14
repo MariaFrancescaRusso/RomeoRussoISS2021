@@ -20,37 +20,34 @@ class Controller {
 	var actor="maitre"
 	var port = "8040"
 	
-    var coap  = CoapSupport("coap://localhost:$port", "$ctx/$actor")
+//    var coap  = CoapSupport("coap://localhost:$port", "$ctx/$actor")
 	//Resource that sends message to the maitre actor
-    var maitreResource= MaitreResource
+//    var maitreResource= MaitreResource
     //TODO gestire HOMEPAGE
     @GetMapping("/")
     suspend fun home(viewmodel : Model,
         @RequestParam(name="sonarvalue", required=false, defaultValue="0")v : String) : String{
-        viewmodel.addAttribute("arg", appName )
 		//maitreResource!!.execPrepare()
-        return  "pag1"
+        return  "MaitreGUI"
     }
 
-	
-    //TODO definire argomenti in ingresso
+    //TODO definire argomenti in ingresso e default
     @GetMapping("/prepare")
     suspend fun prepare(viewmodel : Model,
         @RequestParam(name="sonarvalue", required=false, defaultValue="0")v : String) : String{
-        viewmodel.addAttribute("arg", appName )
 		//maitreResource!!.execPrepare()
-        return  "pag2"
+        return  "MaitreGUI"
     }
 
 	//TODO definire argomenti in ingresso
-    //TODO leggere risposta
     @GetMapping("/addofood")
     suspend fun  addofood(viewmodel : Model,
-        @RequestParam(name="sonarvalue", required=false, defaultValue="0")v : String) : String{
-       // maitreResource!!.execAddFood()
+        @RequestParam(name="sonarvalue", required=true)v : String) : String{
+        var answ= ""
+		// maitreResource!!.execAddFood()
 	
         //Leggo la risposta dal maitre
-        coap.readResource()
+//        coap.readResource()
         return "pag2"
     }
     
@@ -63,23 +60,27 @@ class Controller {
         return  "pag3"
     }
 
-	//TODO: leggere risposta
     @GetMapping("/consult")
     suspend fun consult(model: Model): String {
-		maitreResource!!.execConsult()
+    	var answ= ""
+//		maitreResource!!.execConsult()
 		//Leggo la risposta dal maitre
-        coap.readResource()
+		//TODO come capisco a quale risorsa si riferiscono i componenti
+//        answ = answ+";"+coap.readResource()
+//		answ = answ+";"+coap.readResource()
+//		answ = answ+";"+coap.readResource()
+//		answ = answ+";"+coap.readResource()
         model.addAttribute("arg", appName )
 		//TODO come scelgo in che pag andare??
         return  "pag1"
     }
 
-    //TODO leggere risposta
 	@GetMapping("/stop")
 	suspend fun stop(model: Model): String {
-		maitreResource!!.execStop()
+		var answ = ""
+//		maitreResource!!.execStop()
 		//Leggo la risposta dal maitre
-        coap.readResource()
+//		answ =  coap.readResource()
         model.addAttribute("arg", appName )
 		
         return  "pag4"
@@ -87,8 +88,7 @@ class Controller {
 
 	@GetMapping("/reactivate")
 	suspend fun reactivate(model: Model): String {
-		maitreResource!!.execReactivate()
-        model.addAttribute("arg", appName )
+//		maitreResource!!.execReactivate()
         //TODO come scelgo in che pag andare??
         return  "pag1"
     }
