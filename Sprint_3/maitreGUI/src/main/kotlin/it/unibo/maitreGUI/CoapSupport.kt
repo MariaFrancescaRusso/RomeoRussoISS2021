@@ -19,7 +19,6 @@ class CoapSupport(address: String, path: String) {
         client.setTimeout(1000L)
         val rep = readResource()
         println("CoapSupport | initial rep=$rep")
-        //observeResource( new MyHandler() );
     }
 
     fun readResource(): String {
@@ -45,33 +44,11 @@ class CoapSupport(address: String, path: String) {
         return resp != null
     }
 
-    fun updateResourceWithValue(data: String): Boolean {
+    fun updateResourceWithValue(msgID:String, messageType:ApplMessageType=ApplMessageType.event, sender:String="support", receiver:String="none",content:String): Boolean {
         val m = ApplMessage(
-            "sonarrobot", ApplMessageType.event.toString(),
-            "support", "none", "sonar($data)", "1"
+            msgID, messageType.toString(),
+            sender, receiver, content, "1"
         )
         return updateResource(m.toString())
     }
-
-    fun test() {
-        var v = readResource()
-        println("CoapSupport | PRE v=$v")
-        updateResourceWithValue("55")
-        try {
-            Thread.sleep(1000)
-        } catch (e: InterruptedException) {
-            e.printStackTrace()
-        }
-        v = readResource()
-        println("CoapSupport | POST v=$v")
-    }
-
-//    companion object {
-//        @JvmStatic
-//        fun main(args: Array<String>) {
-//            //CoapSupport cs = new CoapSupport("coap://localhost:5683","robot/sonar");
-//            val cs = CoapSupport("coap://localhost:8028", "ctxsonarresource/sonarresource")
-//            cs.test()
-//        }
-//    }
 }
