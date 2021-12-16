@@ -14,7 +14,6 @@ class MaitreResource (name: String){
 	var port = 8040
 	var actor = "maitre"
 	var ctxqakdest = "ctxsystem"
-	var qakdestination = "standingbuffetservice"
 	var coap  = CoapSupport("coap://localhost:$port", "$ctxqakdest/$actor")
 	var conn   : IConnInteraction
 
