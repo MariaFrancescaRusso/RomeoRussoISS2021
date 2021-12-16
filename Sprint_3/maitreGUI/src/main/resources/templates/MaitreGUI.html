@@ -1,6 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
-	<link rel="stylesheet" type="text/css" href="./utils/style.css">
+	<link rel="stylesheet" type="text/css" href="./style.css">
+		<!-- To load offline the CSS -->
+		<link rel="stylesheet" type="text/css" href="../static/style.css">
 
 	<head>
 		<meta charset="utf-8">
@@ -13,23 +15,51 @@
 		
 		<form name="HomePageForm" action="/prepare" method="get">
 			<fieldset>
-				<legend>Tasks:</legend>
-				<input type="submit" name="prepareChoose" value="Prepare the Room"/>
-				<div id="prepareMenù" hidden="hidden">
-					<input type="submit" name="prepareButton" value="Default Prepare"/>
-					<input type="submit" name="prepareSelEl" value="Select Prepare Elements"/>
-					<div id="prepareElements" hidden="hidden">
-						<select name="prepareSelOpt" multiple="multiple"></select>
-							
-						<input type="submit" name="prepareButton" value="Prepare the Room"/>
-					</div>
-				</div>
+				<legend>Tasks</legend>
+				<details>
+	    			<summary>Prepare the Room</summary>
+				    <ul>
+						<li>&#x25BA; <input type="submit" name="prepareButton" value="Default Prepare"/></li>
+						<br/>
+						<li><details>
+			    			<summary name="prepareSelEl">Select Prepare Elements</summary>
+						    <ul id="prepareElements">
+								<li><select name="prepareSelOpt" multiple="multiple"></select>
+								<!-- <option value=""> </option> --></li><br/>
+								<li><input type="submit" name="prepareButton" value="Prepare the Room"/></li>
+							</ul>
+						</details></li>
+					</ul>
+			  	</details>
+			</fieldset>	
+		</form>
+		
+		<form name="HomePageForm" action="/prepare" method="get">
+			<fieldset>
+				<legend>Tasks</legend>
+				<details>
+	    			<summary>Prepare the Room</summary>
+				    <table>
+						<tr>
+							<td>&#x25BA; <input type="submit" name="prepareButton" value="Default Prepare"/></td>
+							<td><details>
+				    			<summary name="prepareSelEl">Select Prepare Elements</summary>
+							    <ul id="prepareElements">
+									<li><select name="prepareSelOpt" multiple="multiple"></select>
+									<!-- <option value=""> aggiungi selezione quantità </option> --></li><br/>
+									<li><input type="submit" name="prepareButton" value="Prepare the Room"/></li>
+								</ul>
+							</td></details></li>
+						</tr>
+					</table>
+					</ul>
+			  	</details>
 			</fieldset>	
 		</form>
 		
 		<form name="HomePageForm" action="/consult" method="post">
 			<fieldset>
-				<legend>Management:</legend>
+				<legend>Management</legend>
 				<input type="submit" name="consultButton" value="Consult Room Resources"/>
 				<div id="consultRes"></div>
 			</fieldset>	
@@ -58,8 +88,12 @@
 		<option value="letture"> Letture </option>
 		<option value="cucina"> Cucina </option>
 	</select>
-				
-			</div>
+	
+	<details>
+	    <summary></summary>
+	    <p></p>
+  	</details>
+</div>
 		</form>
 	</body>
 </html>			

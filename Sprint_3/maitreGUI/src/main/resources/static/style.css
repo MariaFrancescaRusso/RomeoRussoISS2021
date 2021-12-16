@@ -1,0 +1,43 @@
+hr {
+	clear: both;
+	height: 0.5px;
+	color: #2f4f4f;
+	background-color: #2f4f4f;
+}
+
+h1, h2, h3 {
+	color: #242424;
+	clear: left;
+	font: 100% Tahoma, Helvetica, Arial, sans-serif;
+	margin-bottom: 0.5em;
+	padding-top: 0.5em;
+	border-radius: 10px;
+	padding: 5px;
+}
+
+h1 {
+	font-size: 150%;
+	background-color: #b2c0ff;
+	padding: 10px;
+}
+
+body {
+	font-family: sans-serif;
+}
+
+legend {
+	font-size: 110%;
+	font-weight: bold;
+}
+
+summary {
+	cursor: pointer;
+}
+
+li {
+	list-style-type: none;
+}
+
+input {
+	cursor: pointer;
+}

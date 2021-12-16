@@ -84,6 +84,7 @@ QActor maitre context ctxsystem {
 		var Prepared = false
 		var Cleared = false
 		var Stopped = false
+		var ConsultStr = ""
 	#]
 	
 	State s0 initial {
@@ -231,11 +232,15 @@ QActor maitre context ctxsystem {
  		
  		if [# Sender == "table" #] {
 			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
-			updateResource [# "$Sender;$AnsExpose1;$AnsExpose2" #]
+			[# ConsultStr += "{$Sender:$AnsExpose1;$AnsExpose2}" #]
  		}
  		else { 
  			println ("MAITRE | status of $Sender: $AnsExpose1")
- 			updateResource [# "$Sender;$AnsExpose1" #]
+ 			[# ConsultStr += "{$Sender:$AnsExpose1}" #]
+ 		}
+ 		
+ 		if [# Nexp == 4 #] {
+ 			updateResource [# "$ConsultStr" #]
  		}
 	}
 	Goto wait if [#	Nexp == 4 #] else waitExpose
