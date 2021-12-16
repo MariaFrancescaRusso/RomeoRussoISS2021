@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestParam
 class Controller {
 	@Value("\${spring.application.name}")
 	var appName : String? = null
+	var addr = "localhost"
+	var port = "8040"
 	var ctx = "ctxsystem"
 	var actor = "maitre"
-	var port = "8040"
-	var channel= Channel<String>()
 	var caller = "spring"
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
-	var maitreResource = MaitreResource("maitreresource")
+	var maitreResource = MaitreResource(caller, addr, port, ctx, actor )
 
 	//TODO: gestire HOMEPAGE
 	@GetMapping("/")
@@ -86,6 +86,8 @@ class Controller {
 		return  "pag1"
 	}
 
+	//TODO eventualmente potremmo fare una pag @GetMapping("/settings") che possa gestire il cambio addres, port, e contesto
+	
 	@ExceptionHandler
 	fun handle(ex: Exception): ResponseEntity<*> {
 		val responseHeaders = HttpHeaders()

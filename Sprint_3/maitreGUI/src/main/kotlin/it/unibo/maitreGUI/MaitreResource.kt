@@ -8,19 +8,19 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
-class MaitreResource (name: String){
+class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest: String, actordest: String){
 	var caller = name
-	var addr = "localhost"
-	var port = 8040
-	var actor = "maitre"
-	var ctxqakdest = "ctxsystem"
-	var coap  = CoapSupport("coap://localhost:$port", "$ctxqakdest/$actor")
+	var addr = addrdest
+	var port = portdest
+	var ctxqakdest = ctxdest
+	var actor = actordest
+	var coap  = CoapSupport("coap://$addr:$port", "$ctxqakdest/$actor")
 	var conn   : IConnInteraction
 
 	//TODO valutare se la connessione può essere delegata ad un altro oggetto
 	init {
 		val fp	= FactoryProtocol(null,"TCP","connQakTcp")
-		conn	= fp.createClientProtocolSupport(addr, port )
+		conn	= fp.createClientProtocolSupport(addr, port.toInt() )
 		println("MaitreResource | configured ${sysUtil.curThread()} ")
 	}
 
