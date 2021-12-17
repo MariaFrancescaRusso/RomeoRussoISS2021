@@ -1,26 +1,27 @@
 package it.unibo.maitreGUI
 
 import it.unibo.`is`.interfaces.protocols.IConnInteraction
-import it.unibo.actor0.MsgUtil
+import it.unibo.connQak.ConnectionType
+import it.unibo.connQak.connQakBase
 import it.unibo.kactor.sysUtil
 import it.unibo.supports.FactoryProtocol
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
+import it.unibo.kactor.MsgUtil
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
-class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest: String, actordest: String){
+class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest: String, actordest: String, protocol: ConnectionType ){
 	var caller = name
 	var addr = addrdest
 	var port = portdest
 	var ctxqakdest = ctxdest
 	var actor = actordest
 	var coap  = CoapSupport("coap://$addr:$port", "$ctxqakdest/$actor")
-	var conn   : IConnInteraction
+	var conn  : connQakBase
 
-	//TODO valutare se la connessione può essere delegata ad un altro oggetto
 	init {
-		val fp	= FactoryProtocol(null,"TCP","connQakTcp")
-		conn	= fp.createClientProtocolSupport(addr, port.toInt() )
+		conn = connQakBase.create(protocol)
+		conn.createConnection()
 		println("MaitreResource | configured ${sysUtil.curThread()} ")
 	}
 
@@ -29,14 +30,14 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	suspend fun execPrepare( foodAndCrockery: String) {
 		var message = MsgUtil.buildDispatch(caller, "prepare", "prepare($foodAndCrockery)", "maitre")
 		println("exec PREPARE")
-		conn.sendALine( message.toString())	
+		//conn.forward( message)
 	}
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	fun execAddFood( foodcode: String):String {
 		var message = MsgUtil.buildDispatch(caller, "addfood", "addfood($foodcode)", "maitre")
 		println("exec ADDFOOD")
-		conn.sendALine( message.toString())
+		conn.forward( message)
 		runBlocking{
 			delay(100)
 		}
@@ -48,7 +49,7 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	suspend fun execClear( foodAndCrockery: String) {
 		var message = MsgUtil.buildDispatch(caller, "clear", "clear($foodAndCrockery)", "maitre")
 		println("exec CLEAR")
-		conn.sendALine( message.toString()  )
+		conn.forward( message  )
 	}
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -56,7 +57,7 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var message = MsgUtil.buildDispatch(caller, "consult", "consult(0)", "maitre")
 		var s = message.toString()
 		println("exec CONSULT $s")
-		conn.sendALine( message.toString())
+		conn.forward( message)
 		runBlocking{
 			delay(100)
 		}
@@ -68,7 +69,7 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	suspend fun execStop():String {
 		var message = MsgUtil.buildDispatch(caller, "stop", "stop(0)", "maitre")
 		println("exec STOP")
-		conn.sendALine( message.toString())
+		conn.forward( message)
 		runBlocking{
 			delay(100)
 		}
@@ -80,13 +81,13 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	suspend fun execReactivate() {
 		var message = MsgUtil.buildDispatch(caller, "reactivate", "reactivate(0)", "maitre")
 		println("exec REACTIVATE")
-		conn.sendALine( message.toString()  )
+		conn.forward( message  )
 	}
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execKillMaitre() {
 		var message = MsgUtil.buildDispatch(caller, "end", "end(0)", "maitre")
 		println("exec TERMINATE")
-		conn.sendALine( message.toString()  )
+		conn.forward( message  )
 	}
 }
