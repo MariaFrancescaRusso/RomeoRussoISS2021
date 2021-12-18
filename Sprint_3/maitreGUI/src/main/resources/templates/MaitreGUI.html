@@ -27,8 +27,9 @@
 				    			<li><dl>
 								  <dt>Pantry</dt>
 								  <dd>
-								  	<select th:text="${preparePantry}" multiple="multiple" th:size="${sizeSel}">
-								  		<optgroup label="Pantry" th:text="${preparePantry}">
+								  	<select multiple="multiple" th:size="${sizeSel}">
+								  		<option th:each="elPantry : ${preparePantry}" th:text="${elPantry.name}"></option>
+								  		
 								  	</select>
 								  </dd>
 								  <dt>Food</dt>

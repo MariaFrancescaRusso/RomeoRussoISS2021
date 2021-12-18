@@ -33,7 +33,7 @@ class Controller {
 	var DishwasherEl = ArrayList<List<*>>()
 	var TableDishes = ArrayList<List<*>>()
 	var TableFood = ArrayList<List<*>>()
-
+	
 	//TODO: gestire HOMEPAGE
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@GetMapping("/")
@@ -210,14 +210,15 @@ class Controller {
 	fun showPrepareEl(viewmodel : Model) {
 		var Name = ""
 		var Quantity = ""
+//		var Crockery = listOf(name:String, quantity:String)
+		//TODO: usare una mappa(nome, quantity) o fare un oggetto crockery e uno food da poter utilizzare o trovare un altro modo ad esempio con l'array già presente. In questo modo si può sfruttare th:each e nome o quantity da html per popolare l'html. Utile anche per prendere i valori della quantity associato al nome.
 		viewmodel.addAttribute("sizeSel", PantryEl.size)
 		for (el in PantryEl) {
 			//each el has a form [[NAME, QUANTITY],...]
-			Name += "<option name=\"${el.get(0)}\" th:selected=\"\${\"selected\"}\">${el.get(0)}</option>"
+			println("CONTROLLER | Pantry content:$Name")
+			
 		}
-		println("CONTROLLER | Pantry content:$Name")
-		
-		viewmodel.addAttribute("preparePantry", Name)
+		viewmodel.addAttribute("preparePantry", PantryEl)
 	}
 	
 	fun showFoodCodes() {
