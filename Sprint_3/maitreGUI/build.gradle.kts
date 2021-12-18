@@ -5,7 +5,7 @@ plugins {
 	id("io.spring.dependency-management") version "1.0.11.RELEASE"
 	kotlin("jvm") version "1.6.0"
 	kotlin("plugin.spring") version "1.6.0"
-	
+
 //	java
 //	application
 //	jacoco
@@ -18,8 +18,8 @@ java.sourceCompatibility = JavaVersion.VERSION_11
 
 repositories {
 	mavenCentral()
-	jcenter()	//required by andrea pivetta
-	flatDir{ dirs("../unibolibs") }	//Our libraries
+	jcenter()    //required by andrea pivetta
+	flatDir { dirs("../unibolibs") }    //Our libraries
 }
 
 dependencies {
@@ -55,7 +55,7 @@ dependencies {
 
 //JSON
 	// https://mvnrepository.com/artifact/org.json/json
-	implementation("org.json:json:20201115" )
+	implementation("org.json:json:20201115")
 
 //COAP
 	// https://mvnrepository.com/artifact/org.eclipse.californium/californium-core
@@ -65,13 +65,13 @@ dependencies {
 	implementation("org.eclipse.californium:californium-proxy:2.0.0-M12")
 
 //OkHttp library for websockets with Kotlin
-	implementation( "com.squareup.okhttp3:okhttp:4.9.0" )
+	implementation("com.squareup.okhttp3:okhttp:4.9.0")
 
 //ADDED FOR THE HTTP CLIENT
 	// https://mvnrepository.com/artifact/org.apache.httpcomponents/httpclient
-	implementation ("org.apache.httpcomponents:httpclient:4.5")
+	implementation("org.apache.httpcomponents:httpclient:4.5")
 	// https://mvnrepository.com/artifact/commons-io/commons-io
-	implementation ("commons-io:commons-io:2.6")
+	implementation("commons-io:commons-io:2.6")
 
 //PLANNER aimacode
 // https://mvnrepository.com/artifact/com.googlecode.aima-java/aima-core
@@ -79,7 +79,7 @@ dependencies {
 
 //STRING COLORS
 	// https://mvnrepository.com/artifact/com.andreapivetta.kolor/kolor
-	implementation( "com.andreapivetta.kolor:kolor:1.0.0" )
+	implementation("com.andreapivetta.kolor:kolor:1.0.0")
 
 //UNIBO
 	implementation("IssActorKotlinRobotSupport:IssActorKotlinRobotSupport:2.0")
@@ -91,7 +91,7 @@ dependencies {
 	implementation("2p301:2p301")
 
 // https://mvnrepository.com/artifact/org.eclipse.paho/org.eclipse.paho.client.mqttv3
-//	implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2")
+	implementation("org.eclipse.paho:org.eclipse.paho.client.mqttv3:1.0.2")
 }
 
 tasks.withType<KotlinCompile> {
