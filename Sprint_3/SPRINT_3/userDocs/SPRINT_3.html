@@ -49,10 +49,11 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 <h2>Problem Analysis</h2>
 
-The problems related to this sprint goal, that are already <ko>partially</ko> addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">initial problem analysis</a>, are detailed below.<br>
+<div>The problems related to this sprint goal, that are already <ko>partially</ko> addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">initial problem analysis</a>, are detailed below.</div>
+<br>
 
 The main goal in this Sprint is the development of a software, to make the maitre user interact with the system software produced in the previous Sprint, and providing it a GUI.<br>
-The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives through messages the commands to send to the other system elements. A GUI for this kind of actor would be developed with a MVC pattern where an object , as a use case, able to send messages to the maitre actor and to receives its answers; this architecture could respect the hexagonal architecture where the front-end communicates with the back-end through the adapter object.<br>
+The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives, through messages, the commands to send to the other system elements. A GUI for this kind of actor would be developed with a MVC pattern where an object, as a use case, able to send messages to the maitre actor and to receives its answers; this architecture could respect the hexagonal architecture where the front-end communicates with the back-end through the adapter object.<br>
 https://www.tripled.io/08/11/2017/mvc-architecture/<br>
 
 
@@ -72,15 +73,24 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 <h2>Project</h2>
 
+<h3>Maitre</h3>
+The maitre actor waits for the messages: prepare, consult, addFood, clear, stop, end. When it receives the message:
+<ul>
+    <li>prepare: sends the prepare message to the rbr specifing the food and the crockery;</li>
+    <li>addFood: sends the addFood message to the rbr specifing the food;</li>
+    <li>clear: sends the consult message to the table to get the items to remove; sends the clear message to the rbr specifing the food and the crockery;</li>
+    <li>consult: sends the consult message to all resources and waits for their answers;</li>
+    <li>stop: sends the stop message to the rbr when this is received it waits just for the reactivate message;</li>
+    <li>reactivate: sends the reactivate message to the rbr;</li>
+    <li>end: sends the end message to the rbr and terminate.</li>
+</ul>
+
 <h3>MaitreGui</h3>
 The software it's realized as a web app using the Spring framework.<br>
-The view => controller => maitreResource (use cases) <br>
-The package it.unibo.connQak implements the comunications in out with the actors; the connQakBase works as a factory class for classes to sends messages to the actors using the TCP, HTTP,  MQTT protocols.<br>
-The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor. <br>
-The controller works as  a Spring controller and intercepts the get request to execete the right behaviuor using maitreResource and showing the right HTML page.<br>
-The HTML pages are the views of system.<br>
-
-
+The package it.unibo.connQak implements functions to send message to the actors with different protocols(in TCP, MQTT, CoAP, HTTP); the connQakBase works as a factory class for classes to sends messages to the actors using the TCP, HTTP, CoAP, MQTT protocols.<br>
+The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor; in an hexagonal architecture this class is the use case. <br>
+The controller works as a Spring controller and intercepts the Get request to execute the right behaviuor using maitreResource and showing the right HTML page.<br>
+Immagine view => controller => maitreResource (use cases) <br>
 <h2>Testing</h2>
 
 Below there are exposed some tests made for this sprint project:
