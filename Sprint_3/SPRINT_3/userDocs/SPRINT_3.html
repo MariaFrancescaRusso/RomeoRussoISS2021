@@ -49,15 +49,11 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 <h2>Problem Analysis</h2>
 
-The problems related to this sprint goal, that are already <ko>partially</ko> addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">initial problem analysis</a>, are detailed below.
+The problems related to this sprint goal, that are already <ko>partially</ko> addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">initial problem analysis</a>, are detailed below.<br>
 
-The main goal in this Sprint is the development of a software, to make the maitre user interact with the system software, and providing it a GUI.
-The maitre software sends and recevies the same messages and events of the mock maitre in the previuous Sprint. To realize it, it's possible to develop an actor which recives through messages the commands to send to the other system elements. A GUI for this kind of actor would be developed with a MVC pattern where an object a, as a use case, able to send messages to the maitre actor; this architecture could respect the hexagonal architecture where the front end communicate with the back end through the adapter object.
-Ref: https://www.tripled.io/08/11/2017/mvc-architecture/
-
-The main goal in this Sprint is the development of a software, to make the maitre user interact with the system software produced in the previous Sprint, and providing it a GUI.
-The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives through messages the commands to send to the other system elements. A GUI for this kind of actor would be developed with a MVC pattern where an object , as a use case, able to send messages to the maitre actor and to receives its answers; this architecture could respect the hexagonal architecture where the front-end communicates with the back-end through the adapter object.
-https://www.tripled.io/08/11/2017/mvc-architecture/
+The main goal in this Sprint is the development of a software, to make the maitre user interact with the system software produced in the previous Sprint, and providing it a GUI.<br>
+The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives through messages the commands to send to the other system elements. A GUI for this kind of actor would be developed with a MVC pattern where an object , as a use case, able to send messages to the maitre actor and to receives its answers; this architecture could respect the hexagonal architecture where the front-end communicates with the back-end through the adapter object.<br>
+https://www.tripled.io/08/11/2017/mvc-architecture/<br>
 
 
 <h3><a name=""></a></h3>
@@ -77,10 +73,12 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 <h2>Project</h2>
 
 <h3>MaitreGui</h3>
-The software it's realized as a web app using the Spring framework.
-The view => controller => maitreResource (use cases)
-The package it.unibo.connQak implements the comunications in out with the actors; the connQakBase works as a factory class for classes to sends messages to the actors using the TCP, HTTP,  MQTT protocols.
-The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor.
+The software it's realized as a web app using the Spring framework.<br>
+The view => controller => maitreResource (use cases) <br>
+The package it.unibo.connQak implements the comunications in out with the actors; the connQakBase works as a factory class for classes to sends messages to the actors using the TCP, HTTP,  MQTT protocols.<br>
+The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor. <br>
+The controller works as  a Spring controller and intercepts the get request to execete the right behaviuor using maitreResource and showing the right HTML page.<br>
+The HTML pages are the views of system.<br>
 
 
 <h2>Testing</h2>
