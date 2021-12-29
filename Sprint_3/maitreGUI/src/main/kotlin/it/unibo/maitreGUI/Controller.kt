@@ -1,18 +1,12 @@
 package it.unibo.maitreGUI
 
 //import it.unibo.connQak.ConnectionType
-import kotlinx.coroutines.channels.Channel
+import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Value
-import org.springframework.http.HttpHeaders
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-import org.json.JSONObject
-import org.springframework.web.bind.annotation.PostMapping
 
 @Controller
 class Controller {
@@ -28,11 +22,11 @@ class Controller {
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 //	var maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
 	
-	var PantryEl = ArrayList<List<*>>()
-	var FridgeEl = ArrayList<List<*>>()
-	var DishwasherEl = ArrayList<List<*>>()
-	var TableDishes = ArrayList<List<*>>()
-	var TableFood = ArrayList<List<*>>()
+	var PantryEl = ArrayList<List<String>>()
+	var FridgeEl = ArrayList<List<String>>()
+	var DishwasherEl = ArrayList<List<String>>()
+	var TableDishes = ArrayList<List<String>>()
+	var TableFood = ArrayList<List<String>>()
 	
 	//TODO: gestire HOMEPAGE
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -163,8 +157,8 @@ class Controller {
 	}
 	
 	// To convert the resource string to an array
-	fun stringToArray(s : String) : ArrayList<List<*>> {
-		var Res = ArrayList<List<*>>()
+	fun stringToArray(s : String) : ArrayList<List<String>> {
+		var Res = ArrayList<List<String>>()
 		
 		if (s == "[]")
 			return Res
@@ -186,19 +180,16 @@ class Controller {
 	// To fill the consult output for the homepage
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	fun showConsult(viewmodel : Model) {
-				
 		var ConsultRes = "Pantry: ${checkEl(PantryEl)}\n"
 		ConsultRes += "Fridge: ${checkEl(FridgeEl)}\n"
 		ConsultRes += "Dishwasher: ${checkEl(DishwasherEl)}\n"
 		ConsultRes += "Table: ${checkEl(TableDishes)} and ${checkEl(TableFood)}"
-		var Tmp = "<textarea readonly rows=\"10\" cols=\"60\">$ConsultRes</textarea>"
 		println("CONTROLLER | Consult result:$ConsultRes")
 		viewmodel.addAttribute("consultRes", ConsultRes)
-		viewmodel.addAttribute("consultR", Tmp)
 	}
 	
 	// To check if the resource array is empty
-	fun checkEl(el : ArrayList<List<*>>) : String {		
+	fun checkEl(el : ArrayList<List<String>>) : String {		
 		if (el.isEmpty())
 			return "empty"
 		else
@@ -208,17 +199,11 @@ class Controller {
 	// To fill the prepare selection for the homepage
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	fun showPrepareEl(viewmodel : Model) {
-		var Name = ""
-		var Quantity = ""
-//		var Crockery = listOf(name:String, quantity:String)
-		//TODO: usare una mappa(nome, quantity) o fare un oggetto crockery e uno food da poter utilizzare o trovare un altro modo ad esempio con l'array già presente. In questo modo si può sfruttare th:each e nome o quantity da html per popolare l'html. Utile anche per prendere i valori della quantity associato al nome.
-		viewmodel.addAttribute("sizeSel", PantryEl.size)
-		for (el in PantryEl) {
-			//each el has a form [[NAME, QUANTITY],...]
-			println("CONTROLLER | Pantry content:$Name")
-			
-		}
+		//each el has a form [[NAME, QUANTITY],...]
 		viewmodel.addAttribute("preparePantry", PantryEl)
+		
+		//each el has a form [[CODE, NAME, QUANTITY],...]
+		viewmodel.addAttribute("prepareFridge", FridgeEl)
 	}
 	
 	fun showFoodCodes() {

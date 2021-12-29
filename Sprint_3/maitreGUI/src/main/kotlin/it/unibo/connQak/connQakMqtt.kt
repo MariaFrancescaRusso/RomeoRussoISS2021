@@ -1,12 +1,7 @@
 package it.unibo.connQak
 
-import org.eclipse.paho.client.mqttv3.MqttClient
-import org.eclipse.paho.client.mqttv3.MqttCallback
-import org.eclipse.paho.client.mqttv3.MqttConnectOptions
-import org.eclipse.paho.client.mqttv3.MqttMessage
-import it.unibo.kactor.MsgUtil
-import org.eclipse.paho.client.mqttv3.IMqttDeliveryToken
 import it.unibo.kactor.ApplMessage
+import org.eclipse.paho.client.mqttv3.*
 
 class connQakMqtt( ) : connQakBase( ), MqttCallback{
  	lateinit var client  : MqttClient
