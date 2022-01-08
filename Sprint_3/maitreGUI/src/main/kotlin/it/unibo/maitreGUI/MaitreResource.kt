@@ -27,8 +27,8 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 
 	//TODO decidere se il messaggio viene preparato dal controller o qua
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
-	suspend fun execPrepare( foodAndCrockery: String) {
-		var message = MsgUtil.buildDispatch(caller, "prepare", "prepare($foodAndCrockery)", "maitre")
+	suspend fun execPrepare( Crockery: String, Food: String) {
+		var message = MsgUtil.buildDispatch(caller, "prepare", "prepare($Crockery, $Food)", "maitre")
 		println("exec PREPARE")
 		//conn.forward( message)
 	}

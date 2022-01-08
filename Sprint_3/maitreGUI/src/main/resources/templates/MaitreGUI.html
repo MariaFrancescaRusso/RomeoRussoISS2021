@@ -1,8 +1,8 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 	<link rel="stylesheet" type="text/css" href="./style.css">
-		<!-- To load offline the CSS -->
-		<link rel="stylesheet" type="text/css" href="../static/style.css">
+	<!-- To load offline the CSS -->
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
 
 	<head>
 		<meta charset="utf-8">
@@ -25,15 +25,15 @@
 			    			<summary>Select Prepare Elements</summary>
 			    			<ul>
 				    			<li><dl>
-								  <dt>Pantry</dt>
+								  <dt>Pantry</dt>						  
 								  <dd th:each="elPantry : ${preparePantry}">
 								  	<input type="checkbox" th:name="${elPantry.get(0)}"><label th:for="${elPantry.get(0)}" th:text="${elPantry.get(0)}"></label>
-								  	<input type="number" name="quantityCrockery" min="0" th:max="${elPantry.get(1)}" size="5" value="0"/>
+								  	<input type="number" th:name="'quantity' + ${elPantry.get(0)}" min="0" th:max="${elPantry.get(1)}" size="5" value="0"/>
 								  </dd>
 								  <dt>Food</dt>
 								  <dd th:each="elFridge : ${prepareFridge}">
 								  	<input type="checkbox" th:name="${elFridge.get(0)}"><label th:for="${elFridge.get(0)}" th:text="${elFridge.get(0)} + ' - ' + ${elFridge.get(1)}"></label>
-								  	<input type="number" name="quantityFood" min="0" th:max="${elFridge.get(2)}" size="5" value="0"/>
+								  	<input type="number"  th:name="'quantity' +${elFridge.get(0)}" min="0" th:max="${elFridge.get(2)}" size="5" value="0"/>
 								  </dd>
 								</dl></li>
 								<br/>
@@ -50,48 +50,12 @@
 			<details>
 			    <summary>Consult Room Resources</summary>
 				<textarea readonly="readonly" rows="10" cols="60" th:text="${consultRes}"></textarea>
-				<table>
-					
-				</table>
+				<pre><table th:each="resource : ${consultRes2}">
+					<tr><td th:text="${resource}"></td></tr>
+				</table></pre>
 		  	</details>			
 		</fieldset>				
-<!--			
-<div>
-	<form name="HomePageForm" method="post" enctype="multipart/form-data"></form>
-	<form name="aggiungiArticoloForm" action="gestisciCliente.jsp" method="post"></form>
-	<p id="">
-		
-	</p>
-	Readonly: <input type="text" name="calendario" size="60" readonly="readonly"> <br>
-	text: <input type="text" name="nome"> <br>
-	Password: <input type="password" name="password"> <br>
-	textArea readonly:<br>
-		<textarea name="eventi" rows="25" cols="90" readonly="readonly"></textarea> <br>
-	Pulsanti:	<br>
-	<input type="button"  name="pulsante-eventi" value="Svuota Eventi">
-	<input type="submit" name="pulsante-submit" value="Invia">
-	<input type="reset" name="pulsante-reset" value="Azzera">
-	Scelta: <br>
-	<select name="passatempi" multiple="multiple">
-		<option value="musica"> Musica </option>
-	</select>
-	
-	<details>
-	    <summary></summary>
-	    <p></p>
-  	</details>
-  	
-  	<form name="HomePageForm" action="/consult" method="get">
-			<fieldset>
-				<legend>Management</legend>
-				<input type="submit" name="consultButton" value="Consult Room Resources"/>
-				<p th:text="${consultRes}"></p>
-				<div th:text="${consultRes}"></div>
-				<textarea readonly="readonly"  th:text="${consultRes}"></textarea>
-			</fieldset>	
-		</form>	
-</div>
--->
+
 		</form>
 	</body>
 </html>			

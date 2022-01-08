@@ -27,8 +27,7 @@ class Controller {
 	var DishwasherEl = ArrayList<List<String>>()
 	var TableDishes = ArrayList<List<String>>()
 	var TableFood = ArrayList<List<String>>()
-	
-	//TODO: gestire HOMEPAGE
+		
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@GetMapping("/")
 	suspend fun home(viewmodel : Model) : String {
@@ -37,28 +36,78 @@ class Controller {
 		var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
 		saveConsultRes(ConsultStr)
 		
-		// To fill the prepare selection for the homepage
+		// To fill the prepare selection for the homepage "MaitreGUI"
 		showPrepareEl(viewmodel)
 		
-		// To fill the consult output for the homepage
+		// To fill the consult output for the homepage "MaitreGUI"
 		showConsult(viewmodel)
+		
+		//TODO: capire come caricare elementi all'avvio di una pagina che non sia la homepage
+		// To fill the add fodd output  for the page "MaitreGUI_page2"
+		showFoodCodes(viewmodel)
 					
 		return  "MaitreGUI"
 	}
 
-	//TODO definire argomenti in ingresso
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@GetMapping("/prepare")
-	suspend fun prepare(viewmodel : Model,
-	@RequestParam(name="prepareButton", required=false, defaultValue="")v : String) : String {
-		println("CONTROLLER | managing prepare button...")
+	suspend fun prepare(@RequestParam prepareButton : String,
+						@RequestParam elURI : Map<String, String>) : String {
+		var Crockery = ""
+		var Food = ""
 		
+		println("CONTROLLER | managing prepare button \"$prepareButton\"...")
+		when(prepareButton) {
+			"Default Prepare" ->  {}
+			"Prepare the Room" -> {
+				var Res = takePrepareSelEl(elURI)
+				Crockery = Res.get(0)
+				Food = Res.get(1)
+			}
+			else -> throw Exception("No prepare button selected")			
+		}
 		
+//		maitreResource!!.execPrepare(Crockery, Food)
 		println("CONTROLLER | sent prepare...")
-//		maitreResource!!.execPrepare()
+		
 		return "MaitreGUI_page2"
 	}
-
+	
+	//TODO: decidere se usare un task unico o due diversi e quindi dividere anche la grafica
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	@GetMapping("/addFoodClearTask")
+	suspend fun  addFoodClearTask (viewmodel : Model,
+								   @RequestParam addFoodClearButton : String,
+								   @RequestParam foodCode : String) : String {
+		var NextPage = ""
+		
+		println("CONTROLLER | managing prepare button \"$addFoodClearButton\"...")
+		when(addFoodClearButton) {
+			"Add Food" ->  {
+				//TODO: stampa errore su pagina se foodCode è stringa vuota
+//				maitreResource!!.execAddFood(foodCode)
+				println("CONTROLLER | sent add food with food-code $foodCode...")
+				NextPage = "MaitreGUI_page2"
+			}
+			"Clear the Room" -> {
+//				maitreResource!!.execClear("")
+				println("CONTROLLER | sent clear...")
+				NextPage = "MaitreGUI_page3"
+			}
+			else -> throw Exception("No add food or clear button selected")			
+		}
+				
+		return "$NextPage"
+	}
+	
+	//TODO: fare tutto
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	@GetMapping("/consultStopTask")
+	suspend fun  consultStopTask (viewmodel : Model) : String {
+//	 	maitreResource!!.execAddFood()
+		return "pag2"
+	}
+	
 //	//TODO definire argomenti in ingresso
 //	//TODO leggere risposta
 //	@kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -150,7 +199,7 @@ class Controller {
 					}
 				}
 				catch(e:Exception) {
-					println("CONTROLLER| ERROR=${el} e=$e")
+					println("CONTROLLER| ERROR=${el} exception=$e")
 				}
 			}
 		}
@@ -186,6 +235,13 @@ class Controller {
 		ConsultRes += "Table: ${checkEl(TableDishes)} and ${checkEl(TableFood)}"
 		println("CONTROLLER | Consult result:$ConsultRes")
 		viewmodel.addAttribute("consultRes", ConsultRes)
+		
+		var ConsultRes2 = arrayListOf<String>()
+		ConsultRes2.add("Pantry: ${checkEl(PantryEl)}\n")
+		ConsultRes2.add("Fridge: ${checkEl(FridgeEl)}\n")
+		ConsultRes2.add("Dishwasher: ${checkEl(DishwasherEl)}\n")
+		ConsultRes2.add("Table: ${checkEl(TableDishes)} and ${checkEl(TableFood)}")
+		viewmodel.addAttribute("consultRes2", ConsultRes2)
 	}
 	
 	// To check if the resource array is empty
@@ -199,14 +255,55 @@ class Controller {
 	// To fill the prepare selection for the homepage
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	fun showPrepareEl(viewmodel : Model) {
-		//each el has a form [[NAME, QUANTITY],...]
+		//each pantry el has a form [[NAME, QUANTITY],...]
 		viewmodel.addAttribute("preparePantry", PantryEl)
-		
-		//each el has a form [[CODE, NAME, QUANTITY],...]
+						
+		//each fridge el has a form [[CODE, NAME, QUANTITY],...]
 		viewmodel.addAttribute("prepareFridge", FridgeEl)
 	}
 	
-	fun showFoodCodes() {
+	// Function to obtain the crockery and food elements for prepare command
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	fun takePrepareSelEl(elURI: Map<String, String>) : List<String> {
+		var Crockery = ArrayList<List<String>>()
+		var Food = ArrayList<List<String>>()
 		
+		// To take pantry selected elements	
+		for (el in PantryEl) {
+			if (elURI.containsKey(el.get(0))) {
+				var quantity = elURI.getValue("quantity"+el.get(0))
+				if (quantity != "0")
+					Crockery.add(listOf(el.get(0), quantity))
+				else
+					Crockery.add(listOf(el.get(0), "1"))
+			}
+		}		
+		println("CONTROLLER | Crockery selected: $Crockery...")
+		
+		// To take fridge selected elements
+		for (el in FridgeEl) {
+			if (elURI.containsKey(el.get(0))) {
+				var quantity = elURI.getValue("quantity"+el.get(0))
+				if (quantity != "0")
+					Food.add(listOf(el.get(0), quantity))
+				else
+					Food.add(listOf(el.get(0), "1"))
+			}
+		}		
+		println("CONTROLLER | Food selected: $Food...")
+		
+		return listOf(Crockery.toString(), Food.toString())
+	}
+	
+	// To fill the add fodd output
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	fun showFoodCodes(viewmodel : Model) {
+		var FoodList = ""
+		
+		for (el in FridgeEl) {
+			FoodList += "${el.get(0)} - ${el.get(1)}\n"
+		}
+
+		viewmodel.addAttribute("foodList", FoodList)
 	}
 }

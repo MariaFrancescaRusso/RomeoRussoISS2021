@@ -41,3 +41,8 @@ li {
 input {
 	cursor: pointer;
 }
+
+table {
+	border: 1px solid black;
+	width: 100%;
+}
