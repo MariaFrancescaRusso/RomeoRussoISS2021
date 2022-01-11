@@ -7,6 +7,7 @@
 	<head>
 		<meta charset="utf-8">
 		<title>STANDING BUFFET SERVICE</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 	
 	<body>
@@ -16,29 +17,29 @@
 		<form name="addFoodClearForm" action="/addFoodClearTask" method="get">
 			<fieldset>
 				<legend>Tasks</legend>
-				<details>
+				<details th:disabled="${disableEl}?:false">
 					<summary>Add Food on the Table</summary>
 				    <ul>
-				    	<textarea readonly="readonly" rows="10" cols="60" th:text="${foodList}"></textarea><br/><br/>
+				    	<textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea><br/><br/>
 				    	<span>Insert a food code corresponding to the food to add:</span>
-				    	<input type="text" th:name="${foodCode}">
-				    	<input type="submit" name="addFoodButton" value="Add Food"/>
+				    	<input type="text" th:name="${foodCode}" th:disabled="${disableEl}?:false">
+				    	<input type="submit" name="addFoodButton" value="Add Food" th:disabled="${disableEl}?:false"/>
 					</ul>
 				</details><br/>
 				
-				&#x25BA; <input type="submit" name="clearButton" value="Clear the Room"/>
+				&#x25BA; <input type="submit" name="clearButton" value="Clear the Room" th:disabled="${disableEl}?:false"/>
 			</fieldset>	
 		</form>
 		
 		<form name="ConsultStopForm" action="/consultStopTask" method="get">
 		<fieldset>
 			<legend>Management</legend>
-			&#x25BA; <input type="submit" name="stopButton" value="Stop Task"/><br/><br/>
+			&#x25BA; <input type="submit" name="stopButton" th:value="${stopValue}?:'Stop Task'"/><br/><br/>
 			
 			<details th:open="${consultOpenAttr}">
 			    <summary><input type="submit" name="consultButton" value="Consult Room Resources"/></summary>
-				<textarea th:hidden="${consulthiddenAttr} ?: hidden" readonly="readonly" rows="10" cols="60" th:text="${consultRes}"></textarea>
-				<pre><table th:hidden="${consulthiddenAttr} ?: hidden" th:each="resource : ${consultRes2}">
+				<textarea th:hidden="${consulthiddenAttr}?:hidden" readonly="readonly" rows="5" cols="60" th:text="${consultRes}"></textarea>
+				<pre><table th:hidden="${consulthiddenAttr}?:hidden" th:each="resource : ${consultRes2}">
 					<tr><td th:text="${resource}"></td></tr>
 				</table></pre>
 		  	</details>			

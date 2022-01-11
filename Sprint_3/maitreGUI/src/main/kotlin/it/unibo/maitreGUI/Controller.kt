@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.servlet.ModelAndView
+import org.springframework.web.bind.annotation.RequestMapping
 
 @Controller
 class Controller {
@@ -19,6 +21,8 @@ class Controller {
 	var actor = "maitre"
 	var caller = "spring"
 //	var protocol = ConnectionType.TCP
+	//TODO: se mettiamo questa annotazione sopra al controller,
+	//		allora non c'è bisogno di scriverla sopra alle altre funzioni
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 //	var maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
 	
@@ -41,12 +45,33 @@ class Controller {
 		
 		// To fill the consult output for the homepage "MaitreGUI"
 		showConsult(viewmodel)
-		
-		//TODO: capire come caricare elementi all'avvio di una pagina che non sia la homepage
-		// To fill the add fodd output  for the page "MaitreGUI_page2"
-		showFoodCodes(viewmodel)
 					
 		return  "MaitreGUI"
+	}
+	
+//	@RequestMapping("/MaitreGUI_page2")
+//	@kotlinx.coroutines.ObsoleteCoroutinesApi
+//	suspend fun home2() : ModelAndView {
+//		println("CONTROLLER | starts page 2...")
+//		//TODO: capire come caricare elementi all'avvio di una pagina che non sia la homepage
+//		var Page2 = ModelAndView("MaitreGUI_page2")
+//		
+//		// At homepage load, to fill the add food output for the page "MaitreGUI_page2"
+//		showFoodCodes2(Page2)
+//		Page2.setViewName("/MaitreGUI_page2")
+//					
+//		return  Page2
+//	}
+	
+	@RequestMapping("/MaitreGUI_page2")
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	suspend fun home3(viewmodel : Model) : String {
+		println("CONTROLLER | starts page 2...")
+		
+		// At homepage load, to fill the add food output for the page "MaitreGUI_page2"
+		showFoodCodes(viewmodel)
+					
+		return "MaitreGUI_page2"
 	}
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -61,6 +86,8 @@ class Controller {
 			"Default Prepare" ->  {}
 			"Prepare the Room" -> {
 				var Res = takePrepareSelEl(elURI)
+				//TODO: fare controllo su array vuoto (se non è stato selezionato nulla)
+				// 		e in caso usare quello di default??
 				Crockery = Res.get(0)
 				Food = Res.get(1)
 			}
@@ -81,15 +108,18 @@ class Controller {
 								   @RequestParam foodCode : String) : String {
 		var NextPage = ""
 		
+		//TODO: mettere un bottone unico "addFoodClearButton" o due diversi??
 		println("CONTROLLER | managing prepare button \"$addFoodClearButton\"...")
 		when(addFoodClearButton) {
 			"Add Food" ->  {
-				//TODO: stampa errore su pagina se foodCode è stringa vuota
+				//TODO: stampa errore su pagina se foodCode è stringa vuota??
+				//		controllo anche che esista (nella lista del cibo nel frigo ottenuta prima del prepare)?
 //				maitreResource!!.execAddFood(foodCode)
 				println("CONTROLLER | sent add food with food-code $foodCode...")
 				NextPage = "MaitreGUI_page2"
 			}
 			"Clear the Room" -> {
+				//TODO: modificare MaitreResource --> il clear non ha argomenti!
 //				maitreResource!!.execClear("")
 				println("CONTROLLER | sent clear...")
 				NextPage = "MaitreGUI_page3"
@@ -100,12 +130,55 @@ class Controller {
 		return "$NextPage"
 	}
 	
-	//TODO: fare tutto
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@GetMapping("/consultStopTask")
-	suspend fun  consultStopTask (viewmodel : Model) : String {
-//	 	maitreResource!!.execAddFood()
-		return "pag2"
+	suspend fun  consultStopTask (viewmodel : Model,
+								  @RequestParam(required=false) consultButton : String,
+								  @RequestParam(required=false) stopButton : String) : String {
+//		var NextPage = ""
+		
+		//TODO: sistemare consult: aggiorna tutta la pagina resettandola!
+		//		non mantiene lo stato degli altri bottoni
+		if(consultButton == "Consult Room Resources") {
+				println("CONTROLLER | managing consult button \"$consultButton\"...")
+//				maitreResource.execConsult()
+				var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
+				//TODO: dato che è stato fatto un nuovo consult,
+				//		allora vengono aggiornati i dati??
+				saveConsultRes(ConsultStr)
+				// To fill the consult output for the homepage "MaitreGUI"
+				viewmodel.addAttribute("consulthiddenAttr", false)
+				viewmodel.addAttribute("consultOpenAttr", true)
+				showConsult(viewmodel)
+				println("CONTROLLER | sent consult...")
+//				NextPage = "MaitreGUI_page2"
+		}
+		else{
+			when(stopButton) {
+				"Stop Task" -> {
+	//				maitreResource!!.execStop()
+					println("CONTROLLER | sent stop...")
+					//TODO: disattivare tutti i pulsanti della pagina tranne il consult
+					//		e cambiare nome in "reactivate" o fare vedere il pulsante reactivate!
+					viewmodel.addAttribute("stopValue", "Reactivate Task")
+					viewmodel.addAttribute("disableEl", true)
+					//TODO: fare una nuova pagina per lo stop??
+	//				NextPage = "MaitreGUI_page4"
+				}
+				"Reactivate Task" -> {
+	//				maitreResource!!.execReactivate()
+					println("CONTROLLER | sent reactivate...")
+					//TODO: disattivare tutti i pulsanti della pagina tranne il consult
+					//		e cambiare nome in "stop" o fare vedere il pulsante stop!
+					viewmodel.addAttribute("stopValue", "Stop Task")
+					viewmodel.addAttribute("disableEl", false)
+	//				NextPage = "MaitreGUI_page2"
+				}
+			}
+		}
+				
+//		return "$NextPage"
+		return "MaitreGUI_page2"
 	}
 	
 //	//TODO definire argomenti in ingresso
@@ -276,6 +349,7 @@ class Controller {
 					Crockery.add(listOf(el.get(0), quantity))
 				else
 					Crockery.add(listOf(el.get(0), "1"))
+					//TODO: mettere min a 1 invece che a 0??
 			}
 		}		
 		println("CONTROLLER | Crockery selected: $Crockery...")
@@ -288,6 +362,7 @@ class Controller {
 					Food.add(listOf(el.get(0), quantity))
 				else
 					Food.add(listOf(el.get(0), "1"))
+					//TODO: mettere min a 1 invece che a 0??
 			}
 		}		
 		println("CONTROLLER | Food selected: $Food...")
@@ -305,5 +380,17 @@ class Controller {
 		}
 
 		viewmodel.addAttribute("foodList", FoodList)
+	}
+	
+	// To fill the add fodd output
+	@kotlinx.coroutines.ObsoleteCoroutinesApi
+	fun showFoodCodes2(viewmodel : ModelAndView) {
+		var FoodList = ""
+		
+		for (el in FridgeEl) {
+			FoodList += "${el.get(0)} - ${el.get(1)}\n"
+		}
+
+		viewmodel.addObject("foodList", FoodList)
 	}
 }
