@@ -5,24 +5,24 @@ hr {
 	background-color: #2f4f4f;
 }
 
-h1, h2, h3 {
+h1 {
 	color: #242424;
-	clear: left;
-	font: 100% Tahoma, Helvetica, Arial, sans-serif;
+	font: 150% Tahoma, Helvetica, Arial, sans-serif;
 	margin-bottom: 0.5em;
 	padding-top: 0.5em;
 	border-radius: 10px;
-	padding: 5px;
-}
-
-h1 {
-	font-size: 150%;
 	background-color: #b2c0ff;
 	padding: 10px;
 }
 
 body {
 	font-family: sans-serif;
+	background-color: #f5fffa;
+}
+
+fieldset {
+	background-color: #e6e6fa;
+	border-radius: 10px;
 }
 
 legend {
@@ -34,12 +34,48 @@ summary {
 	cursor: pointer;
 }
 
+summary.summaryTitle > span {
+	color: #242424;
+	border-radius: 6px;
+/*	border: none;*/
+	border: 2px solid #2f4f4f;
+	background-color: #b2c0ff;
+	padding: 3px;
+	width: 12.5em;
+/*	box-shadow: 3px 3px 4px #2f4f4f;*/
+}
+
+details.summaryBody > ul {
+	background-color: #f5fffa;
+	margin-top: 3px;
+	margin-left: 15px;
+	margin-right: 15px;
+	padding: 10px;
+	padding-top: 20px;
+	border-radius: 10px;
+	border: 2px solid #2f4f4f;
+}
+
+li > details.summaryBody > ul {
+	background-color: #e6e6fa;
+}
+
 li {
 	list-style-type: none;
 }
 
 input {
 	cursor: pointer;
+}
+
+input.button {
+	color: #242424;
+	border-radius: 6px;
+/*	border-style: solid none;*/
+	border-style: solid;
+	border-color: #2f4f4f;
+	background-color: #b2c0ff;
+	padding: 3px;
 }
 
 table {

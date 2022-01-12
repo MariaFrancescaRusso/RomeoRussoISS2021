@@ -20,7 +20,7 @@
 				<details>
 	    			<summary>Prepare the Room</summary>
 				    <ul>
-						<li>&#x25BA; <input type="submit" name="prepareButton" value="Default Prepare"/></li>
+						<li>&#x25BA; <input type="submit" class="button" name="prepareButton" value="Default Prepare"/></li>
 						<br/>
 						<li><details>
 			    			<summary>Select Prepare Elements</summary>
@@ -29,16 +29,16 @@
 								  <dt>Pantry</dt>						  
 								  <dd th:each="elPantry : ${preparePantry}">
 								  	<input type="checkbox" th:name="${elPantry.get(0)}"><label th:for="${elPantry.get(0)}" th:text="${elPantry.get(0)}"></label>
-								  	<input type="number" th:name="'quantity' + ${elPantry.get(0)}" min="0" th:max="${elPantry.get(1)}" size="5" value="0"/>
+								  	<input type="number" th:name="'quantity' + ${elPantry.get(0)}" min="1?:0" th:max="${elPantry.get(1)}" size="5" value="0"/>
 								  </dd>
 								  <dt>Food</dt>
 								  <dd th:each="elFridge : ${prepareFridge}">
 								  	<input type="checkbox" th:name="${elFridge.get(0)}"><label th:for="${elFridge.get(0)}" th:text="${elFridge.get(0)} + ' - ' + ${elFridge.get(1)}"></label>
-								  	<input type="number"  th:name="'quantity' +${elFridge.get(0)}" min="0" th:max="${elFridge.get(2)}" size="5" value="0"/>
+								  	<input type="number"  th:name="'quantity' +${elFridge.get(0)}" min="1?:0" th:max="${elFridge.get(2)}" size="5" value="0"/>
 								  </dd>
 								</dl></li>
 								<br/>
-								<li><input type="submit" name="prepareButton" value="Prepare the Room"/></li>
+								<li><input type="submit" class="button" name="prepareButton" value="Prepare the Room"/></li>
 							</ul>
 						</details></li>
 					</ul>
@@ -49,14 +49,64 @@
 		<fieldset>
 			<legend>Management</legend>
 			<details>
-			    <summary>Consult Room Resources</summary>
-				<textarea readonly="readonly" rows="10" cols="60" th:text="${consultRes}"></textarea>
-				<pre><table th:each="resource : ${consultRes2}">
-					<tr><td th:text="${resource}"></td></tr>
-				</table></pre>
+			    <summary >Consult Room Resources</summary>
+				<ul>
+					<li><textarea readonly="readonly" rows="10" cols="60" th:text="${consultRes}"></textarea></li>
+					<li><pre><table th:each="resource : ${consultRes2}">
+						<tr><td th:text="${resource}"></td></tr>
+					</table></pre></li>
+				</ul>
 		  	</details>			
 		</fieldset>				
 
+		<form name="prepareForm" action="/prepare" method="get">
+			<fieldset>
+				<legend>Tasks</legend>
+				<details class="summaryBody">
+	    			<summary class="summaryTitle"><span>Prepare the Room</span></summary>
+				    <ul>
+						<li>&#x25BA; <input type="submit" class="button" name="prepareButton" value="Default Prepare"/></li>
+						<br/>
+						<li><details class="summaryBody">
+			    			<summary class="summaryTitle"><span>Select Prepare Elements</span></summary>
+			    			<ul>
+				    			<li><dl>
+									<fieldset>
+									<legend><dt>Pantry</dt></legend>					  
+										<dd th:each="elPantry : ${preparePantry}">
+											<input type="checkbox" th:name="${elPantry.get(0)}"><label th:for="${elPantry.get(0)}" th:text="${elPantry.get(0)}"></label>
+											<input type="number" th:name="'quantity' + ${elPantry.get(0)}" min="1?:0" th:max="${elPantry.get(1)}" size="5" value="0"/>
+										</dd>
+									</fieldset>
+									<fieldset>
+									<legend><dt>Food</dt></legend>
+										<dd th:each="elFridge : ${prepareFridge}">
+											<input type="checkbox" th:name="${elFridge.get(0)}"><label th:for="${elFridge.get(0)}" th:text="${elFridge.get(0)} + ' - ' + ${elFridge.get(1)}"></label>
+											<input type="number"  th:name="'quantity' +${elFridge.get(0)}" min="1?:0" th:max="${elFridge.get(2)}" size="5" value="0"/>
+										</dd>
+									</fieldset>
+								</dl></li>
+								<br/>
+								<li><input type="submit" class="button" name="prepareButton" value="Prepare the Room"/></li>
+							</ul>
+						</details></li>
+					</ul>
+			  	</details>
+			</fieldset>	
 		</form>
+		
+		<fieldset>
+			<legend>Management</legend>
+			<details class="summaryBody">
+			    <summary class="summaryTitle"><span>Consult Room Resources</span></summary>
+				<ul>
+					<li><textarea readonly="readonly" rows="10" cols="60" th:text="${consultRes}"></textarea></li>
+					<li><pre><table th:each="resource : ${consultRes2}">
+						<tr><td th:text="${resource}"></td></tr>
+					</table></pre></li>
+				</ul>
+		  	</details>			
+		</fieldset>		
+		
 	</body>
 </html>			

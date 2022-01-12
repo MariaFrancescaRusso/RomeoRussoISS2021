@@ -1,108 +1,37 @@
 <html xmlns:th="http://www.thymeleaf.org">
 
 	<link rel="stylesheet" type="text/css" href="./style.css">
-		<!-- To load offline the CSS -->
-		<link rel="stylesheet" type="text/css" href="../static/style.css">
+	<!-- To load offline the CSS -->
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
 
 	<head>
 		<meta charset="utf-8">
 		<title>STANDING BUFFET SERVICE</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	</head>
 	
 	<body>
 		<h1>STANDING BUFFET SERVICE</h1>
 		<hr>
 		
-		<form name="prepareForm" action="/prepare" method="get">
-			<fieldset>
-				<legend>Tasks</legend>
-				<details>
-	    			<summary>Prepare the Room</summary>
-				    <ul>
-						<li>&#x25BA; <input type="submit" name="prepareButton" value="Default Prepare"/></li>
-						<br/>
-						<li><details>
-			    			<summary>Select Prepare Elements</summary>
-			    			<ul>
-				    			<li><dl>
-								  <dt>Pantry</dt>
-								  <dd>
-								  	<select th:text="${preparePantry}" multiple="multiple" th:size="${sizeSel}">
-								  		<optgroup label="Pantry" th:text="${preparePantry}">
-								  	</select>
-								  </dd>
-								  <dt>Food</dt>
-								  <dd>
-								  	<select th:text="${prepareFridge}" multiple="multiple"></select>
-								  </dd>
-								</dl></li>
-								<br/>
-								<li><input type="submit" name="prepareButton" value="Prepare the Room"/></li>
-							</ul>
-						</details></li>
-					</ul>
-			  	</details>
-			</fieldset>	
-		</form>
-		
+		<form name="ConsultStopForm" action="/consultStopTask" method="get">
 		<fieldset>
 			<legend>Management</legend>
-			<details>
-			    <summary>Consult Room Resources</summary>
-			    <p th:text="${consultRes}"></p>
-				<div th:text="${consultR}"></div>
-				<textarea readonly="readonly" rows="10" cols="60" th:text="${consultRes}"></textarea>
-				<table>
-					
-				</table>
-		  	</details>			
-		</fieldset>
-		
-		<form name="prepareForm" action="/prepare" method="get">
-			<fieldset>
-				<legend>Tasks</legend>
-				<details>
-	    			<summary>Prepare the Room</summary>
-				    <ul>
-						<li>&#x25BA; <input type="submit" name="prepareButton" value="Default Prepare"/></li>
-						<br/>
-						<li><details>
-			    				<summary><input type="submit" name="prepareButton" value="Default Prepare"/></summary>
-			    		</details></li>
-						<br/>
-						<li><details>
-			    			<summary><input type="submit" name="prepareSelEl" value="Select Prepare Elements"/></summary>
-						    <ul>
-								<li><table>
-									<tr>
-										<th>Pantry</th>
-										<th>Fridge</th>
-									</tr>
-									<tr>
-										<td><select th:text="${preparePantry}" multiple="multiple"></select>
-										<!-- <option value=""> </option> --></td>
-										<td><select th:text="${prepareFridge}" multiple="multiple"></select>
-										<!-- <option value=""> </option> --></td>
-									</tr>
-								</table></li><br/>
-								<li><input type="submit" name="prepareButton" value="Prepare the Room"/></li>
-							</ul>
-						</details></li>
-					</ul>
-			  	</details>
-			</fieldset>	
-		</form>
-		
-		<fieldset>
-			<legend>Management</legend>
-			<details>
-			    <summary><input type="submit" name="consultButton" value="Consult Room Resources"/></summary>
-			    <p th:text="${consultRes}"></p>
-				<div th:text="${consultRes}"></div>
-				<textarea readonly="readonly"  th:text="${consultRes}"></textarea>
+			&#x25BA; <input type="submit" class="button" name="stopButton" th:value="${stopValue}?:'Stop Task'"/><br/>
+			<div th:text="${stopStrRes}"></div><br/>
+			
+			<details class="summaryBody" th:open="${consultOpenAttr}">
+			    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
+				<ul>
+					<li><textarea th:hidden="${consulthiddenAttr}?:hidden" readonly="readonly" rows="5" cols="60" th:text="${consultRes}"></textarea></li>
+					<li><pre><table th:hidden="${consulthiddenAttr}?:hidden" th:each="resource : ${consultRes2}">
+						<tr><td th:text="${resource}"></td></tr>
+					</table></pre></li>
+				</ul>
 		  	</details>			
 		</fieldset>	
-				
+		</form>			
+			
 <!--			
 <div>
 	<form name="HomePageForm" method="post" enctype="multipart/form-data"></form>
@@ -140,6 +69,6 @@
 		</form>	
 </div>
 -->
-		</form>
+
 	</body>
 </html>			

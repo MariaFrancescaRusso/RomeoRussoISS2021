@@ -17,70 +17,39 @@
 		<form name="addFoodClearForm" action="/addFoodClearTask" method="get">
 			<fieldset>
 				<legend>Tasks</legend>
-				<details th:disabled="${disableEl}?:false">
-					<summary>Add Food on the Table</summary>
+				<details class="summaryBody" th:disabled="${disableEl}?:false">
+					<summary class="summaryTitle"><span>Add Food on the Table</span></summary>
 				    <ul>
-				    	<textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea><br/><br/>
-				    	<span>Insert a food code corresponding to the food to add:</span>
-				    	<input type="text" th:name="${foodCode}" th:disabled="${disableEl}?:false">
-				    	<input type="submit" name="addFoodButton" value="Add Food" th:disabled="${disableEl}?:false"/>
+				    	<li><textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea></li><br/>
+				    	<li>
+					    	<span>Insert a food code corresponding to the food to add:</span>
+					    	<input type="text" th:name="${foodCode}" th:disabled="${disableEl}?:false">
+					    	<input type="submit" class="button" name="addFoodClearButton" value="Add Food" th:disabled="${disableEl}?:false"/>
+						</li>
 					</ul>
 				</details><br/>
 				
-				&#x25BA; <input type="submit" name="clearButton" value="Clear the Room" th:disabled="${disableEl}?:false"/>
+				&#x25BA; <input type="submit" class="button" name="addFoodClearButton" value="Clear the Room" th:disabled="${disableEl}?:false"/>
 			</fieldset>	
 		</form>
 		
 		<form name="ConsultStopForm" action="/consultStopTask" method="get">
 		<fieldset>
 			<legend>Management</legend>
-			&#x25BA; <input type="submit" name="stopButton" th:value="${stopValue}?:'Stop Task'"/><br/><br/>
+			&#x25BA; <input type="submit" class="button" name="stopButton" th:value="${stopValue}?:'Stop Task'"/><br/>
+			<div th:text="${stopStrRes}"></div><br/>
 			
-			<details th:open="${consultOpenAttr}">
-			    <summary><input type="submit" name="consultButton" value="Consult Room Resources"/></summary>
-				<textarea th:hidden="${consulthiddenAttr}?:hidden" readonly="readonly" rows="5" cols="60" th:text="${consultRes}"></textarea>
-				<pre><table th:hidden="${consulthiddenAttr}?:hidden" th:each="resource : ${consultRes2}">
-					<tr><td th:text="${resource}"></td></tr>
-				</table></pre>
+			<details class="summaryBody" th:open="${consultOpenAttr}">
+			    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
+				<ul>
+					<li><textarea th:hidden="${consulthiddenAttr}?:hidden" readonly="readonly" rows="5" cols="60" th:text="${consultRes}"></textarea></li>
+					<li><pre><table th:hidden="${consulthiddenAttr}?:hidden" th:each="resource : ${consultRes2}">
+						<tr><td th:text="${resource}"></td></tr>
+					</table></pre></li>
+				</ul>
 		  	</details>			
-		</fieldset>				
-<!--			
-<div>
-	<form name="HomePageForm" method="post" enctype="multipart/form-data"></form>
-	<form name="aggiungiArticoloForm" action="gestisciCliente.jsp" method="post"></form>
-	<p id="">
-		
-	</p>
-	Readonly: <input type="text" name="calendario" size="60" readonly="readonly"> <br>
-	text: <input type="text" name="nome"> <br>
-	Password: <input type="password" name="password"> <br>
-	textArea readonly:<br>
-		<textarea name="eventi" rows="25" cols="90" readonly="readonly"></textarea> <br>
-	Pulsanti:	<br>
-	<input type="button"  name="pulsante-eventi" value="Svuota Eventi">
-	<input type="submit" name="pulsante-submit" value="Invia">
-	<input type="reset" name="pulsante-reset" value="Azzera">
-	Scelta: <br>
-	<select name="passatempi" multiple="multiple">
-		<option value="musica"> Musica </option>
-	</select>
-	
-	<details>
-	    <summary></summary>
-	    <p></p>
-  	</details>
-  	
-  	<form name="HomePageForm" action="/consult" method="get">
-			<fieldset>
-				<legend>Management</legend>
-				<input type="submit" name="consultButton" value="Consult Room Resources"/>
-				<p th:text="${consultRes}"></p>
-				<div th:text="${consultRes}"></div>
-				<textarea readonly="readonly"  th:text="${consultRes}"></textarea>
-			</fieldset>	
-		</form>	
-</div>
--->
-		</form>
+		</fieldset>	
+		</form>			
+
 	</body>
 </html>			
