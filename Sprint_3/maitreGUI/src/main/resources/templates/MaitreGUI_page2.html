@@ -17,7 +17,7 @@
 		<form name="addFoodClearForm" action="/addFoodClearTask" method="get">
 			<fieldset>
 				<legend>Tasks</legend>
-				<details class="summaryBody" th:disabled="${disableEl}?:false">
+				<details class="summaryBody">
 					<summary class="summaryTitle"><span>Add Food on the Table</span></summary>
 				    <ul>
 				    	<li><textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea></li><br/>
@@ -42,7 +42,7 @@
 			<details class="summaryBody" th:open="${consultOpenAttr}">
 			    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
 				<ul>
-					<li><textarea th:hidden="${consulthiddenAttr}?:hidden" readonly="readonly" rows="5" cols="60" th:text="${consultRes}"></textarea></li>
+					<!--<li><textarea th:hidden="${consulthiddenAttr}?:hidden" readonly="readonly" rows="5" cols="60" th:text="${consultRes}"></textarea></li>-->
 					<li><pre><table th:hidden="${consulthiddenAttr}?:hidden" th:each="resource : ${consultRes2}">
 						<tr><td th:text="${resource}"></td></tr>
 					</table></pre></li>

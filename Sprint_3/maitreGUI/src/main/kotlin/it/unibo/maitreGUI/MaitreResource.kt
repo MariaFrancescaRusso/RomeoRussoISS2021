@@ -1,13 +1,11 @@
 package it.unibo.maitreGUI
 
-import it.unibo.`is`.interfaces.protocols.IConnInteraction
 import it.unibo.connQak.ConnectionType
 import it.unibo.connQak.connQakBase
+import it.unibo.kactor.MsgUtil
 import it.unibo.kactor.sysUtil
-import it.unibo.supports.FactoryProtocol
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
-import it.unibo.kactor.MsgUtil
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest: String, actordest: String, protocol: ConnectionType ){
@@ -25,19 +23,18 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		println("MaitreResource | configured ${sysUtil.curThread()} ")
 	}
 
-	//TODO decidere se il messaggio viene preparato dal controller o qua
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execPrepare( Crockery: String, Food: String) {
 		var message = MsgUtil.buildDispatch(caller, "prepare", "prepare($Crockery, $Food)", "maitre")
 		println("exec PREPARE")
-		//conn.forward( message)
+		conn.forward(message)
 	}
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	fun execAddFood( foodcode: String):String {
 		var message = MsgUtil.buildDispatch(caller, "addfood", "addfood($foodcode)", "maitre")
 		println("exec ADDFOOD")
-		conn.forward( message)
+		conn.forward(message)
 		runBlocking{
 			delay(100)
 		}
@@ -46,10 +43,10 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	}
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
-	suspend fun execClear( foodAndCrockery: String) {
-		var message = MsgUtil.buildDispatch(caller, "clear", "clear($foodAndCrockery)", "maitre")
+	suspend fun execClear() {
+		var message = MsgUtil.buildDispatch(caller, "clear", "clear(0)", "maitre")
 		println("exec CLEAR")
-		conn.forward( message  )
+		conn.forward(message)
 	}
 
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
@@ -57,7 +54,7 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var message = MsgUtil.buildDispatch(caller, "consult", "consult(0)", "maitre")
 		var s = message.toString()
 		println("exec CONSULT $s")
-		conn.forward( message)
+		conn.forward(message)
 		runBlocking{
 			delay(100)
 		}

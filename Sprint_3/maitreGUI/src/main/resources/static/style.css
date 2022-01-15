@@ -71,14 +71,20 @@ input {
 input.button {
 	color: #242424;
 	border-radius: 6px;
-/*	border-style: solid none;*/
 	border-style: solid;
 	border-color: #2f4f4f;
 	background-color: #b2c0ff;
 	padding: 3px;
+	
+}
+
+input.button:disabled {
+	background-color: #a9a9a9;
 }
 
 table {
-	border: 1px solid black;
-	width: 100%;
+	border: 1px solid #2f4f4f;
+	border-collapse: separate;
+	border-spacing: 2px;
+/*	width: 100%;*/
 }

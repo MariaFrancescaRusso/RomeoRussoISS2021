@@ -26,6 +26,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				var Prepared = false
 				var Cleared = false
 				var Stopped = false
+				var ConsultStr = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
@@ -166,14 +167,16 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						}
 						if(  Sender == "table"  
 						 ){println("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
-						updateResourceRep( "$Sender;$AnsExpose1;$AnsExpose2"  
-						)
+						 ConsultStr += "{$Sender:$AnsExpose1;$AnsExpose2}+"  
 						}
 						else
 						 {println("MAITRE | status of $Sender: $AnsExpose1")
-						 updateResourceRep( "$Sender;$AnsExpose1"  
-						 )
+						  ConsultStr += "{$Sender:$AnsExpose1}+"  
 						 }
+						if(  Nexp == 4  
+						 ){updateResourceRep( "$ConsultStr"  
+						)
+						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({	Nexp == 4  
 					}) )
