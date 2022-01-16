@@ -85,12 +85,15 @@ class Controller {
 		
 		println("CONTROLLER | managing prepare button \"$addFoodClearButton\"...")
 		when(addFoodClearButton) {
-			//TODO: leggere warning se c'è!!
 			"Add Food" ->  {
 				//TODO: stampa errore su pagina se foodCode è stringa vuota??
-				//altrimenti l'app prende quello di default da prolog --> commentare o eliminare da prolog
-//				maitreResource!!.execAddFood(foodCode)
+					//altrimenti l'app prende quello di default da prolog?
+						//NO --> commentare o eliminare da prolog
+//				var addFoodStr = maitreResource!!.execAddFood(foodCode)
 				println("CONTROLLER | sent add food with food-code $foodCode...")
+				var addFoodStr = "Warning! The fridge doesn't contain the food required!"
+				if (addFoodStr == "Warning! The fridge doesn't contain the food required!")
+					viewmodel.addAttribute("warningStrRes", addFoodStr)
 				
 				// At next homepage load, to fill the add food output
 				showFoodCodes(viewmodel)
@@ -133,7 +136,7 @@ class Controller {
 				//TODO: StopStr si ha solo se lo stop fallisce.
 				//		Ottenere risposta anche in caso abbia successo: --> aggiornare model.qak
 //				var StopStr = maitreResource!!.execStop()
-				var StopStr = ""
+				var StopStr = "There is NO activated task!"
 				println("CONTROLLER | sent stop...")
 				
 				if (StopStr == "There is NO activated task!")
@@ -240,6 +243,11 @@ class Controller {
 		ConsultRes2.add("Dishwasher: ${checkEl(DishwasherEl)}\n")
 		ConsultRes2.add("Table: ${checkEl(TableDishes)} and ${checkEl(TableFood)}")
 		viewmodel.addAttribute("consultRes2", ConsultRes2)
+		
+		//TODO: - elimino la textarea o lascio commentata?
+		//		- visto che con thymeleaf posso gestire tutto.. questa parte la faccio su html?
+		//		- o tutto qua? divido quindi gli elementi? "pantry", "elementi".. etc?
+		//		- il check lo faccio quindi su html?
 	}
 	
 	// To check if the resource array is empty

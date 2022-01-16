@@ -59,10 +59,10 @@
 					<li><pre><table>
 						<tr th:each="resource : ${consultRes2}"><td th:text="${resource}"></td></tr>
 					</table></pre></li>
-					<li><pre><table th:hidden="${consulthiddenAttr}?:hidden">
-						<tr th:each="resource : ${consultRes2}">
-							<td th:text="${resource.split().get(0)}"></td>
-							<td th:text="${resource.split().get(1)}"></td>
+					<li><pre><table>
+						<tr th:each="resource : ${consultRes2}" >
+							<th th:text="${#strings.substringBefore(resource,':')}"></th>
+							<td th:text="${#strings.substringAfter(resource,': ')}"></td>
 						</tr>
 					</table></pre></li>
 				</ul>

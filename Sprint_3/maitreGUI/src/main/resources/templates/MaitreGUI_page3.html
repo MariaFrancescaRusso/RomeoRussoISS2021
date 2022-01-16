@@ -18,7 +18,7 @@
 		<fieldset>
 			<legend>Management</legend>
 			&#x25BA; <input type="submit" class="button" name="stopButton" th:value="${stopValue}?:'Stop Task'"/><br/>
-			<div th:text="${stopStrRes}"></div><br/>
+			<div class="warning" th:text="${stopStrRes}"></div><br/>
 			
 			<details class="summaryBody" th:open="${consultOpenAttr}">
 			    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>

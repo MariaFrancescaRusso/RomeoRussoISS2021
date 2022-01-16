@@ -23,9 +23,10 @@
 				    	<li><textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea></li><br/>
 				    	<li>
 					    	<span>Insert a food code corresponding to the food to add:</span>
-					    	<input type="text" th:name="${foodCode}" th:disabled="${disableEl}?:false">
+					    	<input type="text" th:name="${foodCode}" th:disabled="${disableEl}?:false" th:required="(${addFoodClearButton}=='Add Food') ? 'required' : false">
 					    	<input type="submit" class="button" name="addFoodClearButton" value="Add Food" th:disabled="${disableEl}?:false"/>
 						</li>
+						<li><div class="warning" th:text="${warningStrRes}"></div></li>
 					</ul>
 				</details><br/>
 				
@@ -37,7 +38,7 @@
 		<fieldset>
 			<legend>Management</legend>
 			&#x25BA; <input type="submit" class="button" name="stopButton" th:value="${stopValue}?:'Stop Task'"/><br/>
-			<div th:text="${stopStrRes}"></div><br/>
+			<div class="warning" th:text="${stopStrRes}"></div><br/>
 			
 			<details class="summaryBody" th:open="${consultOpenAttr}">
 			    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>

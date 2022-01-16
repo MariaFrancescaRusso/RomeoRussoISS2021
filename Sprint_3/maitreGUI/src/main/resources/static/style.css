@@ -82,9 +82,18 @@ input.button:disabled {
 	background-color: #a9a9a9;
 }
 
-table {
+table, td, th {
 	border: 1px solid #2f4f4f;
-	border-collapse: separate;
-	border-spacing: 2px;
+	border-collapse: collapse;
 /*	width: 100%;*/
+	padding: 2px;
+	color: #242424;
+}
+
+th {
+	text-align: center;
+}
+
+div.warning {
+	color: red;
 }
