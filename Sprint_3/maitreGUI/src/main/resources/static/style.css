@@ -78,6 +78,7 @@ input.button {
 
 input.button:disabled {
 	background-color: #a9a9a9;
+	color: #242424;
 }
 
 table, td, th {
@@ -92,5 +93,5 @@ th {
 }
 
 div.warning {
-	color: red;
+	color: #ff0000;
 }

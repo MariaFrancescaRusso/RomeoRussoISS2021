@@ -224,6 +224,8 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						}
 						if( checkMsgContent( Term.createTerm("stopped(ARG)"), Term.createTerm("stopped(true)"), 
 						                        currentMsg.msgContent()) ) { //set msgArgList
+								updateResourceRep( "Task stopped with success!"  
+								)
 								 Stopped = true  
 						}
 					}

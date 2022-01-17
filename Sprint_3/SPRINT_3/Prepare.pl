@@ -28,7 +28,7 @@ food(s005, salad, 10).
 %% Not existing food_code
 %foodCode(c034).
 %% Existing and available food_code
-foodCode(s001).
+%foodCode(s001).
 
 %% To obtain a list of crockery
 getCrockery(Res) :-

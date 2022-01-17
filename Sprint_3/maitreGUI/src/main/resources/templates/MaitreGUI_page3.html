@@ -14,24 +14,25 @@
 		<h1>STANDING BUFFET SERVICE</h1>
 		<hr>
 		
-		<form name="ConsultStopForm" action="/consultStopTask" method="get">
-		<fieldset>
-			<legend>Management</legend>
-			&#x25BA; <input type="submit" class="button" name="stopButton" th:value="${stopValue}?:'Stop Task'"/><br/>
-			<div class="warning" th:text="${stopStrRes}"></div><br/>
-			
-			<details class="summaryBody" th:open="${consultOpenAttr}">
-			    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
-				<ul>
-					<li><pre><table th:hidden="${consulthiddenAttr}?:hidden">
-						<tr th:each="resource : ${consultRes}" >
-							<th th:text="${#strings.substringBefore(resource,':')}"></th>
-							<td th:text="${#strings.substringAfter(resource,': ')}"></td>
-						</tr>
-					</table></pre></li>
-				</ul>
-		  	</details>			
-		</fieldset>	
+		<form name="ConsultStopForm" action="/consult" method="get">
+			<fieldset>
+				<legend>Management</legend>
+				&#x25BA; <input type="submit" class="button" formaction="/stopReactivate" name="stopReactivateButton" 
+				th:value="${stopReactivateValue}?:'Stop Task'"/><br/>
+				<div class="warning" th:text="${stopStrRes}"></div><br/>
+				
+				<details class="summaryBody" th:open="${consultOpenAttr}">
+				    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
+					<ul>
+						<li><pre><table th:hidden="${consulthiddenAttr}?:hidden">
+							<tr th:each="resource : ${consultRes}" >
+								<th th:text="${#strings.substringBefore(resource,':')}"></th>
+								<td th:text="${#strings.substringAfter(resource,': ')}"></td>
+							</tr>
+						</table></pre></li>
+					</ul>
+			  	</details>			
+			</fieldset>	
 		</form>			
 	</body>
 </html>			

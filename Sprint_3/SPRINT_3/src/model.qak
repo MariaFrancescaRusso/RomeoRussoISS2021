@@ -286,6 +286,7 @@ QActor maitre context ctxsystem {
 		}	
 		
 		onMsg( stopped : stopped(true) ) {
+			updateResource [# "Task stopped with success!" #]
 			[# Stopped = true #]
 		}	
 	}

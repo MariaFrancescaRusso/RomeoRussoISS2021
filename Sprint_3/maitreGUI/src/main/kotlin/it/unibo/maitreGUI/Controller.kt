@@ -58,6 +58,7 @@ class Controller {
 		println("CONTROLLER | managing prepare button \"$prepareButton\"...")
 		when(prepareButton) {
 			"Default Prepare" ->  {}
+			
 			"Prepare the Room" -> {
 				// To obtain the crockery and food elements selected,
 				// checking also if one of them is empty
@@ -66,6 +67,7 @@ class Controller {
 				Crockery = Res.get(0)
 				Food = Res.get(1)
 			}
+			
 			else -> throw Exception("No prepare button selected")			
 		}
 		
@@ -77,102 +79,101 @@ class Controller {
 		return "MaitreGUI_page2"
 	}
 	
-	@GetMapping("/addFoodClearTask")
-	suspend fun  addFoodClearTask (viewmodel : Model,
-								   @RequestParam addFoodClearButton : String,
-								   @RequestParam(required=false) foodCode : String) : String {
-		var NextPage : String
+	@GetMapping("/addFood")
+	suspend fun  addFood(viewmodel : Model,
+						 @RequestParam addFoodButton : String,
+						 @RequestParam foodCode : String) : String {			
+		println("CONTROLLER | managing addFood button \"$addFoodButton\"...")
 		
-		println("CONTROLLER | managing prepare button \"$addFoodClearButton\"...")
-		when(addFoodClearButton) {
-			"Add Food" ->  {
-				//TODO: stampa errore su pagina se foodCode è stringa vuota??
-					//altrimenti l'app prende quello di default da prolog?
-						//NO --> commentare o eliminare da prolog
-					//soluzione: dividere in due task? o dare errore?
-//				var addFoodStr = maitreResource!!.execAddFood(foodCode)
-				println("CONTROLLER | sent add food with food-code $foodCode...")
-				var addFoodStr = "Warning! The fridge doesn't contain the food required!"
-				if (addFoodStr == "Warning! The fridge doesn't contain the food required!") {
-					viewmodel.addAttribute("warningStrRes", addFoodStr)
-					viewmodel.addAttribute("addFoodOpenAttr", true)
-					// To keep the consult output on the page if it has already sent 
-					if (Consulted)
-						stayConsulted(viewmodel)
-				}
-				
-				// At next page load, to fill the add food output
-				showFoodCodes(viewmodel)
-				NextPage = "MaitreGUI_page2"
-			}
-			"Clear the Room" -> {
-//				maitreResource!!.execClear("")
-				println("CONTROLLER | sent clear...")
-				NextPage = "MaitreGUI_page3"
-				CurPage = NextPage
-				Consulted = false
-			}
-			else -> throw Exception("No add food or clear button selected")			
+		// To check if a foodCode has been entered
+		if (foodCode.isNullOrBlank())
+			showWarning(viewmodel, "Insert a food-code!")
+		else {
+	//		var addFoodStr = maitreResource!!.execAddFood(foodCode)
+			println("CONTROLLER | sent add food with food-code $foodCode...")
+			var addFoodStr = ""
+			
+			// To check if a warning has been received
+			if (addFoodStr.startsWith("Warning!"))
+				showWarning(viewmodel, addFoodStr)
 		}
-				
-		return NextPage
+			
+		// At next page load, to fill the add food output
+		showFoodCodes(viewmodel)			
+		return "MaitreGUI_page2"
 	}
 	
-	@GetMapping("/consultStopTask")
-	suspend fun  consultStopTask (viewmodel : Model,
-								  @RequestParam(required=false) consultButton : String,
-								  @RequestParam(required=false) stopButton : String) : String {
+	@GetMapping("/clear")
+	suspend fun  clear (@RequestParam clearButton : String) : String {		
+		println("CONTROLLER | managing clear button \"$clearButton\"...")
+//		maitreResource!!.execClear("")
+		println("CONTROLLER | sent clear...")
 		
-		if(consultButton == "Consult Room Resources") {
-			println("CONTROLLER | managing consult button \"$consultButton\"...")
-//			var ConsultStr = maitreResource.execConsult()
-			println("CONTROLLER | sent consult...")
-			var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
-			saveConsultRes(ConsultStr)
+		Consulted = false
 			
-			// To fill the consult output
-			stayConsulted(viewmodel)
-			Consulted = true
-			
-			// Check of stop status to mantain its status on the web page
-			if(Stopped)
-				stayStopped(viewmodel)
-		}
+		CurPage = "MaitreGUI_page3"
+		return CurPage
+	}
+	
+	@GetMapping("/consult")
+	suspend fun  consult (viewmodel : Model,
+						  @RequestParam consultButton : String) : String {
+		println("CONTROLLER | managing consult button \"$consultButton\"...")
+//		var ConsultStr = maitreResource.execConsult()
+		println("CONTROLLER | sent consult...")
+		var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
+		saveConsultRes(ConsultStr)
 		
-		when(stopButton) {
+		// To fill the consult output
+		stayConsulted(viewmodel)
+		Consulted = true
+		
+		// Check of stop status to mantain its status on the web page
+		if(Stopped)
+			stayStopped(viewmodel)
+				
+		if (CurPage == "MaitreGUI_page2")
+			// To fill the add food output
+			showFoodCodes(viewmodel)
+		return CurPage
+	}
+	
+	@GetMapping("/stopReactivate")
+	suspend fun stopReactivate (viewmodel : Model,
+								@RequestParam stopReactivateButton : String) : String {
+		when(stopReactivateButton) {
 			"Stop Task" -> {
-				//TODO: StopStr si ha solo se lo stop fallisce.
-				//		Ottenere risposta anche in caso abbia successo: --> aggiornare model.qak
+				println("CONTROLLER | managing stop button \"$stopReactivateButton\"...")
 //				var StopStr = maitreResource!!.execStop()
-				var StopStr = "There is NO activated task!"
+				var StopStr = ""
 				println("CONTROLLER | sent stop...")
 				
-				if (StopStr == "There is NO activated task!")
+				// To check if the stop has been executed
+				if (StopStr.startsWith("There is NO"))
 					viewmodel.addAttribute("stopStrRes", StopStr)
 				else {					
-					// To put the page in stop mode
+					// To put the web page in stop mode
 					stayStopped(viewmodel)
 					Stopped = true
 				}
-				
-				// To keep the consult output on the page if it has already sent 
-				if (Consulted)
-					stayConsulted(viewmodel)
 			}
 			
 			"Reactivate Task" -> {
+				println("CONTROLLER | managing reactivate button \"$stopReactivateButton\"...")
 //				maitreResource!!.execReactivate()
 				println("CONTROLLER | sent reactivate...")
 				
-				viewmodel.addAttribute("stopValue", "Stop Task")
+				viewmodel.addAttribute("stopReactivateValue", "Stop Task")
 				viewmodel.addAttribute("disableEl", false)
 				Stopped = false
-			
-				// To keep the consult output on the page if it has already sent 
-				if (Consulted)
-					stayConsulted(viewmodel)
 			}
+			
+			else -> throw Exception("No stop or reactivate button selected")	
 		}
+		
+		// To keep the consult output on the web page if it has already sent 
+		if (Consulted)
+			stayConsulted(viewmodel)
 		
 		if (CurPage == "MaitreGUI_page2")
 			// To fill the add food output
@@ -328,7 +329,7 @@ class Controller {
 		
 	// To put the page in stop mode
 	fun stayStopped(viewmodel : Model) {
-		viewmodel.addAttribute("stopValue", "Reactivate Task")
+		viewmodel.addAttribute("stopReactivateValue", "Reactivate Task")
 		viewmodel.addAttribute("disableEl", true)
 	}
 	
@@ -337,5 +338,15 @@ class Controller {
 		viewmodel.addAttribute("consulthiddenAttr", false)
 		viewmodel.addAttribute("consultOpenAttr", true)
 		showConsult(viewmodel)
+	}
+	
+	// To show a warning for addFood task
+	fun showWarning(viewmodel : Model, addFoodStr : String) {
+		viewmodel.addAttribute("warningStrRes", addFoodStr)
+		viewmodel.addAttribute("addFoodOpenAttr", true)
+		
+		// To keep the consult output on the page if it has already sent 
+		if (Consulted)
+			stayConsulted(viewmodel)
 	}
 }
