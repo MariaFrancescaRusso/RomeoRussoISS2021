@@ -17,13 +17,13 @@
 		<form name="addFoodClearForm" action="/addFoodClearTask" method="get">
 			<fieldset>
 				<legend>Tasks</legend>
-				<details class="summaryBody">
+				<details class="summaryBody" th:open="${addFoodOpenAttr}">
 					<summary class="summaryTitle"><span>Add Food on the Table</span></summary>
 				    <ul>
 				    	<li><textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea></li><br/>
 				    	<li>
 					    	<span>Insert a food code corresponding to the food to add:</span>
-					    	<input type="text" th:name="${foodCode}" th:disabled="${disableEl}?:false" th:required="(${addFoodClearButton}=='Add Food') ? 'required' : false">
+					    	<input type="text" th:name="${foodCode}" th:disabled="${disableEl}?:false"/>
 					    	<input type="submit" class="button" name="addFoodClearButton" value="Add Food" th:disabled="${disableEl}?:false"/>
 						</li>
 						<li><div class="warning" th:text="${warningStrRes}"></div></li>
@@ -43,9 +43,11 @@
 			<details class="summaryBody" th:open="${consultOpenAttr}">
 			    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
 				<ul>
-					<!--<li><textarea th:hidden="${consulthiddenAttr}?:hidden" readonly="readonly" rows="5" cols="60" th:text="${consultRes}"></textarea></li>-->
-					<li><pre><table th:hidden="${consulthiddenAttr}?:hidden" th:each="resource : ${consultRes2}">
-						<tr><td th:text="${resource}"></td></tr>
+					<li><pre><table th:hidden="${consulthiddenAttr}?:hidden">
+						<tr th:each="resource : ${consultRes}" >
+							<th th:text="${#strings.substringBefore(resource,':')}"></th>
+							<td th:text="${#strings.substringAfter(resource,': ')}"></td>
+						</tr>
 					</table></pre></li>
 				</ul>
 		  	</details>			

@@ -1,12 +1,10 @@
-hr {
-	clear: both;
-	height: 0.5px;
-	color: #2f4f4f;
-	background-color: #2f4f4f;
+body {
+	font-family: sans-serif;
+	background-color: #f5fffa;
+	color: #242424;
 }
 
 h1 {
-	color: #242424;
 	font: 150% Tahoma, Helvetica, Arial, sans-serif;
 	margin-bottom: 0.5em;
 	padding-top: 0.5em;
@@ -15,9 +13,11 @@ h1 {
 	padding: 10px;
 }
 
-body {
-	font-family: sans-serif;
-	background-color: #f5fffa;
+hr {
+	clear: both;
+	height: 0.5px;
+	color: #2f4f4f;
+	background-color: #2f4f4f;
 }
 
 fieldset {
@@ -35,7 +35,6 @@ summary {
 }
 
 summary.summaryTitle > span {
-	color: #242424;
 	border-radius: 6px;
 /*	border: none;*/
 	border: 2px solid #2f4f4f;
@@ -69,7 +68,6 @@ input {
 }
 
 input.button {
-	color: #242424;
 	border-radius: 6px;
 	border-style: solid;
 	border-color: #2f4f4f;
@@ -87,7 +85,6 @@ table, td, th {
 	border-collapse: collapse;
 /*	width: 100%;*/
 	padding: 2px;
-	color: #242424;
 }
 
 th {

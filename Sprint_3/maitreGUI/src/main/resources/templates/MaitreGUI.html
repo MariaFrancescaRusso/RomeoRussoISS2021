@@ -55,12 +55,8 @@
 			<details class="summaryBody">
 				<summary class="summaryTitle"><span>Consult Room Resources</span></summary>
 				<ul>
-					<!--<li><textarea readonly="readonly" rows="10" cols="60" th:text="${consultRes}"></textarea></li>-->
 					<li><pre><table>
-						<tr th:each="resource : ${consultRes2}"><td th:text="${resource}"></td></tr>
-					</table></pre></li>
-					<li><pre><table>
-						<tr th:each="resource : ${consultRes2}" >
+						<tr th:each="resource : ${consultRes}" >
 							<th th:text="${#strings.substringBefore(resource,':')}"></th>
 							<td th:text="${#strings.substringAfter(resource,': ')}"></td>
 						</tr>

@@ -72,7 +72,7 @@ class Controller {
 //		maitreResource!!.execPrepare(Crockery, Food)
 		println("CONTROLLER | sent prepare...")
 		
-		// At next homepage load, to fill the add food output
+		// At next page load, to fill the add food output
 		showFoodCodes(viewmodel)
 		return "MaitreGUI_page2"
 	}
@@ -89,13 +89,19 @@ class Controller {
 				//TODO: stampa errore su pagina se foodCode è stringa vuota??
 					//altrimenti l'app prende quello di default da prolog?
 						//NO --> commentare o eliminare da prolog
+					//soluzione: dividere in due task? o dare errore?
 //				var addFoodStr = maitreResource!!.execAddFood(foodCode)
 				println("CONTROLLER | sent add food with food-code $foodCode...")
 				var addFoodStr = "Warning! The fridge doesn't contain the food required!"
-				if (addFoodStr == "Warning! The fridge doesn't contain the food required!")
+				if (addFoodStr == "Warning! The fridge doesn't contain the food required!") {
 					viewmodel.addAttribute("warningStrRes", addFoodStr)
+					viewmodel.addAttribute("addFoodOpenAttr", true)
+					// To keep the consult output on the page if it has already sent 
+					if (Consulted)
+						stayConsulted(viewmodel)
+				}
 				
-				// At next homepage load, to fill the add food output
+				// At next page load, to fill the add food output
 				showFoodCodes(viewmodel)
 				NextPage = "MaitreGUI_page2"
 			}
@@ -126,6 +132,8 @@ class Controller {
 			
 			// To fill the consult output
 			stayConsulted(viewmodel)
+			Consulted = true
+			
 			// Check of stop status to mantain its status on the web page
 			if(Stopped)
 				stayStopped(viewmodel)
@@ -141,9 +149,11 @@ class Controller {
 				
 				if (StopStr == "There is NO activated task!")
 					viewmodel.addAttribute("stopStrRes", StopStr)
-				else					
+				else {					
 					// To put the page in stop mode
 					stayStopped(viewmodel)
+					Stopped = true
+				}
 				
 				// To keep the consult output on the page if it has already sent 
 				if (Consulted)
@@ -163,6 +173,10 @@ class Controller {
 					stayConsulted(viewmodel)
 			}
 		}
+		
+		if (CurPage == "MaitreGUI_page2")
+			// To fill the add food output
+			showFoodCodes(viewmodel)
 				
 		return CurPage
 	}
@@ -229,25 +243,13 @@ class Controller {
 	}
 	
 	// To fill the consult output
-	fun showConsult(viewmodel : Model) {
-//		var ConsultRes = "Pantry: ${checkEl(PantryEl)}\n"
-//		ConsultRes += "Fridge: ${checkEl(FridgeEl)}\n"
-//		ConsultRes += "Dishwasher: ${checkEl(DishwasherEl)}\n"
-//		ConsultRes += "Table: ${checkEl(TableDishes)} and ${checkEl(TableFood)}"
-//		println("CONTROLLER | Consult result:$ConsultRes")
-//		viewmodel.addAttribute("consultRes", ConsultRes)
-		
-		var ConsultRes2 = arrayListOf<String>()
-		ConsultRes2.add("Pantry: ${checkEl(PantryEl)}\n")
-		ConsultRes2.add("Fridge: ${checkEl(FridgeEl)}\n")
-		ConsultRes2.add("Dishwasher: ${checkEl(DishwasherEl)}\n")
-		ConsultRes2.add("Table: ${checkEl(TableDishes)} and ${checkEl(TableFood)}")
-		viewmodel.addAttribute("consultRes2", ConsultRes2)
-		
-		//TODO: - elimino la textarea o lascio commentata?
-		//		- visto che con thymeleaf posso gestire tutto.. questa parte la faccio su html?
-		//		- o tutto qua? divido quindi gli elementi? "pantry", "elementi".. etc?
-		//		- il check lo faccio quindi su html?
+	fun showConsult(viewmodel : Model) {		
+		var ConsultRes = arrayListOf<String>()
+		ConsultRes.add("Pantry: ${checkEl(PantryEl)}\n")
+		ConsultRes.add("Fridge: ${checkEl(FridgeEl)}\n")
+		ConsultRes.add("Dishwasher: ${checkEl(DishwasherEl)}\n")
+		ConsultRes.add("Table: ${checkEl(TableDishes)} and ${checkEl(TableFood)}")
+		viewmodel.addAttribute("consultRes", ConsultRes)
 	}
 	
 	// To check if the resource array is empty
@@ -278,10 +280,8 @@ class Controller {
 		for (el in PantryEl) {
 			if (elURI.containsKey(el.get(0))) {
 				var quantity = elURI.getValue("quantity"+el.get(0))
-				//TODO: mettere min a 1 invece che a 0
-						//--> si può togliere il controllo se si mette a 1
-						//--> Ma se si mette min=1 => è obbligatorio scegliere una quantità
-												 //=> lasciare min=0 ???
+				
+				// To set the quantity, which is 1 by default
 				if (quantity != "0")
 					Crockery.add(listOf(el.get(0), quantity))
 				else
@@ -294,16 +294,18 @@ class Controller {
 		for (el in FridgeEl) {
 			if (elURI.containsKey(el.get(0))) {
 				var quantity = elURI.getValue("quantity"+el.get(0))
+
+				// To set the quantity, which is 1 by default
 				if (quantity != "0")
 					Food.add(listOf(el.get(0), quantity))
 				else
 					Food.add(listOf(el.get(0), "1"))
-					//TODO: mettere min a 1 invece che a 0??
 			}
 		}		
 		println("CONTROLLER | Food selected: $Food...")
 		
-		//TODO: commentare
+		// To check if there are selected elements,
+		// otherwise it will be sent an empty string, as default case
 		if(!Crockery.isEmpty())
 			ResCrockery = Crockery.toString()
 		
@@ -328,7 +330,6 @@ class Controller {
 	fun stayStopped(viewmodel : Model) {
 		viewmodel.addAttribute("stopValue", "Reactivate Task")
 		viewmodel.addAttribute("disableEl", true)
-		Stopped = true
 	}
 	
 	// To keep the consult output on the page if it has already sent 
@@ -336,6 +337,5 @@ class Controller {
 		viewmodel.addAttribute("consulthiddenAttr", false)
 		viewmodel.addAttribute("consultOpenAttr", true)
 		showConsult(viewmodel)
-		Consulted = true
 	}
 }
