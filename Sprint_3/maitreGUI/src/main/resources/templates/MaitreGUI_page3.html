@@ -22,7 +22,8 @@
 				<div class="warning" th:text="${stopStrRes}"></div><br/>
 				
 				<details class="summaryBody" th:open="${consultOpenAttr}">
-				    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
+				    <summary><input type="submit" class="button" name="consultButton" 
+				    value="Consult Room Resources"/></summary>
 					<ul>
 						<li><pre><table th:hidden="${consulthiddenAttr}?:hidden">
 							<tr th:each="resource : ${consultRes}" >

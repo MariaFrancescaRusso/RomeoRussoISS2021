@@ -85,11 +85,17 @@ table, td, th {
 	border: 1px solid #2f4f4f;
 	border-collapse: collapse;
 /*	width: 100%;*/
-	padding: 2px;
+	padding: 3px;
 }
 
 th {
 	text-align: center;
+}
+
+table.settings, td.settings, th.settings {
+	text-align: left;
+	border: none;
+	padding: 5px;
 }
 
 div.warning {

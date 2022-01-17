@@ -23,15 +23,18 @@
 				    	<li><textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea></li><br/>
 				    	<li>
 					    	<span>Insert a food-code corresponding to the food to add:</span>
-					    	<input type="text" name="foodCode" th:value="${foodCode}" th:disabled="${disableEl}?:false" placeholder="food-code (es.: s001)" 
-					    	pattern="[A-Za-z]{1}[0-9]{3}" title="Insert here a food-code: a letter followed by three numbers"/>
-					    	<input type="submit" class="button" name="addFoodButton" value="Add Food" th:disabled="${disableEl}?:false"/>
+					    	<input type="text" name="foodCode" th:value="${foodCode}" th:disabled="${disableEl}?:false" 
+					    	placeholder="food-code (es.: s001)" pattern="[A-Za-z]{1}[0-9]{3}" 
+					    	title="Insert here a food-code: a letter followed by three numbers"/>
+					    	<input type="submit" class="button" name="addFoodButton" value="Add Food" 
+					    	th:disabled="${disableEl}?:false"/>
 						</li>
 						<li><div class="warning" th:text="${warningStrRes}"></div></li>
 					</ul>
 				</details><br/>
 				
-				&#x25BA; <input type="submit" class="button" formaction="/clear" name="clearButton" value="Clear the Room" th:disabled="${disableEl}?:false"/>
+				&#x25BA; <input type="submit" class="button" formaction="/clear" name="clearButton" 
+				value="Clear the Room" th:disabled="${disableEl}?:false"/>
 			</fieldset>	
 		</form>
 		
@@ -43,7 +46,8 @@
 				<div class="warning" th:text="${stopStrRes}"></div><br/>
 				
 				<details class="summaryBody" th:open="${consultOpenAttr}">
-				    <summary><input type="submit" class="button" name="consultButton" value="Consult Room Resources"/></summary>
+				    <summary><input type="submit" class="button" name="consultButton" 
+				    value="Consult Room Resources"/></summary>
 					<ul>
 						<li><pre><table th:hidden="${consulthiddenAttr}?:hidden">
 							<tr th:each="resource : ${consultRes}" >

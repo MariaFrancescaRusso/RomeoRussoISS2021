@@ -29,15 +29,19 @@
 									<fieldset>
 									<legend><dt>Pantry</dt></legend>					  
 										<dd th:each="elPantry : ${preparePantry}">
-											<input type="checkbox" th:name="${elPantry.get(0)}"><label th:for="${elPantry.get(0)}" th:text="${elPantry.get(0)}"></label>
-											<input type="number" th:name="'quantity' + ${elPantry.get(0)}" min="0" th:max="${elPantry.get(1)}" size="5" value="1"/>
+											<input type="checkbox" th:name="${elPantry.get(0)}"><label th:for="${elPantry.get(0)}" 
+											th:text="${elPantry.get(0)}"></label>
+											<input type="number" th:name="'quantity' + ${elPantry.get(0)}" min="0" 
+											th:max="${elPantry.get(1)}" size="5" value="1"/>
 										</dd>
 									</fieldset>
 									<fieldset>
 									<legend><dt>Food</dt></legend>
 										<dd th:each="elFridge : ${prepareFridge}">
-											<input type="checkbox" th:name="${elFridge.get(0)}"><label th:for="${elFridge.get(0)}" th:text="${elFridge.get(0)} + ' - ' + ${elFridge.get(1)}"></label>
-											<input type="number"  th:name="'quantity' +${elFridge.get(0)}" min="0" th:max="${elFridge.get(2)}" size="5" value="1"/>
+											<input type="checkbox" th:name="${elFridge.get(0)}"><label th:for="${elFridge.get(0)}" 
+											th:text="${elFridge.get(0)} + ' - ' + ${elFridge.get(1)}"></label>
+											<input type="number"  th:name="'quantity' +${elFridge.get(0)}" min="0" 
+											th:max="${elFridge.get(2)}" size="5" value="1"/>
 										</dd>
 									</fieldset>
 								</dl></li>

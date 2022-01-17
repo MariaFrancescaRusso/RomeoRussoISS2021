@@ -6,6 +6,7 @@ import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
+//import it.unibo.connQak.ConnectionType
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @Controller
@@ -35,7 +36,7 @@ class Controller {
 	suspend fun home(viewmodel : Model) : String {
 		// At homepage load, a consult command is sent
 //		var ConsultStr = maitreResource.execConsult()
-		println("CONTROLLER | sent consult...")
+		println("CONTROLLER | sent consult to prepare the web homepage...")
 		var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
 		saveConsultRes(ConsultStr)
 		
@@ -86,7 +87,7 @@ class Controller {
 		println("CONTROLLER | managing addFood button \"$addFoodButton\"...")
 		
 		// To check if a foodCode has been entered
-		if (foodCode.isNullOrBlank())
+		if (foodCode.isNullOrBlank() || foodCode.isEmpty())
 			showWarning(viewmodel, "Insert a food-code!")
 		else {
 	//		var addFoodStr = maitreResource!!.execAddFood(foodCode)
@@ -182,8 +183,47 @@ class Controller {
 		return CurPage
 	}
 	
-//	//TODO: eventualmente potremmo fare una pag @GetMapping("/settings") che possa gestire
-	//		il cambio addres, port, contesto, protocollo e parametri di default per prapare e consumer
+	// To manage addr, port, ctx and protocol changes	//?? e parametri di default per prapare e consumer 
+	@GetMapping("/settings")
+	suspend fun  settings() : String {	
+		return "Settings"
+	}
+	
+	@GetMapping("/changeSettings")
+	suspend fun  saveSettings(viewmodel : Model,
+							  @RequestParam changeButton : String,
+							  @RequestParam(required=false) addr : String,
+							  @RequestParam(required=false) port : String,
+							  @RequestParam(required=false) ctx : String,
+							  @RequestParam(required=false) protocol : String) : String {
+		var NextPage : String
+		
+		println("CONTROLLER | managing settings button \"$changeButton\"...")
+		if (!addr.isNullOrBlank() && !addr.isEmpty())
+			this.addr = addr
+		if (!port.isNullOrBlank() && !port.isEmpty())
+			this.port = port
+		if (!ctx.isNullOrBlank() && !ctx.isEmpty())
+			this.ctx = ctx
+//		if (!protocol.isNullOrBlank() && !protocol.isEmpty())
+//			this.protocol = ConnectionType.protocol
+		if ( (addr.isNullOrBlank() || addr.isEmpty()) && (port.isNullOrBlank() || port.isEmpty()) &&
+			(ctx.isNullOrBlank() || ctx.isEmpty()) && (protocol.isNullOrBlank() || protocol.isEmpty()) ) {
+			showWarning(viewmodel, "Insert at least an element to change!")
+			NextPage = "Settings"
+		}
+		else {
+//			maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
+
+			// At next page load,					
+				// to fill the prepare selection
+			showPrepareEl(viewmodel)
+				// to fill the consult output
+			showConsult(viewmodel)
+			NextPage = "MaitreGUI"
+		}
+		return NextPage
+	}
 
 //############# UTILITY FUNCTIONS #############//
 
