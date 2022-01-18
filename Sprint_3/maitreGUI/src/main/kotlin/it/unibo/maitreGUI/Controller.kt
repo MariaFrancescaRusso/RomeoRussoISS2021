@@ -1,28 +1,30 @@
 package it.unibo.maitreGUI
 
+import it.unibo.connQak.ConnectionType
 import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.RequestParam
-//import it.unibo.connQak.ConnectionType
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
 @Controller
 class Controller {
 	@Value("\${spring.application.name}")
 	var appName : String? = null
-	//TODO in next sprint: change port and ctx
+	// The change of address, port, context and protocol
+	// can be done at starts at: localhost:8081/settings
 	var addr = "localhost"
 	var port = "8040"
 	var ctx = "ctxsystem"
 	var actor = "maitre"
 	var caller = "spring"
-//	var protocol = ConnectionType.TCP	
+	var protocol = ConnectionType.TCP
+	var maitreResource : MaitreResource ?= null
 //	var maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
 	
-	// To keep the status of elements, consult, stop, page name
+	// To keep the status of elements, consult, stop, web page name
 	var PantryEl = ArrayList<List<String>>()
 	var FridgeEl = ArrayList<List<String>>()
 	var DishwasherEl = ArrayList<List<String>>()
@@ -34,12 +36,17 @@ class Controller {
 	
 	@GetMapping("/")
 	suspend fun home(viewmodel : Model) : String {
-		// At homepage load, a consult command is sent
-//		var ConsultStr = maitreResource.execConsult()
-		println("CONTROLLER | sent consult to prepare the web homepage...")
-		var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
-		saveConsultRes(ConsultStr)
+		maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
 		
+		//TODO: rifaccio anche il consult se l ho fatto prima di setting? si perche cambio maitre? e prima quindi non andava?
+//		if (!Consulted) {
+			// At homepage load, a consult command is sent
+			var ConsultStr = maitreResource!!.execConsult()
+//			var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
+			println("CONTROLLER | sent consult to prepare the web homepage...")
+			saveConsultRes(ConsultStr)
+//			Consulted = true
+//		}
 		// To fill the prepare selection
 		showPrepareEl(viewmodel)
 		
@@ -72,7 +79,8 @@ class Controller {
 			else -> throw Exception("No prepare button selected")			
 		}
 		
-//		maitreResource!!.execPrepare(Crockery, Food)
+		//TODO: posso togliere i !! perchè non necessari??
+		maitreResource!!.execPrepare(Crockery, Food)
 		println("CONTROLLER | sent prepare...")
 		
 		// At next page load, to fill the add food output
@@ -87,12 +95,13 @@ class Controller {
 		println("CONTROLLER | managing addFood button \"$addFoodButton\"...")
 		
 		// To check if a foodCode has been entered
+		//TODO: lascio solo empty??
 		if (foodCode.isNullOrBlank() || foodCode.isEmpty())
 			showWarning(viewmodel, "Insert a food-code!")
 		else {
-	//		var addFoodStr = maitreResource!!.execAddFood(foodCode)
+			var addFoodStr = maitreResource!!.execAddFood(foodCode)
+//			var addFoodStr = ""
 			println("CONTROLLER | sent add food with food-code $foodCode...")
-			var addFoodStr = ""
 			
 			// To check if a warning has been received
 			if (addFoodStr.startsWith("Warning!"))
@@ -107,7 +116,8 @@ class Controller {
 	@GetMapping("/clear")
 	suspend fun  clear (@RequestParam clearButton : String) : String {		
 		println("CONTROLLER | managing clear button \"$clearButton\"...")
-//		maitreResource!!.execClear("")
+		
+		maitreResource!!.execClear()
 		println("CONTROLLER | sent clear...")
 		
 		Consulted = false
@@ -120,9 +130,9 @@ class Controller {
 	suspend fun  consult (viewmodel : Model,
 						  @RequestParam consultButton : String) : String {
 		println("CONTROLLER | managing consult button \"$consultButton\"...")
-//		var ConsultStr = maitreResource.execConsult()
+		var ConsultStr = maitreResource!!.execConsult()
+//		var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
 		println("CONTROLLER | sent consult...")
-		var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
 		saveConsultRes(ConsultStr)
 		
 		// To fill the consult output
@@ -145,8 +155,8 @@ class Controller {
 		when(stopReactivateButton) {
 			"Stop Task" -> {
 				println("CONTROLLER | managing stop button \"$stopReactivateButton\"...")
-//				var StopStr = maitreResource!!.execStop()
-				var StopStr = ""
+				var StopStr = maitreResource!!.execStop()
+//				var StopStr = ""
 				println("CONTROLLER | sent stop...")
 				
 				// To check if the stop has been executed
@@ -155,13 +165,14 @@ class Controller {
 				else {					
 					// To put the web page in stop mode
 					stayStopped(viewmodel)
+					viewmodel.addAttribute("stopStrRes", StopStr)
 					Stopped = true
 				}
 			}
 			
 			"Reactivate Task" -> {
 				println("CONTROLLER | managing reactivate button \"$stopReactivateButton\"...")
-//				maitreResource!!.execReactivate()
+				maitreResource!!.execReactivate()
 				println("CONTROLLER | sent reactivate...")
 				
 				viewmodel.addAttribute("stopReactivateValue", "Stop Task")
@@ -205,23 +216,25 @@ class Controller {
 			this.port = port
 		if (!ctx.isNullOrBlank() && !ctx.isEmpty())
 			this.ctx = ctx
-//		if (!protocol.isNullOrBlank() && !protocol.isEmpty())
-//			this.protocol = ConnectionType.protocol
+		if (!protocol.isNullOrBlank() && !protocol.isEmpty())
+			this.protocol = ConnectionType.valueOf(protocol)
 		if ( (addr.isNullOrBlank() || addr.isEmpty()) && (port.isNullOrBlank() || port.isEmpty()) &&
 			(ctx.isNullOrBlank() || ctx.isEmpty()) && (protocol.isNullOrBlank() || protocol.isEmpty()) ) {
 			showWarning(viewmodel, "Insert at least an element to change!")
 			NextPage = "Settings"
 		}
-		else {
-//			maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
-
-			// At next page load,					
-				// to fill the prepare selection
-			showPrepareEl(viewmodel)
-				// to fill the consult output
-			showConsult(viewmodel)
-			NextPage = "MaitreGUI"
+		else {			
+//			maitreResource = MaitreResource(caller, this.addr, this.port, this.ctx, actor, this.protocol)
+//
+//			// At next page load,					
+//				// to fill the prepare selection
+//			showPrepareEl(viewmodel)
+//				// to fill the consult output
+//			showConsult(viewmodel)
+//			NextPage = "MaitreGUI"
+			NextPage = "/"
 		}
+		
 		return NextPage
 	}
 

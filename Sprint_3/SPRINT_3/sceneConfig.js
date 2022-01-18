@@ -30,24 +30,27 @@ const config = {
     movingObstacles: [
 		{
             name: "movingobstacle",
-            position: { x: .64, y: .42 },
+            //position: { x: .64, y: .42 },
+            position: { x: 0, y: .42 },	//--> to fix if out of the room
             directionAxis: { x: true, y: true },
             //speed: 0.2,
             speed: 0.1, //--> to stay in the room
-            range: 28 
+            //range: 28 
+            range: 0	//--> to fix if out of the room
             //range: 7 //--> to stay in the room
         },
  
         {
             name: "wall",
             //position: { x: 0.0, y: 0.6 },
-            position: { x: 0.5, y: 0.6 },	//--> to stay in the room
+            //position: { x: 0.5, y: 0.6 },	//--> to stay in the room
+            position: { x: 0, y: 0.6 },	//--> to fix if out of the room
             directionAxis: { x: true, y: false },
             //speed: 0.0078,
             speed: 0.07,	//--> to stay in the room
             //range: 120
-            range: 12	//--> to stay in the room
-            
+            //range: 12	//--> to stay in the room          
+            range: 0	//--> to fix if out of the room
         }
     ],
     

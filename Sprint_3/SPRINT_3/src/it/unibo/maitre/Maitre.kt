@@ -167,11 +167,11 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						}
 						if(  Sender == "table"  
 						 ){println("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
-						 ConsultStr += "{$Sender:$AnsExpose1;$AnsExpose2}+"  
+						 ConsultStr += "{$Sender:\"$AnsExpose1;$AnsExpose2\"}+"  
 						}
 						else
 						 {println("MAITRE | status of $Sender: $AnsExpose1")
-						  ConsultStr += "{$Sender:$AnsExpose1}+"  
+						  ConsultStr += "{$Sender:\"$AnsExpose1\"}+"  
 						 }
 						if(  Nexp == 4  
 						 ){updateResourceRep( "$ConsultStr"  

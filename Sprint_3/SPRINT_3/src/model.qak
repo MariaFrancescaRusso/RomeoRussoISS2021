@@ -162,7 +162,7 @@ QActor maitre context ctxsystem {
 				}
 			}
 		}
-		
+		//TODO: si può eliminare o commentare questa parte!
 		solve( getFoodCodeEl(FoodCode) )
 		ifSolved {			
 			request rbr -m addFood : addFood($getCurSol("FoodCode"))
@@ -232,11 +232,11 @@ QActor maitre context ctxsystem {
  		
  		if [# Sender == "table" #] {
 			println ("MAITRE | status of $Sender: $AnsExpose1 $AnsExpose2")
-			[# ConsultStr += "{$Sender:$AnsExpose1;$AnsExpose2}+" #]
+			[# ConsultStr += "{$Sender:\"$AnsExpose1;$AnsExpose2\"}+" #]
  		}
  		else { 
  			println ("MAITRE | status of $Sender: $AnsExpose1")
- 			[# ConsultStr += "{$Sender:$AnsExpose1}+" #]
+ 			[# ConsultStr += "{$Sender:\"$AnsExpose1\"}+" #]
  		}
  		
  		if [# Nexp == 4 #] {

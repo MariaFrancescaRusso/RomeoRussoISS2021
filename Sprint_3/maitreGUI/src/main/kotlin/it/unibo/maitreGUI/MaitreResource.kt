@@ -36,7 +36,7 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		println("exec ADDFOOD")
 		conn.forward(message)
 		runBlocking{
-			delay(100)
+			delay(1000)
 		}
 		var	res = coap.readResource()
 		return res
@@ -56,9 +56,17 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		println("exec CONSULT $s")
 		conn.forward(message)
 		runBlocking{
-			delay(100)
+			delay(1000)
 		}
 		var res = coap.readResource()
+		
+//		while(!res.startsWith("{")) {
+//			runBlocking {
+//				delay(1000)
+//			}
+//			res = coap.readResource()
+//		}
+		
 		return res
 	}
 
