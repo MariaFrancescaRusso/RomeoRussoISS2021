@@ -23,73 +23,66 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		println("MaitreResource | configured ${sysUtil.curThread()} ")
 	}
 
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execPrepare( Crockery: String, Food: String) {
 		var message = MsgUtil.buildDispatch(caller, "prepare", "prepare($Crockery, $Food)", "maitre")
 		println("exec PREPARE")
 		conn.forward(message)
 	}
 
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
-	fun execAddFood( foodcode: String):String {
+	suspend fun execAddFood( foodcode: String):String {
 		var message = MsgUtil.buildDispatch(caller, "addfood", "addfood($foodcode)", "maitre")
 		println("exec ADDFOOD")
 		conn.forward(message)
 		runBlocking{
-			delay(1000)
+			delay(1500)
 		}
 		var	res = coap.readResource()
 		return res
 	}
 
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execClear() {
 		var message = MsgUtil.buildDispatch(caller, "clear", "clear(0)", "maitre")
 		println("exec CLEAR")
 		conn.forward(message)
 	}
 
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execConsult():String {
 		var message = MsgUtil.buildDispatch(caller, "consult", "consult(0)", "maitre")
 		var s = message.toString()
 		println("exec CONSULT $s")
 		conn.forward(message)
-		runBlocking{
-			delay(1000)
-		}
-		var res = coap.readResource()
-		
-//		while(!res.startsWith("{")) {
-//			runBlocking {
-//				delay(1000)
-//			}
-//			res = coap.readResource()
+//		runBlocking {
+//			delay(1000)
 //		}
+//		var res = coap.readResource()
+		
+		var res : String
+		do {
+			delay(1500)
+			res = coap.readResource()
+		}
+		while(!res.startsWith("{"))
 		
 		return res
 	}
 
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execStop():String {
 		var message = MsgUtil.buildDispatch(caller, "stop", "stop(0)", "maitre")
 		println("exec STOP")
 		conn.forward( message)
 		runBlocking{
-			delay(100)
+			delay(1500)
 		}
 		var res = coap.readResource()
 		return res
 	}
 
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execReactivate() {
 		var message = MsgUtil.buildDispatch(caller, "reactivate", "reactivate(0)", "maitre")
 		println("exec REACTIVATE")
 		conn.forward( message  )
 	}
 
-	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	suspend fun execKillMaitre() {
 		var message = MsgUtil.buildDispatch(caller, "end", "end(0)", "maitre")
 		println("exec TERMINATE")

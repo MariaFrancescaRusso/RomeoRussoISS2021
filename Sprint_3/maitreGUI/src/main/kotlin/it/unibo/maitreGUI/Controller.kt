@@ -95,7 +95,6 @@ class Controller {
 		println("CONTROLLER | managing addFood button \"$addFoodButton\"...")
 		
 		// To check if a foodCode has been entered
-		//TODO: lascio solo empty??
 		if (foodCode.isNullOrBlank() || foodCode.isEmpty())
 			showWarning(viewmodel, "Insert a food-code!")
 		else {
@@ -203,52 +202,50 @@ class Controller {
 	@GetMapping("/changeSettings")
 	suspend fun  saveSettings(viewmodel : Model,
 							  @RequestParam changeButton : String,
-							  @RequestParam(required=false) addr : String,
-							  @RequestParam(required=false) port : String,
-							  @RequestParam(required=false) ctx : String,
-							  @RequestParam(required=false) protocol : String) : String {
-		var NextPage : String
+							  @RequestParam elURI : Map<String, String>) : String {
+		var count = 0
 		
 		println("CONTROLLER | managing settings button \"$changeButton\"...")
-		if (!addr.isNullOrBlank() && !addr.isEmpty())
-			this.addr = addr
-		if (!port.isNullOrBlank() && !port.isEmpty())
-			this.port = port
-		if (!ctx.isNullOrBlank() && !ctx.isEmpty())
-			this.ctx = ctx
-		if (!protocol.isNullOrBlank() && !protocol.isEmpty())
-			this.protocol = ConnectionType.valueOf(protocol)
-		if ( (addr.isNullOrBlank() || addr.isEmpty()) && (port.isNullOrBlank() || port.isEmpty()) &&
-			(ctx.isNullOrBlank() || ctx.isEmpty()) && (protocol.isNullOrBlank() || protocol.isEmpty()) ) {
-			showWarning(viewmodel, "Insert at least an element to change!")
-			NextPage = "Settings"
-		}
-		else {			
-//			maitreResource = MaitreResource(caller, this.addr, this.port, this.ctx, actor, this.protocol)
-//
-//			// At next page load,					
-//				// to fill the prepare selection
-//			showPrepareEl(viewmodel)
-//				// to fill the consult output
-//			showConsult(viewmodel)
-//			NextPage = "MaitreGUI"
-			NextPage = "/"
+				
+		for (key in elURI.keys) {
+			var value = elURI.getValue(key)
+			// To check if some value has changed		
+			if (value.isEmpty() || value.isNullOrBlank())
+				count++
+			else {
+				when (key) {
+					"addr" -> this.addr = value
+					
+					"port" -> this.port = value
+					
+					"ctx" -> this.ctx = value
+					
+					"protocol" -> this.protocol = ConnectionType.valueOf(value)
+					
+					else -> count--
+				}
+			}
 		}
 		
-		return NextPage
+		if (count == 4) {
+			showWarning(viewmodel, "Insert at least an element to change!")
+			return "Settings"
+		}
+		else
+			return home(viewmodel)
 	}
 
-//############# UTILITY FUNCTIONS #############//
+//########################## UTILITY FUNCTIONS ##########################//
 
 	// Function to split the resulting string from consult command, to obtain a string for each resource
 	fun saveConsultRes(ConsultRes : String) {
 		for (el in ConsultRes.split("+")) {
 			if (!el.isEmpty()) {
-				println("CONTROLLER | Consult Result element: $el")
+//				println("CONTROLLER | Consult Result element: $el")
 				//each el has a form {resource: content}
 				try {
 					val jsonContent = JSONObject(el)
-					println("CONTROLLER | Consult Result json element: $jsonContent")
+//					println("CONTROLLER | Consult Result json element: $jsonContent")
 					if (jsonContent.has("pantry")) {
 						PantryEl = stringToArray(jsonContent.getString("pantry"))
 						println("CONTROLLER | Pantry: $PantryEl")
