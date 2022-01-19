@@ -162,7 +162,7 @@ QActor maitre context ctxsystem {
 				}
 			}
 		}
-		//TODO: si può eliminare o commentare questa parte!
+		
 		solve( getFoodCodeEl(FoodCode) )
 		ifSolved {			
 			request rbr -m addFood : addFood($getCurSol("FoodCode"))
@@ -243,7 +243,13 @@ QActor maitre context ctxsystem {
  			updateResource [# "$ConsultStr" #]
  		}
 	}
-	Goto wait if [#	Nexp == 4 #] else waitExpose
+	Goto checkStopped if [#	Nexp == 4 #] else waitExpose
+	
+	// To check, after a consult, if the rbr state was stopped
+	State checkStopped {
+		[# Nexp = 0 #]
+	}
+	Goto waitReactivate if [# Stopped #] else wait
 	
 	// maitre sends a consult command to table before sending clear command to rbr 
 	State preSendClear {
@@ -297,6 +303,7 @@ QActor maitre context ctxsystem {
 	}
 	Transition t5
 		whenMsg reactivate -> sendReactivate
+		whenMsg consult -> sendConsult
 	
 	State sendReactivate {	
 		forward rbrwalker -m reactivate : reactivate(0)

@@ -178,9 +178,18 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						)
 						}
 					}
-					 transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({	Nexp == 4  
+					 transition( edgeName="goto",targetState="checkStopped", cond=doswitchGuarded({	Nexp == 4  
 					}) )
 					transition( edgeName="goto",targetState="waitExpose", cond=doswitchGuarded({! (	Nexp == 4  
+					) }) )
+				}	 
+				state("checkStopped") { //this:State
+					action { //it:State
+						 Nexp = 0  
+					}
+					 transition( edgeName="goto",targetState="waitReactivate", cond=doswitchGuarded({ Stopped  
+					}) )
+					transition( edgeName="goto",targetState="wait", cond=doswitchGuarded({! ( Stopped  
 					) }) )
 				}	 
 				state("preSendClear") { //this:State
@@ -239,6 +248,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						println("MAITRE | waiting for reactivate command...")
 					}
 					 transition(edgeName="t514",targetState="sendReactivate",cond=whenDispatch("reactivate"))
+					transition(edgeName="t515",targetState="sendConsult",cond=whenDispatch("consult"))
 				}	 
 				state("sendReactivate") { //this:State
 					action { //it:State

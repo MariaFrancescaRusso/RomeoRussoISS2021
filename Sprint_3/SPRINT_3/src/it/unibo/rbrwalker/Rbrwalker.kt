@@ -42,10 +42,10 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 								)
 						}
 					}
-					 transition(edgeName="t042",targetState="wait",cond=whenRequestGuarded("stop",{ itunibo.planner.plannerUtil.atHome()  
+					 transition(edgeName="t043",targetState="wait",cond=whenRequestGuarded("stop",{ itunibo.planner.plannerUtil.atHome()  
 					}))
-					transition(edgeName="t043",targetState="goToGoal",cond=whenRequest("setGoal"))
-					transition(edgeName="t044",targetState="terminateWalker",cond=whenDispatch("end"))
+					transition(edgeName="t044",targetState="goToGoal",cond=whenRequest("setGoal"))
+					transition(edgeName="t045",targetState="terminateWalker",cond=whenDispatch("end"))
 				}	 
 				state("goToGoal") { //this:State
 					action { //it:State
@@ -89,8 +89,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						request("step", "step($Step)" ,"basicrobot" )  
 					}
-					 transition(edgeName="t145",targetState="handleAnswer",cond=whenReply("stepdone"))
-					transition(edgeName="t146",targetState="handleAnswer",cond=whenReply("stepfail"))
+					 transition(edgeName="t146",targetState="handleAnswer",cond=whenReply("stepdone"))
+					transition(edgeName="t147",targetState="handleAnswer",cond=whenReply("stepfail"))
 				}	 
 				state("doTurn") { //this:State
 					action { //it:State
@@ -99,8 +99,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						stateTimer = TimerActor("timer_doTurn", 
 							scope, context!!, "local_tout_rbrwalker_doTurn", StopTimer )
 					}
-					 transition(edgeName="t247",targetState="goToGoal",cond=whenTimeout("local_tout_rbrwalker_doTurn"))   
-					transition(edgeName="t248",targetState="handleStop",cond=whenRequest("stop"))
+					 transition(edgeName="t248",targetState="goToGoal",cond=whenTimeout("local_tout_rbrwalker_doTurn"))   
+					transition(edgeName="t249",targetState="handleStop",cond=whenRequest("stop"))
 				}	 
 				state("handleAnswer") { //this:State
 					action { //it:State
@@ -146,8 +146,8 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						stateTimer = TimerActor("timer_handleAnswer", 
 							scope, context!!, "local_tout_rbrwalker_handleAnswer", StopTimer )
 					}
-					 transition(edgeName="t349",targetState="handleFail",cond=whenTimeout("local_tout_rbrwalker_handleAnswer"))   
-					transition(edgeName="t350",targetState="handleStop",cond=whenRequest("stop"))
+					 transition(edgeName="t350",targetState="handleFail",cond=whenTimeout("local_tout_rbrwalker_handleAnswer"))   
+					transition(edgeName="t351",targetState="handleStop",cond=whenRequest("stop"))
 				}	 
 				state("handleFail") { //this:State
 					action { //it:State
@@ -164,9 +164,9 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						updateResourceRep( "Stopped"  
 						)
 					}
-					 transition(edgeName="t451",targetState="doStep",cond=whenDispatchGuarded("reactivate",{ ObstGoal  
+					 transition(edgeName="t452",targetState="doStep",cond=whenDispatchGuarded("reactivate",{ ObstGoal  
 					}))
-					transition(edgeName="t452",targetState="goToGoal",cond=whenDispatchGuarded("reactivate",{ !ObstGoal  
+					transition(edgeName="t453",targetState="goToGoal",cond=whenDispatchGuarded("reactivate",{ !ObstGoal  
 					}))
 				}	 
 				state("correctDirection") { //this:State

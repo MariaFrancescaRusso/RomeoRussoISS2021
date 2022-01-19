@@ -20,16 +20,15 @@
 				<details class="summaryBody" th:open="${addFoodOpenAttr}">
 					<summary class="summaryTitle"><span>Add Food on the Table</span></summary>
 				    <ul>
-				    	<li><textarea readonly="readonly" rows="10" cols="80" th:text="${foodList}"></textarea></li><br/>
+				    	<li><textarea readonly="readonly" rows="10" cols="30" th:text="${foodList}"></textarea></li><br/>
 				    	<li>
 					    	<span>Insert a food-code corresponding to the food to add:</span>
 					    	<input type="text" name="foodCode" th:value="${foodCode}" th:disabled="${disableEl}?:false" 
 					    	placeholder="food-code (es.: s001)" pattern="[A-Za-z]{1}[0-9]{3}" 
 					    	title="Insert here a food-code: a letter followed by three numbers"/>
 					    	<input type="submit" class="button" name="addFoodButton" value="Add Food" 
-					    	th:disabled="${disableEl}?:false"/>
-						</li>
-						<li><div class="warning" th:text="${warningStrRes}"></div></li>
+					    	th:disabled="${disableEl}?:false"/><br/>
+							<div class="warning" th:text="${warningStrRes}"></div>
 					</ul>
 				</details><br/>
 				

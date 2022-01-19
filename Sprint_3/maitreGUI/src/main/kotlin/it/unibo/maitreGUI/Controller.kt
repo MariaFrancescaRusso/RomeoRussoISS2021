@@ -193,7 +193,9 @@ class Controller {
 		return CurPage
 	}
 	
-	// To manage addr, port, ctx and protocol changes	//?? e parametri di default per prapare e consumer 
+	//TODO: gestire consumer
+	
+	// To manage addr, port, ctx and protocol changes
 	@GetMapping("/settings")
 	suspend fun  settings() : String {	
 		return "Settings"
@@ -222,7 +224,7 @@ class Controller {
 					
 					"protocol" -> this.protocol = ConnectionType.valueOf(value)
 					
-					else -> count--
+					else -> {}
 				}
 			}
 		}

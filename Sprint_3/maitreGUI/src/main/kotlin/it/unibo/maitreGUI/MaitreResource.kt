@@ -30,12 +30,12 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	}
 
 	suspend fun execAddFood( foodcode: String):String {
-		var message = MsgUtil.buildDispatch(caller, "addfood", "addfood($foodcode)", "maitre")
+		var message = MsgUtil.buildDispatch(caller, "addFood", "addFood($foodcode)", "maitre")
 		println("exec ADDFOOD")
 		conn.forward(message)
-		runBlocking{
-			delay(1500)
-		}
+//		runBlocking{
+			delay(2000)
+//		}
 		var	res = coap.readResource()
 		return res
 	}
@@ -51,15 +51,15 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var s = message.toString()
 		println("exec CONSULT $s")
 		conn.forward(message)
-//		runBlocking {
-//			delay(1000)
-//		}
-//		var res = coap.readResource()
 		
 		var res : String
 		do {
-			delay(1500)
+			runBlocking() {
+				delay(1500)
+			} 
+//			delay(1500)
 			res = coap.readResource()
+			println("MAITRERESOURCE | res: $res")
 		}
 		while(!res.startsWith("{"))
 		
@@ -70,10 +70,18 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var message = MsgUtil.buildDispatch(caller, "stop", "stop(0)", "maitre")
 		println("exec STOP")
 		conn.forward( message)
-		runBlocking{
-			delay(1500)
+		
+		var res : String
+		do {
+			runBlocking() {
+				delay(1500)
+			}
+//			delay(1500)
+			res = coap.readResource()
+			println("MAITRERESOURCE | res: $res")
 		}
-		var res = coap.readResource()
+		while(!res.startsWith("There is NO") && !res.startsWith("Task stopped"))
+		
 		return res
 	}
 

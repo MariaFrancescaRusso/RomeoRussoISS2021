@@ -33,8 +33,8 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("MAPPER | waits...")
 					}
-					 transition(edgeName="t134",targetState="doStep",cond=whenRequest("map"))
-					transition(edgeName="t135",targetState="endState",cond=whenDispatch("end"))
+					 transition(edgeName="t135",targetState="doStep",cond=whenRequest("map"))
+					transition(edgeName="t136",targetState="endState",cond=whenDispatch("end"))
 				}	 
 				state("doStep") { //this:State
 					action { //it:State
@@ -47,8 +47,8 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						request("step", "step($Step)" ,"basicrobot" )  
 						delay(1000) 
 					}
-					 transition(edgeName="t236",targetState="succesStep",cond=whenReply("stepdone"))
-					transition(edgeName="t237",targetState="obstacleFound",cond=whenReply("stepfail"))
+					 transition(edgeName="t237",targetState="succesStep",cond=whenReply("stepdone"))
+					transition(edgeName="t238",targetState="obstacleFound",cond=whenReply("stepfail"))
 				}	 
 				state("succesStep") { //this:State
 					action { //it:State
@@ -71,11 +71,11 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						}
 						delay(1000) 
 					}
-					 transition(edgeName="t338",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ !Table  
+					 transition(edgeName="t339",targetState="turnLeft",cond=whenReplyGuarded("stepdone",{ !Table  
 					}))
-					transition(edgeName="t339",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table  
+					transition(edgeName="t340",targetState="tableFound",cond=whenReplyGuarded("stepdone",{ Table  
 					}))
-					transition(edgeName="t340",targetState="obstacleFound",cond=whenReply("stepfail"))
+					transition(edgeName="t341",targetState="obstacleFound",cond=whenReply("stepfail"))
 				}	 
 				state("turnLeft") { //this:State
 					action { //it:State
@@ -146,7 +146,7 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						println("MAPPER | coming back to RH...")
 						request("setGoal", "setGoal(0,0,downDir)" ,"rbrwalker" )  
 					}
-					 transition(edgeName="t441",targetState="endState",cond=whenReply("goalState"))
+					 transition(edgeName="t442",targetState="endState",cond=whenReply("goalState"))
 				}	 
 				state("endState") { //this:State
 					action { //it:State
