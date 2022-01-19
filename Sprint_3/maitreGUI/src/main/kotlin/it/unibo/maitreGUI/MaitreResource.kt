@@ -33,9 +33,9 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var message = MsgUtil.buildDispatch(caller, "addFood", "addFood($foodcode)", "maitre")
 		println("exec ADDFOOD")
 		conn.forward(message)
-//		runBlocking{
-			delay(2000)
-//		}
+		runBlocking{
+			delay(1500)
+		}
 		var	res = coap.readResource()
 		return res
 	}
@@ -55,9 +55,8 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var res : String
 		do {
 			runBlocking() {
-				delay(1500)
+				delay(1000)
 			} 
-//			delay(1500)
 			res = coap.readResource()
 			println("MAITRERESOURCE | res: $res")
 		}
@@ -74,9 +73,8 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var res : String
 		do {
 			runBlocking() {
-				delay(1500)
+				delay(1000)
 			}
-//			delay(1500)
 			res = coap.readResource()
 			println("MAITRERESOURCE | res: $res")
 		}

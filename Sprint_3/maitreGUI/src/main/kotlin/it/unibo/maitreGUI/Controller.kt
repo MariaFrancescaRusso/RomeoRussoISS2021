@@ -105,6 +105,12 @@ class Controller {
 			// To check if a warning has been received
 			if (addFoodStr.startsWith("Warning!"))
 				showWarning(viewmodel, addFoodStr)
+			//FIXME: caso:
+				// - prima si fa addFood di un foodCode non esistente e si riceve warning
+				// - poi si fa addFood di un foodCode esistente:
+					// in questo caso il task viene eseguito ma si riceve comunque un warning! => errore!
+						// => soluzione: nel model.qak il maitre se nn riceve warning aggiorna lo stato comunque,
+						//				 per eliminare un eventuale warning precedente!?
 		}
 			
 		// At next page load, to fill the add food output
@@ -193,7 +199,7 @@ class Controller {
 		return CurPage
 	}
 	
-	//TODO: gestire consumer
+	//TODO: manage foodconsumer, which is for now a mock client
 	
 	// To manage addr, port, ctx and protocol changes
 	@GetMapping("/settings")
@@ -224,7 +230,7 @@ class Controller {
 					
 					"protocol" -> this.protocol = ConnectionType.valueOf(value)
 					
-					else -> {}
+					else -> {}	// is the button value
 				}
 			}
 		}
