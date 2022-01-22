@@ -49,13 +49,45 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 <h2>Problem Analysis</h2>
 
-<div>The problems related to this sprint goal, that are already <ko>partially</ko> addressed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#ProblemAn" target="_blank">initial problem analysis</a>, are detailed below.</div>
-<br>
-The main goal in this Sprint is the development of a software, to make the maitre user interact with the system software produced in the previous Sprint, and providing it a GUI.<br>
-<h3>Maitre</h3>
+<h3>GUI for Maître's Smartphone Software</h3>
+
+By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the user (<ks>Maître de Salle</ks>) must be able to interact with the system software, produced in the previous Sprints, through his/her smartphone (<ks>maître's smartphone</ks>).<br>
+
+To do that, as already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>, the software running on the <ks>maître's smartphone</ks> must provide a graphic user interface (GUI) and could be a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser; the last one, after a careful evaluation of the available means to design this software, results to be the more appropriate, as it appears to be a more versatile tool.
+<br><br>
+Therefore, to to solve this sprint goal, the main problem which/that must be addressed are detailed below. / 
+Therefore, to to solve this sprint goal, the main problem which/that must be addressed are how to realize the GUI that will be a web application and so which architecture will/should be represented, how the two parts (GUI/web application and system application??, so the maitre actor of the system application) must communicate and how to change the mock maitre actor in an actor.
+
+<h3>GUI for Maître's Smartphone Software</h3>
+
+This web application con be realize as a gradle project using Spring.?? (Qua o nella parte di progetto?)
+
+<h4>System Architecture</h4>
+
+This application could be developed using the MVC (Model-View-Controller) pattern and making sure the system architecture respects the hexagonal architecture, which allows the communications between the front-end and the back-end by inserting an adapter object.
+In this way, the web application (front-end) can communicate with the system application (back-end) through the adapter object: the user can select elements on the web interface (view), which can be read by the controller, which can communicate with the (model?) maitre actor through the adapter object.
+
+<h4>Communications</h4>
+
+As already said the adapter object allow the communications between the two parts (front-end and back-end); this can be done in different ways through different protocols (TCP, MQTT, CoAP). With regard to the previous choices, the more appropriate way to realize this could be the using of the CoAP protocol: the controller through the adapter object sends messages (dispatch) to the maitre, which, when necessary, updates its state (through the updateResource command) so to make possible for the adapter object to read it via CoAP and to commnicate it to the controller.
+
+<h4>Maitre</h4>
+
+
+
 The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives, through messages, the commands to send to the other system elements.
-<h3>MaitreGui</h3>
-A GUI for this kind of actor would be developed with a MVC pattern where an object, as a use case,  it's able to send messages to the maitre actor and to receives its answers; this architecture could respect the hexagonal architecture where the front-end communicates with the back-end through the adapter object.<br>
+
+<br><br>
+APPUNTI:
+<br><br>
+Scaletta:
+	- soluzione:
+			- View: html-tymeleaf
+			- Controller: Spring, chiama Adapter
+			- Adapter: osserva via CoAP il maitre per leggere aggiornamento stato del maitre
+			- Model: Maitre actor, che aggiorna il proprio stato (updateResource)
+		+ ricostruzione maitre: non mock actor but actor
+<br><br>
 
 <h3><a name=""></a></h3>
 
