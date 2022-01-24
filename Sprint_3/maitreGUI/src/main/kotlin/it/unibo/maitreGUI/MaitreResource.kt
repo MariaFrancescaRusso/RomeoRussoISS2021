@@ -33,10 +33,18 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 		var message = MsgUtil.buildDispatch(caller, "addFood", "addFood($foodcode)", "maitre")
 		println("exec ADDFOOD")
 		conn.forward(message)
-		runBlocking{
-			delay(1500)
+
+		var res : String
+		do {
+			runBlocking() {
+				delay(1000)
+//				delay(20000L)	// = AddFoodtime in model.qak
+			} 
+			res = coap.readResource()
+			println("MAITRERESOURCE | res: $res")
 		}
-		var	res = coap.readResource()
+		while(!res.startsWith("Warning!") && res!=("Request accepted!"))
+		
 		return res
 	}
 
@@ -68,7 +76,7 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	suspend fun execStop():String {
 		var message = MsgUtil.buildDispatch(caller, "stop", "stop(0)", "maitre")
 		println("exec STOP")
-		conn.forward( message)
+		conn.forward(message)
 		
 		var res : String
 		do {
@@ -86,12 +94,12 @@ class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest:
 	suspend fun execReactivate() {
 		var message = MsgUtil.buildDispatch(caller, "reactivate", "reactivate(0)", "maitre")
 		println("exec REACTIVATE")
-		conn.forward( message  )
+		conn.forward(message)
 	}
 
 	suspend fun execKillMaitre() {
 		var message = MsgUtil.buildDispatch(caller, "end", "end(0)", "maitre")
 		println("exec TERMINATE")
-		conn.forward( message  )
+		conn.forward(message)
 	}
 }

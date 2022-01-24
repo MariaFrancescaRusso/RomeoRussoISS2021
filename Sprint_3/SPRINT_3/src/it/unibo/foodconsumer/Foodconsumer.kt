@@ -21,7 +21,7 @@ class Foodconsumer ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( nam
 					action { //it:State
 						println("FOODCONSUMER | STARTS and it's very hungry...")
 						solve("consult('Consumer.pl')","") //set resVar	
-						delay(50000) 
+						delay(70000) 
 					}
 					 transition( edgeName="goto",targetState="eat", cond=doswitch() )
 				}	 

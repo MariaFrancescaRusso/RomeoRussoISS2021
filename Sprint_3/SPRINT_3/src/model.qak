@@ -102,7 +102,7 @@ QActor maitre context ctxsystem {
 		whenMsg prepare and [# !Prepared #] -> sendPrepare
 		whenMsg consult -> sendConsult
 		whenMsg addFood and [# Prepared && !Cleared #] -> sendAddFood
-		whenMsg clear and [# Prepared && !Cleared #] -> sendClear
+		whenMsg clear and [# Prepared && !Cleared #] -> preSendClear
 		whenMsg stop -> sendStop 
 		whenMsg end -> terminateMaitre
 	
@@ -174,12 +174,22 @@ QActor maitre context ctxsystem {
 	}
 	Transition t1 
 		// Time waiting for warning otherwise the food is present
-		whenTimeVar AddFoodtime -> wait
+		whenTimeVar AddFoodtime -> handleWarning
 		whenReply warning -> handleWarning
 			
-	State handleWarning {		
-		println ("MAITRE | received warning from RBR")
-		updateResource [# "Warning! The fridge doesn't contain the food required!" #]
+	State handleWarning {
+		[# var FoodPresence = true #]
+		
+		onMsg ( warning : warning(W) ) {		
+			println ("MAITRE | received warning from RBR")
+			updateResource [# "Warning! The fridge doesn't contain the food required!" #]
+			[# FoodPresence = false #]
+		
+		}
+		
+		if [# FoodPresence #] {
+			updateResource [# "Request accepted!" #]
+		}
 	}
 	Goto wait
 
@@ -326,7 +336,7 @@ QActor foodconsumer context ctxsystem {
 		println ("FOODCONSUMER | STARTS and it's very hungry...")
 		
 		solve( consult("Consumer.pl") )
-		delay 50000
+		delay 70000	//50000
 	}
 	Goto eat
 		

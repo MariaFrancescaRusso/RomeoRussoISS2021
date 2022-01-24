@@ -30,7 +30,7 @@
 					    	<th class="settings">Port:</th>
 					    	<td class="settings"><input type="text" name="port" th:value="${port}"
 					    	placeholder="8070" 
-					    	pattern="[0-9]{4}" 
+					    	pattern="[0-9]{5}" 
 					    	title="Insert here a port: four numbers"/></td>
 					    </tr>
 						<tr>
@@ -43,9 +43,9 @@
 						<tr>
 					    	<th class="settings">Protocol:</th>
 					    	<td class="settings"><input type="text" name="protocol" th:value="${protocol}" 
-					    	placeholder="TCP COAP HTTP MQTT" 
-					    	pattern="TCP|COAP"
-					    	title="Insert here a protocol from: TCP, COAP, HTTP, MQTT"/></td>
+					    	placeholder="TCP COAP MQTT" 
+					    	pattern="TCP|COAP|MQTT"
+					    	title="Insert here a protocol from: TCP, COAP, MQTT"/></td>
 					    </tr>
 					</table></li><br/>
 					<li><input type="submit" class="button" name="changeButton" value="Confirm Changes"/><li>

@@ -56,7 +56,7 @@ By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html"
 To do that, as already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>, the software running on the <ks>maître's smartphone</ks> must provide a graphic user interface (GUI) and could be a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser; the last one, after a careful evaluation of the available means to design this software, results to be the more appropriate, as it appears to be a more versatile tool.
 <br><br>
 Therefore, to to solve this sprint goal, the main problem which/that must be addressed are detailed below. / 
-Therefore, to to solve this sprint goal, the main problem which/that must be addressed are how to realize the GUI that will be a web application and so which architecture will/should be represented, how the two parts (GUI/web application and system application??, so the maitre actor of the system application) must communicate and how to change the mock maitre actor in an actor.
+Therefore, to to solve this sprint goal, the main problem which must be addressed are: how to realize the GUI that will be a web application and so which architecture will/should be represented; how the two parts (GUI/web application and system application??, so the maitre actor of the system application) must communicate; how to change the mock maitre actor in an actor.
 
 <h3>GUI for Maître's Smartphone Software</h3>
 
@@ -73,12 +73,12 @@ As already said the adapter object allow the communications between the two part
 
 <h4>Maitre</h4>
 
-
-
-The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives, through messages, the commands to send to the other system elements.
+To can receive dispatch messages from the controller through the adapter, the maitre actor doesn't must be anymore a mock client and so it must be redesigned.
 
 <br><br>
 APPUNTI:
+<br><br>
+The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives, through messages, the commands to send to the other system elements.
 <br><br>
 Scaletta:
 	- soluzione:
@@ -86,10 +86,6 @@ Scaletta:
 			- Controller: Spring, chiama Adapter
 			- Adapter: osserva via CoAP il maitre per leggere aggiornamento stato del maitre
 			- Model: Maitre actor, che aggiorna il proprio stato (updateResource)
-		+ ricostruzione maitre: non mock actor but actor
-<br><br>
-
-<h3><a name=""></a></h3>
 
 <h2>Test Plans</h2>
 
@@ -103,7 +99,25 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 <h2>Project</h2>
 
+With regard to what it has been said in the problem analysis of this sprint, in this design phase it has been redesigned the maitre actor, which is not anymore a mock actor and then it has been designed the GUI for the maitre smartphone ??.
+
+<h3>GUI</h3>
+
+This web application con be realize as a gradle project using Spring.?? (Qua o nella parte di progetto?)
+
+MaitreResource as adapter object
+Controller as controller
+Maitre.html, Maitre_page2 ... as interface using thimeleaf
+
 <h3>Maitre</h3>
+
+The maitre actor in this sprint must be/has been redesigned to not be a mock actor.
+
+
+<br><br>
+APPUNTI:
+<br><br>
+To can receive dispatch messages from the controller through the adapter, the maitre actor doesn't must be anymore a mock client and so it must be redesigned.<br>
 The maitre actor waits for the messages: prepare, consult, addFood, clear, stop, end. When it receives the message:
 <ul>
     <li>prepare: sends the prepare message to the rbr specifing the food and the crockery;</li>
@@ -121,11 +135,12 @@ The package it.unibo.connQak implements functions to send message to the actors 
 The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor; in an hexagonal architecture this class is the use case. <br>
 The controller works as a Spring controller and intercepts the Get request to execute the right behaviuor using maitreResource and showing the right HTML page.<br>
 Immagine view => controller => maitreResource (use cases) <br>
+
 <h2>Testing</h2>
 
-Below there are exposed some tests made for this sprint project:
+The tests for this sprint ...
 
-
+non sono stati fatti in quanto il maitre/il funzionamento del sistema era già stato testato negli sprint precedenti; mentre per quanto riguarda la parte di GUI, questa può essere testata provando a inviare comandi al maitre tramite la web application.
 
 <h2><a name="Sprint3Mod"></a>Model of System's Logical Architecture</h2>
 

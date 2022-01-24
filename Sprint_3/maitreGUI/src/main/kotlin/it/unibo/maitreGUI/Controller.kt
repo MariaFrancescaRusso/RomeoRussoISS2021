@@ -105,12 +105,8 @@ class Controller {
 			// To check if a warning has been received
 			if (addFoodStr.startsWith("Warning!"))
 				showWarning(viewmodel, addFoodStr)
-			//FIXME: caso:
-				// - prima si fa addFood di un foodCode non esistente e si riceve warning
-				// - poi si fa addFood di un foodCode esistente:
-					// in questo caso il task viene eseguito ma si riceve comunque un warning! => errore!
-						// => soluzione: nel model.qak il maitre se nn riceve warning aggiorna lo stato comunque,
-						//				 per eliminare un eventuale warning precedente!?
+			else
+				viewmodel.addAttribute("warningStrRes", addFoodStr)
 		}
 			
 		// At next page load, to fill the add food output
@@ -199,8 +195,6 @@ class Controller {
 		return CurPage
 	}
 	
-	//TODO: manage foodconsumer, which is for now a mock client
-	
 	// To manage addr, port, ctx and protocol changes
 	@GetMapping("/settings")
 	suspend fun  settings() : String {	
@@ -242,6 +236,20 @@ class Controller {
 		else
 			return home(viewmodel)
 	}
+	
+	//TODO: terminate only the maitre actor, but not the entire application! Solve it!
+	@GetMapping("/end")
+	suspend fun  end (/*viewmodel : Model,*/
+					  @RequestParam endButton : String) /*: String*/ {		
+		println("CONTROLLER | managing end button \"$endButton\"...")
+		
+		maitreResource!!.execKillMaitre()
+		println("CONTROLLER | sent end...")
+				
+//		return home(viewmodel)
+	}
+	
+	//TODO: manage foodconsumer, which is for now a mock client
 
 //########################## UTILITY FUNCTIONS ##########################//
 

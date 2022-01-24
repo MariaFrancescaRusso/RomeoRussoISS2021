@@ -44,7 +44,7 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 					transition(edgeName="t01",targetState="sendConsult",cond=whenDispatch("consult"))
 					transition(edgeName="t02",targetState="sendAddFood",cond=whenDispatchGuarded("addFood",{ Prepared && !Cleared  
 					}))
-					transition(edgeName="t03",targetState="sendClear",cond=whenDispatchGuarded("clear",{ Prepared && !Cleared  
+					transition(edgeName="t03",targetState="preSendClear",cond=whenDispatchGuarded("clear",{ Prepared && !Cleared  
 					}))
 					transition(edgeName="t04",targetState="sendStop",cond=whenDispatch("stop"))
 					transition(edgeName="t05",targetState="terminateMaitre",cond=whenDispatch("end"))
@@ -108,14 +108,23 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
-					 transition(edgeName="t16",targetState="wait",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
+					 transition(edgeName="t16",targetState="handleWarning",cond=whenTimeout("local_tout_maitre_sendAddFood"))   
 					transition(edgeName="t17",targetState="handleWarning",cond=whenReply("warning"))
 				}	 
 				state("handleWarning") { //this:State
 					action { //it:State
-						println("MAITRE | received warning from RBR")
-						updateResourceRep( "Warning! The fridge doesn't contain the food required!"  
+						 var FoodPresence = true  
+						if( checkMsgContent( Term.createTerm("warning(ARG)"), Term.createTerm("warning(W)"), 
+						                        currentMsg.msgContent()) ) { //set msgArgList
+								println("MAITRE | received warning from RBR")
+								updateResourceRep( "Warning! The fridge doesn't contain the food required!"  
+								)
+								 FoodPresence = false  
+						}
+						if(  FoodPresence  
+						 ){updateResourceRep( "Request accepted!"  
 						)
+						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 

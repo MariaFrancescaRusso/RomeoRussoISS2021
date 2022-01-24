@@ -79,6 +79,12 @@ input.button:disabled {
 	color: #242424;
 }
 
+input.button#endButton {
+	border:none;
+	float: right;
+/*	font-weight: bold;*/
+}
+
 table, td, th {
 	border: 1px solid #2f4f4f;
 	border-collapse: collapse;
