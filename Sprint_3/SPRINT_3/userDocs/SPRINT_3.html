@@ -146,11 +146,18 @@ In detail, when it receives the message:
 
 <h3>GUI</h3>
 
-The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework.
+The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework.<br>
+With regard of what said in the problem analysis of this sprint, this project is composed by: a package src/main/kotlin/it/unibo/maitreGUI with a controller (Controller.kt), an adapter object (MaitreResource.kt), a support for CoAP connection (CoapSupport.kt) and a main (MaitreGuiApplication.kt); a package src/main/kotlin/it/unibo/connQak with ...<br>
+With regard of what said in the problem analysis of this sprint, in this project there are two packages in src/main/kotlin/it/unibo (maitreGUI and connQak) and in src/main/resources/templates there are the HTML files for which it has been used thimeleaf and GET methods to send informations.<br>
+In particular, in the maitreGUI package there are:
+<ul>
+	<li>an adapter object (MaitreResource.kt), (which constructor (is) MaitreResource(name: String, addrdest: String, portdest: String, ctxdest: String, actordest: String, protocol: ConnectionType) (requires the ...) and) which offers methods to send messages (dispatch) to the maitre actor and to receive answers via CoAP;</li>
+	<li>a controller (Controller.kt), which reads informations from the view (HTML files/pages) and uses the adapter object MaitreResource to communicate with the maitre actor. Here, it's also added the possibily to change the value to call the adapter object (like the address, the port and the context of the destination actor and the type of protocol (TCP, COAP, MQTT (implemented here but not maitre side/in the application software), HTTP(not yet implemented)) to communicate with it);</li>
+	<li>a support for CoAP connection (CoapSupport.kt), used by the MaitreResource to can read the answers received by the maitre actor via CoAP;</li>
+	<li>a main (MaitreGuiApplication.kt) to run the application.</li>
+</ul>
+In the connQak package there are <br>
 
-MaitreResource as adapter object
-Controller as controller
-Maitre.html, Maitre_page2 ... as interface using thimeleaf
 
 The package it.unibo.connQak implements functions to send message to the actors with different protocols(in TCP, MQTT, CoAP, HTTP); the connQakBase works as a factory class for classes to sends messages to the actors using the TCP, HTTP, CoAP, MQTT protocols.<br>
 The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor; in an hexagonal architecture this class is the use case. <br>
