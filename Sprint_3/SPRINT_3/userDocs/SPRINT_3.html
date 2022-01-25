@@ -107,19 +107,46 @@ The maitre actor in this sprint has been redesigned to not be (anymore) a mock a
 
 In detail, when it receives the message:
 <ul>
-	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery or food; so to allow/to add the possibility for the maitre to insert/decide/select the elements for the task Prepare the room, as said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. As for/in the previous sprints, for the first case, the maitre actor loads the default elements from the prolog file (Prepare.pl) and then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
-	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery and food. In the first case, as for/in the previous sprints, maitre actor loads the default elements from the prolog file (Prepare.pl) sends the prepare message to the rbr specifing the food and the crockery;</li>
-	<li>addFood: sends the addFood message to the rbr specifing the food;</li>
-	<li>clear: sends the consult message to the table to get the items to remove; sends the clear message to the rbr specifing the food and the crockery;</li>
-	<li>consult: sends the consult message to all resources and waits for their answers;</li>
-	<li>stop: sends the stop message to the rbr when this is received it waits just for the reactivate message;</li>
-	<li>reactivate: sends the reactivate message to the rbr;</li>
-	<li>end: sends the end message to the rbr and terminate.</li>
+	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery and food; so to allow/to add the possibility for the maitre to insert/decide/select the elements for the task Prepare the room, as said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. As for/in the previous sprints, for the first case, the maitre actor loads the default elements from the prolog file (Prepare.pl); otherwise it use the new elements. Then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
+	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery and food. In the latter case, the prolog file (Prepare.pl) is updated with the new elements. Then, as for/in the previous sprints, the maitre actor loads the (default or new) elements from the prolog file (Prepare.pl) and sends the prepare message to the rbr specifing that food and crockery elements;</li>
+	<li>addFood(FOOD_CODE), where FOOD_CODE is the food code; so to allow/to add the possibility for the maitre to insert/decide/select the food code for the task Add Food. The prolog file (Prepare.pl) is updated with the new element/food code. Them, as for/in the previous sprints, the maitre actor loads the new element from the prolog file (Prepare.pl) and sends the addFood message/request to the rbr specifing the food code;</li>
+	<li>addFood(FOOD_CODE), where FOOD_CODE is the food code used by the maitre actor to send the addFood message/request to the rbr;</li>
+	<li>clear: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to the table to get/know the items (crockery and/or food) to remove and then it sends the clear message/dispatch to the rbr specifing that food and crockery elements;</li>
+	<li>consult: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to all resources and waits for their answers;</li>
+	<li>stop: as for/in the previous sprints, the maitre actor sends the stop message/request to the rbrwalker and only when it receives from the rbrwalker the stopped(true) reply then it waits for the reactivate message/dispatch. Here, it has been added the possibility to wait also a consult, but at the end of this case, it checks if it was in stop state and then it wait again for a reactivate or consult message/dispatch;</li>
+	<li>reactivate: as for/in the previous sprints, it sends the reactivate message/dispatch to the rbrwalker;</li>
+	<li>end: it terminates itself.</li>
 </ul>
+
+<br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Models</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text" rowspan="3">
+		<br><a href="../src/model.qak#:~:text=//QActor%20maitre%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>maitre</k> in model.qak</a><br><br>
+		<iframe class="qakImageMax" src="./utils/img/Maitre.png" title="Maitre QActor from model.qak">Maitre QActor from model.qak</iframe>
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/MaitreActorRel.svg" alt="Maitre Actor Context">
+	</td>
+</tr>
+<tr class="text">
+	<th>Moore State Machine Diagrams</th>
+</tr>
+<tr>
+	<td class="imageSchema">
+		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
+		<img src="./utils/img/FSM_MaitreQActor.svg" alt="Representation of the behavior of QActor maitre, modeled as a Moore state machine">
+	</td>
+</tr>
+</table>
 
 <h3>GUI</h3>
 
-The software of / This web application has been realized as a gradle project using Spring./as a web app using the Spring framework.
+The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework.
 
 MaitreResource as adapter object
 Controller as controller
@@ -129,6 +156,12 @@ The package it.unibo.connQak implements functions to send message to the actors 
 The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor; in an hexagonal architecture this class is the use case. <br>
 The controller works as a Spring controller and intercepts the Get request to execute the right behaviuor using maitreResource and showing the right HTML page.<br>
 Immagine view => controller => maitreResource (use cases) 
+
+The software it's realized as a web app using the Spring framework.<br>
+The package it.unibo.connQak implements functions to send message to the actors with different protocols(in TCP, MQTT, CoAP, HTTP); the connQakBase works as a factory class for classes to sends messages to the actors using the TCP, HTTP, CoAP, MQTT protocols.<br>
+The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor; in an hexagonal architecture this class is the use case. <br>
+The controller works as a Spring controller and intercepts the Get request to execute the right behaviuor using maitreResource and showing the right HTML page.<br>
+Immagine view => controller => maitreResource (use cases) <br>
 
 <br><br>
 APPUNTI:
