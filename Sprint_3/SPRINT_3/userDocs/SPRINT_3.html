@@ -99,25 +99,44 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 <h2>Project</h2>
 
-With regard to what it has been said in the problem analysis of this sprint, in this design phase it has been redesigned the maitre actor, which is not anymore a mock actor and then it has been designed the GUI for the maitre smartphone ??.
+With regard to what it has been said in the problem analysis of this sprint, in this design phase it has been redesigned the maitre actor, which is not anymore a mock actor and then it has been designed the GUI for the maitre smartphone software ??.
+
+<h3>Maitre</h3>
+
+The maitre actor in this sprint has been redesigned to not be (anymore) a mock actor. In particular, it maintains its behavior but now it can receive (from the web application, and in particular from the controller through the adapter object) some commands/messages as dispatch: prepare; addFood; clear; consult; stop; reactivate; end.<br>
+
+In detail, when it receives the message:
+<ul>
+	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery or food; so to allow/to add the possibility for the maitre to insert/decide/select the elements for the task Prepare the room, as said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. As for/in the previous sprints, for the first case, the maitre actor loads the default elements from the prolog file (Prepare.pl) and then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
+	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery and food. In the first case, as for/in the previous sprints, maitre actor loads the default elements from the prolog file (Prepare.pl) sends the prepare message to the rbr specifing the food and the crockery;</li>
+	<li>addFood: sends the addFood message to the rbr specifing the food;</li>
+	<li>clear: sends the consult message to the table to get the items to remove; sends the clear message to the rbr specifing the food and the crockery;</li>
+	<li>consult: sends the consult message to all resources and waits for their answers;</li>
+	<li>stop: sends the stop message to the rbr when this is received it waits just for the reactivate message;</li>
+	<li>reactivate: sends the reactivate message to the rbr;</li>
+	<li>end: sends the end message to the rbr and terminate.</li>
+</ul>
 
 <h3>GUI</h3>
 
-This web application con be realize as a gradle project using Spring.?? (Qua o nella parte di progetto?)
+The software of / This web application has been realized as a gradle project using Spring./as a web app using the Spring framework.
 
 MaitreResource as adapter object
 Controller as controller
 Maitre.html, Maitre_page2 ... as interface using thimeleaf
 
-<h3>Maitre</h3>
-
-The maitre actor in this sprint must be/has been redesigned to not be a mock actor.
-
+The package it.unibo.connQak implements functions to send message to the actors with different protocols(in TCP, MQTT, CoAP, HTTP); the connQakBase works as a factory class for classes to sends messages to the actors using the TCP, HTTP, CoAP, MQTT protocols.<br>
+The maitreResource  sends the commands to the maitre actor by TCP and receives the answers observing by CoAP the actor; in an hexagonal architecture this class is the use case. <br>
+The controller works as a Spring controller and intercepts the Get request to execute the right behaviuor using maitreResource and showing the right HTML page.<br>
+Immagine view => controller => maitreResource (use cases) 
 
 <br><br>
 APPUNTI:
 <br><br>
 To can receive dispatch messages from the controller through the adapter, the maitre actor doesn't must be anymore a mock client and so it must be redesigned.<br>
+MaitreResource as adapter object
+Controller as controller
+Maitre.html, Maitre_page2 ... as interface using thimeleaf<br>
 The maitre actor waits for the messages: prepare, consult, addFood, clear, stop, end. When it receives the message:
 <ul>
     <li>prepare: sends the prepare message to the rbr specifing the food and the crockery;</li>
