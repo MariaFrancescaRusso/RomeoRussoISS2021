@@ -16,16 +16,16 @@ class Fridge ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		
-				val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
-		//		val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("FRIDGE | STARTS and it's embedded with the proper set of food...")
 						solve("consult('FridgeState.pl')","") //set resVar	
 						println("FRIDGE | loaded initial state")
-						 FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail"))  
+						
+									val FridgeObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+						//			val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
+									FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
 						println("FRIDGE | activated FridgeObserver")
 						delay(300) 
 					}

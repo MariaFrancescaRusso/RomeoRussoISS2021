@@ -16,16 +16,16 @@ class Pantry ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		
-				val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
-		//		val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("PANTRY | STARTS and it's filled with a proper set of items...")
 						solve("consult('PantryState.pl')","") //set resVar	
 						println("PANTRY | loaded initial state")
-						 PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail"))  
+						
+									val PantryObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+						//			val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
+									PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
 						println("PANTRY | activated PantryObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

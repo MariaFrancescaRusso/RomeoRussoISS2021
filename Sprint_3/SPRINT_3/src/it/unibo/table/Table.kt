@@ -16,16 +16,16 @@ class Table ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, scop
 	@kotlinx.coroutines.ObsoleteCoroutinesApi
 	@kotlinx.coroutines.ExperimentalCoroutinesApi			
 	override fun getBody() : (ActorBasicFsm.() -> Unit){
-		
-				val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
-		//		val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("TABLE | STARTS and it's empty...")
 						solve("consult('TableState.pl')","") //set resVar	
 						println("TABLE| loaded initial state")
-						 TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail"))  
+						
+									val TableObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+						//			val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
+									TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
 						println("TABLE | activated TableObserver")
 					}
 					 transition( edgeName="goto",targetState="work", cond=doswitch() )

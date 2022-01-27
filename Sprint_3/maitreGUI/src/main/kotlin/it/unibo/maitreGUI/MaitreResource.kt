@@ -32,8 +32,7 @@ class MaitreResource (name: String) {
 		var res : String
 		do {
 			runBlocking() {
-				delay(1000)
-//				delay(20000L)	// = AddFoodtime in model.qak
+				delay(4000)	// = AddFoodtime+1000 in model.qak
 			} 
 			res = coap.readResource()
 			println("MAITRERESOURCE | res: $res")
