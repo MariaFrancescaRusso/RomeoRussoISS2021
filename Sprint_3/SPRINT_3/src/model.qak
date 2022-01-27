@@ -64,16 +64,17 @@ Request step:step(TIME)
 Reply stepdone:stepdone(V)  
 Reply stepfail:stepfail(DURATION, CAUSE)  
 
-Context ctxsystem ip [host="localhost" port=8040]
-//Context ctxmaitre ip [host="192.168.1.171" port=8070]
-//Context ctxfridge ip [host="127.0.0.1" port=8060]
-//Context ctxrbr ip [host="localhost" port=8050]
+//Context ctxsystem ip [host="localhost" port=8040]
+//192.168.1.171
+Context ctxmaitre ip [host="localhost" port=8070] 
+Context ctxfridge ip [host="localhost" port=8060]
+Context ctxrbr ip [host="localhost" port=8050]
 Context ctxbasicrobot ip [host="127.0.0.1" port=8020]  
 
 ExternalQActor basicrobot context ctxbasicrobot  
 
-//QActor maitre context ctxmaitre {
-QActor maitre context ctxsystem {
+QActor maitre context ctxmaitre {
+//QActor maitre context ctxsystem {
 	[#	
 		var AddFoodtime = 20000L 
 		var Nexp = 0
@@ -329,8 +330,8 @@ QActor maitre context ctxsystem {
 }
 
 // Actor foodconsumer is used as a mock client
-//QActor foodconsumer context ctxmaitre {
-QActor foodconsumer context ctxsystem {
+QActor foodconsumer context ctxmaitre {
+//QActor foodconsumer context ctxsystem {
 	
 	State s0 initial {
 		println ("FOODCONSUMER | STARTS and it's very hungry...")
@@ -356,8 +357,8 @@ QActor foodconsumer context ctxsystem {
 	}
 }
 
-//QActor rbr context ctxrbr {
-QActor rbr context ctxsystem {
+QActor rbr context ctxrbr {
+//QActor rbr context ctxsystem {
 	[# 	
 		var IsMap = false
 		var Dishes = ""
@@ -784,8 +785,8 @@ QActor rbr context ctxsystem {
 	} 
 }
 
-//QActor rbrmapper context ctxrbr {
-QActor rbrmapper context ctxsystem {
+QActor rbrmapper context ctxrbr {
+//QActor rbrmapper context ctxsystem {
 	[#
 		var CurrMov = "empty"
 		var CurrEdge = 0
@@ -910,8 +911,8 @@ QActor rbrmapper context ctxsystem {
 	}
 }
 
-//QActor rbrwalker context ctxrbr {
-QActor rbrwalker context ctxsystem {
+QActor rbrwalker context ctxrbr {
+//QActor rbrwalker context ctxsystem {
 	[#
 		var Dir = ""
 		var CurrMov = "empty"
@@ -1098,20 +1099,21 @@ QActor rbrwalker context ctxsystem {
 	}
 }
 
-//QActor pantry context ctxmaitre {
-QActor pantry context ctxsystem {
-	[#
-		val PantryObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","pantry")
-//		val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
-	#]
+QActor pantry context ctxmaitre {
+//QActor pantry context ctxsystem {
 	
 	State s0 initial {
+	
 		println ("PANTRY | STARTS and it's filled with a proper set of items...")
 		
 		solve( consult("PantryState.pl") )
-		println ("PANTRY | loaded initial state")	
-		
-		[# PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
+		println ("PANTRY | loaded initial state")					
+	
+		[#
+			val PantryObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+	//		val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
+			PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
+		#]
 		println ("PANTRY | activated PantryObserver")
 	}
 	Goto work
@@ -1172,20 +1174,20 @@ QActor pantry context ctxsystem {
  	Goto work	
 }
 
-//QActor table context ctxmaitre {
-QActor table context ctxsystem {
-	[#
-		val TableObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","table")
-//		val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
-	#]
+QActor table context ctxmaitre {
+//QActor table context ctxsystem {
 	
 	State s0 initial {
 		println ("TABLE | STARTS and it's empty...")
 		
 		solve( consult("TableState.pl") )
 		println ("TABLE| loaded initial state") 
-		
-		[# TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
+
+		[#
+			val TableObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+		//	val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
+			TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
+		#]
 		println ("TABLE | activated TableObserver")
 	}
 	Goto work
@@ -1246,20 +1248,19 @@ QActor table context ctxsystem {
 	Goto work
 }
 
-//QActor dishwasher context ctxmaitre {
-QActor dishwasher context ctxsystem {
-	[#
-		val DishwasherObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","dishwasher")
-//		val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")	
-	#]
+QActor dishwasher context ctxmaitre {
+//QActor dishwasher context ctxsystem {
 	
 	State s0 initial {
 		println ("DISHWASHER | STARTS and it's empty...")
 		
 		solve( consult("DishwasherState.pl") )
 		println ("DISHWASHER | loaded initial state")
-		
-		[# DishwasherObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
+		[#
+			val DishwasherObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+		//	val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")	
+			DishwasherObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
+		#]
 		println ("DISHWASHER | activated DishwasherObserver")
 	}
 	Goto work 
@@ -1320,20 +1321,20 @@ QActor dishwasher context ctxsystem {
 	Goto work
 }
 
-//QActor fridge context ctxfridge {
-QActor fridge context ctxsystem {
-	[#
-		val FridgeObserver = util.ActorCoapObserver("localhost",8040,"ctxsystem","fridge")
-//		val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
-	#]
+QActor fridge context ctxfridge {
+//QActor fridge context ctxsystem {
 	
 	State s0 initial {
 		println ("FRIDGE | STARTS and it's embedded with the proper set of food...")
 		
 		solve( consult("FridgeState.pl") )
 		println ("FRIDGE | loaded initial state")
-		
-		[# FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) #]
+
+		[#
+			val FridgeObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+//			val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
+			FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
+		#]
 		println ("FRIDGE | activated FridgeObserver")
 		delay 300
 	}

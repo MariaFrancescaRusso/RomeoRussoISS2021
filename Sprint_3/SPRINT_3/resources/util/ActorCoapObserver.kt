@@ -11,7 +11,8 @@ import java.util.Scanner
 import org.eclipse.californium.core.CoapHandler
 import it.unibo.kactor.ActorBasic
 import kotlinx.coroutines.launch
-import java.util.ArrayList 
+import java.util.ArrayList
+import it.unibo.kactor.QakContext 
  
 class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
 
@@ -52,7 +53,7 @@ class ActorCoapObserver(ip:String, port:Int, context:String, destactor:String) {
 				}
  				if(  owner!== null && !ignored) owner.scope.launch {
  					val event = MsgUtil.buildEvent( "observer$destactor","observer$destactor","observer$destactor('$content')")
-					owner.emit( event, avatar=true ) //to avoid that auto-event will be discarded
+					owner.emit( QakContext.getActor("maitre")!!.context!!,event)
 				}
 				ignored = false
            } 
