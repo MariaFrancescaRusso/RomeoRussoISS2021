@@ -1111,7 +1111,7 @@ QActor pantry context ctxmaitre {
 	
 		[#
 			val PantryObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
-	//		val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
+//			val PantryObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","pantry")
 			PantryObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
 		#]
 		println ("PANTRY | activated PantryObserver")
@@ -1185,7 +1185,7 @@ QActor table context ctxmaitre {
 
 		[#
 			val TableObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
-		//	val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
+//			val TableObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","table")		
 			TableObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
 		#]
 		println ("TABLE | activated TableObserver")
@@ -1258,7 +1258,7 @@ QActor dishwasher context ctxmaitre {
 		println ("DISHWASHER | loaded initial state")
 		[#
 			val DishwasherObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
-		//	val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")	
+//			val DishwasherObserver = util.ActorCoapObserver("192.168.1.171",8070,"ctxmaitre","dishwasher")	
 			DishwasherObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
 		#]
 		println ("DISHWASHER | activated DishwasherObserver")
