@@ -1,6 +1,6 @@
 package it.unibo.maitreGUI
 
-import it.unibo.connQak.ConnectionType
+import it.unibo.connQak.*
 import org.json.JSONObject
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Controller
@@ -13,16 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam
 class Controller {
 	@Value("\${spring.application.name}")
 	var appName : String? = null
-	// The change of address, port, context and protocol
-	// can be done at starts at: localhost:8081/settings
-	var addr = "localhost"
-	var port = "8040"
-	var ctx = "ctxsystem"
-	var actor = "maitre"
 	var caller = "spring"
-	var protocol = ConnectionType.TCP
 	var maitreResource : MaitreResource ?= null
-//	var maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
 	
 	// To keep the status of elements, consult, stop, web page name
 	var PantryEl = ArrayList<List<String>>()
@@ -36,17 +28,14 @@ class Controller {
 	
 	@GetMapping("/")
 	suspend fun home(viewmodel : Model) : String {
-		maitreResource = MaitreResource(caller, addr, port, ctx, actor, protocol)
+		maitreResource = MaitreResource(caller)
 		
-		//TODO: rifaccio anche il consult se l ho fatto prima di setting? si perche cambio maitre? e prima quindi non andava?
-//		if (!Consulted) {
-			// At homepage load, a consult command is sent
-			var ConsultStr = maitreResource!!.execConsult()
-//			var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
-			println("CONTROLLER | sent consult to prepare the web homepage...")
-			saveConsultRes(ConsultStr)
-//			Consulted = true
-//		}
+		// At homepage load, a consult command is sent
+		var ConsultStr = maitreResource!!.execConsult()
+//		var ConsultStr = "{fridge:\"[[s001,bread,15],[d001,water,12]]\"}+{dishwasher:\"[]\"}+{pantry:\"[[dishes,30],[glasses,30]]\"}+{table:\"[];[]\"}+"
+		println("CONTROLLER | sent consult to prepare the web homepage...")
+		saveConsultRes(ConsultStr)
+
 		// To fill the prepare selection
 		showPrepareEl(viewmodel)
 		
@@ -79,7 +68,6 @@ class Controller {
 			else -> throw Exception("No prepare button selected")			
 		}
 		
-		//TODO: posso togliere i !! perchè non necessari??
 		maitreResource!!.execPrepare(Crockery, Food)
 		println("CONTROLLER | sent prepare...")
 		
@@ -201,6 +189,7 @@ class Controller {
 		return "Settings"
 	}
 	
+	// The change of address, port, context and protocol can be done at starts at: localhost:8081/settings
 	@GetMapping("/changeSettings")
 	suspend fun  saveSettings(viewmodel : Model,
 							  @RequestParam changeButton : String,
@@ -216,20 +205,26 @@ class Controller {
 				count++
 			else {
 				when (key) {
-					"addr" -> this.addr = value
+					"addr" -> hostAddr = value
 					
-					"port" -> this.port = value
+					"port" -> port = value
 					
-					"ctx" -> this.ctx = value
+					"ctx" -> ctxqakdest = value
 					
-					"protocol" -> this.protocol = ConnectionType.valueOf(value)
+					"protocol" -> connprotocol = ConnectionType.valueOf(value)
+					
+					"mqttAddr" -> mqtthostAddr = value
+					
+					"mqttPort" -> mqttport = value
+					
+					"mqttTopic" -> mqtttopic = value
 					
 					else -> {}	// is the button value
 				}
 			}
 		}
 		
-		if (count == 4) {
+		if (count == 7) {
 			showWarning(viewmodel, "Insert at least an element to change!")
 			return "Settings"
 		}
@@ -237,7 +232,7 @@ class Controller {
 			return home(viewmodel)
 	}
 	
-	//TODO: terminate only the maitre actor, but not the entire application! Solve it!
+	//TODO: terminate only the maitre actor, but not the entire application
 	@GetMapping("/end")
 	suspend fun  end (/*viewmodel : Model,*/
 					  @RequestParam endButton : String) /*: String*/ {		

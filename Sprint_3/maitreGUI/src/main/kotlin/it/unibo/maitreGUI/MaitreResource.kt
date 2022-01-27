@@ -1,24 +1,19 @@
 package it.unibo.maitreGUI
 
-import it.unibo.connQak.ConnectionType
-import it.unibo.connQak.connQakBase
+import it.unibo.connQak.*
 import it.unibo.kactor.MsgUtil
 import it.unibo.kactor.sysUtil
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.runBlocking
 
 @kotlinx.coroutines.ObsoleteCoroutinesApi
-class MaitreResource (name: String, addrdest: String, portdest: String, ctxdest: String, actordest: String, protocol: ConnectionType ){
+class MaitreResource (name: String) {
 	var caller = name
-	var addr = addrdest
-	var port = portdest
-	var ctxqakdest = ctxdest
-	var actor = actordest
-	var coap  = CoapSupport("coap://$addr:$port", "$ctxqakdest/$actor")
+	var coap  = CoapSupport("coap://$hostAddr:$port", "$ctxqakdest/$qakdestination")
 	var conn  : connQakBase
 
 	init {
-		conn = connQakBase.create(protocol)
+		conn = connQakBase.create(connprotocol)
 		conn.createConnection()
 		println("MaitreResource | configured ${sysUtil.curThread()} ")
 	}
