@@ -1,0 +1,79 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<link rel="stylesheet" type="text/css" href="./style.css">
+	<!-- To load offline the CSS -->
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
+
+	<head>
+		<meta charset="utf-8">
+		<title>STANDING BUFFET SERVICE</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	
+	<body>
+		<h1>STANDING BUFFET SERVICE</h1>
+		<hr>
+
+		<form name="settingsForm" action="/changeSettings" method="get">
+			<fieldset>
+				<legend>Settings</legend>
+				 <ul>
+				 	<li>Change the desired elements:</li>
+					<li><table class="settings">
+				    	<tr>
+				    		<th class="settings">Address:</th>
+				    		<td class="settings"><input type="text" name="addr" th:value="${addr}"
+					    	placeholder="localhost or 192.168.1.171" 
+					    	pattern="localhost|[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}" 
+					    	title="Insert here an address: localhost or for example '192.168.1.171'"/></td>
+						</tr>
+						<tr>
+					    	<th class="settings">Port:</th>
+					    	<td class="settings"><input type="text" name="port" th:value="${port}"
+					    	placeholder="8070" 
+					    	pattern="[0-9]{1,5}" 
+					    	title="Insert here a port"/></td>
+					    </tr>
+						<tr>
+					    	<th class="settings">Context:</th>
+					    	<td class="settings"><input type="text" name="ctx" th:value="${ctx}" 
+					    	placeholder="ctxmaitre" 
+					    	pattern="[A-Za-z]{1,}" 
+					    	title="Insert here a context"/></td>
+					    </tr>
+						<tr>
+					    	<th class="settings">Protocol:</th>
+					    	<td class="settings"><input type="text" name="protocol" th:value="${protocol}" 
+					    	placeholder="TCP COAP MQTT" 
+					    	pattern="TCP|COAP|MQTT"
+					    	title="Insert here a protocol from: TCP, COAP, MQTT"/></td>
+					    </tr>
+					    <tr>
+				    		<th class="settings">MQTT Address:</th>
+				    		<td class="settings"><input type="text" name="mqttAddr" th:value="${addr}"
+					    	placeholder="broker.hivemq.com" 
+					    	pattern="[A-Za-z.]{1,}" 
+					    	title="Insert here an MQTT address"/></td>
+						</tr>
+						<tr>
+					    	<th class="settings">MQTT Port:</th>
+					    	<td class="settings"><input type="text" name="mqttPort" th:value="${port}"
+					    	placeholder="1883" 
+					    	pattern="[0-9]{1,5}" 
+					    	title="Insert here a port"/></td>
+					    </tr>
+						<tr>
+					    	<th class="settings">MQTT Topic:</th>
+					    	<td class="settings"><input type="text" name="mqttTopic" th:value="${ctx}" 
+					    	placeholder="unibo/maitre" 
+					    	pattern="[A-Za-z]{1,}" 
+					    	title="Insert here an MQTT topic"/></td>
+					    </tr>
+					</table></li><br/>
+					<li><input type="submit" class="button" name="changeButton" value="Confirm Changes"/><li>
+					<li><div class="warning" th:text="${warningStrRes}"></div></li>
+				</ul>
+			</fieldset>	
+		</form>
+	</body>
+</html>			

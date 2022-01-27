@@ -1,0 +1,45 @@
+<html xmlns:th="http://www.thymeleaf.org">
+
+	<link rel="stylesheet" type="text/css" href="./style.css">
+	<!-- To load offline the CSS -->
+	<link rel="stylesheet" type="text/css" href="../static/style.css">
+
+	<head>
+		<meta charset="utf-8">
+		<title>STANDING BUFFET SERVICE</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	</head>
+	
+	<body>
+		<h1>STANDING BUFFET SERVICE</h1>
+		<hr>
+		
+		<form name="ConsultStopForm" action="/consult" method="get">
+			<fieldset>
+				<legend>Management</legend>
+				&#x25BA; <input type="submit" class="button" formaction="/stopReactivate" name="stopReactivateButton" 
+				th:value="${stopReactivateValue}?:'Stop Task'"/><br/>
+				<div class="warning" th:text="${stopStrRes}"></div><br/>
+				
+				<details class="summaryBody" th:open="${consultOpenAttr}">
+				    <summary><input type="submit" class="button" name="consultButton" 
+				    value="Consult Room Resources"/></summary>
+					<ul>
+						<li><pre><table th:hidden="${consulthiddenAttr}?:hidden">
+							<tr th:each="resource : ${consultRes}" >
+								<th th:text="${#strings.substringBefore(resource,':')}"></th>
+								<td th:text="${#strings.substringAfter(resource,': ')}"></td>
+							</tr>
+						</table></pre></li>
+					</ul>
+			  	</details>			
+			</fieldset>	
+		</form>	
+		
+		<form name="endForm" action="/end" method="get">
+			<input type="submit" class="button" id="endButton" name="endButton" value="End"/>
+		</form>
+		<br/><br/>
+				
+	</body>
+</html>			
