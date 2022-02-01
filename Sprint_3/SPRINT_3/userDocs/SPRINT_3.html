@@ -76,6 +76,9 @@ As already said the adapter object allow the communications between the two part
 To can receive dispatch messages from the controller through the adapter, the maitre actor doesn't must be anymore a mock client and so it must be redesigned.
 
 <br><br>
+<img src="./utils/img/PrAn_CommunicationGuiMaitre.svg" alt="Communications GUI Maitre">
+
+<br><br>
 APPUNTI:
 <br><br>
 The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives, through messages, the commands to send to the other system elements.
@@ -130,7 +133,7 @@ In detail, when it receives the message:
 		<iframe class="qakImageMax" src="./utils/img/Maitre.png" title="Maitre QActor from model.qak">Maitre QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
-		<img src="./utils/img/MaitreActorRel.svg" alt="Maitre Actor Context">
+		<img src="./utils/img/ProjectTab_CommunicationGuiMaitre.svg" alt="Maitre Actor Context: communications with GUI">
 	</td>
 </tr>
 <tr class="text">
@@ -156,7 +159,12 @@ In particular, in the maitreGUI package there are:
 	<li>a support for CoAP connection (CoapSupport.kt), used by the MaitreResource to can read the answers received by the maitre actor via CoAP;</li>
 	<li>a main (MaitreGuiApplication.kt) to run the application.</li>
 </ul>
-In the connQak package there are <br>
+In the connQak package there are:
+<ul>
+	<li>sysConnKb.kt, used to take and set the ... to use for the communications between MaitreResource and destination actor (maitre) (TCP, COAP, MQTT or HTTP (not implemented) to send messages and COAP to receive/read maitre state update);</li>
+	<li>connQakBase.kt, which works as a factory class for classes to sends messages to the actors using the TCP, HTTP, CoAP and MQTT protocols;</li>
+	<li>some classes (one for each type of connection) used by connQakBase.</li>
+</ul>
 
 
 <br><br>
@@ -211,7 +219,7 @@ non sono stati fatti in quanto il maitre/il funzionamento del sistema era già s
 		<pre><iframe class="qakSprint" src="../src/model.qak" title="ModelSprint_3">Model of Sprint 3</iframe></pre>
 	</td>
 	<td class="imageSchema">
-		<img src="../../../Sprint_1/SPRINT_1/userDocs/utils/img/ModelSprint1_Legend.png" alt="Legend of the Logical Architecture System Model from Sprint 3"><br>
+		<img src="./utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 3"><br>
 		<img src="./utils/img/ModelSprint_3.svg" alt="Logical Architecture System Model from Sprint 3">
 	</td>
 </tr>
