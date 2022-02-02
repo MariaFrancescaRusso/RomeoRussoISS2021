@@ -200,6 +200,36 @@ The maitreResource  sends the commands to the maitre actor by TCP and receives t
 The controller works as a Spring controller and intercepts the Get request to execute the right behaviuor using maitreResource and showing the right HTML page.<br>
 Immagine view => controller => maitreResource (use cases) <br>
 
+<br><br>
+<table>
+<tr class="text">
+	<th>Machine Understandable Models</th>
+	<th>A Possible Graphic Representation</th>
+</tr>
+<tr>
+	<td class="text" rowspan="3">
+		<br><a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/Controller.kt" target="_blank">Controller.kt</a><br><br>
+		<iframe class="qakSprint2max" src="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/Controller.kt" title="Controller from maitreGUI project">Controller from maitreGUI project</iframe>
+		<br><br><hr><br>
+		<a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/MaitreResource.kt" target="_blank">MaitreResource.kt</a><br><br>
+		<iframe class="qakSprint2max" src="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/MaitreResource.kt" title="MaitreResource from maitreGUI project">MaitreResource from maitreGUI project</iframe>
+	</td>
+	<td class="imageSchema">
+		<img src="./utils/img/CommunicationGuiMaitre.svg" alt="Communications between GUI (maitreGUI project) and maitre actor">
+	</td>
+</tr>
+<tr class="text">
+	<th>Moore State Machine Diagrams/htlm images??</th>
+</tr>
+<tr>
+	<td class="imageSchema">
+		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
+		<img src="./utils/img/FSM_RBRMapperQActor.svg" alt="Representation of the behavior of QActor rbrmapper, modeled as a Moore state machine"><br>
+		<img src="./utils/img/FSM_RBRQActor.svg" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine">
+	</td>
+</tr>
+</table>
+
 <h2>Testing</h2>
 
 The tests for this sprint ...
