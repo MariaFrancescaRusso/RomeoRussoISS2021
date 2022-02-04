@@ -232,17 +232,17 @@ class Controller {
 			return home(viewmodel)
 	}
 	
-	//TODO: terminate only the maitre actor, but not the entire application
-	@GetMapping("/end")
-	suspend fun  end (/*viewmodel : Model,*/
-					  @RequestParam endButton : String) /*: String*/ {		
-		println("CONTROLLER | managing end button \"$endButton\"...")
-		
-		maitreResource!!.execKillMaitre()
-		println("CONTROLLER | sent end...")
-				
-//		return home(viewmodel)
-	}
+	//TODO: for now it terminates only the maitre actor, but not the entire application
+//	@GetMapping("/end")
+//	suspend fun  end (/*viewmodel : Model,*/
+//					  @RequestParam endButton : String) /*: String*/ {		
+//		println("CONTROLLER | managing end button \"$endButton\"...")
+//		
+//		maitreResource!!.execKillMaitre()
+//		println("CONTROLLER | sent end...")
+//				
+////		return home(viewmodel)
+//	}
 	
 	//TODO: manage foodconsumer, which is for now a mock client
 
