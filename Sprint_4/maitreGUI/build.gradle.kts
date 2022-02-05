@@ -6,10 +6,10 @@ plugins {
 	kotlin("jvm") version "1.6.0"
 	kotlin("plugin.spring") version "1.6.0"
 	
-//	java
-//	application
-//	jacoco
-//	distribution
+	java
+	application
+	jacoco
+    distribution
 }
 
 group = "it.unibo"
@@ -103,4 +103,18 @@ tasks.withType<KotlinCompile> {
 
 tasks.withType<Test> {
 	useJUnitPlatform()
+}
+application {
+	// Define the main class for the application.
+	mainClass.set("it.unibo.maitreGUI.MaitreGuiApplicationKt")
+}
+
+version = "1.0"
+
+tasks.jar {
+	manifest {
+		attributes["Main-Class"] = "it.unibo.maitreGUI.MaitreGuiApplicationKt"
+		attributes(mapOf("Implementation-Title" to project.name,
+			"Implementation-Version" to project.version))
+	}
 }
