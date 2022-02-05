@@ -53,32 +53,41 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the user (<ks>Maître de Salle</ks>) must be able to interact with the system software, produced in the previous Sprints, through his/her smartphone (<ks>maître's smartphone</ks>).<br>
 
-To do that, as already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>, the software running on the <ks>maître's smartphone</ks> must provide a graphic user interface (GUI) and could be a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser; the last one, after a careful evaluation of the available means to design this software, results to be the more appropriate, as it appears to be a more versatile tool.
+To do that, as already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>, the software running on the <ks>maître's smartphone</ks> must provide a graphic user interface (GUI) and could be realized as a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser; the last one, after a careful evaluation of the available means to design this software, results to be the more appropriate, as it appears to be a more versatile tool.
 <br><br>
 Therefore, to to solve this sprint goal, the main problems which must be addressed are:
 <ul>
-	<li>how to realize the GUI as a web application;</li>
+	<li>how to change the mock maitre actor in a non-mock actor to receive commands in order to allow the user to interact with it through the GUI;</li>
 	<li>which architecture could be used to represent the system;</li>
-	<li>how the two parts (GUI/web application and system application??, so the maitre actor of the system application) must communicate;</li>
-	<li>how to change the mock maitre actor in an actor.</li>
+	<li>how to realize the GUI as a web application;</li>
+	<li>how the GUI (web application) and the maitre actor must communicate.</li>
 </ul>
 
-<h3>GUI for Maître's Smartphone Software</h3>
+<h4>Maitre</h4>
 
-This web application con be realize as a gradle project using Spring.?? (Qua o nella parte di progetto?)
+To redesigned the maitre as a non-mock actor there are different ways available:
+<ol>
+	<li>it's behavior could be assimilated by the GUI; but this is not the most adaptive solution because it fixes the maitre actor behavior with the GUI preventing the interaction with a different interface mechanism free by this behavior and representing an obstacle for possible future extensions;</li>
+	<li><a name="sol2_maitre"></a>the maitre actor could be a non-mock actor, that (maintains it's behavior with other actors, but it can also) can receive external commands (in this case from the GUI) as long as the interface mechanism supports the same type of messages exchange.</li>
+</ol>
+Therefore, the <a href="./SPRINT_3.html#sol2_maitre">second solution</a> seems to be the most appropriate because it results the most versatile solution, available to the interaction with a different interface mechanism and to possible future extensions.
 
 <h4>System Architecture</h4>
 
-This application could be developed using the MVC (Model-View-Controller) pattern and making sure the system architecture respects the hexagonal architecture, which allows the communications between the front-end and the back-end by inserting an adapter object.
-In this way, the web application (front-end) can communicate with the system application (back-end) through the adapter object: the user can select elements on the web interface (view), which can be read by the controller, which can communicate with the (model?) maitre actor through the adapter object.
+This application could be developed using the MVC (Model-View-Controller) pattern and making sure the system architecture respects the hexagonal architecture, which allows the communications between the front-end and the back-end by inserting an adapter object: in this way, the web application (front-end) can communicate with the system application/maitre actor (back-end) through the adapter object: the user can select elements on the web interface (view), which can be read by the controller, which can communicate with the (model?) maitre actor through the adapter object.
+
+<h4>GUI - Web Application</h4>
+
+This web application con be realize as a gradle project using Spring framework.
+
+<br>
+The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework 
+(Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. 
+Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).<br>
 
 <h4>Communications</h4>
 
 As already said the adapter object allow the communications between the two parts (front-end and back-end); this can be done in different ways through different protocols (TCP, MQTT, CoAP). With regard to the previous choices, the more appropriate way to realize this could be the using of the CoAP protocol: the controller through the adapter object sends messages (dispatch) to the maitre, which, when necessary, updates its state (through the updateResource command) so to make possible for the adapter object to read it via CoAP and to commnicate it to the controller.
-
-<h4>Maitre</h4>
-
-To can receive dispatch messages from the controller through the adapter, the maitre actor doesn't must be anymore a mock client and so it must be redesigned.
 
 <br><br>
 <img src="./utils/img/PrAn_CommunicationGuiMaitre.svg" alt="Communications GUI Maitre">
@@ -154,7 +163,7 @@ In detail, when it receives the message:
 
 <h3>GUI</h3>
 
-The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework.<br>
+The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework (Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).<br>
 With regard of what said in the problem analysis of this sprint, this project is composed by: a package src/main/kotlin/it/unibo/maitreGUI with a controller (Controller.kt), an adapter object (MaitreResource.kt), a support for CoAP connection (CoapSupport.kt) and a main (MaitreGuiApplication.kt); a package src/main/kotlin/it/unibo/connQak with ...<br>
 With regard of what said in the problem analysis of this sprint, in this project there are two packages in src/main/kotlin/it/unibo (maitreGUI and connQak) and in src/main/resources/templates there are the HTML files for which it has been used thimeleaf and GET methods to send informations.<br>
 In particular, in the maitreGUI package there are:
