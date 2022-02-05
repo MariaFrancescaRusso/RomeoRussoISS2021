@@ -67,42 +67,31 @@ Therefore, to to solve this sprint goal, the main problems which must be address
 
 To redesigned the maitre as a non-mock actor there are different ways available:
 <ol>
-	<li>it's behavior could be assimilated by the GUI; but this is not the most adaptive solution because it fixes the maitre actor behavior with the GUI preventing the interaction with a different interface mechanism free by this behavior and representing an obstacle for possible future extensions;</li>
-	<li><a name="sol2_maitre"></a>the maitre actor could be a non-mock actor, that (maintains it's behavior with other actors, but it can also) can receive external commands (in this case from the GUI) as long as the interface mechanism supports the same type of messages exchange.</li>
+	<li>its behavior could be assimilated by the GUI; but this is not the most adaptive solution because it fixes the maitre actor behavior with the GUI preventing the interaction with a different interface mechanism free by this behavior and representing an obstacle for possible future extensions;</li>
+	<li><a name="sol2_maitre"></a>the maitre actor could be a non-mock actor, which maintains its behavior with the other system actors, but it can also receive external commands (in this case from the GUI) as long as the interface mechanism supports the same type of messages exchange.</li>
 </ol>
-Therefore, the <a href="./SPRINT_3.html#sol2_maitre">second solution</a> seems to be the most appropriate because it results the most versatile solution, available to the interaction with a different interface mechanism and to possible future extensions.
+Therefore, the <a href="./SPRINT_3.html#sol2_maitre">second solution</a> seems to be the most appropriate because it results the most versatile one for interacting with a different interface mechanism and for possible future extensions.
 
 <h4>System Architecture</h4>
 
-This application could be developed using the MVC (Model-View-Controller) pattern and making sure the system architecture respects the hexagonal architecture, which allows the communications between the front-end and the back-end by inserting an adapter object: in this way, the web application (front-end) can communicate with the system application/maitre actor (back-end) through the adapter object: the user can select elements on the web interface (view), which can be read by the controller, which can communicate with the (model?) maitre actor through the adapter object.
+This application could be developed using the MVC (Model-View-Controller) pattern and making sure the system architecture respects the hexagonal architecture, which allows the communications between the front-end and the back-end by inserting an adapter object: in this way, the web application (front-end) can communicate with the maitre actor (back-end) through the adapter object. For example, the user could select elements on the web interface (view), which can be read by the controller, which can communicate with the (model) maitre actor through the adapter object.
 
 <h4>GUI - Web Application</h4>
 
-This web application con be realize as a gradle project using Spring framework.
-
-<br>
-The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework 
-(Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. 
-Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).<br>
+This web application could be realized using Spring framework which provides a good support to web application development and to the MVC pattern for the system architecture proposed above.
 
 <h4>Communications</h4>
 
-As already said the adapter object allow the communications between the two parts (front-end and back-end); this can be done in different ways through different protocols (TCP, MQTT, CoAP). With regard to the previous choices, the more appropriate way to realize this could be the using of the CoAP protocol: the controller through the adapter object sends messages (dispatch) to the maitre, which, when necessary, updates its state (through the updateResource command) so to make possible for the adapter object to read it via CoAP and to commnicate it to the controller.
+As already said above, the adapter object allow the communications between the two parts (front-end and back-end); this can be done in different ways through different protocols (TCP, MQTT, CoAP).<br>
+After a careful evaluation, this could be realized using:
+<ul>
+	<li>the TCP, MQTT or CoAP protocol for the communication to the maitre actor;</li>
+	<li>the CoAP protocol for the communication from the maitre actor, so to make possible for everyone to observe its state.</li>
+</ul>
+In this way: the controller through the adapter object sends messages (dispatch) to the maitre, which, when necessary, updates its state (through the updateResource command) so to make possible for the adapter object to read it via CoAP and to communicate it to the controller.
 
 <br><br>
 <img src="./utils/img/PrAn_CommunicationGuiMaitre.svg" alt="Communications GUI Maitre">
-
-<br><br>
-APPUNTI:
-<br><br>
-The maitre software sends and recevies the same messages and events of the mock maitre in the previous Sprint. To realize it, it's possible to develop an actor which recives, through messages, the commands to send to the other system elements.
-<br><br>
-Scaletta:
-	- soluzione:
-			- View: html-tymeleaf
-			- Controller: Spring, chiama Adapter
-			- Adapter: osserva via CoAP il maitre per leggere aggiornamento stato del maitre
-			- Model: Maitre actor, che aggiorna il proprio stato (updateResource)
 
 <h2>Test Plans</h2>
 
