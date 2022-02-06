@@ -1,0 +1,114 @@
+System fridge 
+
+//Maitre - Fridge/Resources
+Dispatch consult:consult(ARG)	//void
+//RBR - Fridge
+Dispatch askFood:askFood(FOOD_CODE) 
+
+//RBR - Resources
+Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to change
+
+Context ctxfridge ip [host="localhost" port=8060]
+
+QActor fridge context ctxfridge {
+	
+	State s0 initial {
+		println ("FRIDGE | STARTS and it's embedded with the proper set of food...")
+		
+		solve( consult("FridgeState.pl") )
+		println ("FRIDGE | loaded initial state")
+
+		[#
+			val FridgeObserver = util.ActorCoapObserver(context!!.hostAddr,context!!.portNum,context!!.getName(),name)
+//			val FridgeObserver = util.ActorCoapObserver("127.0.0.1",8060,"ctxfridge","fridge")
+			FridgeObserver.activate(myself, arrayListOf("Added", "Removed", "Fail")) 
+		#]
+		println ("FRIDGE | activated FridgeObserver")
+		delay 300
+	}
+	Goto wait
+
+	State wait {
+		println ("FRIDGE | is waiting for a command...")
+	} 
+	Transition t1 
+		whenMsg askFood -> answerFood
+		whenMsg consult -> exposeState
+		whenMsg changeState -> handleChangeState
+	
+	State answerFood {
+		[# 
+			var FoodCode = ""
+			var FoodPresence = false
+		#]
+		
+		onMsg( askFood : askFood(FOOD_CODE) ) {
+	 		[# FoodCode = payloadArg(0) #]
+ 		}
+
+		println ("FRIDGE | searching food with Food_Code = $FoodCode...")
+
+		solve( checkFoodByCode($FoodCode, Food) )
+		ifSolved {	
+			[# FoodPresence = true #]
+					
+	 		println ("FRIDGE |  found existing food with Food_Code = $FoodCode : ${getCurSol(\"Food\")}")	
+			updateResource [# "$FoodPresence;${getCurSol("Food")}" #]
+		}
+		else {
+			println ("FRIDGE | Error searching food : not found existing or available food with Food_Code = $FoodCode...")
+			updateResource [# "$FoodPresence" #]
+		}	
+		
+		println ("FRIDGE | answered to RBR about food presence via CoAP")
+	}
+	Goto wait
+		 
+	State exposeState {
+		solve( getAllEl(Foods) )
+		ifSolved {
+			println ("FRIDGE | Foods = ${getCurSol(\"Foods\")} ")
+			updateResource [# "${getCurSol("Foods")}" #]
+		}
+		else {
+			println ("FRIDGE | Error consulting fridge...")
+			updateResource [# "ERROR" #]
+		} 
+		 
+		println ("FRIDGE | sending state informations/exposed content to maitre...")
+ 	}
+ 	Goto wait
+ 	
+ 	State handleChangeState {
+		[# var Food = "" #]
+
+		onMsg( changeState : changeState(add, ARG) ) {
+			[# Food = payloadArg(1) #]
+			
+			solve( add($Food) )
+	 		ifSolved {
+				println ("FRIDGE | added Food : $Food...")
+				updateResource [# "Added Food $Food with success!" #]
+			}
+			else {
+				println ("FRIDGE | Error adding Food : $Food...")
+				updateResource [# "Fail adding Food $Food!" #]
+			}
+ 		}
+ 		
+ 		onMsg( changeState : changeState(remove, ARG) ) {
+			[# Food = payloadArg(1) #]
+			
+			solve( remove($Food) )
+	 		ifSolved {
+				println ("FRIDGE | removed Food : $Food...")
+				updateResource [# "Removed Food $Food with success!" #]
+			}
+			else { 
+				println ("FRIDGE | Error removing Food : $Food...")
+				updateResource [# "Fail removing Food $Food!" #]
+			}
+ 		}
+	}
+	Goto wait
+}

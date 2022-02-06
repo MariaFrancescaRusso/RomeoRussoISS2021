@@ -1,0 +1,8 @@
+version: '3'
+services:
+  webgui:
+    image: docker.io/bluffgnuff/fridgenode:1.1
+    ## image: webbasicrobotqakforpc:1.1
+    ports:
+      - 8060:8060
+
