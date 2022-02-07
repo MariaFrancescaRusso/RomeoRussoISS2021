@@ -53,42 +53,42 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a>, the user (<ks>Maître de Salle</ks>) must be able to interact with the system software, produced in the previous Sprints, through his/her smartphone (<ks>maître's smartphone</ks>).<br>
 
-To do that, as already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>, the software running on the <ks>maître's smartphone</ks> must provide a graphic user interface (GUI) and could be realized as a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser; the last one, after a careful evaluation of the available means to design this software, results to be the more appropriate, as it appears to be a more versatile tool.
+To do that, as already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>, the software running on the <ks>maître's smartphone</ks> must provide a <tt>graphic user interface</tt> (<tt>GUI</tt>) and could be realized as a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web</tt> application running on a mobile browser; the last one, after a careful evaluation of the available means to design this software, results to be the more appropriate, as it appears to be a more versatile tool.
 <br><br>
 Therefore, to to solve this sprint goal, the main problems which must be addressed are:
 <ul>
-	<li>how to change the mock maitre actor in a non-mock actor to receive commands in order to allow the user to interact with it through the GUI;</li>
+	<li>how to change the <tt>mock</tt> <k>maitre</k> <tt>actor</tt> in a <ko>in verde??</ko>non-mock <tt>actor</tt> to receive commands in order to allow the user to interact with it through the <tt>GUI</tt>;</li>
 	<li>which architecture could be used to represent the system;</li>
-	<li>how to realize the GUI as a web application;</li>
-	<li>how the GUI (web application) and the maitre actor must communicate.</li>
+	<li>how to realize the <tt>GUI</tt> as a <tt>web</tt> <ko>in verde??</ko>application;</li>
+	<li>how the <tt>GUI</tt> (<tt>web</tt> <ko>in verde??</ko>application) and the <k>maitre</k> <tt>actor</tt> must communicate.</li>
 </ul>
 
 <h4>Maitre</h4>
 
-To redesigned the maitre as a non-mock actor there are different ways available:
+To redesigned the <k>maitre</k> as a <ko>in verde??</ko> non-mock <tt>actor</tt> there are different ways available:
 <ol>
-	<li>its behavior could be assimilated by the GUI; but this is not the most adaptive solution because it fixes the maitre actor behavior with the GUI preventing the interaction with a different interface mechanism free by this behavior and representing an obstacle for possible future extensions;</li>
-	<li><a name="sol2_maitre"></a>the maitre actor could be a non-mock actor, which maintains its behavior with the other system actors, but it can also receive external commands (in this case from the GUI) as long as the interface mechanism supports the same type of messages exchange.</li>
+	<li>its behavior could be assimilated by the <tt>GUI</tt>; but this is not the most adaptive solution because it fixes the <k>maitre</k> <tt>actor</tt> behavior with the <tt>GUI</tt> preventing the interaction with a different interface mechanism free by this behavior and representing an obstacle for possible future extensions;</li>
+	<li><a name="sol2_maitre"></a>the <k>maitre</k> <tt>actor</tt> could be a <ko>in verde??</ko>non-mock <tt>actor</tt>, which maintains its behavior with the other system <tt>actors</tt>, but it can also receive external commands (in this case from the <tt>GUI</tt>) as long as the interface mechanism supports the same type of messages exchange.</li>
 </ol>
 Therefore, the <a href="./SPRINT_3.html#sol2_maitre">second solution</a> seems to be the most appropriate because it results the most versatile one for interacting with a different interface mechanism and for possible future extensions.
 
 <h4>System Architecture</h4>
 
-This application could be developed using the MVC (Model-View-Controller) pattern and making sure the system architecture respects the hexagonal architecture, which allows the communications between the front-end and the back-end by inserting an adapter object: in this way, the web application (front-end) can communicate with the maitre actor (back-end) through the adapter object. For example, the user could select elements on the web interface (view), which can be read by the controller, which can communicate with the (model) maitre actor through the adapter object.
+This application could be developed using the <tt>MVC</tt> (<tt>Model</tt>-<tt>View</tt>-<tt>Controller</tt>) <ko>in verde??</ko>pattern and making sure the system architecture respects the <tt>hexagonal architecture</tt>, which allows the communications between the <ko>in verde??</ko>front-end and the <ko>in verde??</ko>back-end by inserting an <tt>adapter object</tt>: in this way, the <tt>web</tt> <ko>in verde??</ko>application (<ko>in verde??</ko>front-end) can communicate with the <k>maitre</k> <tt>actor</tt> (<ko>in verde??</ko>back-end) through the <tt>adapter object</tt>. For example, the user<ko>Maitre de salle??</ko> could select elements on the <tt>web</tt> <ko>in verde??</ko>interface (<tt>view</tt>), which can be read by the <tt>controller</tt>, which can communicate with the (<tt>model</tt>) <k>maitre</k> <tt>actor</tt> through the <tt>adapter object</tt>.
 
 <h4>GUI - Web Application</h4>
 
-This web application could be realized using Spring framework which provides a good support to web application development and to the MVC pattern for the system architecture proposed above.
+This <tt>web</tt> <ko>in verde??</ko>application could be realized using <tt>Spring framework</tt> which provides a good support to <tt>web</tt> <ko>in verde??</ko>application development and to the <tt>MVC</tt> <ko>in verde??</ko>pattern for the system architecture proposed above.
 
 <h4>Communications</h4>
 
-As already said above, the adapter object allow the communications between the two parts (front-end and back-end); this can be done in different ways through different protocols (TCP, MQTT, CoAP).<br>
+As already said above, the <tt>adapter object</tt> allow the communications between the two parts (<ko>in verde??</ko>front-end and <ko>in verde??</ko>back-end); this can be done in different ways through different protocols (<tt>TCP</tt>, <tt>MQTT</tt>, <tt>CoAP</tt>).<br>
 After a careful evaluation, this could be realized using:
 <ul>
-	<li>the TCP, MQTT or CoAP protocol for the communication to the maitre actor;</li>
-	<li>the CoAP protocol for the communication from the maitre actor, so to make possible for everyone to observe its state.</li>
+	<li>the <tt>TCP</tt>, <tt>MQTT</tt> or <tt>CoAP</tt> protocol for the communication to the <k>maitre</k> <tt>actor</tt>;</li>
+	<li>the <tt>CoAP</tt> protocol for the communication from the <k>maitre</k> <tt>actor</tt>, so to make possible for everyone to observe its state.</li>
 </ul>
-In this way: the controller through the adapter object sends messages (dispatch) to the maitre, which, when necessary, updates its state (through the updateResource command) so to make possible for the adapter object to read it via CoAP and to communicate it to the controller.
+In this way: the <tt>controller</tt> through the <tt>adapter object</tt> sends messages (<ko>dispatch</ko>) to the <k>maitre</k>, which, when necessary, updates its state (through the <ko>updateResource</ko> command) so to make possible for the <tt>adapter object</tt> to read it via <tt>CoAP</tt> and to communicate it to the <tt>controller</tt>.
 
 <br><br>
 <img src="./utils/img/PrAn_CommunicationGuiMaitre.svg" alt="Communications GUI Maitre">
@@ -113,15 +113,15 @@ The maitre actor in this sprint has been redesigned to not be (anymore) a mock a
 
 In detail, when it receives the message:
 <ul>
-	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery and food; so to allow/to add the possibility for the maitre to insert/decide/select the elements for the task Prepare the room, as said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. As for/in the previous sprints, for the first case, the maitre actor loads the default elements from the prolog file (Prepare.pl); otherwise it use the new elements. Then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
-	<li>prepare(Crockery, Food), where Crockery and Food are empty string or a list respectively of crockery and food. In the latter case, the prolog file (Prepare.pl) is updated with the new elements. Then, as for/in the previous sprints, the maitre actor loads the (default or new) elements from the prolog file (Prepare.pl) and sends the prepare message to the rbr specifing that food and crockery elements;</li>
-	<li>addFood(FOOD_CODE), where FOOD_CODE is the food code; so to allow/to add the possibility for the maitre to insert/decide/select the food code for the task Add Food. The prolog file (Prepare.pl) is updated with the new element/food code. Them, as for/in the previous sprints, the maitre actor loads the new element from the prolog file (Prepare.pl) and sends the addFood message/request to the rbr specifing the food code;</li>
-	<li>addFood(FOOD_CODE), where FOOD_CODE is the food code used by the maitre actor to send the addFood message/request to the rbr;</li>
-	<li>clear: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to the table to get/know the items (crockery and/or food) to remove and then it sends the clear message/dispatch to the rbr specifing that food and crockery elements;</li>
-	<li>consult: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to all resources and waits for their answers;</li>
-	<li>stop: as for/in the previous sprints, the maitre actor sends the stop message/request to the rbrwalker and only when it receives from the rbrwalker the stopped(true) reply then it waits for the reactivate message/dispatch. Here, it has been added the possibility to wait also a consult, but at the end of this case, it checks if it was in stop state and then it wait again for a reactivate or consult message/dispatch;</li>
-	<li>reactivate: as for/in the previous sprints, it sends the reactivate message/dispatch to the rbrwalker;</li>
-	<li>end: it terminates itself.</li>
+	<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food; so to allow/to add the possibility for the maitre to insert/decide/select the elements for the <ks>task Prepare the room</ks>, as said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. As for/in the previous sprints, for the first case, the <k>maitre</k> <tt>actor</tt> loads the default elements from the prolog file (Prepare.pl); otherwise it use the new elements. Then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
+	<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food. In the latter case, the prolog file (Prepare.pl) is updated with the new elements. Then, as for/in the previous sprints, the maitre actor loads the (default or new) elements from the prolog file (Prepare.pl) and sends the prepare message to the rbr specifing that food and crockery elements;</li>
+	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the food code; so to allow/to add the possibility for the maitre to insert/decide/select the food code for the task Add Food. The prolog file (Prepare.pl) is updated with the new element/food code. Them, as for/in the previous sprints, the maitre actor loads the new element from the prolog file (Prepare.pl) and sends the addFood message/request to the rbr specifing the food code;</li>
+	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the food code used by the maitre actor to send the addFood message/request to the rbr;</li>
+	<li><em>clear</em>: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to the table to get/know the items (crockery and/or food) to remove and then it sends the clear message/dispatch to the rbr specifing that food and crockery elements;</li>
+	<li><em>consult</em>: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to all resources and waits for their answers;</li>
+	<li><em>stop</em>: as for/in the previous sprints, the maitre actor sends the stop message/request to the rbrwalker and only when it receives from the rbrwalker the stopped(true) reply then it waits for the reactivate message/dispatch. Here, it has been added the possibility to wait also a consult, but at the end of this case, it checks if it was in stop state and then it wait again for a reactivate or consult message/dispatch;</li>
+	<li><em>reactivate</em>: as for/in the previous sprints, it sends the reactivate message/dispatch to the rbrwalker;</li>
+	<li><em>end</em>: it terminates itself.</li>
 </ul>
 
 <br>
@@ -150,9 +150,12 @@ In detail, when it receives the message:
 </tr>
 </table>
 
-<h3>GUI</h3>
+<h3>GUI - Web Application</h3>
 
-The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework (Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).<br>
+The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework 
+
+(Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).<br>
+
 With regard of what said in the problem analysis of this sprint, this project is composed by: a package src/main/kotlin/it/unibo/maitreGUI with a controller (Controller.kt), an adapter object (MaitreResource.kt), a support for CoAP connection (CoapSupport.kt) and a main (MaitreGuiApplication.kt); a package src/main/kotlin/it/unibo/connQak with ...<br>
 With regard of what said in the problem analysis of this sprint, in this project there are two packages in src/main/kotlin/it/unibo (maitreGUI and connQak) and in src/main/resources/templates there are the HTML files for which it has been used thimeleaf and GET methods to send informations.<br>
 In particular, in the maitreGUI package there are:
