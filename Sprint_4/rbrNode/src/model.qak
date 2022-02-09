@@ -66,10 +66,10 @@ Reply stepfail:stepfail(DURATION, CAUSE)
 
 //Context ctxsystem ip [host="localhost" port=8040]
 //192.168.1.171/211/14/40
-Context ctxmaitre ip [host="192.168.43.157" port=8070] 
-Context ctxfridge ip [host="192.168.43.157" port=8060]
+Context ctxmaitre ip [host="127.0.0.1" port=8070] 
+Context ctxfridge ip [host="192.168.1.211" port=8060]
 Context ctxrbr ip [host="localhost" port=8050]
-Context ctxbasicrobot ip [host="127.0.0.1" port=8020]  
+Context ctxbasicrobot ip [host="192.168.1.93" port=8020]  
 
 ExternalQActor basicrobot context ctxbasicrobot
 ExternalQActor pantry context ctxmaitre
@@ -513,10 +513,22 @@ QActor rbrmapper context ctxrbr {
 		var NameFile = "roomMap"
 		var Table = false
 		var Step = 650 //290 //647
+		var RobotType = ""
 	#]
 
 	State s0 initial {
 		println ("MAPPER | STARTS...")
+
+		// To know the robot type (virtual or real)
+		solve( consult("robotType.pl") )
+		solve( getValue(Value) )
+		ifSolved {
+			[# RobotType = "${getCurSol("Value")}" #]
+			println ("MAPPER | loaded robot type: $RobotType...")
+		}
+		else {
+			println ("MAPPER | Error getting IsMap value...")
+		}
 	}
 	Goto wait
 
@@ -567,6 +579,11 @@ QActor rbrmapper context ctxrbr {
 	State turnLeft {
 		println ("MAPPER | Found a wall")
 		forward basicrobot -m cmd : cmd(l)
+		// If the robot is a real robot, the left and right movements are of 45° instead of 90°; 
+		// so it's necessary to turn twice 
+		if [# RobotType == "real" #] {
+			forward basicrobot -m cmd : cmd(l)	
+		}
 		run itunibo.planner.plannerUtil.updateMap('l')
 		delay 1000
 		[# CurrEdge++ #]
@@ -601,6 +618,11 @@ QActor rbrmapper context ctxrbr {
 
 	State doTurn {
 		forward basicrobot -m cmd : cmd($CurrMov)
+		// If the robot is a real robot, the left and right movements are of 45° instead of 90°; 
+		// so it's necessary to turn twice 
+		if [# RobotType == "real" #] {
+			forward basicrobot -m cmd : cmd($CurrMov)
+		}
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 		delay 1000
 	}
@@ -642,10 +664,22 @@ QActor rbrwalker context ctxrbr {
 		var FirstStart = true
 		var Step = 650 //647 //290
 		var ObstGoal = false	
+		var RobotType = ""
 	#]
 	
 	State s0 initial {
 		println ("WALKER | STARTS...")	
+
+		// To know the robot type (virtual or real)
+		solve( consult("robotType.pl") )
+		solve( getValue(Value) )
+		ifSolved {
+			[# RobotType = "${getCurSol("Value")}" #]
+			println ("WALKER | loaded robot type: $RobotType...")
+		}
+		else {
+			println ("WALKER | Error getting IsMap value...")
+		}
 	}
 	Goto wait
 	
@@ -705,6 +739,11 @@ QActor rbrwalker context ctxrbr {
 	
 	State doTurn {
 		forward basicrobot -m cmd : cmd($CurrMov)
+		// If the robot is a real robot, the left and right movements are of 45° instead of 90°; 
+		// so it's necessary to turn twice 
+		if [# RobotType == "real" #] {
+			forward basicrobot -m cmd : cmd($CurrMov)
+		}
 		run itunibo.planner.plannerUtil.updateMap(CurrMov)
 	}
 	Transition t2
@@ -791,10 +830,20 @@ QActor rbrwalker context ctxrbr {
 				if [# (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
 				   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir") #] {
 					forward basicrobot -m cmd : cmd(l)
+					// If the robot is a real robot, the left and right movements are of 45° instead of 90°; 
+					// so it's necessary to turn twice 
+					if [# RobotType == "real" #] {
+						forward basicrobot -m cmd : cmd(l)	
+					}
 					run itunibo.planner.plannerUtil.updateMap("l") 
 				}
 				else {
 					forward basicrobot -m cmd : cmd(r)
+					// If the robot is a real robot, the left and right movements are of 45° instead of 90°; 
+					// so it's necessary to turn twice 
+					if [# RobotType == "real" #] {
+						forward basicrobot -m cmd : cmd(r)	
+					}
 					run itunibo.planner.plannerUtil.updateMap("r") 
 				}
 				delay 1000

@@ -1,7 +1,7 @@
 version: '3'
 services:
   webgui:
-    image: docker.io/bluffgnuff/rbrnode:1.1
+    image: docker.io/bluffgnuff/rbrnode_on_rasp:1.1
     ## image: webbasicrobotqakforpc:1.1
     ports:
       - 8050:8050

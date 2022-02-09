@@ -22,10 +22,19 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				var NameFile = "roomMap"
 				var Table = false
 				var Step = 650 //290 //647
+				var RobotType = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("MAPPER | STARTS...")
+						solve("consult('robotType.pl')","") //set resVar	
+						solve("getValue(Value)","") //set resVar	
+						if( currentSolution.isSuccess() ) { RobotType = "${getCurSol("Value")}"  
+						println("MAPPER | loaded robot type: $RobotType...")
+						}
+						else
+						{println("MAPPER | Error getting IsMap value...")
+						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
@@ -81,6 +90,9 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 					action { //it:State
 						println("MAPPER | Found a wall")
 						forward("cmd", "cmd(l)" ,"basicrobot" ) 
+						if(  RobotType == "real"  
+						 ){forward("cmd", "cmd(l)" ,"basicrobot" ) 
+						}
 						itunibo.planner.plannerUtil.updateMap( "l"  )
 						delay(1000) 
 						 CurrEdge++  
@@ -130,6 +142,9 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("doTurn") { //this:State
 					action { //it:State
 						forward("cmd", "cmd($CurrMov)" ,"basicrobot" ) 
+						if(  RobotType == "real"  
+						 ){forward("cmd", "cmd($CurrMov)" ,"basicrobot" ) 
+						}
 						itunibo.planner.plannerUtil.updateMap( CurrMov  )
 						delay(1000) 
 					}

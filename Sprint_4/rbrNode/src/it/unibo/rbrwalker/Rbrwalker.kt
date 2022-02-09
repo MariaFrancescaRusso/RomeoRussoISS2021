@@ -25,10 +25,19 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				var FirstStart = true
 				var Step = 650 //647 //290
 				var ObstGoal = false	
+				var RobotType = ""
 		return { //this:ActionBasciFsm
 				state("s0") { //this:State
 					action { //it:State
 						println("WALKER | STARTS...")
+						solve("consult('robotType.pl')","") //set resVar	
+						solve("getValue(Value)","") //set resVar	
+						if( currentSolution.isSuccess() ) { RobotType = "${getCurSol("Value")}"  
+						println("WALKER | loaded robot type: $RobotType...")
+						}
+						else
+						{println("WALKER | Error getting IsMap value...")
+						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
@@ -95,6 +104,9 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 				state("doTurn") { //this:State
 					action { //it:State
 						forward("cmd", "cmd($CurrMov)" ,"basicrobot" ) 
+						if(  RobotType == "real"  
+						 ){forward("cmd", "cmd($CurrMov)" ,"basicrobot" ) 
+						}
 						itunibo.planner.plannerUtil.updateMap( CurrMov  )
 						stateTimer = TimerActor("timer_doTurn", 
 							scope, context!!, "local_tout_rbrwalker_doTurn", StopTimer )
@@ -179,10 +191,16 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						if(  (Dir == "leftDir" && CurDir == "upDir") || (Dir == "rightDir" && CurDir == "downDir") 
 										   || (Dir == "upDir" && CurDir == "rightDir") || (Dir == "downDir" && CurDir == "leftDir")  
 						 ){forward("cmd", "cmd(l)" ,"basicrobot" ) 
+						if(  RobotType == "real"  
+						 ){forward("cmd", "cmd(l)" ,"basicrobot" ) 
+						}
 						itunibo.planner.plannerUtil.updateMap( "l"  )
 						}
 						else
 						 {forward("cmd", "cmd(r)" ,"basicrobot" ) 
+						 if(  RobotType == "real"  
+						  ){forward("cmd", "cmd(r)" ,"basicrobot" ) 
+						 }
 						 itunibo.planner.plannerUtil.updateMap( "r"  )
 						 }
 						delay(1000) 

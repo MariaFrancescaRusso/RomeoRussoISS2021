@@ -6,6 +6,7 @@
 %:- dynamic (isMap/1).
 
 isMap(true).
+%isMap(false).
 
 %% To obtain the value element
 getValue(Res) :-

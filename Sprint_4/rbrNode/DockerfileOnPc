@@ -10,22 +10,22 @@ COPY ./*.pl ./
 COPY ./*.bin ./
 COPY ./*.txt ./
 ##COPY ./*.json ./
-##RUN ls
+RUN yum -y install nano && yum -y clean all  && rm -rf /var/cache
 
 CMD ["bash", "rbrNode"]
 
-### gradle -b build_ctxrbr.gradle build
-### docker build -f Dockerfile -t rbrnode:1.1 .
+## gradle -b build_ctxrbr.gradle build
+## docker build -f DockerfileOnPc -t rbrnode_on_pc:1.1 .
 
-### run the image to test
-### docker run -p 8050:8050 -ti --rm rbrnode:1.1 /bin/bash //to use the console
-### docker run -d --name rbrnode -p 8050:8050 rbrnode:1.1
+## run the image to test
+# docker run -p 8050:8050 -ti --rm rbrnode_on_pc:1.1 /bin/bash //to use the console
+# docker run -d --name rbrnode_on_pc -p 8050:8050/tcp -p 8050:8050/udp rbrnode_on_pc:1.1
 
 ## Tag the image
-## docker tag rbrnode:1.0 bluffgnuff/rbrnode:1.1
+# docker tag rbrnode_on_pc:1.1 bluffgnuff/rbrnode_on_pc:1.1
 
 ## Register the image on DockerHub
-## docker push bluffgnuff/rbrnode:1.1
+# docker push bluffgnuff/rbrnode_on_pc:1.1
 
 
 
