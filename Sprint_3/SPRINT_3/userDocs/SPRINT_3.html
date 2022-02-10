@@ -77,7 +77,7 @@ Therefore, the <a href="./SPRINT_3.html#sol2_maitre">second solution</a> seems t
 This application could be developed using the <tt>MVC</tt> (<tt>Model-View-Controller</tt>) pattern and making sure the system architecture respects the <tt>hexagonal architecture</tt>, which allows the communications between the <tt>front-end</tt> and the <tt>back-end</tt> by inserting an <tt>adapter object</tt>: in this way, the <tt>web application</tt> (<tt>front-end</tt>) can communicate with the <k>maitre</k> <tt>actor</tt> (<tt>back-end</tt>) through the <tt>adapter object</tt>.<br>
 For example, the user (<ks>Maître de Salle</ks>) could select elements on the <tt>view</tt>, which can be read by the <tt>controller</tt>, which can communicate with the <k>maitre</k> <tt>actor</tt> through the <tt>adapter object</tt>.
 
-<h4>GUI - Web Application</h4>
+<h4><a name="PrAn_S3_GUI"></a>GUI - Web Application</h4>
 
 This <tt>web application</tt> could be realized using <tt>Spring framework</tt> which provides a good support to <tt>web application</tt> development and to the <tt>MVC</tt> pattern for the system architecture proposed above.
 
@@ -106,7 +106,7 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 <h2>Project</h2>
 
-With regard to the <a href="./SPRINT_3.html#PrAn_Sprint3">problem analysis about this sprint</a>, in this design phase it has been necessary to redesign the <k>maitre</k> <tt>actor</tt>, which is not anymore a <tt>mock actor</tt>, and next to design and create a new project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">MaitreGUI</a> to realize the <tt>GUI</tt>, as a <tt>web application</tt>, for the <ks>maître's smartphone</ks> software.
+With regard to the <a href="./SPRINT_3.html#PrAn_Sprint3">problem analysis about this sprint</a>, in this design phase it has been necessary to redesign the <k>maitre</k> <tt>actor</tt>, which is not anymore a <tt>mock actor</tt>, and next to design and create a new project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a> to realize the <tt>GUI</tt>, as a <tt>web application</tt>, for the <ks>maître's smartphone</ks> software.
 
 <h3>Maitre</h3>
 
@@ -149,17 +149,25 @@ To not be anymore a <tt>mock actor</tt>, as said in the <a href="./SPRINT_3.html
 
 <h3>FoodConsumer</h3>
 
+In this sprint the <k>foodconsumer</k> remains a <tt>mock actor</tt>, as done in the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1FoodCons" target="_blank">first sprint</a>.<br>
+In future, it could be improved making it not anymore a <tt>mock actor</tt> and redesigning it to better manage the food consumption.
+
 <h3>MaitreGUI</h3>
 
-To 
+To realize the <tt>GUI</tt>, as a <tt>web application</tt>, for the <ks>maître's smartphone</ks> software, it has been design and create a new project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a>, using <tt>Spring framework</tt>, as already said in <a href="./SPRINT_3.html#PrAn_S3_GUI">the problem analysis of this goal</a>.<br>
+In particular, it has been realized, starting from <a href="https://start.spring.io" target="_blank">Spring Boot</a>, a <tt>Gradle</tt> project using <tt>Spring Web</tt>, <tt>Spring Boot DevTools</tt> and <tt>Thymeleaf</tt> dependencies. (Useful the guides for <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html" target="_blank">Spring Boot</a> and for <a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html" target="_blank">Thymeleaf</a>).
 
 <br><br>
-The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework 
-
-(Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).
-
-This <tt>web application</tt> could be realized using <tt>Spring framework</tt> which provides a good support to <tt>web application</tt> development and to the <tt>MVC</tt> pattern for the system architecture proposed above.<br>
+Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container.
 <br>
+Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).
+<br>
+Thymeleaf: modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes
+<br>
+Spring framework: provides a good support to <tt>web application</tt> development and to the <tt>MVC</tt> pattern for the system architecture proposed in the problem analysis of this goal/sprint
+<br>
+Thymeleaf: modern server-side Java template engine for both web and standalone environments, capable to inject its logic into template files, like HTML, in a way that doesn’t affect the template from being used as a design prototype.
+<br><br>
 
 With regard of what said in the problem analysis of this sprint, this project is composed by: a package src/main/kotlin/it/unibo/maitreGUI with a controller (Controller.kt), an adapter object (MaitreResource.kt), a support for CoAP connection (CoapSupport.kt) and a main (MaitreGuiApplication.kt); a package src/main/kotlin/it/unibo/connQak with ...<br>
 With regard of what said in the problem analysis of this sprint, in this project there are two packages in src/main/kotlin/it/unibo (maitreGUI and connQak) and in src/main/resources/templates there are the HTML files for which it has been used thimeleaf and GET methods to send informations.<br>
