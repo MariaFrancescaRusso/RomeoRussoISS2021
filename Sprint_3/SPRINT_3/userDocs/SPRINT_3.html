@@ -112,12 +112,12 @@ With regard to the <a href="./SPRINT_3.html#PrAn_Sprint3">problem analysis about
 
 To not be anymore a <tt>mock actor</tt>, as said in the <a href="./SPRINT_3.html#PrAn_S3_maitre">problem analysis about this goal</a>, the <k>maitre</k> has been redesigned, maintaining its behavior with the other system <tt>actors</tt>, but adding the possibility to receive from the user (<ks>Maître de Salle</ks>), in this sprint through the <tt>web application</tt>, some external commands as <ko>dispatch</ko>:
 <ul>
-<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (in case the user (<ks>Maître de Salle</ks>) defines through the <tt>GUI</tt> the elements for the <ks>task</ks> <ks>Prepare the room</ks>, as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>). In the first case, as in the previous sprints, the <k>maitre</k> loads the default elements from the <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_3/SPRINT_3/Prepare.pl" target="_blank">Prepare.pl</a>). Then it sends the <em>prepare</em> <ko>dispatch</ko> to the <k>rbr</k> specifing the (default or new) food and crockery;</li>
-	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the <ks>food-code</ks> defined by the user (<ks>Maître de Salle</ks>) for the <ks>task</ks> <ks>Add Food</ks>, as required in <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> and as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. Even if from <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a> the <ks>food-code</ks> it's required to be specified from the user, here it remains the possibility to load the default <ks>food-code</ks> value from the <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_3/SPRINT_3/Prepare.pl" target="_blank">Prepare.pl</a>) if it has not been specified. Then, the <k>maitre</k> sends the <em>addFood</em> <ko>request</ko> to the <k>rbr</k> specifing the (default or new) <ks>food-code</ks>;</li>
-	<li><em>clear</em>: as in the previous sprints, the <k>maitre</k> sends the <em>consult</em> <ko>dispatch</ko> to the <k>table</k> to get/know the items (crockery and/or food) to remove and then it sends the <em>clear</em> <ko>dispatch</ko> to the <k>rbr</k> specifing that food and crockery elements;</li>
-	<li><em>consult</em>: as in the previous sprints, the <k>maitre</k> sends the <em>consult</em> <ko>dispatch</ko> to all the resources and waits for their answers;</li>
-	<li><em>stop</em>: as in the previous sprints, the <k>maitre</k> sends the <em>stop</em> <ko>request</ko> to the <k>rbrwalker</k> and only when it receives from the <k>rbrwalker</k> the <em>stopped(<ac>true</ac>)</em> <ko>reply</ko> then it waits for the <em>reactivate</em> <ko>dispatch</ko>. Here, it has been added the possibility to wait also a <em>consult</em>, but at the end of this case, it checks if it was in stop state and then it wait again for a <em>reactivate</em> or <em>consult</em> <ko>dispatch</ko>;</li>
-	<li><em>reactivate</em>: as in the previous sprints, it sends the <em>reactivate</em> <ko>dispatch</ko> to the <k>rbrwalker</k>;</li>
+<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (in case the user (<ks>Maître de Salle</ks>) defines through the <tt>GUI</tt> the elements for the <ks>task</ks> <ks>Prepare the room</ks>, as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>): in the first case, as in the previous sprints, the <k>maitre</k> loads the default elements from the <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_3/SPRINT_3/Prepare.pl" target="_blank">Prepare.pl</a>). Then it sends a <em>prepare</em> <ko>dispatch</ko> to the <k>rbr</k> specifing the (default or new) food and crockery;</li>
+	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the <ks>food-code</ks> defined by the user (<ks>Maître de Salle</ks>) for the <ks>task</ks> <ks>Add Food</ks>, as required in <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> and as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>: after receiving this command, the <k>maitre</k> sends an <em>addFood</em> <ko>request</ko> to the <k>rbr</k> specifing the <ac>FOOD_CODE</ac>;</li>
+	<li><em>clear</em>: as in the previous sprints, the <k>maitre</k> sends a <em>consult</em> <ko>dispatch</ko> to the <k>table</k> to know the items (crockery and food) to remove and then it sends a <em>clear</em> <ko>dispatch</ko> to the <k>rbr</k> specifing those elements;</li>
+	<li><em>consult</em>: as in the previous sprints, the <k>maitre</k> sends a <em>consult</em> <ko>dispatch</ko> to all the resources <tt>actors</tt> and waits for their answers;</li>
+	<li><em>stop</em>: as in the previous sprints, the <k>maitre</k> sends a <em>stop</em> <ko>request</ko> to the <k>rbrwalker</k> and, only when the latter <ko>reply</ko> with <em>stopped(<ac>true</ac>)</em>, then the <k>maitre</k> waits for a <em>reactivate</em> <ko>dispatch</ko>. Here, it has been added the possibility to wait also a <em>consult</em>, but after the execution of this command, it's checked if it was in stop state and then the <k>maitre</k> waits again for a <em>reactivate</em> or <em>consult</em> <ko>dispatch</ko>;</li>
+	<li><em>reactivate</em>: as in the previous sprints, it sends a <em>reactivate</em> <ko>dispatch</ko> to the <k>rbrwalker</k>;</li>
 	<li><em>end</em>: it terminates itself.</li>
 </ul>
 
@@ -147,12 +147,19 @@ To not be anymore a <tt>mock actor</tt>, as said in the <a href="./SPRINT_3.html
 </tr>
 </table>
 
+<h3>FoodConsumer</h3>
+
 <h3>MaitreGUI</h3>
 
+To 
+
+<br><br>
 The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework 
 
 (Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).
+
 This <tt>web application</tt> could be realized using <tt>Spring framework</tt> which provides a good support to <tt>web application</tt> development and to the <tt>MVC</tt> pattern for the system architecture proposed above.<br>
+<br>
 
 With regard of what said in the problem analysis of this sprint, this project is composed by: a package src/main/kotlin/it/unibo/maitreGUI with a controller (Controller.kt), an adapter object (MaitreResource.kt), a support for CoAP connection (CoapSupport.kt) and a main (MaitreGuiApplication.kt); a package src/main/kotlin/it/unibo/connQak with ...<br>
 With regard of what said in the problem analysis of this sprint, in this project there are two packages in src/main/kotlin/it/unibo (maitreGUI and connQak) and in src/main/resources/templates there are the HTML files for which it has been used thimeleaf and GET methods to send informations.<br>
@@ -186,16 +193,6 @@ To can receive dispatch messages from the controller through the adapter, the ma
 MaitreResource as adapter object
 Controller as controller
 Maitre.html, Maitre_page2 ... as interface using thimeleaf<br>
-The maitre actor waits for the messages: prepare, consult, addFood, clear, stop, end. When it receives the message:
-<ul>
-    <li>prepare: sends the prepare message to the rbr specifing the food and the crockery;</li>
-    <li>addFood: sends the addFood message to the rbr specifing the food;</li>
-    <li>clear: sends the consult message to the table to get the items to remove; sends the clear message to the rbr specifing the food and the crockery;</li>
-    <li>consult: sends the consult message to all resources and waits for their answers;</li>
-    <li>stop: sends the stop message to the rbr when this is received it waits just for the reactivate message;</li>
-    <li>reactivate: sends the reactivate message to the rbr;</li>
-    <li>end: sends the end message to the rbr and terminate.</li>
-</ul>
 
 <h3>MaitreGui</h3>
 The software it's realized as a web app using the Spring framework.<br>
