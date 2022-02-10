@@ -47,7 +47,7 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 </ol>
 </div>
 
-<h2>Problem Analysis</h2>
+<h2><a name="PrAn_Sprint3"></a>Problem Analysis</h2>
 
 <h3>GUI for Maître's Smartphone Software</h3>
 
@@ -63,7 +63,7 @@ Therefore, to to solve this sprint goal, the main problems which must be address
 	<li>how the <tt>GUI</tt> (<tt>web application</tt>) and the <k>maitre</k> <tt>actor</tt> must communicate.</li>
 </ul>
 
-<h4>Maitre</h4>
+<h4><a name="PrAn_S3_maitre"></a>Maitre</h4>
 
 To redesigned the <k>maitre</k> as a non-mock <tt>actor</tt> there are different ways available:
 <ol>
@@ -75,7 +75,7 @@ Therefore, the <a href="./SPRINT_3.html#sol2_maitre">second solution</a> seems t
 <h4>System Architecture</h4>
 
 This application could be developed using the <tt>MVC</tt> (<tt>Model-View-Controller</tt>) pattern and making sure the system architecture respects the <tt>hexagonal architecture</tt>, which allows the communications between the <tt>front-end</tt> and the <tt>back-end</tt> by inserting an <tt>adapter object</tt>: in this way, the <tt>web application</tt> (<tt>front-end</tt>) can communicate with the <k>maitre</k> <tt>actor</tt> (<tt>back-end</tt>) through the <tt>adapter object</tt>.<br>
-For example, the user (<ks>Maître de Salle</ks>) could select elements on the <tt>view</tt>, which can be read by the <tt>controller</tt>, which can communicate with the (<tt>model</tt><ko>??????????????????????</ko>) <k>maitre</k> <tt>actor</tt> through the <tt>adapter object</tt>.
+For example, the user (<ks>Maître de Salle</ks>) could select elements on the <tt>view</tt>, which can be read by the <tt>controller</tt>, which can communicate with the <k>maitre</k> <tt>actor</tt> through the <tt>adapter object</tt>.
 
 <h4>GUI - Web Application</h4>
 
@@ -106,25 +106,18 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 
 <h2>Project</h2>
 
-With regard to what it has been said in the problem analysis of this sprint, in this design phase it has been redesigned the maitre actor, which is not anymore a mock actor and then it has been designed the GUI for the maitre smartphone software ??.
+With regard to the <a href="./SPRINT_3.html#PrAn_Sprint3">problem analysis about this sprint</a>, in this design phase it has been necessary to redesign the <k>maitre</k> <tt>actor</tt>, which is not anymore a <tt>mock actor</tt>, and next to design and create a new project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">MaitreGUI</a> to realize the <tt>GUI</tt>, as a <tt>web application</tt>, for the <ks>maître's smartphone</ks> software.
 
 <h3>Maitre</h3>
 
-The maitre actor in this sprint has been redesigned to not be (anymore) a mock actor. In particular, it maintains its behavior but now it can receive (from the web application, and in particular from the controller through the adapter object) some commands/messages as dispatch:
+To not be anymore a <tt>mock actor</tt>, as said in the <a href="./SPRINT_3.html#PrAn_S3_maitre">problem analysis about this goal</a>, the <k>maitre</k> has been redesigned, maintaining its behavior with the other system <tt>actors</tt>, but adding the possibility to receive from the user (<ks>Maître de Salle</ks>), in this sprint through the <tt>web application</tt>, some external commands as <ko>dispatch</ko>:
 <ul>
-<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (in the case/when the maitre inserts/decides/selects from GUI the elements for the <ks>task Prepare the room</ks>, as said/anticipated/proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>). As for/it happened in the previous sprints, for the first case, the <k>maitre</k> <tt>actor</tt> loads the default elements from the prolog file (Prepare.pl); otherwise it use the new elements. Then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
-
-	<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (when the maitre insert/decide/select from GUI the elements for the <ks>task Prepare the room</ks>, as said/anticipated/proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>.<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (when the maitre insert/decide/select from GUI the elements for the <ks>task Prepare the room</ks>, as said/anticipated/proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. As for/it happened in the previous sprints, for the first case, the <k>maitre</k> <tt>actor</tt> loads the default elements from the prolog file (Prepare.pl); otherwise it use the new elements. Then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>otherwise it use the new elements. Then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
-	<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food. In the latter case, the prolog file (Prepare.pl) is updated with the new elements. Then, as for/it happpend in the previous sprints, the maitre actor loads the (default or new) elements from the prolog file (Prepare.pl) and sends the prepare message to the rbr specifing that food and crockery elements;</li>
-
-	<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food; so to allow/to add the possibility for/when the maitre to insert/decide/select the elements for the <ks>task Prepare the room</ks>, as said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. As for/in the previous sprints, for the first case, the <k>maitre</k> <tt>actor</tt> loads the default elements from the prolog file (Prepare.pl); otherwise it use the new elements. Then it sends the prepare message to the rbr specifing the (default or new) food and crockery;</li>
-	<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food. In the latter case, the prolog file (Prepare.pl) is updated with the new elements. Then, as for/in the previous sprints, the maitre actor loads the (default or new) elements from the prolog file (Prepare.pl) and sends the prepare message to the rbr specifing that food and crockery elements;</li>
-	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the food code; so to allow/to add the possibility for/when the maitre to insert/decide/select the food code for the task Add Food. The prolog file (Prepare.pl) is updated with the new element/food code. Then, as for/in the previous sprints, the maitre actor loads the new element from the prolog file (Prepare.pl) and sends the addFood message/request to the rbr specifing the food code;</li>
-	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the food code used by the maitre actor to send the addFood message/request to the rbr;</li>
-	<li><em>clear</em>: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to the table to get/know the items (crockery and/or food) to remove and then it sends the clear message/dispatch to the rbr specifing that food and crockery elements;</li>
-	<li><em>consult</em>: as for/in the previous sprints, the maitre actor sends the consult message/dispatch to all resources and waits for their answers;</li>
-	<li><em>stop</em>: as for/in the previous sprints, the maitre actor sends the stop message/request to the rbrwalker and only when it receives from the rbrwalker the stopped(true) reply then it waits for the reactivate message/dispatch. Here, it has been added the possibility to wait also a consult, but at the end of this case, it checks if it was in stop state and then it wait again for a reactivate or consult message/dispatch;</li>
-	<li><em>reactivate</em>: as for/in the previous sprints, it sends the reactivate message/dispatch to the rbrwalker;</li>
+<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (in case the user (<ks>Maître de Salle</ks>) defines through the <tt>GUI</tt> the elements for the <ks>task</ks> <ks>Prepare the room</ks>, as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>). In the first case, as in the previous sprints, the <k>maitre</k> loads the default elements from the <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_3/SPRINT_3/Prepare.pl" target="_blank">Prepare.pl</a>). Then it sends the <em>prepare</em> <ko>dispatch</ko> to the <k>rbr</k> specifing the (default or new) food and crockery;</li>
+	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the <ks>food-code</ks> defined by the user (<ks>Maître de Salle</ks>) for the <ks>task</ks> <ks>Add Food</ks>, as required in <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> and as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>. Even if from <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements</a> the <ks>food-code</ks> it's required to be specified from the user, here it remains the possibility to load the default <ks>food-code</ks> value from the <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_3/SPRINT_3/Prepare.pl" target="_blank">Prepare.pl</a>) if it has not been specified. Then, the <k>maitre</k> sends the <em>addFood</em> <ko>request</ko> to the <k>rbr</k> specifing the (default or new) <ks>food-code</ks>;</li>
+	<li><em>clear</em>: as in the previous sprints, the <k>maitre</k> sends the <em>consult</em> <ko>dispatch</ko> to the <k>table</k> to get/know the items (crockery and/or food) to remove and then it sends the <em>clear</em> <ko>dispatch</ko> to the <k>rbr</k> specifing that food and crockery elements;</li>
+	<li><em>consult</em>: as in the previous sprints, the <k>maitre</k> sends the <em>consult</em> <ko>dispatch</ko> to all the resources and waits for their answers;</li>
+	<li><em>stop</em>: as in the previous sprints, the <k>maitre</k> sends the <em>stop</em> <ko>request</ko> to the <k>rbrwalker</k> and only when it receives from the <k>rbrwalker</k> the <em>stopped(<ac>true</ac>)</em> <ko>reply</ko> then it waits for the <em>reactivate</em> <ko>dispatch</ko>. Here, it has been added the possibility to wait also a <em>consult</em>, but at the end of this case, it checks if it was in stop state and then it wait again for a <em>reactivate</em> or <em>consult</em> <ko>dispatch</ko>;</li>
+	<li><em>reactivate</em>: as in the previous sprints, it sends the <em>reactivate</em> <ko>dispatch</ko> to the <k>rbrwalker</k>;</li>
 	<li><em>end</em>: it terminates itself.</li>
 </ul>
 
@@ -154,11 +147,12 @@ The maitre actor in this sprint has been redesigned to not be (anymore) a mock a
 </tr>
 </table>
 
-<h3>GUI - Web Application</h3>
+<h3>MaitreGUI</h3>
 
 The software of / This web application has been realized as a gradle project (MaitreGUI) using Spring./as a web app using the Spring framework 
 
-(Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).<br>
+(Spring Web: builds the web, including RESTful, applications using Spring MVC. Uses Apache Tomcat as the default embedded container. Spring Boot DevTools: Provides fast application restarts, LiveReload, and configurations for enhanced development experience. Speeds up this refresh cycle (coding a change, restarting application, and refreshing the browser to view the change).) and Thymeleaf (modern server-side Java template engine for both web and standalone environments. Allows HTML to be correctly displayed in browsers and as static prototypes )(usefull it has been the guide: https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html).
+This <tt>web application</tt> could be realized using <tt>Spring framework</tt> which provides a good support to <tt>web application</tt> development and to the <tt>MVC</tt> pattern for the system architecture proposed above.<br>
 
 With regard of what said in the problem analysis of this sprint, this project is composed by: a package src/main/kotlin/it/unibo/maitreGUI with a controller (Controller.kt), an adapter object (MaitreResource.kt), a support for CoAP connection (CoapSupport.kt) and a main (MaitreGuiApplication.kt); a package src/main/kotlin/it/unibo/connQak with ...<br>
 With regard of what said in the problem analysis of this sprint, in this project there are two packages in src/main/kotlin/it/unibo (maitreGUI and connQak) and in src/main/resources/templates there are the HTML files for which it has been used thimeleaf and GET methods to send informations.<br>

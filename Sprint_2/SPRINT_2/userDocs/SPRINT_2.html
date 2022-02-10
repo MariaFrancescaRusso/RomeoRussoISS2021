@@ -145,7 +145,7 @@ After this, this <tt>actor</tt> sends a <ko>request</ko> message <em>setGoal(<ac
 Afterwards, when the <k>rbrmapper</k> receives the <ko>reply</ko> <em>goalState</em> from the <k>rbrwalker</k>, it saves the created map through the <tt>Planner</tt> command <em>saveRoomMap</em> and <ko>replies</ko> to the <k>rbr</k> <tt>actor</tt> with the message <em>mapdone</em>.<br>
 Finally, it terminates itself.
 <br><br>
-It was introduced also the possibility for the <k>rbr</k> to know if the <ks>room</ks> logical map it's already present by consulting a prolog file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_2/SPRINT_2/IsMap.pl" target="_blank">IsMap.pl</a>) and in this case the <k>rbr</k> <tt>actor</tt> sends a <ko>dispatch</ko> <em>end</em> to the <k>rbrmapper</k> which terminate itself without executing the room mapping.
+It was introduced also the possibility for the <k>rbr</k> to know if the <ks>room</ks> logical map it's already present by consulting a <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_2/SPRINT_2/IsMap.pl" target="_blank">IsMap.pl</a>) and in this case the <k>rbr</k> <tt>actor</tt> sends a <ko>dispatch</ko> <em>end</em> to the <k>rbrmapper</k> which terminate itself without executing the room mapping.
 <br><br>
 <table>
 <tr class="text">
