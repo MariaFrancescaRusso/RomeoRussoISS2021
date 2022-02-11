@@ -251,6 +251,10 @@ ul {
 	list-style-type: disc;
 }
 
+ul.child {
+	list-style-type: circle;
+}
+
 dl {
 	margin-bottom: 0;
 }
