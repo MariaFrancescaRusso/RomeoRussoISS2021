@@ -152,7 +152,7 @@ To not be anymore a <tt>mock actor</tt>, as said in the <a href="./SPRINT_3.html
 In this sprint the <k>foodconsumer</k> remains a <tt>mock actor</tt>, as done in the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#S1FoodCons" target="_blank">first sprint</a>.<br>
 In future, it could be improved making it not anymore a <tt>mock actor</tt> and redesigning it to better manage the food consumption.
 
-<h3>MaitreGUI</h3>
+<h3><a name="S3_MaitreGUI"></a>MaitreGUI</h3>
 
 To realize the <tt>GUI</tt>, as a <tt>web application</tt>, for the <ks>maître's smartphone</ks> software, it has been design and create a new project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a>, using <tt>Spring framework</tt>, as already said in <a href="./SPRINT_3.html#PrAn_S3_GUI">the problem analysis of this goal</a>.<br>
 In particular, it has been realized, starting from <a href="https://start.spring.io" target="_blank">Spring Boot</a>, a <tt>Gradle</tt> project using the dependencies <tt>Spring Web</tt>, <tt>Spring Boot DevTools</tt> and <tt>Thymeleaf</tt> (a modern server-side Java template engine for both web and standalone environments, capable to inject its logic into template files like HTML). (Useful the guides for <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html" target="_blank">Spring Boot</a> and for <a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html" target="_blank">Thymeleaf</a>).
@@ -162,81 +162,50 @@ Mainly, with regard of what said in the <a href="./SPRINT_3.html#PrAn_Sprint3">p
 	<li><a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI/src/main/kotlin/it/unibo/maitreGUI" target="_blank">src/main/kotlin/it/unibo/<b>maitreGUI</b></a>:</li>
 	<ul class="child">
 		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/CoapSupport.kt" target="_blank">CoapSupport.kt</a>, which is a support for <tt>CoAP</tt> connection;</li>
-		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/MaitreResource.kt" target="_blank">MaitreResource.kt</a>, that is an <tt>adapter object</tt> which provides methods to send messages (<ko>dispatch</ko>) to the <k>maitre</k> and to read its state update via <tt>CoAP</tt> using CoapSupport;</li>
-		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/Controller.kt" target="_blank">Controller.kt</a>, that is a <tt>Spring controller</tt> which reads and manages the informations received via <tt>HTTP GET</tt> <ko>request</ko> from the <tt>view</tt> (<tt>HTML</tt> files), uses MaitreResource to communicate with <k>maitre</k> and returns the right <tt>HTML</tt> page.</li>
+		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/MaitreResource.kt" target="_blank">MaitreResource.kt</a>, that is an <tt>adapter object</tt> which provides methods to send messages (<ko>dispatch</ko>) to the <k>maitre</k> and to read its state update via <tt>CoAP</tt> using <cl>CoapSupport</cl>;</li>
+		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/Controller.kt" target="_blank">Controller.kt</a>, that is a <tt>Spring controller</tt> which reads and manages the informations received via <tt>HTTP GET</tt> <ko>request</ko> from the <tt>view</tt> (<tt>HTML</tt> files), uses <cl>MaitreResource</cl> to communicate with <k>maitre</k> and returns the right <tt>HTML</tt> page.</li>
 	</ul>
 	<li><a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI/src/main/kotlin/it/unibo/connQak" target="_blank">src/main/kotlin/it/unibo/<b>connQak</b></a>:</li>
 	<ul class="child">
-		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/sysConnKb.kt" target="_blank">sysConnKb.kt</a>, used to take and set the values for the communications between MaitreResource and <k>maitre</k>;</li>
+		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/sysConnKb.kt" target="_blank">sysConnKb.kt</a>, used to take and set the values/paramenters for the communications between <cl>MaitreResource</cl> and <k>maitre</k>;</li>
 		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/connQakBase.kt" target="_blank">connQakBase.kt</a>, which works as a <tt>factory class</tt> to generate a class to sends messages to an <tt>actor</tt> (in this case the <k>maitre</k>) using the <tt>TCP</tt> (by default), <tt>MQTT</tt> (implemented here but not <k>maitre</k> side) or <tt>CoAP</tt> protocols. In this regard, it is provided a class for each type of connection.</li>
 	</ul>
 </ul>
-Furthermore, in <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI/src/main/resources/templates" target="_blank">src/main/resources/<b>templates</b></a> there are present <tt>HTML</tt> files for which it has been used <tt>Thymeleaf</tt> and <tt>HTTP GET</tt> methods to send informations.
-These pages (<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page2.html" target="_blank">MaitreGUI_page2.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page3.html" target="_blank">MaitreGUI_page3.html</a>), as required in/by <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, allows the user (<ks>Maître de Salle</ks>), interacting with them, to send <ks>task</ks> commands (<em>prepare</em>, <em>addFood</em> and/, <em>clear</em>), to <em>stop</em> and <em>reactivate</em> those <ks>tasks</ks> and to <em>consult</em> the resources.
-It has also been added an <tt>HTML</tt> page (<a href="../../maitreGUI/src/main/resources/templates/Settings.html" target="_blank">Settings.html</a>) to allow the user to indicate new paramenters for the connection between MaitreResource and <k>maitre</k>; so the Controller will be able to change the value of sysConnKb (like the address, the port and the context of the destination actor and the type of protocol (<tt>TCP</tt>, <tt>CoAP</tt>, <tt>MQTT</tt>) to send commands to it).
+Furthermore, in <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI/src/main/resources/templates" target="_blank">src/main/resources/<b>templates</b></a> there are present <tt>HTML</tt> files for which it/plurale? has been used/exploited <tt>Thymeleaf</tt> and <tt>HTTP GET</tt> methods to send informations.
+These pages (<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page2.html" target="_blank">MaitreGUI_page2.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page3.html" target="_blank">MaitreGUI_page3.html</a>???), as required in/by <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, allow the user (<ks>Maître de Salle</ks>), interacting with them, to send <ks>task</ks> commands (<em>prepare</em>, <em>addFood</em> and/, <em>clear</em>???), to <em>stop</em> and <em>reactivate</em> those <ks>tasks</ks> and to <em>consult</em> the resources.
+It has also been added an <tt>HTML</tt> page (<a href="../../maitreGUI/src/main/resources/templates/Settings.html" target="_blank">Settings.html</a>) to allow the user to indicate new paramenters for the connection between <cl>MaitreResource</cl> and <k>maitre</k>; so the <cl>Controller</cl> will be able to change the values of/in <cl>sysConnKb</cl>/<a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/sysConnKb.kt" target="_blank">sysConnKb.kt</a>?? (like the address, the port and the context of the destination actor and the type of protocol (<tt>TCP</tt>, <tt>CoAP</tt>, <tt>MQTT</tt>) to send commands to it).
 <br><br>
 <table>
 <tr class="text">
-	<th>MaitreGUI as starting/home page</th>
+	<th>MaitreGUI</th>
 	<th>MaitreGUI_page2</th>
 	<th>MaitreGUI_page3</th>
 	<th>Settings</th>
 </tr>
 <tr>
-	<td>
+	<td class="gui">
 		<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a><br>
-		<iframe src="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" title="MaitreGUI.html">MaitreGUI.html</iframe><br>
-		<img src="../../../userDocs/utils/tf/MaitreGUI.png" alt="MaitreGUI.html image">
+		<pre><img src="./utils/img/MaitreGUI.jpg" alt="MaitreGUI.html image"></pre>
 	</td>
-	<td>
+	<td class="gui">
 		<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page2.html" target="_blank">MaitreGUI_page2.html</a><br>
-		<iframe src="../../maitreGUI/src/main/resources/templates/MaitreGUI_page2.html" title="MaitreGUI_page2.html">MaitreGUI_page2.html</iframe><br>
-		<img src="../../../userDocs/utils/tf/MaitreGUI_page2.png" alt="MaitreGUI_page2.html image">
+		<pre><img src="./utils/img/MaitreGUI_page2.jpg" alt="MaitreGUI_page2.html image"></pre>
 	</td>
-	<td>
+	<td class="gui">
 		<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page3.html" target="_blank">MaitreGUI_page3.html</a><br>
-		<iframe src="../../maitreGUI/src/main/resources/templates/MaitreGUI_page3.html" title="MaitreGUI_page3.html">MaitreGUI_page3.html</iframe><br>
-		<img src="../../../userDocs/utils/tf/MaitreGUI_page3.png" alt="MaitreGUI_page3.html image">
+		<pre><img src="./utils/img/MaitreGUI_page3.jpg" alt="MaitreGUI_page3.html image"></pre>
 	</td>
-	<td>
+	<td class="gui">
 		<a href="../../maitreGUI/src/main/resources/templates/Settings.html" target="_blank">Settings.html</a><br>
-		<iframe src="../../maitreGUI/src/main/resources/templates/Settings.html" title="Settings.html">Settings.html</iframe><br>
-		<img src="../../../userDocs/utils/tf/Settings.png" alt="Settings.html image">
+		<pre><img src="./utils/img/Settings.jpg" alt="Settings.html image"></pre>
 	</td>
 </tr>
 </table>
-
-Scrivi in controller : reindirizzamento pagina!
-
+<br>
+Scrivi in controller : reindirizzamento pagina!<br>
+A possible graphic representation of the interaction between <tt>GUI</tt> (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a> project) and <k>maitre</k> could be the following.
 <br><br>
-<table>
-<tr class="text">
-	<th>Machine Understandable Models</th>
-	<th>A Possible Graphic Representation</th>
-</tr>
-<tr>
-	<td class="text" rowspan="3">
-		<br><a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/Controller.kt" target="_blank">Controller.kt</a><br><br>
-		<iframe class="qakSprint2max" src="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/Controller.kt" title="Controller from maitreGUI project">Controller from maitreGUI project</iframe>
-		<br><br><hr><br>
-		<a href="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/MaitreResource.kt" target="_blank">MaitreResource.kt</a><br><br>
-		<iframe class="qakSprint2max" src="../../maitreGUI/src/main/kotlin/it/unibo/maitreGUI/MaitreResource.kt" title="MaitreResource from maitreGUI project">MaitreResource from maitreGUI project</iframe>
-	</td>
-	<td class="imageSchema">
-		<img src="./utils/img/CommunicationGuiMaitre.svg" alt="Communications between GUI (maitreGUI project) and maitre actor">
-	</td>
-</tr>
-<tr class="text">
-	<th>Moore State Machine Diagrams/htlm pages images??</th>
-</tr>
-<tr>
-	<td class="imageSchema">
-		<img src="../../../ProblemAnalysisModel/userDocs/utils/img/ReqAnalysis/QActorFSMLegend.png" alt="Legend of the representations of the behaviors of the QActors, modeled as a Moore state machines"><br>
-		<img src="./utils/img/FSM_RBRMapperQActor.svg" alt="Representation of the behavior of QActor rbrmapper, modeled as a Moore state machine"><br>
-		<img src="./utils/img/FSM_RBRQActor.svg" alt="Representation of the behavior of QActor rbr, modeled as a Moore state machine">
-	</td>
-</tr>
-</table>
+<img src="./utils/img/CommunicationGuiMaitre.svg" alt="Communications between GUI (maitreGUI project) and maitre actor">
 
 <h2>Testing</h2>
 
@@ -265,7 +234,15 @@ non sono stati fatti in quanto il maitre/il funzionamento del sistema era già s
 
 <h2>Deployment</h2>
 
-
+The deployment of the application for the <tt>virtual robot</tt> can be done at the same way of the <a href="../../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#Sprint1Deploy" target="_blank">deployment explained in Sprint 1</a>.<br>
+For this sprint it has been introduced again a new scene (<a href="../sceneConfig.js" target="_blank">sceneConfig.js</a>) where mobile obstacles are fixed out of the <ks>room</ks> and can be managed directly from the <tt>WEnv</tt>.
+<br><br>
+If it should be executed the mapping operation, this can be done at the same way of the <a href="../../../Sprint_2/SPRINT_2/userDocs/SPRINT_2.html#Sprint2Deploy" target="_blank">deployment explained in Sprint 2</a>.
+<br><br>
+After this, it must be executed the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a> project with <tt>Gradle</tt>:
+	<pre>gradle bootRun</pre>
+As said before in <a href="./SPRINT_3.html#S3_MaitreGUI">design phase</a>, it has been added the possibility to change the paramenters for the connection between <cl>MaitreResource</cl> and <k>maitre</k>; to do this, it must be opened a browser at <fa>http://<ac>HOST</ac>:8081/settings</fa>, where <ac>HOST</ac> must be the <ac>localhost</ac> or the host (e.g. <ac>192.168.1.171</ac>) of the machine where the application is running. After the change confirmation, the <cl>Controller</cl> will redirect to the home page (<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>).<br>
+Otherwise, the application could be opened in a browser at <fa>http://<ac>HOST</ac>:8081</fa>, where <ac>HOST</ac> must be the <ac>localhost</ac> or the host (e.g. <ac>192.168.1.171</ac>) of the machine where the application is running, showing the home page <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>.
 
 <h2>SCRUM Context</h2>
 

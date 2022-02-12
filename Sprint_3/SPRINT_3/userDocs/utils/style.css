@@ -19,6 +19,13 @@ a:hover {
 	background-color: #cccccc;
 }
 
+/*for fake link*/
+fa {
+	color: #808080;
+	background-color: transparent;
+	font-size: 93%;
+}
+
 hr {
 	clear: both;
 	height: 0.5px;
@@ -145,6 +152,13 @@ k {
 	font-size: 90%;
 }
 
+/*for classes or files names*/
+cl {
+	color: #5f9ea0;
+	font-weight: bold;
+	font-size: 90%;
+}
+
 /*for messages*/
 ko {
 	color: #d2691e;
@@ -235,6 +249,11 @@ td.text {
 td.wenv {
 	text-align: center;
 	width: 20%;
+}
+
+td.gui {
+	text-align: center;
+	width: 25%;
 }
 
 tr.text {
