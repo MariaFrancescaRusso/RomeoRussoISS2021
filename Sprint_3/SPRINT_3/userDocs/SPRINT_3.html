@@ -94,7 +94,7 @@ In this way: the <tt>controller</tt> through the <tt>adapter object</tt> sends m
 <br><br>
 <img src="./utils/img/PrAn_CommunicationGuiMaitre.svg" alt="Communications GUI Maitre">
 
-<h2>Test Plans</h2>
+<h2><a name="S3_TestPlans"></a>Test Plans</h2>
 
 With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTestPlans" target="_blank">initial problem analysis test plans</a>, below it's reported a functional tests planning related to the goal of this sprint:
 <br><br>
@@ -209,9 +209,53 @@ A possible graphic representation of the interaction between <tt>GUI</tt> (<a hr
 
 <h2>Testing</h2>
 
-The tests for this sprint ...
+For this sprint, no significant tests are made because the tests planned during the <a href="./SPRINT_3.html#S3_TestPlans">test plan phase</a> about the behavior and the interactions between maitre and other system actors have already been carried out in the previous sprints. Otherwise, regarding the behavior and the interaction/relationship between maitre and the GUI (maitreGUI), this can be visually?? verified by running the project and the web application/GUI/maitreGUI and sending/trying to send commands to the maitre.
+
+<br><br>
+
+For this sprint no significant test are made because the behavior and the interactions between maitre and other system actors have already been carried out/tested in the previous sprints; while, regarding the behavior and the interaction/relationship between maitre and the GUI (maitreGUI), this can be tested/verified sending/trying to send commands to the maitre through the web application.<br>
+
+<br><br>
+
+Below there are exposed some tests made for this sprint project:
+<dl>
+	<dt><a href="../test/it/unibo/test/MutExTaskMaitreTest.kt" target="_blank">MutExTaskMaitreTest.kt</a></dt>
+	<dd>Tests about the mutual exclusion of <ks>tasks</ks> and of their order of execution:<ol>
+		<li><em>PrepareAddFoodClearTest</em>: after the send of <em>prepare</em>, addFood and clear commands in this order to the <k>maitre</k>, it's verified that the latter actor receives and manages (starts to execute the related tasks) all these commands with success. In particular, this test:<ol>
+			<li>Sends a <em>prepare</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
+			<li>Checks that <em>prepare</em> <ko>dispatch</ko> has success/have been correctly received (che il maitre lo riceva/accetti?!);</li>
+			<li>Sends an <em>addFood</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
+			<li>Checks that <em>addFood</em> <ko>dispatch</ko> has success;</li>
+			<li>Sends a <em>clear</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
+			<li>Checks that <em>clear</em> <ko>dispatch</ko> has success.</li>
+		</ol></li>
+		<li><em>FailAddFoodTest</em>: after the send of an <em>addFood</em> command to the <k>maitre</k> before sending a prepare command, it's verified that the latter actor doesn't manage this command/ it's verified that the operation fails. In particular, this test:<ol>
+			<li>Sends an <em>addFood</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
+			<li>Checks that <em>addFood</em> <ko>dispatch</ko> fails/maitre doesn't manage this command.</li>
+		</ol></li>
+		<li><em>FailClearTest</em>: after the send of a <em>clear</em> command to the <k>maitre</k> before sending a prepare command, it's verified that the latter actor doesn't manage this command/ it's verified that the operation fails. In particular, this test:<ol>
+			<li>Sends a <em>clear</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
+			<li>Checks that <em>clear</em> <ko>dispatch</ko> fails/maitre doesn't manage this command.</li>
+		</ol></li>
+	</ol></dd>
+</dl>
+<br>
+Regarding the behavior and the interaction/relationship between maitre and the GUI (maitreGUI), this can be visually?? tested/verified sending/trying to send commands to the maitre through the web application.
+
+<br><br>
 
 non sono stati fatti in quanto il maitre/il funzionamento del sistema era già stato testato negli sprint precedenti; mentre per quanto riguarda la parte di GUI, questa può essere testata provando a inviare comandi al maitre tramite la web application.
+
+These tests are used to test the internal components of this sprint project and not the externals, like the basicrobot. The virtual robot movements, commanded by the basicrobot, can be visually verified by running the project and the WEnv.
+
+These tests are executed on a single context (ctxsystem) and to execute them, it's necessary to comment the maitre, because it is a mock client and it could interfere with tests.
+
+<br><br>
+<ul>
+	<li>Tests of all the communications between entities;</li>
+	<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
+	<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>.</li>
+</ul>
 
 <h2><a name="Sprint3Mod"></a>Model of System's Logical Architecture</h2>
 
