@@ -1,6 +1,6 @@
 version: '3'
 services:
-  webgui:
+  context:
     image: docker.io/bluffgnuff/fridgenode:1.1
     ## image: webbasicrobotqakforpc:1.1
     ports:

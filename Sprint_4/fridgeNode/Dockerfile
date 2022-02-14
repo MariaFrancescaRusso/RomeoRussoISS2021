@@ -17,7 +17,7 @@ CMD ["bash", "fridgeNode"]
 
 ### run the image to test
 ### docker run -p 8060:8060 -ti --rm fridgenode:1.1 /bin/bash //to use the console
-### docker run -d --name fridgenode -p 8060:8060 fridgenode:1.1
+### docker run -d --name fridgenode -p 8060:8060/tcp -p 8060:8060/udp fridgenode:1.1
 
 ## Tag the image
 ## docker tag fridgenode:1.1 bluffgnuff/fridgenode:1.1

@@ -33,7 +33,6 @@ Reply stopped:stopped(ARG)	//ARG = true | false
 //Maitre - RBRWalker
 Dispatch reactivate:reactivate(ARG)	//void
 
-
 //RBR - Resources
 Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to change
 
@@ -41,21 +40,13 @@ Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to cha
 //RBR - RBRMapper
 //RBR - RBRWalker
 //RBRWalker - basicRobot
-Dispatch end:end(ARG)	//void
-
-//RBRWalker - basicRobot
-//RBRMapper - basicRobot
-Dispatch cmd:cmd(MOVE)	//MOVE = h | w | s | l | r
-Request step:step(TIME)
-
-Reply stepdone:stepdone(V)  
-Reply stepfail:stepfail(DURATION, CAUSE)  
+Dispatch end:end(ARG)	//void 
 
 //Context ctxsystem ip [host="localhost" port=8040]
 //192.168.1.171/211/14/40
 Context ctxmaitre ip [host="localhost" port=8070] 
 Context ctxfridge ip [host="127.0.0.1" port=8060]
-Context ctxrbr ip [host="192.168.43.228" port=8050]
+Context ctxrbr ip [host="192.168.1.211" port=8050]
 
 ExternalQActor rbr context ctxrbr
 ExternalQActor rbrwalker context ctxrbr  
@@ -86,6 +77,8 @@ QActor maitre context ctxmaitre {
 	
 	State wait {
 		println ("MAITRE | waiting...")
+		// Usefull in testing step
+		updateResource [# "waiting" #]
 	}
 	Transition t0
 		whenMsg prepare and [# !Prepared #] -> sendPrepare
@@ -131,9 +124,11 @@ QActor maitre context ctxmaitre {
 		}
 		else {
 			println ("MAITRE | Error getting 'Prepare the room' elements...")
-		}	
+		}
 		
 		[# Prepared = true #]
+		// Usefull in testing step
+		updateResource [# "Sent Prepare" #]
 	}
 	Goto wait
 	
@@ -160,6 +155,9 @@ QActor maitre context ctxmaitre {
 		else {
 			println ("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
 		}
+		
+		// Usefull in testing step
+		updateResource [# "Sent AddFood" #]
 	}
 	Transition t1 
 		// Time waiting for warning otherwise the food is present
@@ -173,7 +171,6 @@ QActor maitre context ctxmaitre {
 			println ("MAITRE | received warning from RBR")
 			updateResource [# "Warning! The fridge doesn't contain the food required!" #]
 			[# FoodPresence = false #]
-		
 		}
 		
 		if [# FoodPresence #] {
@@ -273,6 +270,8 @@ QActor maitre context ctxmaitre {
 		println ("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
 		
 		[# Cleared = true #]
+		// Usefull in testing step
+		updateResource [# "Sent Clear" #]
 	}
 	Goto wait
 	

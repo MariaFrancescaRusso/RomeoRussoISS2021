@@ -7,10 +7,6 @@ Event observertable:observertable(X)
 Event observerdishwasher:observerdishwasher(X)
 
 //vs Maitre
-Dispatch addFood:addFood(FOOD_CODE)
-Dispatch stop:stop(ARG)	//void
-
-//vs Maitre
 //Maitre - RBR
 Dispatch prepare:prepare(X, Y)	//X = Crockery elements ; Y = Food elements
 Dispatch clear:clear(X, Y)	//X = Crockery elements ; Y = Food elements
@@ -19,10 +15,6 @@ Dispatch clear:clear(X, Y)	//X = Crockery elements ; Y = Food elements
 Request addFood:addFood(FOOD_CODE)
 
 Reply warning:warning(ARG)	//void
-
-//vs Maitre
-//Maitre - Fridge/Resources
-Dispatch consult:consult(ARG)	//void
 
 //Maitre - RBRWalker
 Request stop:stop(ARG)	//void

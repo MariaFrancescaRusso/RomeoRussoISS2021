@@ -45,6 +45,12 @@ class Controller {
 		return  "MaitreGUI"
 	}
 	
+	// To return home page MaitreGUI.html also at: localhost:8081/maitreGUI
+	@GetMapping("/maitreGUI")
+	suspend fun  goToPage(viewmodel : Model) : String {	
+		return home(viewmodel)
+	}
+	
 	@GetMapping("/prepare")
 	suspend fun prepare(viewmodel : Model,
 						@RequestParam prepareButton : String,

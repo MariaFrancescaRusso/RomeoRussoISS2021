@@ -3,7 +3,7 @@
 %====================================================================================
 context(ctxmaitre, "localhost",  "TCP", "8070").
 context(ctxfridge, "127.0.0.1",  "TCP", "8060").
-context(ctxrbr, "192.168.43.228",  "TCP", "8050").
+context(ctxrbr, "192.168.1.211",  "TCP", "8050").
  qactor( rbr, ctxrbr, "external").
   qactor( rbrwalker, ctxrbr, "external").
   qactor( fridge, ctxfridge, "external").
