@@ -17,7 +17,7 @@ import kotlin.jvm.JvmStatic
 import kotlinx.coroutines.channels.Channel
 import util.CoapObserverForTest
 
-class AddFoodTest {
+class ClearFailTest {
 	companion object {
 		var maitreActor : ActorBasic? = null
 		var systemStarted = false
@@ -77,48 +77,24 @@ class AddFoodTest {
 		testingObserverMaitre!!.terminate()
 	}
 
-	// Send a prepare and wait the "Sent Prepare" maitre update state
-	fun waitPrepare() {
-		var Crockerys =  arrayListOf(arrayListOf("dishes", "10"))
-		var Foods= arrayListOf(arrayListOf("s001", "bread", "1"))
-		var msg = MsgUtil.buildDispatch("tester", "prepare", "prepare($Crockerys, $Foods)", "maitre")
-		var State = ""
-		var expected= "Sent Prepare"
-		var channelForObserver = Channel<String>()
-
-		runBlocking {
-			testingObserverMaitre!!.addObserver( channelForObserver,expected)
-		
-			println ("===============TEST | sending $msg")
-			MsgUtil.sendMsg(msg, maitreActor!!)
-			State = channelForObserver.receive()
-			testingObserverMaitre!!.removeObserver()
-		}
-		channelForObserver.close()
-		println ("===============TEST | RESULT=$State for $msg")
-	}
-		
 	@Test
-	fun AddFoodTest() {
-		var msg = MsgUtil.buildDispatch("tester", "addFood", "addFood(s002)", "maitre")
+	fun ClearFailTest() {
+		var msg = MsgUtil.buildDispatch("tester","clear", "clear(0)", "maitre")
 		var State = ""
-		var expected = "Sent AddFood"
-		var Prevision = expected
+		var expected = ""
+		var NotPrevision = "Sent Clear"
 		var channelForObserver = Channel<String>()
 
-		//waiting the "Sent Prepare" maitre update state
-		waitPrepare()
-		println ("===============TEST | Prepare finished")
-		
-		// Send an addFood and wait the "Sent AddFood" maitre update state
+		//Send clear without a prepare, wait 500 ms expecting not "Sent Clear"
 		runBlocking {
 			testingObserverMaitre!!.addObserver( channelForObserver,expected)
 		
 			println ("===============TEST | sending $msg")
 			MsgUtil.sendMsg(msg, maitreActor!!)
+			delay(500)
 			State = channelForObserver.receive()
 			testingObserverMaitre!!.removeObserver()
-			assertEquals(Prevision,State)
+			assertNotSame(NotPrevision,State)
 		}
 		println ("===============TEST | RESULT=$State for $msg")
 	}	

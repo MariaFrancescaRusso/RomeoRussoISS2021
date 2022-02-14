@@ -17,7 +17,7 @@ import kotlin.jvm.JvmStatic
 import kotlinx.coroutines.channels.Channel
 import util.CoapObserverForTest
 
-class AddFoodTest {
+class PrepareTest {
 	companion object {
 		var maitreActor : ActorBasic? = null
 		var systemStarted = false
@@ -77,40 +77,19 @@ class AddFoodTest {
 		testingObserverMaitre!!.terminate()
 	}
 
-	// Send a prepare and wait the "Sent Prepare" maitre update state
-	fun waitPrepare() {
+	// Test that prepare command works 
+	@Test
+	fun PrepareTest() {
 		var Crockerys =  arrayListOf(arrayListOf("dishes", "10"))
 		var Foods= arrayListOf(arrayListOf("s001", "bread", "1"))
 		var msg = MsgUtil.buildDispatch("tester", "prepare", "prepare($Crockerys, $Foods)", "maitre")
 		var State = ""
 		var expected= "Sent Prepare"
-		var channelForObserver = Channel<String>()
-
-		runBlocking {
-			testingObserverMaitre!!.addObserver( channelForObserver,expected)
-		
-			println ("===============TEST | sending $msg")
-			MsgUtil.sendMsg(msg, maitreActor!!)
-			State = channelForObserver.receive()
-			testingObserverMaitre!!.removeObserver()
-		}
-		channelForObserver.close()
-		println ("===============TEST | RESULT=$State for $msg")
-	}
-		
-	@Test
-	fun AddFoodTest() {
-		var msg = MsgUtil.buildDispatch("tester", "addFood", "addFood(s002)", "maitre")
-		var State = ""
-		var expected = "Sent AddFood"
 		var Prevision = expected
 		var channelForObserver = Channel<String>()
 
-		//waiting the "Sent Prepare" maitre update state
-		waitPrepare()
-		println ("===============TEST | Prepare finished")
-		
-		// Send an addFood and wait the "Sent AddFood" maitre update state
+		println ("===============TEST | starting ")
+		// Send a prepare and wait the "Sent Prepare" maitre update state
 		runBlocking {
 			testingObserverMaitre!!.addObserver( channelForObserver,expected)
 		

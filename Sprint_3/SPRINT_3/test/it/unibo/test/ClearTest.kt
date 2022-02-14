@@ -17,7 +17,7 @@ import kotlin.jvm.JvmStatic
 import kotlinx.coroutines.channels.Channel
 import util.CoapObserverForTest
 
-class AddFoodTest {
+class ClearTest {
 	companion object {
 		var maitreActor : ActorBasic? = null
 		var systemStarted = false
@@ -78,7 +78,7 @@ class AddFoodTest {
 	}
 
 	// Send a prepare and wait the "Sent Prepare" maitre update state
-	fun waitPrepare() {
+	fun waitPrepare(){
 		var Crockerys =  arrayListOf(arrayListOf("dishes", "10"))
 		var Foods= arrayListOf(arrayListOf("s001", "bread", "1"))
 		var msg = MsgUtil.buildDispatch("tester", "prepare", "prepare($Crockerys, $Foods)", "maitre")
@@ -99,10 +99,10 @@ class AddFoodTest {
 	}
 		
 	@Test
-	fun AddFoodTest() {
-		var msg = MsgUtil.buildDispatch("tester", "addFood", "addFood(s002)", "maitre")
+	fun ClearTest() {
+		var msg = MsgUtil.buildDispatch("tester", "clear", "clear(0)", "maitre")
 		var State = ""
-		var expected = "Sent AddFood"
+		var expected = "Sent Clear"
 		var Prevision = expected
 		var channelForObserver = Channel<String>()
 
@@ -110,7 +110,7 @@ class AddFoodTest {
 		waitPrepare()
 		println ("===============TEST | Prepare finished")
 		
-		// Send an addFood and wait the "Sent AddFood" maitre update state
+		// Send a clear and wait the "Sent Clear" maitre update state
 		runBlocking {
 			testingObserverMaitre!!.addObserver( channelForObserver,expected)
 		
