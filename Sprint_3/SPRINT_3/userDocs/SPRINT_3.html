@@ -55,7 +55,7 @@ By <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html"
 
 To do that, as already said in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>, the software running on the <ks>maître's smartphone</ks> must provide a <tt>graphic user interface</tt> (<tt>GUI</tt>) and could be realized as a native application (<tt>Android</tt> or <tt>IOS</tt>) or a <tt>web application</tt> running on a mobile browser; the last one, after a careful evaluation of the available means to design this software, results to be the more appropriate, as it appears to be a more versatile tool.
 <br><br>
-Therefore, to to solve this sprint goal, the main problems which must be addressed are:
+Therefore, to solve this sprint goal, the main problems which must be addressed are:
 <ul>
 	<li>how to change the <tt>mock</tt> <k>maitre</k> <tt>actor</tt> in a non-mock <tt>actor</tt> to receive commands in order to allow the user to interact with it through the <tt>GUI</tt>;</li>
 	<li>which architecture could be used to represent the system;</li>
@@ -65,7 +65,7 @@ Therefore, to to solve this sprint goal, the main problems which must be address
 
 <h4><a name="PrAn_S3_maitre"></a>Maitre</h4>
 
-To redesigned the <k>maitre</k> as a non-mock <tt>actor</tt> there are different ways available:
+To redesign the <k>maitre</k> as a non-mock <tt>actor</tt> there are different ways available:
 <ol>
 	<li>its behavior could be assimilated by the <tt>GUI</tt>; but this is not the most adaptive solution because it fixes the <k>maitre</k> <tt>actor</tt> behavior with the <tt>GUI</tt> preventing the interaction with a different interface mechanism free by this behavior and representing an obstacle for possible future extensions;</li>
 	<li><a name="sol2_maitre"></a>the <k>maitre</k> <tt>actor</tt> could be a non-mock <tt>actor</tt>, which maintains its behavior with the other system <tt>actors</tt>, but it can also receive external commands (in this case from the <tt>GUI</tt>) as long as the interface mechanism supports the same type of messages exchange.</li>
@@ -83,7 +83,7 @@ This <tt>web application</tt> could be realized using <tt>Spring framework</tt> 
 
 <h4>Communications</h4>
 
-As already said above, the <tt>adapter object</tt> allow the communications between the two parts (<tt>front-end</tt> and <tt>back-end</tt>); this can be done in different ways through different protocols (<tt>TCP</tt>, <tt>MQTT</tt>, <tt>CoAP</tt>).<br>
+As already said above, the <tt>adapter object</tt> allows the communications between the two parts (<tt>front-end</tt> and <tt>back-end</tt>); this can be done in different ways through different protocols (<tt>TCP</tt>, <tt>MQTT</tt>, <tt>CoAP</tt>).<br>
 After a careful evaluation, this could be realized using:
 <ul>
 	<li>the <tt>TCP</tt>, <tt>MQTT</tt> or <tt>CoAP</tt> protocol for the communication to the <k>maitre</k> <tt>actor</tt>;</li>
@@ -94,12 +94,12 @@ In this way: the <tt>controller</tt> through the <tt>adapter object</tt> sends m
 <br><br>
 <img src="./utils/img/PrAn_CommunicationGuiMaitre.svg" alt="Communications GUI Maitre">
 
-<h2><a name="S3_TestPlans"></a>Test Plans</h2>
+<h2>Test Plans</h2>
 
 With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTestPlans" target="_blank">initial problem analysis test plans</a>, below it's reported a functional tests planning related to the goal of this sprint:
 <br><br>
 <ul>
-	<li>Tests of all the communications between entities;</li>
+	<li>Tests of all communications between entities;</li>
 	<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
 	<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>.</li>
 </ul>
@@ -112,8 +112,8 @@ With regard to the <a href="./SPRINT_3.html#PrAn_Sprint3">problem analysis about
 
 To not be anymore a <tt>mock actor</tt>, as said in the <a href="./SPRINT_3.html#PrAn_S3_maitre">problem analysis about this goal</a>, the <k>maitre</k> has been redesigned, maintaining its behavior with the other system <tt>actors</tt>, but adding the possibility to receive from the user (<ks>Maître de Salle</ks>), in this sprint through the <tt>web application</tt>, some external commands as <ko>dispatch</ko>:
 <ul>
-<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (in case the user (<ks>Maître de Salle</ks>) defines through the <tt>GUI</tt> the elements for the <ks>task</ks> <ks>Prepare the room</ks>, as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>): in the first case, as in the previous sprints, the <k>maitre</k> loads the default elements from the <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_3/SPRINT_3/Prepare.pl" target="_blank">Prepare.pl</a>). Then it sends a <em>prepare</em> <ko>dispatch</ko> to the <k>rbr</k> specifing the (default or new) food and crockery;</li>
-	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the <ks>food-code</ks> defined by the user (<ks>Maître de Salle</ks>) for the <ks>task</ks> <ks>Add Food</ks>, as required in <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> and as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>: after receiving this command, the <k>maitre</k> sends an <em>addFood</em> <ko>request</ko> to the <k>rbr</k> specifing the <ac>FOOD_CODE</ac>;</li>
+<li><em>prepare(<ac>Crockery</ac>, <ac>Food</ac>)</em>, where <ac>Crockery</ac> and <ac>Food</ac> are empty string or a list respectively of crockery and food (in case the user defines through the <tt>GUI</tt> the elements for the <ks>task</ks> <ks>Prepare the room</ks>, as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>): in the first case, as in the previous sprints, the <k>maitre</k> loads the default elements from the <tt>prolog</tt> file (<a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_3/SPRINT_3/Prepare.pl" target="_blank">Prepare.pl</a>). Then it sends a <em>prepare</em> <ko>dispatch</ko> to the <k>rbr</k> specifing the (default or new) food and crockery;</li>
+	<li><em>addFood(<ac>FOOD_CODE</ac>)</em>, where <ac>FOOD_CODE</ac> is the <ks>food-code</ks> defined by the user for the <ks>task</ks> <ks>Add Food</ks>, as required in <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> and as proposed in the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnMaitre" target="_blank">initial problem analysis</a>: after receiving this command, the <k>maitre</k> sends an <em>addFood</em> <ko>request</ko> to the <k>rbr</k> specifing the <ac>FOOD_CODE</ac>;</li>
 	<li><em>clear</em>: as in the previous sprints, the <k>maitre</k> sends a <em>consult</em> <ko>dispatch</ko> to the <k>table</k> to know the items (crockery and food) to remove and then it sends a <em>clear</em> <ko>dispatch</ko> to the <k>rbr</k> specifing those elements;</li>
 	<li><em>consult</em>: as in the previous sprints, the <k>maitre</k> sends a <em>consult</em> <ko>dispatch</ko> to all the resources <tt>actors</tt> and waits for their answers;</li>
 	<li><em>stop</em>: as in the previous sprints, the <k>maitre</k> sends a <em>stop</em> <ko>request</ko> to the <k>rbrwalker</k> and, only when the latter <ko>reply</ko> with <em>stopped(<ac>true</ac>)</em>, then the <k>maitre</k> waits for a <em>reactivate</em> <ko>dispatch</ko>. Here, it has been added the possibility to wait also a <em>consult</em>, but after the execution of this command, it's checked if it was in stop state and then the <k>maitre</k> waits again for a <em>reactivate</em> or <em>consult</em> <ko>dispatch</ko>;</li>
@@ -130,7 +130,7 @@ To not be anymore a <tt>mock actor</tt>, as said in the <a href="./SPRINT_3.html
 <tr>
 	<td class="text" rowspan="3">
 		<br><a href="../src/model.qak#:~:text=//QActor%20maitre%20context,terminating...%22)%0A%09%09terminate%201%0A%09%7D%0A%7D" target="_blank"><k>maitre</k> in model.qak</a><br><br>
-		<iframe class="qakImageMax" src="./utils/img/Maitre.png" title="Maitre QActor from model.qak">Maitre QActor from model.qak</iframe>
+		<iframe class="qakReq" src="./utils/img/MaitreQActor.png" title="Maitre QActor from model.qak">Maitre QActor from model.qak</iframe>
 	</td>
 	<td class="imageSchema">
 		<img src="./utils/img/ProjectTab_CommunicationGuiMaitre.svg" alt="Maitre Actor Context: communications with GUI">
@@ -154,8 +154,8 @@ In future, it could be improved making it not anymore a <tt>mock actor</tt> and 
 
 <h3><a name="S3_MaitreGUI"></a>MaitreGUI</h3>
 
-To realize the <tt>GUI</tt>, as a <tt>web application</tt>, for the <ks>maître's smartphone</ks> software, it has been design and create a new project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a>, using <tt>Spring framework</tt>, as already said in <a href="./SPRINT_3.html#PrAn_S3_GUI">the problem analysis of this goal</a>.<br>
-In particular, it has been realized, starting from <a href="https://start.spring.io" target="_blank">Spring Boot</a>, a <tt>Gradle</tt> project using the dependencies <tt>Spring Web</tt>, <tt>Spring Boot DevTools</tt> and <tt>Thymeleaf</tt> (a modern server-side Java template engine for both web and standalone environments, capable to inject its logic into template files like HTML). (Useful the guides for <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html" target="_blank">Spring Boot</a> and for <a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html" target="_blank">Thymeleaf</a>).
+To realize the <tt>GUI</tt>, as a <tt>web application</tt>, for the <ks>maître's smartphone</ks> software, it has been designed and created a new project <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a>, using <tt>Spring framework</tt>, as already said in <a href="./SPRINT_3.html#PrAn_S3_GUI">the problem analysis of this goal</a>.<br>
+In particular, it has been realized, starting from <a href="https://start.spring.io" target="_blank">Spring Boot</a>, a <tt>Gradle</tt> project using the dependencies <tt>Spring Web</tt>, <tt>Spring Boot DevTools</tt> and <tt>Thymeleaf</tt> (a modern server-side Java template engine for both web and standalone environments, capable to inject its logic into template files like <tt>HTML</tt>). (Useful the guides for <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/webspring.intro/userDocs/LabSpringUsageIntro2021.html" target="_blank">Spring Boot</a> and for <a href="https://www.thymeleaf.org/doc/tutorials/3.0/usingthymeleaf.html" target="_blank">Thymeleaf</a>).
 <br><br>
 Mainly, with regard of what said in the <a href="./SPRINT_3.html#PrAn_Sprint3">problem analysis about this sprint</a>, this project contains in:
 <ul>
@@ -167,13 +167,13 @@ Mainly, with regard of what said in the <a href="./SPRINT_3.html#PrAn_Sprint3">p
 	</ul>
 	<li><a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI/src/main/kotlin/it/unibo/connQak" target="_blank">src/main/kotlin/it/unibo/<b>connQak</b></a>:</li>
 	<ul class="child">
-		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/sysConnKb.kt" target="_blank">sysConnKb.kt</a>, used to take and set the values/paramenters for the communications between <cl>MaitreResource</cl> and <k>maitre</k>;</li>
-		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/connQakBase.kt" target="_blank">connQakBase.kt</a>, which works as a <tt>factory class</tt> to generate a class to sends messages to an <tt>actor</tt> (in this case the <k>maitre</k>) using the <tt>TCP</tt> (by default), <tt>MQTT</tt> (implemented here but not <k>maitre</k> side) or <tt>CoAP</tt> protocols. In this regard, it is provided a class for each type of connection.</li>
+		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/sysConnKb.kt" target="_blank">sysConnKb.kt</a>, used to take and set the parameters for the communications between <cl>MaitreResource</cl> and <k>maitre</k>;</li>
+		<li><a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/connQakBase.kt" target="_blank">connQakBase.kt</a>, which works as a <tt>factory class</tt> to generate a class to send messages to an <tt>actor</tt> (in this case the <k>maitre</k>) using the <tt>TCP</tt> (by default), <tt>MQTT</tt> (implemented here but not <k>maitre</k> side) or <tt>CoAP</tt> protocols. In this regard, it is provided a class for each type of connection.</li>
 	</ul>
 </ul>
-Furthermore, in <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI/src/main/resources/templates" target="_blank">src/main/resources/<b>templates</b></a> there are present <tt>HTML</tt> files for which it/plurale? has been used/exploited <tt>Thymeleaf</tt> and <tt>HTTP GET</tt> methods to send informations.
-These pages (<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page2.html" target="_blank">MaitreGUI_page2.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page3.html" target="_blank">MaitreGUI_page3.html</a>???), as required in/by <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, allow the user (<ks>Maître de Salle</ks>), interacting with them, to send <ks>task</ks> commands (<em>prepare</em>, <em>addFood</em> and/, <em>clear</em>???), to <em>stop</em> and <em>reactivate</em> those <ks>tasks</ks> and to <em>consult</em> the resources.
-It has also been added an <tt>HTML</tt> page (<a href="../../maitreGUI/src/main/resources/templates/Settings.html" target="_blank">Settings.html</a>) to allow the user to indicate new paramenters for the connection between <cl>MaitreResource</cl> and <k>maitre</k>; so the <cl>Controller</cl> will be able to change the values of/in <cl>sysConnKb</cl>/<a href="../../maitreGUI/src/main/kotlin/it/unibo/connQak/sysConnKb.kt" target="_blank">sysConnKb.kt</a>?? (like the address, the port and the context of the destination actor and the type of protocol (<tt>TCP</tt>, <tt>CoAP</tt>, <tt>MQTT</tt>) to send commands to it).
+Furthermore, in <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI/src/main/resources/templates" target="_blank">src/main/resources/<b>templates</b></a> there are present <tt>HTML</tt> files for which <tt>HTTP GET</tt> methods to send informations and <tt>Thymeleaf</tt> have been exploited.<br>
+These pages (<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page2.html" target="_blank">MaitreGUI_page2.html</a>, <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI_page3.html" target="_blank">MaitreGUI_page3.html</a>), as required in <a href="../../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a>, allow the user (<ks>Maître de Salle</ks>), interacting with them, to send <ks>task</ks> commands (<em>prepare</em>, <em>addFood</em>, <em>clear</em>), to <em>stop</em> and <em>reactivate</em> those <ks>tasks</ks> and to <em>consult</em> the resources.<br>
+It has also been added an <tt>HTML</tt> page (<a href="../../maitreGUI/src/main/resources/templates/Settings.html" target="_blank">Settings.html</a>) to allow the user to indicate new parameters for the connection between <cl>MaitreResource</cl> and <k>maitre</k>; so the <cl>Controller</cl> will be able to change the values in <cl>sysConnKb</cl> (like the value of the address, the port and the context of the destination actor and the type of protocol (<tt>TCP</tt>, <tt>CoAP</tt>, <tt>MQTT</tt>) to send commands to it).
 <br><br>
 <table>
 <tr class="text">
@@ -202,60 +202,53 @@ It has also been added an <tt>HTML</tt> page (<a href="../../maitreGUI/src/main/
 </tr>
 </table>
 <br>
-Scrivi in controller : reindirizzamento pagina!<br>
 A possible graphic representation of the interaction between <tt>GUI</tt> (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a> project) and <k>maitre</k> could be the following.
 <br><br>
 <img src="./utils/img/CommunicationGuiMaitre.svg" alt="Communications between GUI (maitreGUI project) and maitre actor">
 
 <h2>Testing</h2>
 
-For this sprint, no significant tests are made because the tests planned during the <a href="./SPRINT_3.html#S3_TestPlans">test plan phase</a> about the behavior and the interactions between maitre and other system actors have already been carried out in the previous sprints. Otherwise, regarding the behavior and the interaction/relationship between maitre and the GUI (maitreGUI), this can be visually?? verified by running the project and the web application/GUI/maitreGUI and sending/trying to send commands to the maitre.
-
-<br><br>
-
-For this sprint no significant test are made because the behavior and the interactions between maitre and other system actors have already been carried out/tested in the previous sprints; while, regarding the behavior and the interaction/relationship between maitre and the GUI (maitreGUI), this can be tested/verified sending/trying to send commands to the maitre through the web application.<br>
-
-<br><br>
-
 Below there are exposed some tests made for this sprint project:
 <dl>
-	<dt><a href="../test/it/unibo/test/MutExTaskMaitreTest.kt" target="_blank">MutExTaskMaitreTest.kt</a></dt>
+	<dt><a href="../test/it/unibo/test/PrepareTest.kt" target="_blank">PrepareTest.kt</a></dt>
 	<dd>Tests about the mutual exclusion of <ks>tasks</ks> and of their order of execution:<ol>
-		<li><em>PrepareAddFoodClearTest</em>: after the send of <em>prepare</em>, addFood and clear commands in this order to the <k>maitre</k>, it's verified that the latter actor receives and manages (starts to execute the related tasks) all these commands with success. In particular, this test:<ol>
+		<li><em>PrepareTest</em>: after the send of <em>prepare</em> command to the <k>maitre</k>, it's verified that the latter receives and manages this command (starting to execute the related <ks>task</ks>) with success and without discarding it.</li>
+	</ol></dd>
+	<br>
+	<dt><a href="../test/it/unibo/test/AddFoodTest.kt" target="_blank">AddFoodTest.kt</a></dt>
+	<dd>Tests about the mutual exclusion of <ks>tasks</ks> and of their order of execution:<ol>
+		<li><em>PrepareAddFoodTest</em>: after the send of <em>prepare</em> and <em>addFood</em> commands in this order to the <k>maitre</k>, it's verified that the latter receives and manages all these commands (starting to execute the related <ks>tasks</ks>) with success and without discarding them. In particular, this test:<ol>
 			<li>Sends a <em>prepare</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
-			<li>Checks that <em>prepare</em> <ko>dispatch</ko> has success/have been correctly received (che il maitre lo riceva/accetti?!);</li>
+			<li>Checks that <em>prepare</em> <ko>dispatch</ko> has been correctly received, managed and not discarded;</li>
 			<li>Sends an <em>addFood</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
-			<li>Checks that <em>addFood</em> <ko>dispatch</ko> has success;</li>
+			<li>Checks that <em>addFood</em> <ko>dispatch</ko> has been correctly received, managed and not discarded.</li>
+		</ol></li>
+	</ol></dd>
+	<br>
+	<dt><a href="../test/it/unibo/test/AddFoodFailTest.kt" target="_blank">AddFoodFailTest.kt</a></dt>
+	<dd>Tests about the mutual exclusion of <ks>tasks</ks> and of their order of execution:<ol>
+		<li><em>AddFoodFailTest</em>: after the send of an <em>addFood</em> command to the <k>maitre</k> without sending before a <em>prepare</em> command, it's verified that the latter doesn't manage this command and discards it.</li>
+	</ol></dd>
+	<br>
+	<dt><a href="../test/it/unibo/test/ClearTest.kt" target="_blank">ClearTest.kt</a></dt>
+	<dd>Tests about the mutual exclusion of <ks>tasks</ks> and of their order of execution:<ol>
+		<li><em>ClearTest</em>: after the send of <em>prepare</em> and <em>clear</em> commands in this order to the <k>maitre</k>, it's verified that the latter receives and manages all these commands (starting to execute the related <ks>tasks</ks>) with success and without discarding them. In particular, this test:<ol>
+			<li>Sends a <em>prepare</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
+			<li>Checks that <em>prepare</em> <ko>dispatch</ko> has been correctly received, managed and not discarded;</li>
 			<li>Sends a <em>clear</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
-			<li>Checks that <em>clear</em> <ko>dispatch</ko> has success.</li>
+			<li>Checks that <em>clear</em> <ko>dispatch</ko> has been correctly received, managed and not discarded.</li>
 		</ol></li>
-		<li><em>FailAddFoodTest</em>: after the send of an <em>addFood</em> command to the <k>maitre</k> before sending a prepare command, it's verified that the latter actor doesn't manage this command/ it's verified that the operation fails. In particular, this test:<ol>
-			<li>Sends an <em>addFood</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
-			<li>Checks that <em>addFood</em> <ko>dispatch</ko> fails/maitre doesn't manage this command.</li>
-		</ol></li>
-		<li><em>FailClearTest</em>: after the send of a <em>clear</em> command to the <k>maitre</k> before sending a prepare command, it's verified that the latter actor doesn't manage this command/ it's verified that the operation fails. In particular, this test:<ol>
-			<li>Sends a <em>clear</em> <ko>dispatch</ko> to the <k>maitre</k>;</li>
-			<li>Checks that <em>clear</em> <ko>dispatch</ko> fails/maitre doesn't manage this command.</li>
-		</ol></li>
+	</ol></dd>
+	<br>
+	<dt><a href="../test/it/unibo/test/ClearFailTest.kt" target="_blank">ClearFailTest.kt</a></dt>
+	<dd>Tests about the mutual exclusion of <ks>tasks</ks> and of their order of execution:<ol>
+		<li><em>ClearFailTest</em>: after the send of a <em>clear</em> command to the <k>maitre</k> without sending before a <em>prepare</em> command, it's verified that the latter doesn't manage this command and discards it.</li>
 	</ol></dd>
 </dl>
 <br>
-Regarding the behavior and the interaction/relationship between maitre and the GUI (maitreGUI), this can be visually?? tested/verified sending/trying to send commands to the maitre through the web application.
-
+These tests are executed on a single <tt>context</tt> (<k>ctxsystem</k>).
 <br><br>
-
-non sono stati fatti in quanto il maitre/il funzionamento del sistema era già stato testato negli sprint precedenti; mentre per quanto riguarda la parte di GUI, questa può essere testata provando a inviare comandi al maitre tramite la web application.
-
-These tests are used to test the internal components of this sprint project and not the externals, like the basicrobot. The virtual robot movements, commanded by the basicrobot, can be visually verified by running the project and the WEnv.
-
-These tests are executed on a single context (ctxsystem) and to execute them, it's necessary to comment the maitre, because it is a mock client and it could interfere with tests.
-
-<br><br>
-<ul>
-	<li>Tests of all the communications between entities;</li>
-	<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
-	<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>.</li>
-</ul>
+Regarding the interactions between <k>maitre</k> and <tt>GUI</tt> (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a>), these can be tested using the <tt>web application</tt> to send commands to <k>maitre</k>.
 
 <h2><a name="Sprint3Mod"></a>Model of System's Logical Architecture</h2>
 
@@ -267,7 +260,7 @@ These tests are executed on a single context (ctxsystem) and to execute them, it
 <tr>
 	<td class="text">
 		Sprint 3 <a href="../src/model.qak" target="_blank">model.qak</a><br>
-		<pre><iframe class="qakSprint" src="../src/model.qak" title="ModelSprint_3">Model of Sprint 3</iframe></pre>
+		<pre><iframe class="qakSprint3" src="../src/model.qak" title="ModelSprint_3">Model of Sprint 3</iframe></pre>
 	</td>
 	<td class="imageSchema">
 		<img src="./utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 3"><br>
@@ -285,7 +278,7 @@ If it should be executed the mapping operation, this can be done at the same way
 <br><br>
 After this, it must be executed the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/maitreGUI" target="_blank">maitreGUI</a> project with <tt>Gradle</tt>:
 	<pre>gradle bootRun</pre>
-As said before in <a href="./SPRINT_3.html#S3_MaitreGUI">design phase</a>, it has been added the possibility to change the paramenters for the connection between <cl>MaitreResource</cl> and <k>maitre</k>; to do this, it must be opened a browser at <fa>http://<ac>HOST</ac>:8081/settings</fa>, where <ac>HOST</ac> must be the <ac>localhost</ac> or the host (e.g. <ac>192.168.1.171</ac>) of the machine where the application is running. After the change confirmation, the <cl>Controller</cl> will redirect to the home page (<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>).<br>
+As said before in <a href="./SPRINT_3.html#S3_MaitreGUI">design phase</a>, it has been added the possibility to change the parameters for the connection between <cl>MaitreResource</cl> and <k>maitre</k>; to do this, it must be opened a browser at <fa>http://<ac>HOST</ac>:8081/settings</fa>, where <ac>HOST</ac> must be the <ac>localhost</ac> or the host (e.g. <ac>192.168.1.171</ac>) of the machine where the application is running. After the change confirmation, the <cl>Controller</cl> will redirect to the home page (<a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>).<br>
 Otherwise, the application could be opened in a browser at <fa>http://<ac>HOST</ac>:8081</fa>, where <ac>HOST</ac> must be the <ac>localhost</ac> or the host (e.g. <ac>192.168.1.171</ac>) of the machine where the application is running, showing the home page <a href="../../maitreGUI/src/main/resources/templates/MaitreGUI.html" target="_blank">MaitreGUI.html</a>.
 
 <h2>SCRUM Context</h2>
@@ -314,39 +307,6 @@ After this Sprint and according to the <a href="../../../ProblemAnalysisModel/us
 By Romeo Stefano (stefano.romeo@studio.unibo.it) and Russo Maria (maria.russo10@studio.unibo.it)<br>
 <img class="photo" src="../../../userDocs/utils/img/StefanoRomeo.png" alt="Stefano Romeo image">
 <img class="photo" src="../../../userDocs/utils/img/MariaRusso.png" alt="Maria Russo image">
-</div>
-
-<div hidden="hidden">elementi utili:
-Table:
-<table>
-<tr>
-	<td></td>
-	<td></td>
-</tr>
-</table>
-Sorted List:
-<ol>
-<li></li>
-<li></li>
-</ol>
-Unordered List:
-<ul>
-<li></li>
-<li></li>
-</ul>
-Definition list:
-<dl>
-<dt></dt>
-<dd></dd>
-</dl>
-Link:
-<a href="" target="_blank"></a>
-Link in pagina:
-<a name="link"></a> + <a href="./SPRINT_2.html#link">text</a>
-IFrame:
-<iframe src="./src" title="title">"Link"/Cosa c'è nel frame</iframe>
-<br>Image:
-<img src="./utils/img/Nome.png" alt="description">
 </div>
 
 </body>
