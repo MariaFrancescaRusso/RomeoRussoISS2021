@@ -4,5 +4,5 @@ services:
     image: docker.io/bluffgnuff/rbrnode_on_rasp:1.1
     ## image: webbasicrobotqakforpc:1.1
     ports:
-      - 8050:8050
-
+      - 8050:8050/tcp
+      - 8050:8050/udp
