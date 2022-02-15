@@ -36,10 +36,10 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						println("WALKER | loaded robot type: $RobotType...")
 						}
 						else
-						{println("WALKER | Error getting IsMap value...")
+						{println("WALKER | Error getting RobotType value...")
 						}
 						solve("consult('StepDuration.pl')","") //set resVar	
-						solve("getValue(Duration)","") //set resVar	
+						solve("getDuration(Duration)","") //set resVar	
 						if( currentSolution.isSuccess() ) { Step = "${getCurSol("Duration")}".toInt()  
 						println("WALKER | loaded Step Duration: $Step...")
 						}

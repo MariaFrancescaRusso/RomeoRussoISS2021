@@ -519,12 +519,12 @@ QActor rbrmapper context ctxrbr {
 			println ("MAPPER | loaded robot type: $RobotType...")
 		}
 		else {
-			println ("MAPPER | Error getting IsMap value...")
+			println ("MAPPER | Error getting RobotType value...")
 		}
 
 		// To know the value of step duration
 		solve( consult("StepDuration.pl") )
-		solve( getValue(Duration) )
+		solve( getDuration(Duration) )
 		ifSolved {
 			[# Step = "${getCurSol("Duration")}".toInt() #]
 			println ("MAPPER | loaded Step Duration: $Step...")
@@ -681,12 +681,12 @@ QActor rbrwalker context ctxrbr {
 			println ("WALKER | loaded robot type: $RobotType...")
 		}
 		else {
-			println ("WALKER | Error getting IsMap value...")
+			println ("WALKER | Error getting RobotType value...")
 		}
 		
 		// To know the value of step duration
 		solve( consult("StepDuration.pl") )
-		solve( getValue(Duration) )
+		solve( getDuration(Duration) )
 		ifSolved {
 			[# Step = "${getCurSol("Duration")}".toInt() #]
 			println ("WALKER | loaded Step Duration: $Step...")

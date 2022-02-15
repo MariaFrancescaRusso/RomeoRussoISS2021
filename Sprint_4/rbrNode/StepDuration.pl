@@ -12,5 +12,5 @@
 stepDuration(800).
 
 %% To obtain the step time element
-getValue(Res) :-
+getDuration(Res) :-
     findall([DURATION], stepDuration(DURATION), [[Res] | []]). 
