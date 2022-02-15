@@ -4,6 +4,5 @@ services:
     image: docker.io/bluffgnuff/maitrenode:1.1
     ## image: webbasicrobotqakforpc:1.1
     ports:
-      - 8070:8070/tcp
-      - 8070:8070/udp
+      - 8070:8070
 

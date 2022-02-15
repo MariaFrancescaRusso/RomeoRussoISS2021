@@ -4,12 +4,11 @@ EXPOSE 8070
 ## ON PC
 ADD ./build/distributions/maitreNode-1.0.tar  /
 
-
 WORKDIR /maitreNode-1.0/bin
 COPY ./*.pl ./
 ##COPY ./*.json ./
 ##RUN ls
-
+RUN yum -y install nano && yum -y clean all  && rm -rf /var/cache
 CMD ["bash", "maitreNode"]
 ## Usage
 # gradle -b build_ctxmaitre.gradle build
