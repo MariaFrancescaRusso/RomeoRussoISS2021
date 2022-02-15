@@ -54,37 +54,163 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 <h3>Deploy on Raspberry</h3>
 
+Before doing the deploy (of the project?) on raspberry, it's necessary to split it/the project (SPRINT_3 link) made/realized in previous sprints/sprint in more little projects to can put them in different machine as indicated in the requirements text.<br>
 
+<h4>Project Partitioning/Subdivision</h4>
+
+Therefore, it could decide to split the project in three parts, one for each context identified in the (requirements and problem) analysis (phase) and in previous sprints; (faccimo elenco meglio??) so/then, for example, a project for the context ctxmaitre containing maitre, foodconsumer and  non-smart resources actors (pantry, table, dishwasher) actors, a project or the context ctxrbr containing rbr, rbrmapper and rbrwalker actors, a project or the context ctxfridge containing fridge actor.<br>
+In this way, the relations between actors and context remains the same as in previous sprints.
+
+<h4>Deploy on Raspberry</h4>
+
+Identified this project partitioning/subdivision, then it must make the deploy of/deploy the project related to the ctxrbr in the raspberry, putting in it also the basicrobot. It could also put/make the deploy only of the basicrobot, but to separate at best the contexts, to exploit at best the messages exchange between basicrobot and ctxrbr actors which are more performant in local/on the same host/machine and in base of what said in previous sprints??, it seem to be more usefull/appropriate to put all in the raspberry.
 
 <h2>Test Plans</h2>
 
 With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTestPlans" target="_blank">initial problem analysis test plans</a>, below it's reported a functional tests planning related to the goal of this sprint:
 <br><br>
 <ul>
-	<li>Tests of all the communications between entities;</li>
-	<li>Tests of the mutual exclusion of <ks>tasks</ks> and of their order of execution;</li>
-	<li>Tests of the <em>stop</em> and <em>reactivate</em> commands that can be used by <ks>Maître de salle</ks> only when there is a running <ks>task</ks>.</li>
+	<li>Tests of all the communications between entities.</li>
 </ul>
+<br>
+Because of the project has been finished in previous sprint, in this sprint it is not necessary to execute/do tests, except for the communications between the different contexts and so between the different machine containing them.
 
 <h2>Project</h2>
 
-With regard to the <a href="./SPRINT_4.html#PrAn_Sprint4">problem analysis about this sprint</a>, in this design phase it has been necessary to ...
+With regard to the <a href="./SPRINT_4.html#PrAn_Sprint4">problem analysis about this sprint</a>, in this design phase it has been necessary to split the (previous) project (SPRINT_3 link) in three part/partition:
+<ol>
+	<li>maitreNode (link), which contains ctxmaitre actors/ which is refered to the ctxmaitre and contains maitre, foodconsumer and  non-smart resources (pantry, table, dishwasher) actors and the observers related to these resources actors??;</li>
+	<li>rbrNode, which contains ctxmaitre actors/ which is refered to the ctxmaitre and contains rbr, rbrmapper and rbrwalker actors;</li>
+	<li>fridgeNode, which contains ctxmaitre actors/ which is refered to the ctxmaitre and contains fridge actor.</li>
+</ol>
+<br>
+To solve the goal of this sprint, it has been done the deploy of each project and of the GUI prject (maitreGUI) exploiting/using/through the use of Docker; for the deploy on the raspberry it has been done the deploy of the rbrNode project and of the basicrobot.<br>
+For the use of Docker/for the deploy with Docker, it could be useful see ...
 
-<h3>MaitreNode</h3>
+<h3>Deploy MaitreNode</h3>
 
+To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular, in a terminal opened in the project folder, it has been:
+<pre>
+// - done the build /created the distribution of this/the project
+gradle -b build_ctxmaitre.gradle build
+// - created the image using the Dockerfile (link)
+docker build -f Dockerfile -t maitrenode:1.1 .
+// runned the image to test it
+docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1
+// tagged the image
+docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1
+// registered the image on DockerHub (link)
+docker push bluffgnuff/maitrenode:1.1
+</pre>
+To launch the maitreNode it has been created the maitrenode.yaml file.
 
+<br><hr><br>
 
-<h3>RBRNode</h3>
+To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxmaitre.gradle build</pre></li>
+	<li>it has been created the image using the Dockerfile (link):<br>
+		<pre>docker build -f Dockerfile -t maitrenode:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1</pre></li>
+	<li>it has been registered the image on DockerHub (link):<br>
+		<pre>docker push bluffgnuff/maitrenode:1.1</pre></li>
+</ol>
+To launch the maitreNode it has been created the maitrenode.yaml file.
 
+<h3>Deploy RBRNode</h3>
 
+To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxrbr.gradle build</pre></li>
+	<li>it has been created the image using the DockerfileOnRasp (link):<br>
+		<pre>docker build -f DockerfileOnRasp -t rbrnode:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name rbrnode -p 8050:8050/tcp -p 8050:8050/udp rbrnode:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag rbrnode:1.1 bluffgnuff/rbrnode:1.1</pre></li>
+	<li>it has been register the image on DockerHub:<br>
+		<pre>docker push bluffgnuff/rbrnode:1.1</pre></li>
+</ol>
+To launch the rbrNode it has been created the rbrnodeOnRasp.yaml file.
+<br><br>
+For the rbrNode project it has also been create a container Docker to deploy it on PC:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxrbr.gradle build</pre></li>
+	<li>it has been created the image using the DockerfileOnPC (link):<br>
+		<pre>docker build -f DockerfileOnPC-t rbrnode_on_pc:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name rbrnode_on_pc -p 8050:8050/tcp -p 8050:8050/udp rbrnode_on_pc:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag rbrnode_on_pc:1.1 bluffgnuff/rbrnode_on_pc:1.1</pre></li>
+	<li>it has been register the image on DockerHub:<br>
+		<pre>docker push bluffgnuff/rbrnode_on_pc:1.1</pre></li>
+</ol>
 
-<h3>FridgeNode</h3>
+<h3>Deploy BasicRobot</h3>
 
+To do the deploy of the basicrobot on the raspberry (useful is the part related to the deploy of the real robot in basicrobot2021.html), in particular:
+<br><br>
+<ol>
+	<li>it has been saved the file basicrobotMbot.yaml on raspberry:<br>
+		<pre>scp -r ./issLab2021/it.unibo.qak21.basicrobot pi@192.168.1.93:/home/pi/it.unibo.qak21.basicrobot</pre></li>
+	<li>it has been runned the container:<br>
+		<pre>docker-compose -f basicrobotMbot.yaml run --service-ports mbot ./it.unibo.qak21.basicrobot</pre></li>
+	<li>it has been configured the correct jsno file (basicrobotConfigForNano.json):<br>
+		<pre>docker exec -it nome_container mv basicrobotConfigForNano.json basicrobotConfig.json</pre></li>
+	<li>it has been setted up that the container starts at raspberry boot:<br>
+		<pre>docker update --restart always nome_container</pre></li>
+</ol>
 
+<h3>Deploy FridgeNode</h3>
+
+To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxfridge.gradle build</pre></li>
+	<li>it has been created the image using the Dockerfile (link):<br>
+		<pre>docker build -f Dockerfile -t fridgenode:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name fridgenode -p 8060:8060/tcp -p 8060:8060/udp fridgenode:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag fridgenode:1.1 bluffgnuff/fridgenode:1.1</pre></li>
+	<li>it has been registered the image on DockerHub:<br>
+		<pre>docker push bluffgnuff/fridgenode:1.1</pre></li>
+</ol>
+To launch the fridgeNode it has been created the fridgenode.yaml file.
+
+<h3>Deploy MaitreGUI</h3>
+
+To make possible the deploy of the maitreNode it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxmaitre.gradle build</pre></li>
+	<li>it has been created the image using the Dockerfile (link):<br>
+		<pre>docker build -f Dockerfile -t maitrenode:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1</pre></li>
+	<li>it has been register the image on DockerHub:<br>
+		<pre>docker push bluffgnuff/maitrenode:1.1</pre></li>
+</ol>
+To launch the maitreGUI it has been created the maitreGui.yaml file.
 
 <h2>Testing</h2>
 
-
+Because of the project has been finished in previous sprint, in this sprint it is not necessary to execute/do tests, except for the communications between the different contexts and so between the different machine containing them.
+<br><br>
+In this sprint there are not made relevant?? tests because the goal of this sprint is about its deploy and because of the goals individuated during the analysis phases have been  in previous sprint
 
 <h2><a name="Sprint4Mod"></a>Model of System's Logical Architecture</h2>
 
@@ -96,13 +222,13 @@ With regard to the <a href="./SPRINT_4.html#PrAn_Sprint4">problem analysis about
 <tr>
 	<td class="text">
 		<br>Sprint 4 - maitreNode <a href="../maitreNode/src/model.qak" target="_blank">model.qak</a><br>
-		<pre><iframe class="qakSprint" src="../maitreNode/src/model.qak" title="ModelSprint_4_maitreNode">Model of Sprint 4 - project maitreNode</iframe></pre>
+		<pre><iframe class="qakSprint4" src="../maitreNode/src/model.qak" title="ModelSprint_4_maitreNode">Model of Sprint 4 - project maitreNode</iframe></pre>
 		<hr><br>
 		Sprint 4 - rbrNode <a href="../rbrNode/src/model.qak" target="_blank">model.qak</a><br>
-		<pre><iframe class="qakSprint" src="../rbrNode/src/model.qak" title="ModelSprint_4_rbrNode">Model of Sprint 4 - project rbrNode</iframe></pre>
+		<pre><iframe class="qakSprint4" src="../rbrNode/src/model.qak" title="ModelSprint_4_rbrNode">Model of Sprint 4 - project rbrNode</iframe></pre>
 		<hr><br>
 		Sprint 4 - fridgeNode <a href="../fridgeNode/src/model.qak" target="_blank">model.qak</a><br>
-		<pre><iframe class="qakSprint" src="../fridgeNode/src/model.qak" title="ModelSprint_4_fridgeNode">Model of Sprint 4 - project fridgeNode</iframe></pre>
+		<pre><iframe class="qakSprint4" src="../fridgeNode/src/model.qak" title="ModelSprint_4_fridgeNode">Model of Sprint 4 - project fridgeNode</iframe></pre>
 	</td>
 	<td class="imageSchema">
 		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 4"><br>
@@ -112,6 +238,18 @@ With regard to the <a href="./SPRINT_4.html#PrAn_Sprint4">problem analysis about
 </table>
 
 <h2>Deployment</h2>
+
+To start/launch the container related to the basicrobot and to the rbrNode project, as said in the project phase, it is necessary to starts/boot the raspberry. [Otherwise...]
+<br><br>
+To start the container related to the fridgeNode project it must be run in a terminal (in the folder containing the fridgenode.yaml file):
+<pre>docker-compose -f fridgenode.yaml up</pre>
+To start the container related to the maitreNode project it must be run in a terminal (in the folder containing the maitrenode.yaml file):
+<pre>docker-compose -f maitrenode.yaml up</pre>
+To start the container related to the maitreGUI it must be run in a terminal (in the folder containing the maitreGui.yaml file):
+<pre>docker-compose -f maitreGui.yaml up</pre>
+
+<br><br>
+
 
 
 
