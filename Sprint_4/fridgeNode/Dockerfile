@@ -9,7 +9,7 @@ WORKDIR /fridgeNode-1.0/bin
 COPY ./*.pl ./
 ##COPY ./*.json ./
 ##RUN ls
-
+RUN yum -y install nano && yum -y clean all  && rm -rf /var/cache
 CMD ["bash", "fridgeNode"]
 
 ### gradle -b build_ctxfridge.gradle build

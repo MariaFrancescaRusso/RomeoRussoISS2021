@@ -8,6 +8,8 @@ Dispatch askFood:askFood(FOOD_CODE)
 //RBR - Resources
 Dispatch changeState:changeState(X, ARG)	//X = add | remove ; ARG = state to change
 
+Context ctxmaitre ip [host="192.168.1.211" port=8070] 
+Context ctxrbr ip [host="192.168.1.93" port=8050]
 Context ctxfridge ip [host="localhost" port=8060]
 
 QActor fridge context ctxfridge {
