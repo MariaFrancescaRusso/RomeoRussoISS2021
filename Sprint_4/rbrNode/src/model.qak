@@ -521,6 +521,17 @@ QActor rbrmapper context ctxrbr {
 		else {
 			println ("MAPPER | Error getting IsMap value...")
 		}
+
+		// To know the value of step duration
+		solve( consult("StepDuration.pl") )
+		solve( getValue(Duration) )
+		ifSolved {
+			[# Step = "${getCurSol("Duration")}".toInt() #]
+			println ("MAPPER | loaded Step Duration: $Step...")
+		}
+		else {
+			println ("MAPPER | Error getting StepDuration value...")
+		}
 	}
 	Goto wait
 
@@ -671,6 +682,17 @@ QActor rbrwalker context ctxrbr {
 		}
 		else {
 			println ("WALKER | Error getting IsMap value...")
+		}
+		
+		// To know the value of step duration
+		solve( consult("StepDuration.pl") )
+		solve( getValue(Duration) )
+		ifSolved {
+			[# Step = "${getCurSol("Duration")}".toInt() #]
+			println ("WALKER | loaded Step Duration: $Step...")
+		}
+		else {
+			println ("WALKER | Error getting StepDuration value...")
 		}
 	}
 	Goto wait

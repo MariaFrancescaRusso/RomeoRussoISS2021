@@ -38,6 +38,14 @@ class Rbrwalker ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						else
 						{println("WALKER | Error getting IsMap value...")
 						}
+						solve("consult('StepDuration.pl')","") //set resVar	
+						solve("getValue(Duration)","") //set resVar	
+						if( currentSolution.isSuccess() ) { Step = "${getCurSol("Duration")}".toInt()  
+						println("WALKER | loaded Step Duration: $Step...")
+						}
+						else
+						{println("WALKER | Error getting StepDuration value...")
+						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 

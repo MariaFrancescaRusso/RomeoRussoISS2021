@@ -35,6 +35,14 @@ class Rbrmapper ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, 
 						else
 						{println("MAPPER | Error getting IsMap value...")
 						}
+						solve("consult('StepDuration.pl')","") //set resVar	
+						solve("getValue(Duration)","") //set resVar	
+						if( currentSolution.isSuccess() ) { Step = "${getCurSol("Duration")}".toInt()  
+						println("MAPPER | loaded Step Duration: $Step...")
+						}
+						else
+						{println("MAPPER | Error getting StepDuration value...")
+						}
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
