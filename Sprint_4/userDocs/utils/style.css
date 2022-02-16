@@ -213,6 +213,10 @@ div.center {
 	text-align:center;
 }
 
+span.commentCode {
+	color: #808000;
+}
+
 table, th, td {
 	border-collapse: collapse;
 	border: 1px solid black;

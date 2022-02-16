@@ -77,44 +77,44 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 <br><br>
 <ul>
 	<li>Tests of all the communications between entities.</li>
+	<li>inseriamo sennó ad esempio: all previous goal plan tests/ all previous tests made with real robot??????</li>
 </ul>
 <br>
-Of course, some test about the behavior of the real robot and of all the system with the real robot to verify the goal identified in the analysis phase could be done.
-
+Of course, some test about the behavior of the real robot and of all the system with the real robot to verify the goals identified in the analysis phase could be done.
+<br><br>
 Because of the project has been finished in previous sprint, in this sprint it is not necessary to execute/do tests, except for the communications between the different contexts and so between the different machine containing them.
 
 <h2>Project</h2>
 
-With regard to the <a href="./SPRINT_4.html#PrAn_Sprint4">problem analysis about this sprint</a>, in this design phase it has been necessary to split the (previous) project (SPRINT_3 link) in three part/partition:
+With regard to the <a href="./SPRINT_4.html#PrAn_Sprint4">problem analysis about this sprint</a>, in this design phase it has been necessary to split the previous project (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/SPRINT_3" target="_blank">SPRINT_3</a>) in three part/partition:
 <ol>
-	<li>maitreNode (link), which contains ctxmaitre actors/ which is refered to the ctxmaitre and contains maitre, foodconsumer and  non-smart resources (pantry, table, dishwasher) actors and the observers related to these resources actors??;</li>
-	<li>rbrNode, which contains ctxmaitre actors/ which is refered to the ctxmaitre and contains rbr, rbrmapper and rbrwalker actors;</li>
-	<li>fridgeNode, which contains ctxmaitre actors/ which is refered to the ctxmaitre and contains fridge actor.</li>
+	<li><a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a>, which contains <k>ctxmaitre</k> <tt>actors</tt>/ which is refered to the <k>ctxmaitre</k> and contains <k>maitre</k>, <k>foodconsumer</k> and  non-smart resources <tt>actors</tt> (<k>pantry</k>, <k>table</k>, <k>dishwasher</k>) and the <tt>observers</tt> related to these resources <tt>actors</tt>??;</li>
+	<li><a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a>, which contains <k>ctxrbr</k> <tt>actors</tt>/ which is refered to the <k>ctxrbr</k> and contains <k>rbr</k>, <k>rbrmapper</k> and <k>rbrwalker</k> <tt>actors</tt>;</li>
+	<li><a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a>, which contains <k>ctxfridge</k> <tt>actors</tt>/ which is refered to the <k>ctxfridge</k> and contains <k>fridge</k> <tt>actor</tt>.</li>
 </ol>
 <br>
-To solve the goal of this sprint, it has been done the deploy of each project and of the GUI prject (maitreGUI) exploiting/using/through the use of Docker; for the deploy on the raspberry it has been done the deploy of the rbrNode project and of the basicrobot.<br>
-For the use of Docker/for the deploy with Docker, it could be useful see ...
+To solve the goal of this sprint, it has been done the deploy of each identified project/of each of these projects and of the <tt>GUI</tt> project (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a>) exploiting/using/through the use of <tt>Docker</tt>; for the deploy on the <tt>Raspberry</tt> it has been done the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project and of the <k>basicrobot</k>. (For the use of/for the deploy with <tt>Docker</tt>, it could be useful see [LINK]).
 
 <h3>Deploy MaitreNode</h3>
 
-To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular, in a terminal opened in the project folder, it has been:
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of <tt>Docker</tt> a container/ a <tt>Docker</tt> container related to/for this project. In particular, in a terminal opened in the project folder, it has been:
 <pre>
-// - done the build /created the distribution of this/the project
+<span class="commentCode">// - done the build /created the distribution of this/the project</span>
 gradle -b build_ctxmaitre.gradle build
-// - created the image using the Dockerfile (link)
+<span class="commentCode">// - created the image using the <a href="../maitreNode/Dockerfile" target="_blank"><span class="commentCode">Dockerfile</span></a><a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a></span>
 docker build -f Dockerfile -t maitrenode:1.1 .
-// runned the image to test it
+<span class="commentCode">// runned the image to test it (not/non- necessary step)</span>
 docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1
-// tagged the image
+<span class="commentCode">// tagged the image</span>
 docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1
-// registered the image on DockerHub (link)
+<span class="commentCode">// registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a></span>
 docker push bluffgnuff/maitrenode:1.1
 </pre>
-To launch the maitreNode it has been created the maitrenode.yaml file.
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created the maitrenode.yaml file.
 
 <br><hr><br>
 
-To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of <tt>Docker</tt> a container/ a <tt>Docker</tt> container related to/for this project. In particular:
 <br><br>
 <ol>
 	<li>it has been done the build /created the distribution of this/the project:<br>
@@ -132,7 +132,7 @@ To launch the maitreNode it has been created the maitrenode.yaml file.
 
 <h3>Deploy RBRNode</h3>
 
-To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+To make possible the deploy of the maitreNode on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
 <br><br>
 <ol>
 	<li>it has been done the build /created the distribution of this/the project:<br>
@@ -165,22 +165,22 @@ For the rbrNode project it has also been create a container Docker to deploy it 
 
 <h3>Deploy BasicRobot</h3>
 
-To do the deploy of the basicrobot on the raspberry (useful is the part related to the deploy of the real robot in basicrobot2021.html), in particular:
+To do the deploy of the basicrobot on the <tt>Raspberry</tt> (useful is the part related to the deploy of the real robot in basicrobot2021.html), in particular:
 <br><br>
 <ol>
-	<li>it has been saved the file basicrobotMbot.yaml on raspberry:<br>
+	<li>it has been saved the file basicrobotMbot.yaml on <tt>Raspberry</tt>:<br>
 		<pre>scp -r ./issLab2021/it.unibo.qak21.basicrobot pi@192.168.1.93:/home/pi/it.unibo.qak21.basicrobot</pre></li>
 	<li>it has been runned the container:<br>
 		<pre>docker-compose -f basicrobotMbot.yaml run --service-ports mbot ./it.unibo.qak21.basicrobot</pre></li>
 	<li>it has been configured the correct jsno file (basicrobotConfigForNano.json):<br>
 		<pre>docker exec -it nome_container mv basicrobotConfigForNano.json basicrobotConfig.json</pre></li>
-	<li>it has been setted up that the container starts at raspberry boot:<br>
+	<li>it has been setted up that the container starts at <tt>Raspberry</tt> boot:<br>
 		<pre>docker update --restart always nome_container</pre></li>
 </ol>
 
 <h3>Deploy FridgeNode</h3>
 
-To make possible the deploy of the maitreNode on the raspberry it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+To make possible the deploy of the maitreNode on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
 <br><br>
 <ol>
 	<li>it has been done the build /created the distribution of this/the project:<br>
