@@ -20,7 +20,7 @@
 
 <h2>Introduction</h2>
 
-The starting point for this SPRINT is the resulting model from the <a href="../../../Sprint_3/SPRINT_3/userDocs/SPRINT_3.html#Sprint3Mod" target="_blank">previous Sprint 3</a>:
+The starting point for this SPRINT is the resulting model from the <a href="../../Sprint_3/SPRINT_3/userDocs/SPRINT_3.html#Sprint3Mod" target="_blank">previous Sprint 3</a>:
 <br><br>
 <table>
 <tr class="text">
@@ -54,16 +54,22 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 
 <h3>Deploy on Raspberry</h3>
 
-Before doing the deploy (of the project?) on raspberry, it's necessary to split it/the project (SPRINT_3 link) made/realized in previous sprints/sprint in more little projects to can put them in different machine as indicated in the requirements text.<br>
+Before doing the deploy on <tt>Raspberry</tt>, it's necessary to split the project (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_3/SPRINT_3" target="_blank">SPRINT_3</a>) realized in previous sprint (<a href="../../Sprint_3/SPRINT_3/userDocs/SPRINT_3.html" target="_blank">Sprint_3.html</a>) in more little projects to can put them in different machine as indicated in the <a href="../../ProblemAnalysisModel/userDocs/utils/tf/TemaFinaleBo19.html" target="_blank">requirements text</a> (a software in the <ks>fridge</ks>, one in the <ks>maître's smartphone</ks> and one in the <ks>RBR</ks>).<br>
 
-<h4>Project Partitioning/Subdivision</h4>
+<h4>Project Partitioning</h4>
 
-Therefore, it could decide to split the project in three parts, one for each context identified in the (requirements and problem) analysis (phase) and in previous sprints; (faccimo elenco meglio??) so/then, for example, a project for the context ctxmaitre containing maitre, foodconsumer and  non-smart resources actors (pantry, table, dishwasher) actors, a project or the context ctxrbr containing rbr, rbrmapper and rbrwalker actors, a project or the context ctxfridge containing fridge actor.<br>
-In this way, the relations between actors and context remains the same as in previous sprints.
+Therefore, it could split the project in three parts, one for each <tt>context</tt> identified in <a href="../../userDocs/Analysis.html" target="_blank">requirements and problem analysis phase and in previous sprints</a>; so, for example:
+<ul>
+	<li>a project for the <tt>context</tt> <k>ctxmaitre</k> containing <k>maitre</k>, <k>foodconsumer</k> and  non-smart resources <tt>actors</tt> (<k>pantry</k>, <k>table</k>, <k>dishwasher</k>);</li>
+	<li>a project or the <tt>context</tt> <k>ctxrbr</k> containing containing <k>rbr</k>, <k>rbrmapper</k> and <k>rbrwalker</k> <tt>actors</tt>;</li>
+	<li>a project or the <tt>context</tt> <k>ctxfridge</k> containing <k>fridge</k> <tt>actor</tt>.</li>
+</ul>
+In this way, the relations between <tt>actors</tt> and <tt>context</tt> remains the same as in previous sprints.
 
 <h4>Deploy on Raspberry</h4>
 
-Identified this project partitioning/subdivision, then it must make the deploy of/deploy the project related to the ctxrbr in the raspberry, putting in it also the basicrobot. It could also put/make the deploy only of the basicrobot, but to separate at best the contexts, to exploit at best the messages exchange between basicrobot and ctxrbr actors which are more performant in local/on the same host/machine and in base of what said in previous sprints??, it seem to be more usefull/appropriate to put all in the raspberry.
+Identified this project? partitioning/subdivision, then it must make the deploy of/deploy the project related to the <k>ctxrbr</k> in the <tt>Raspberry</tt>, putting in it also the <k>basicrobot</k>.<br>
+It could also put/make the deploy only of the <k>basicrobot</k>, but to separate at best the <tt>contexts</tt>/ to exploit at best the messages exchange between <k>basicrobot</k> and <k>ctxrbr</k> <tt>actors</tt> which are more performant in local/on the same host/machine and in base of what said in previous sprints??, it seem to be more usefull/appropriate to put them all in the <tt>Raspberry</tt>.
 
 <h2>Test Plans</h2>
 
@@ -73,6 +79,8 @@ With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.h
 	<li>Tests of all the communications between entities.</li>
 </ul>
 <br>
+Of course, some test about the behavior of the real robot and of all the system with the real robot to verify the goal identified in the analysis phase could be done.
+
 Because of the project has been finished in previous sprint, in this sprint it is not necessary to execute/do tests, except for the communications between the different contexts and so between the different machine containing them.
 
 <h2>Project</h2>
@@ -210,7 +218,9 @@ To launch the maitreGUI it has been created the maitreGui.yaml file.
 
 Because of the project has been finished in previous sprint, in this sprint it is not necessary to execute/do tests, except for the communications between the different contexts and so between the different machine containing them.
 <br><br>
-In this sprint there are not made relevant?? tests because the goal of this sprint is about its deploy and because of the goals individuated during the analysis phases have been  in previous sprint
+In this sprint there are not made relevant?? tests because the goal of this sprint is about its deploy and because of the goals individuated during the analysis phases have been solved in previous sprint.
+<br><br>
+To test the communications between all the system cpmponents, this can be verified visually by sending command through the maitreGUI and osserving the real robot running the commands or the received output for the/about the consult command.
 
 <h2><a name="Sprint4Mod"></a>Model of System's Logical Architecture</h2>
 
@@ -239,7 +249,7 @@ In this sprint there are not made relevant?? tests because the goal of this spri
 
 <h2>Deployment</h2>
 
-To start/launch the container related to the basicrobot and to the rbrNode project, as said in the project phase, it is necessary to starts/boot the raspberry. [Otherwise...]
+To start/launch the containers related to the basicrobot and to the rbrNode project, as said in the project phase, it is necessary / suffieciente to starts/boot the raspberry. [Otherwise...]
 <br><br>
 To start the container related to the fridgeNode project it must be run in a terminal (in the folder containing the fridgenode.yaml file):
 <pre>docker-compose -f fridgenode.yaml up</pre>
