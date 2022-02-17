@@ -1,0 +1,61 @@
+version: '3'
+services:
+    fridge_local:
+        image: docker.io/bluffgnuff/fridgelocal:1.1
+        ports:
+        - 8060:8060/tcp
+        - 8060:8060/udp
+        networks:
+            actors-network:
+                ipv4_address: "172.20.128.2"
+    wenv:
+        image: docker.io/natbodocker/virtualrobotdisi:2.0
+        ports:
+        - 8090:8090
+        - 8091:8091
+        networks:
+            actors-network:
+                ipv4_address: "172.20.128.7"
+    robot_local:
+        image: docker.io/natbodocker/basicrobot21virtual:1.0
+        ports:
+        - 8020:8020/tcp
+        - 8020:8020/udp
+        networks:
+            actors-network:
+                ipv4_address: "172.20.128.6"
+        depends_on:
+        - wenv
+    rbr_local:
+        image: docker.io/bluffgnuff/rbrlocal:1.1
+        ports:
+            - 8050:8050/tcp
+            - 8050:8050/udp
+        networks:
+            actors-network:
+                ipv4_address: "172.20.128.5"
+    maitre_local:
+        image: docker.io/bluffgnuff/maitrelocal:1.1
+        ports:
+        - 8070:8070/tcp
+        - 8070:8070/udp
+        networks:
+            actors-network:
+                ipv4_address: "172.20.128.3"
+    webgui_local:
+        image: docker.io/bluffgnuff/maitregui:1.1
+        ports:
+        - 8081:8081/tcp
+        - 8081:8081/udp
+        networks:
+            actors-network:
+                ipv4_address: "172.20.128.4"
+        depends_on:
+            - maitre_local
+networks:
+  actors-network:
+    name: actors-network
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+

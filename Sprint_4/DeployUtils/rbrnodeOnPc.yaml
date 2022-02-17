@@ -1,0 +1,9 @@
+version: '3'
+services:
+  context:
+    image: docker.io/bluffgnuff/rbrnode_on_pc:1.1
+    ## image: webbasicrobotqakforpc:1.1
+    ports:
+        - 8050:8050/tcp
+        - 8050:8050/udp
+

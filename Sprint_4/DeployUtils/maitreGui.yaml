@@ -1,0 +1,9 @@
+version: '3'
+services:
+  webgui:
+    image: docker.io/bluffgnuff/maitregui:1.1
+    ## image: webbasicrobotqakforpc:1.1
+    ports:
+      - 8081:8081/tcp
+      - 8081:8081/udp
+
