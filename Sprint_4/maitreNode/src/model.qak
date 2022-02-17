@@ -45,8 +45,8 @@ Dispatch end:end(ARG)	//void
 //Context ctxsystem ip [host="localhost" port=8040]
 //192.168.1.171/211/14/40
 Context ctxmaitre ip [host="localhost" port=8070] 
-Context ctxfridge ip [host="127.0.0.1" port=8060]
-Context ctxrbr ip [host="192.168.1.211" port=8050]
+Context ctxfridge ip [host="192.168.43.211" port=8060]
+Context ctxrbr ip [host="192.168.43.228" port=8050]
 
 ExternalQActor rbr context ctxrbr
 ExternalQActor rbrwalker context ctxrbr  
@@ -78,7 +78,7 @@ QActor maitre context ctxmaitre {
 	State wait {
 		println ("MAITRE | waiting...")
 		// Usefull in testing step
-		updateResource [# "waiting" #]
+//		updateResource [# "waiting" #]
 	}
 	Transition t0
 		whenMsg prepare and [# !Prepared #] -> sendPrepare
@@ -128,7 +128,7 @@ QActor maitre context ctxmaitre {
 		
 		[# Prepared = true #]
 		// Usefull in testing step
-		updateResource [# "Sent Prepare" #]
+//		updateResource [# "Sent Prepare" #]
 	}
 	Goto wait
 	
@@ -157,7 +157,7 @@ QActor maitre context ctxmaitre {
 		}
 		
 		// Usefull in testing step
-		updateResource [# "Sent AddFood" #]
+//		updateResource [# "Sent AddFood" #]
 	}
 	Transition t1 
 		// Time waiting for warning otherwise the food is present
@@ -271,7 +271,7 @@ QActor maitre context ctxmaitre {
 		
 		[# Cleared = true #]
 		// Usefull in testing step
-		updateResource [# "Sent Clear" #]
+//		updateResource [# "Sent Clear" #]
 	}
 	Goto wait
 	

@@ -38,8 +38,6 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("wait") { //this:State
 					action { //it:State
 						println("MAITRE | waiting...")
-						updateResourceRep( "waiting"  
-						)
 					}
 					 transition(edgeName="t00",targetState="sendPrepare",cond=whenDispatchGuarded("prepare",{ !Prepared  
 					}))
@@ -83,8 +81,6 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						{println("MAITRE | Error getting 'Prepare the room' elements...")
 						}
 						 Prepared = true  
-						updateResourceRep( "Sent Prepare"  
-						)
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 
@@ -109,8 +105,6 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						else
 						{println("MAITRE | Error getting Food_Code for 'Add Food' task elements...")
 						}
-						updateResourceRep( "Sent AddFood"  
-						)
 						stateTimer = TimerActor("timer_sendAddFood", 
 							scope, context!!, "local_tout_maitre_sendAddFood", AddFoodtime )
 					}
@@ -227,8 +221,6 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 						forward("clear", "clear($ClearDish,$ClearFood)" ,"rbr" ) 
 						println("MAITRE | send clear command to RBR: Food = $ClearFood and Crockery = $ClearDish")
 						 Cleared = true  
-						updateResourceRep( "Sent Clear"  
-						)
 					}
 					 transition( edgeName="goto",targetState="wait", cond=doswitch() )
 				}	 

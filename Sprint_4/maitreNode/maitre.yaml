@@ -1,0 +1,16 @@
+version: '3'
+services:
+    context:
+        image: docker.io/bluffgnuff/maitrenode:1.1
+        ports:
+        - 8070:8070/tcp
+        - 8070:8070/udp
+    webgui:
+        image: docker.io/bluffgnuff/maitregui:1.1
+        ports:
+        - 8081:8081/tcp
+        - 8081:8081/udp
+        depends_on:
+            - context
+
+

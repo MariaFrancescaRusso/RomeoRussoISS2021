@@ -59,9 +59,9 @@ Reply stepfail:stepfail(DURATION, CAUSE)
 //Context ctxsystem ip [host="localhost" port=8040]
 //192.168.1.171/211/14/40
 Context ctxmaitre ip [host="127.0.0.1" port=8070] 
-Context ctxfridge ip [host="192.168.1.211" port=8060]
+Context ctxfridge ip [host="192.168.43.157" port=8060]
 Context ctxrbr ip [host="localhost" port=8050]
-Context ctxbasicrobot ip [host="192.168.1.93" port=8020]  
+Context ctxbasicrobot ip [host="192.168.43.228" port=8020]  
 
 ExternalQActor basicrobot context ctxbasicrobot
 ExternalQActor pantry context ctxmaitre
