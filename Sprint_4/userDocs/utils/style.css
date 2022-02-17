@@ -129,6 +129,11 @@ pre {
 	white-space: pre-wrap;
 }
 
+/*class for comment in code*/
+.commentCode, .commentCode > a {
+	color: #808000;
+}
+
 /*for commands arguments and words code style*/
 ac {
 	font-family: "Consolas";
@@ -211,10 +216,6 @@ div.endpage {
 
 div.center {
 	text-align:center;
-}
-
-span.commentCode {
-	color: #808000;
 }
 
 table, th, td {

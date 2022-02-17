@@ -68,12 +68,12 @@ In this way, the relations between <tt>actors</tt> and <tt>context</tt> remains 
 
 <h4>Deploy on Raspberry</h4>
 
-Identified this project? partitioning/subdivision, then it must make the deploy of/deploy the project related to the <k>ctxrbr</k> in the <tt>Raspberry</tt>, putting in it also the <k>basicrobot</k>.<br>
-It could also put/make the deploy only of the <k>basicrobot</k>, but to separate at best the <tt>contexts</tt>/ to exploit at best the messages exchange between <k>basicrobot</k> and <k>ctxrbr</k> <tt>actors</tt> which are more performant in local/on the same host/machine and in base of what said in previous sprints??, it seem to be more usefull/appropriate to put them all in the <tt>Raspberry</tt>.
+Identified this project? partitioning/subdivision, then it must make the deploy of/deploy the project related to the <k>ctxrbr</k> in the <tt>Raspberry</tt>, putting in the <tt>Raspberry</tt> also the <k>basicrobot</k> doing so the deploy of the real robot, which can be an <tt>mbot</tt> (documented in/see/solo link <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or a <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).<br>
+It could also put/make the deploy only of the <k>basicrobot</k>/It could also make the deploy of the real robot and not of the "rbr mind"/the project related to the <k>ctxrbr</k>; but to separate at best the <tt>contexts</tt>/ to exploit at best the messages exchange between <k>basicrobot</k> and <k>ctxrbr</k> <tt>actors</tt> which are more performant in local/on the same host/machine and in base of what said in previous sprints??, it seem to be more usefull/appropriate to put them all in the <tt>Raspberry</tt>.
 
 <h2>Test Plans</h2>
 
-With reference to the <a href="../../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTestPlans" target="_blank">initial problem analysis test plans</a>, below it's reported a functional tests planning related to the goal of this sprint:
+With reference to the <a href="../../ProblemAnalysisModel/userDocs/Analysis.html#PrAnTestPlans" target="_blank">initial problem analysis test plans</a>, below it's reported a functional tests planning related to the goal of this sprint:
 <br><br>
 <ul>
 	<li>Tests of all the communications between entities.</li>
@@ -93,46 +93,89 @@ With regard to the <a href="./SPRINT_4.html#PrAn_Sprint4">problem analysis about
 	<li><a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a>, which contains <k>ctxfridge</k> <tt>actors</tt>/ which is refered to the <k>ctxfridge</k> and contains <k>fridge</k> <tt>actor</tt>.</li>
 </ol>
 <br>
-To solve the goal of this sprint, it has been done the deploy of each identified project/of each of these projects and of the <tt>GUI</tt> project (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a>) exploiting/using/through the use of <tt>Docker</tt>; for the deploy on the <tt>Raspberry</tt> it has been done the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project and of the <k>basicrobot</k>. (For the use of/for the deploy with <tt>Docker</tt>, it could be useful see [LINK]).
+To solve the goal of this sprint, it has been done the deploy of each identified project/of each of these projects and of the <tt>GUI</tt> project (<a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a>) exploiting/using/through the use of <tt>Docker</tt>; for the deploy on the <tt>Raspberry</tt> (goal of this sprint/sprint goal) it has been done the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project and of the real robot, which for/in this sprint is (represented by) a <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).<br>. (For the use of/for the deploy with <tt>Docker</tt>, it could be useful see [LINK]).
 
 <h3>Deploy MaitreNode</h3>
 
-To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of <tt>Docker</tt> a container/ a <tt>Docker</tt> container related to/for this project. In particular, in a terminal opened in the project folder, it has been:
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created a <tt>Docker</tt> container related to/for this project. In particular, in a terminal opened in this project folder, it has been:
 <pre>
-<span class="commentCode">// - done the build /created the distribution of this/the project</span>
+<span class="commentCode">// - done the build /created the distribution of this project</span>
 gradle -b build_ctxmaitre.gradle build
-<span class="commentCode">// - created the image using the <a href="../maitreNode/Dockerfile" target="_blank"><span class="commentCode">Dockerfile</span></a><a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a></span>
+<span class="commentCode">// - created the image using <a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a></span>
 docker build -f Dockerfile -t maitrenode:1.1 .
-<span class="commentCode">// runned the image to test it (not/non- necessary step)</span>
+<span class="commentCode">// - runned the image only to test it</span>
 docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1
-<span class="commentCode">// tagged the image</span>
+<span class="commentCode">// - tagged the image</span>
 docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1
-<span class="commentCode">// registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a></span>
+<span class="commentCode">// - registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a></span>
 docker push bluffgnuff/maitrenode:1.1
 </pre>
-To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created the maitrenode.yaml file.
+<hr>
+<pre>
+<span class="commentCode">// 1. done the build /created the distribution of this project</span>
+gradle -b build_ctxmaitre.gradle build
+<span class="commentCode">// 2. created the image using <a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a></span>
+docker build -f Dockerfile -t maitrenode:1.1 .
+<span class="commentCode">// 3. runned the image only to test it</span>
+docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1
+<span class="commentCode">// 4. tagged the image</span>
+docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1
+<span class="commentCode">// 5. registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a></span>
+docker push bluffgnuff/maitrenode:1.1
+</pre>
 
-<br><hr><br>
+<hr>
 
-To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of <tt>Docker</tt> a container/ a <tt>Docker</tt> container related to/for this project. In particular:
-<br><br>
 <ol>
-	<li>it has been done the build /created the distribution of this/the project:<br>
+	<li>it has been done the build /created the distribution of this project:<br>
 		<pre>gradle -b build_ctxmaitre.gradle build</pre></li>
-	<li>it has been created the image using the Dockerfile (link):<br>
+	<li>it has been created the image using the <a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a>:<br>
 		<pre>docker build -f Dockerfile -t maitrenode:1.1 .</pre></li>
-	<li>it has been runned the image to test it:<br>
+	<li>it has been runned the image only to test it:<br>
 		<pre>docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1</pre></li>
 	<li>it has been tagged the image:<br>
 		<pre>docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1</pre></li>
-	<li>it has been registered the image on DockerHub (link):<br>
+	<li>it has been registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
 		<pre>docker push bluffgnuff/maitrenode:1.1</pre></li>
 </ol>
-To launch the maitreNode it has been created the maitrenode.yaml file.
+
+<hr>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitrenode.yaml" target="_blank">maitrenode.yaml</a> file; in particular, in a terminal containing this file it should run/run/execute:
+<pre>docker-compose -f maitrenode.yaml up</pre>
+<hr>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a>, for which it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitrenode.yaml" target="_blank">maitrenode.yaml</a> file, in a terminal containing this file it should run/run/execute:
+<pre>docker-compose -f maitrenode.yaml up</pre>
+
+<h3>Deploy MaitreGUI</h3>
+
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> it has been created a <tt>Docker</tt> container related to/for this project. In particular, in a terminal opened in this project folder, it has been:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this project:<br>
+		<pre>gradle -b build.gradle.kts build</pre></li>
+	<li>it has been created the image using the <a href="../maitreGUI/Dockerfile" target="_blank">Dockerfile</a>:<br>
+		<pre>docker build -f Dockerfile -t maitregui:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name maitregui -p 8081:8081/tcp -p 8081:8081/udp maitregui:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag maitregui:1.1 bluffgnuff/maitregui:1.1</pre></li>
+	<li>it has been register the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
+		<pre>docker push bluffgnuff/maitregui:1.1</pre></li>
+</ol>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreGUI/maitreGui.yaml" target="_blank">maitreGui.yaml</a> file; in particular, in a terminal containing this file it should run/run/execute:
+<pre>docker-compose -f maitreGui.yaml up</pre>
+<hr>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a>, for which it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreGUI/maitreGui.yaml" target="_blank">maitreGui.yaml</a> file, in a terminal containing this file it should run/run/execute:
+<pre>docker-compose -f maitreGui.yaml up</pre>
+
+<h3>Deploy MaitreGUI +/&/and/with MaitreNode</h3>
+
+It has also created a file/the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitre.yaml" target="_blank">maitre.yaml</a> file to add the possibility to start/run <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> and <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> projects together. To do that, opened a terminal in the file folder, run/it should run:
+<pre>docker-compose -f maitre.yaml up</pre>
 
 <h3>Deploy RBRNode</h3>
 
-To make possible the deploy of the maitreNode on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> on the <tt>Raspberry</tt> it has been created a Docker container related to/for this project. In particular, in a terminal opened in this project folder, it has been:
 <br><br>
 <ol>
 	<li>it has been done the build /created the distribution of this/the project:<br>
@@ -143,7 +186,7 @@ To make possible the deploy of the maitreNode on the <tt>Raspberry</tt> it has b
 		<pre>docker run -d --name rbrnode -p 8050:8050/tcp -p 8050:8050/udp rbrnode:1.1</pre></li>
 	<li>it has been tagged the image:<br>
 		<pre>docker tag rbrnode:1.1 bluffgnuff/rbrnode:1.1</pre></li>
-	<li>it has been register the image on DockerHub:<br>
+	<li>it has been register the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
 		<pre>docker push bluffgnuff/rbrnode:1.1</pre></li>
 </ol>
 To launch the rbrNode it has been created the rbrnodeOnRasp.yaml file.
@@ -159,13 +202,13 @@ For the rbrNode project it has also been create a container Docker to deploy it 
 		<pre>docker run -d --name rbrnode_on_pc -p 8050:8050/tcp -p 8050:8050/udp rbrnode_on_pc:1.1</pre></li>
 	<li>it has been tagged the image:<br>
 		<pre>docker tag rbrnode_on_pc:1.1 bluffgnuff/rbrnode_on_pc:1.1</pre></li>
-	<li>it has been register the image on DockerHub:<br>
+	<li>it has been register the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
 		<pre>docker push bluffgnuff/rbrnode_on_pc:1.1</pre></li>
 </ol>
 
-<h3>Deploy BasicRobot</h3>
+<h3>Deploy of nano robot</h3>
 
-To do the deploy of the basicrobot on the <tt>Raspberry</tt> (useful is the part related to the deploy of the real robot in basicrobot2021.html), in particular:
+To do the deploy of the nano robot on the <tt>Raspberry</tt> (useful is the part related to the deploy of the real robot in <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), in particular:
 <br><br>
 <ol>
 	<li>it has been saved the file basicrobotMbot.yaml on <tt>Raspberry</tt>:<br>
@@ -191,28 +234,152 @@ To make possible the deploy of the maitreNode on the <tt>Raspberry</tt> it has b
 		<pre>docker run -d --name fridgenode -p 8060:8060/tcp -p 8060:8060/udp fridgenode:1.1</pre></li>
 	<li>it has been tagged the image:<br>
 		<pre>docker tag fridgenode:1.1 bluffgnuff/fridgenode:1.1</pre></li>
-	<li>it has been registered the image on DockerHub:<br>
+	<li>it has been registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
 		<pre>docker push bluffgnuff/fridgenode:1.1</pre></li>
 </ol>
 To launch the fridgeNode it has been created the fridgenode.yaml file.
 
-<h3>Deploy MaitreGUI</h3>
+<h3>Deploy MaitreNode</h3>
 
-To make possible the deploy of the maitreNode it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created exploiting/using/through the use of <tt>Docker</tt> a container/ a <tt>Docker</tt> container related to/for this project. In particular, in a terminal opened in the project folder, it has been:
+<pre>
+<span class="commentCode">// - done the build /created the distribution of this/the project</span>
+gradle -b build_ctxmaitre.gradle build
+<span class="commentCode">// - created the image using the <a href="../maitreNode/Dockerfile" target="_blank"><span class="commentCode">Dockerfile</span></a><a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a></span>
+docker build -f Dockerfile -t maitrenode:1.1 .
+<span class="commentCode">// runned the image to test it (not/non- necessary step)</span>
+docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1
+<span class="commentCode">// tagged the image</span>
+docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1
+<span class="commentCode">// registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a></span>
+docker push bluffgnuff/maitrenode:1.1
+</pre>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitrenode.yaml" target="_blank">maitrenode.yaml</a> file.
+
+<br><hr>
+
+<ol><pre>
+<li><span class="commentCode">// done the build /created the distribution of this/the project</span>
+gradle -b build_ctxmaitre.gradle build</li>
+<li><span class="commentCode">// - created the image using the <a href="../maitreNode/Dockerfile" target="_blank"><span class="commentCode">Dockerfile</span></a><a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a></span>
+docker build -f Dockerfile -t maitrenode:1.1 .</li>
+<li><span class="commentCode">// runned the image to test it (not/non- necessary step)</span>
+docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1</li>
+<li><span class="commentCode">// tagged the image</span>
+docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1</li>
+<li><span class="commentCode">// registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a></span>
+docker push bluffgnuff/maitrenode:1.1</li></pre></ol>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitrenode.yaml" target="_blank">maitrenode.yaml</a> file.
+
+<br><hr>
+
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of <tt>Docker</tt> a container/ a <tt>Docker</tt> container related to/for this project. In particular:
 <br><br>
 <ol>
 	<li>it has been done the build /created the distribution of this/the project:<br>
 		<pre>gradle -b build_ctxmaitre.gradle build</pre></li>
-	<li>it has been created the image using the Dockerfile (link):<br>
+	<li>it has been created the image using the <a href="../maitreNode/Dockerfile" target="_blank">Dockerfile</a>:<br>
 		<pre>docker build -f Dockerfile -t maitrenode:1.1 .</pre></li>
 	<li>it has been runned the image to test it:<br>
 		<pre>docker run -d --name maitrenode -p 8070:8070/tcp -p 8070:8070/udp maitrenode:1.1</pre></li>
 	<li>it has been tagged the image:<br>
 		<pre>docker tag maitrenode:1.1 bluffgnuff/maitrenode:1.1</pre></li>
-	<li>it has been register the image on DockerHub:<br>
+	<li>it has been registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
 		<pre>docker push bluffgnuff/maitrenode:1.1</pre></li>
 </ol>
-To launch the maitreGUI it has been created the maitreGui.yaml file.
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitrenode.yaml" target="_blank">maitrenode.yaml</a> file.
+<br>/<br>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a>, for which it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitrenode.yaml" target="_blank">maitrenode.yaml</a> file, in a terminal containing this file it should run/run/execute:
+<pre>docker-compose -f maitrenode.yaml up</pre>
+
+<h3>Deploy MaitreGUI</h3>
+
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> it has been created exploiting/using/through the use of <tt>Docker</tt> a container/ a <tt>Docker</tt> container related to/for this project. In particular:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build.gradle.kts build</pre></li>
+	<li>it has been created the image using the <a href="../maitreGUI/Dockerfile" target="_blank">Dockerfile</a>:<br>
+		<pre>docker build -f Dockerfile -t maitregui:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name maitregui -p 8081:8081/tcp -p 8081:8081/udp maitregui:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag maitregui:1.1 bluffgnuff/maitregui:1.1</pre></li>
+	<li>it has been register the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
+		<pre>docker push bluffgnuff/maitregui:1.1</pre></li>
+</ol>
+To launch the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> it has been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitreGui.yaml" target="_blank">maitreGui.yaml</a> file.
+
+<h3>Deploy MaitreGUI +/&/and/with MaitreNode</h3>
+
+It has also created a file/the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitre.yaml" target="_blank">maitre.yaml</a> file to add the possibility to start/run <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> and <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/MaitreNode" target="_blank">MaitreNode</a> projects together. To do that, opened a terminal in the file folder, run/it should run:
+<pre>docker-compose -f maitrenode.yaml up</pre>
+
+<h3>Deploy RBRNode</h3>
+
+To make possible the deploy of the maitreNode on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxrbr.gradle build</pre></li>
+	<li>it has been created the image using the DockerfileOnRasp (link):<br>
+		<pre>docker build -f DockerfileOnRasp -t rbrnode:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name rbrnode -p 8050:8050/tcp -p 8050:8050/udp rbrnode:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag rbrnode:1.1 bluffgnuff/rbrnode:1.1</pre></li>
+	<li>it has been register the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
+		<pre>docker push bluffgnuff/rbrnode:1.1</pre></li>
+</ol>
+To launch the rbrNode it has been created the rbrnodeOnRasp.yaml file.
+<br><br>
+For the rbrNode project it has also been create a container Docker to deploy it on PC:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxrbr.gradle build</pre></li>
+	<li>it has been created the image using the DockerfileOnPC (link):<br>
+		<pre>docker build -f DockerfileOnPC-t rbrnode_on_pc:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name rbrnode_on_pc -p 8050:8050/tcp -p 8050:8050/udp rbrnode_on_pc:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag rbrnode_on_pc:1.1 bluffgnuff/rbrnode_on_pc:1.1</pre></li>
+	<li>it has been register the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
+		<pre>docker push bluffgnuff/rbrnode_on_pc:1.1</pre></li>
+</ol>
+
+<h3>Deploy of nano robot</h3>
+
+To do the deploy of the nano robot on the <tt>Raspberry</tt> (useful is the part related to the deploy of the real robot in <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), in particular:
+<br><br>
+<ol>
+	<li>it has been saved the file basicrobotMbot.yaml on <tt>Raspberry</tt>:<br>
+		<pre>scp -r ./issLab2021/it.unibo.qak21.basicrobot pi@192.168.1.93:/home/pi/it.unibo.qak21.basicrobot</pre></li>
+	<li>it has been runned the container:<br>
+		<pre>docker-compose -f basicrobotMbot.yaml run --service-ports mbot ./it.unibo.qak21.basicrobot</pre></li>
+	<li>it has been configured the correct jsno file (basicrobotConfigForNano.json):<br>
+		<pre>docker exec -it nome_container mv basicrobotConfigForNano.json basicrobotConfig.json</pre></li>
+	<li>it has been setted up that the container starts at <tt>Raspberry</tt> boot:<br>
+		<pre>docker update --restart always nome_container</pre></li>
+</ol>
+
+<h3>Deploy FridgeNode</h3>
+
+To make possible the deploy of the maitreNode on the <tt>Raspberry</tt> it has been created exploiting/using/through the use of Docker a container/ a Docker container related to/for this project. In particular:
+<br><br>
+<ol>
+	<li>it has been done the build /created the distribution of this/the project:<br>
+		<pre>gradle -b build_ctxfridge.gradle build</pre></li>
+	<li>it has been created the image using the Dockerfile (link):<br>
+		<pre>docker build -f Dockerfile -t fridgenode:1.1 .</pre></li>
+	<li>it has been runned the image to test it:<br>
+		<pre>docker run -d --name fridgenode -p 8060:8060/tcp -p 8060:8060/udp fridgenode:1.1</pre></li>
+	<li>it has been tagged the image:<br>
+		<pre>docker tag fridgenode:1.1 bluffgnuff/fridgenode:1.1</pre></li>
+	<li>it has been registered the image on <a href="https://hub.docker.com/?ref=login" target="_blank">DockerHub</a>:<br>
+		<pre>docker push bluffgnuff/fridgenode:1.1</pre></li>
+</ol>
+To launch the fridgeNode it has been created the fridgenode.yaml file.
 
 <h2>Testing</h2>
 
