@@ -1,0 +1,14 @@
+version: '3'
+services:
+  mbot:
+    image: docker.io/natbodocker/imageforarm:1.1
+    ports:
+      - 8020:8020/tcp
+      - 8020:8020/udp
+      - 8080:8080 
+    privileged: true
+
+## docker-compose -f basicrobotMbot.yaml run --service-ports mbot /bin/bash  
+## docker cp it.unibo.qak21.basicrobot-1.0.jar 69a3bc414124:/it.unibo.qak21.basicrobot-1.0/lib/it.unibo.qak21.basicrobot-1.0.jar
+## docker cp SonarArm.c 69a3bc414124:/it.unibo.qak21.basicrobot-1.0/bin/SonarArm.c
+
