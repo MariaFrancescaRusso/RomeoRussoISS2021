@@ -33,7 +33,8 @@ The starting point for this SPRINT is the resulting model from the <a href="../.
 		<pre><iframe class="qakSprint3" src="../../Sprint_3/SPRINT_3/src/model.qak" title="Sprint_3_Model">Model of Sprint 3</iframe></pre>
 	</td>
 	<td class="imageSchema">
-		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 3"><br>
+		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 3">
+		<a name="ResImg_Sprint3"></a><br>
 		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint_3.svg" alt="Logical Architecture System Model from Sprint 3">
 	</td>
 </tr>
@@ -58,18 +59,18 @@ Before doing the deploy on <tt>Raspberry</tt>, it's necessary to split the proje
 
 <h4>Project Partitioning</h4>
 
-Therefore, it could split the project in three parts, one for each <tt>context</tt> identified in <a href="../../userDocs/Analysis.html" target="_blank">requirements and problem analysis phase and in previous sprints</a>; so, for example:
+It could split the project in three parts, one for each <tt>context</tt> identified in <a href="../../userDocs/Analysis.html" target="_blank">requirements and problem analysis phase and in previous sprints</a>; so, for example:
 <ul>
 	<li>a project for the <tt>context</tt> <k>ctxmaitre</k> containing <k>maitre</k>, <k>foodconsumer</k> and  non-smart resources <tt>actors</tt> (<k>pantry</k>, <k>table</k>, <k>dishwasher</k>);</li>
-	<li>a project or the <tt>context</tt> <k>ctxrbr</k> containing containing <k>rbr</k>, <k>rbrmapper</k> and <k>rbrwalker</k> <tt>actors</tt>;</li>
-	<li>a project or the <tt>context</tt> <k>ctxfridge</k> containing <k>fridge</k> <tt>actor</tt>.</li>
+	<li>a project for the <tt>context</tt> <k>ctxrbr</k> containing <k>rbr</k>, <k>rbrmapper</k> and <k>rbrwalker</k>;</li>
+	<li>a project for the <tt>context</tt> <k>ctxfridge</k> containing <k>fridge</k>.</li>
 </ul>
-In this way, the relations between <tt>actors</tt> and <tt>context</tt> remains the same as in previous sprints.
+In this way, the relations between <tt>actors</tt> and <tt>contexts</tt> remain the same as in previous sprints (see above the <a href="./SPRINT_4.html#ResImg_Sprint3">graphic representation reached in Sprint_3</a>).
 
 <h4>Deploy on Raspberry</h4>
 
-Identified this project? partitioning/subdivision, then it must make the deploy of/deploy the project related to the <k>ctxrbr</k> in the <tt>Raspberry</tt>, putting in the <tt>Raspberry</tt> also the <k>basicrobot</k> doing so the deploy of the real robot, which can be an <tt>mbot</tt> (documented in/see/solo link <a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or a <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>).<br>
-It could also put/make the deploy only of the <k>basicrobot</k>/It could also make the deploy of the real robot and not of the "rbr mind"/the project related to the <k>ctxrbr</k>; but to separate at best the <tt>contexts</tt>/ to exploit at best the messages exchange between <k>basicrobot</k> and <k>ctxrbr</k> <tt>actors</tt> which are more performant in local/on the same host/machine and in base of what said in previous sprints??, it seem to be more usefull/appropriate to put them all in the <tt>Raspberry</tt>.
+Identified this project partitioning, to solve this sprint goal,<a name="Sol1Deploy_S4"></a> it's possible to deploy the project related to the <k>ctxrbr</k> on the <tt>Raspberry</tt>, putting in the latter also the <k>basicrobot</k> deploying the real robot, which could be an <tt>mbot</tt> (<a href="https://htmlpreview.github.io/?https://github.com/anatali/issLab2021/blob/main/it.unibo.qak21.basicrobot/userDocs/Mbot2020.html" target="_blank">MBot2020.html</a>) or a <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>), instead of the <tt>virtual robot</tt> as in previous sprints.<br>
+Another solution to this goal could be to deploy only the real robot on the <tt>Raspberry</tt> and not the project related to the <k>ctxrbr</k>; but to separate at best the <tt>contexts</tt> and to exploit at best the messages exchange between <k>basicrobot</k> and <k>ctxrbr</k> <tt>actors</tt> which is more performant in local, it seems to be more appropriate the <a href="./SPRINT_4.html#Sol1Deploy_S4">first solution</a>.
 
 <h2>Test Plans</h2>
 
@@ -97,7 +98,7 @@ To solve the goal of this sprint, it has been done the deploy of each identified
 
 <h3>Deploy MaitreNode</h3>
 
-To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created a <tt>Docker</tt> container related to/for this project. In particular, in a terminal opened in this project folder, it has been:
+To make possible the deploy of the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> it has been created a <tt>Docker</tt> container related to/for this project. In particular, in a terminal opened in this project folder, it has been (done e poi metti soggetti, es. the creation, the run of...):
 <pre>
 <span class="commentCode">// - done the build /created the distribution of this project</span>
 gradle -b build_ctxmaitre.gradle build
@@ -290,17 +291,20 @@ To test the communications between all the system cpmponents, this can be verifi
 
 <h2>Deployment</h2>
 
-To start/launch the containers related to the basicrobot and to the rbrNode project, as said in the project phase, it is necessary / suffieciente to starts/boot the raspberry. [Otherwise...]
+To start/launch the containers related to the basicrobot (more correctly to the nano robot) and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project, as said in the project phase, it is necessary / suffieciente to starts/boot the raspberry. [Otherwise...]
 <br><br>
-To start the container related to the fridgeNode project it must be run in a terminal (in the folder containing the fridgenode.yaml file):
+To start the container related to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a> project it must be run in a terminal (in the folder containing the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/fridgeNode/fridgenode.yaml" target="_blank">fridgenode.yaml</a> file):
 <pre>docker-compose -f fridgenode.yaml up</pre>
-To start the container related to the maitreNode project it must be run in a terminal (in the folder containing the maitrenode.yaml file):
-<pre>docker-compose -f maitrenode.yaml up</pre>
-To start the container related to the maitreGUI it must be run in a terminal (in the folder containing the maitreGui.yaml file):
-<pre>docker-compose -f maitreGui.yaml up</pre>
-
+To start the container related to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> projects it must be run in a terminal (in the folder containing the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitre.yaml" target="_blank">maitre.yaml</a> file):
+<pre>docker-compose -f maitre.yaml up</pre>
 <br><br>
-
+After a first execution as illustrated above, then/after this there is the possibility/it's possible to start these containers executing in any terminal:
+<pre>docker start <ac>CONTAINER_NAME</ac></pre>
+where <ac>CONTAINER_NAME</ac> is the name of the desired container (e.g. <ac>fridgenode-context-1</ac> for fridge container) and can be seen running in any terminal: (SCRIVERE COME IN SPRINT 1?!)
+<pre>docker ps -a</pre>
+Instead, to stop it:
+<pre>docker stop <ac>CONTAINER_NAME</ac></pre>
+<br><br>
 [Agiungere deploy locale??]
 [aggiungere gestione type and step]
 [aggiungere start and stop]
