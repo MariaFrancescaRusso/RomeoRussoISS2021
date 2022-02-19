@@ -116,7 +116,7 @@ Therefore, it was necessary to edit the <k>rbrmapper</k> and <k>rbrwalker</k> <t
 	</td>
 	<td class="imageSchema">
 		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 3">
-		<a name="ResImg_Sprint3"></a><br><br><br><br><br>
+		<br><br><br><br><br>
 		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint_3.svg" alt="Logical Architecture System Model from Sprint 3">
 	</td>
 </tr>
@@ -201,7 +201,7 @@ docker update --restart always <ac>imageforarm-mbot-1</ac>
 docker ps -a
 </pre>
 
-<h4>Deploy RBRNode on Raspberry (useful for Real Robot)</h4>
+<h4><a name="S4_RBRRaspDeploy"></a>Deploy RBRNode on Raspberry (useful for Real Robot)</h4>
 
 To deploy the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project on the <tt>Raspberry</tt> it has been created a <tt>Docker container</tt> related to it. In particular, in a terminal opened in the folder of this project, it has been:
 <pre>
@@ -225,13 +225,13 @@ docker update --restart always <ac>rbrnode_on_rasp-context-1</ac>
 docker ps -a
 </pre>
 
-<h4>Deploy RBRNode on PC (useful for Virtual Robot)</h4>
+<h4><a name="S4_RBRPCDeploy"></a>Deploy RBRNode on PC (useful for Virtual Robot)</h4>
 
 For the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project it has also been created a <tt>Docker container</tt> to deploy it on <tt>PC</tt>:
 <pre>
 <span class="commentCode">// 1. created the distribution of this project</span>
 gradle -b build_ctxrbr.gradle build
-<span class="commentCode">// 2. created the image using <a href="../rbrNode/DockerfileOnPC" target="_blank">DockerfileOnPC</a></span>
+<span class="commentCode">// 2. created the image using <a href="../rbrNode/DockerfileOnPc" target="_blank">DockerfileOnPc</a></span>
 docker build -f DockerfileOnPC-t rbrnode_on_pc:1.1 .
 <span class="commentCode">// 3. runned the image only to test it</span>
 docker run -d --name rbrnode_on_pc -p 8050:8050/tcp -p 8050:8050/udp rbrnode_on_pc:1.1
@@ -256,43 +256,49 @@ The tests of the communications between all the system components and the tests 
 </tr>
 <tr>
 	<td class="text">
-		<br>Sprint 4 - maitreNode <a href="../maitreNode/src/model.qak" target="_blank">model.qak</a><br>
+		<br>Sprint 4 <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> <a href="../maitreNode/src/model.qak" target="_blank">model.qak</a><br>
 		<pre><iframe class="qakSprint4" src="../maitreNode/src/model.qak" title="ModelSprint_4_maitreNode">Model of Sprint 4 - project maitreNode</iframe></pre>
 		<hr><br>
-		Sprint 4 - rbrNode <a href="../rbrNode/src/model.qak" target="_blank">model.qak</a><br>
+		Sprint 4 <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> <a href="../rbrNode/src/model.qak" target="_blank">model.qak</a><br>
 		<pre><iframe class="qakSprint4" src="../rbrNode/src/model.qak" title="ModelSprint_4_rbrNode">Model of Sprint 4 - project rbrNode</iframe></pre>
 		<hr><br>
-		Sprint 4 - fridgeNode <a href="../fridgeNode/src/model.qak" target="_blank">model.qak</a><br>
+		Sprint 4 <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a> <a href="../fridgeNode/src/model.qak" target="_blank">model.qak</a><br>
 		<pre><iframe class="qakSprint4" src="../fridgeNode/src/model.qak" title="ModelSprint_4_fridgeNode">Model of Sprint 4 - project fridgeNode</iframe></pre>
 	</td>
 	<td class="imageSchema">
-		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 4"><br>
+		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint3_Legend.svg" alt="Legend of the Logical Architecture System Model from Sprint 4">
+		<br><br><br><br><br>
 		<img src="../../Sprint_3/SPRINT_3/userDocs/utils/img/ModelSprint_3.svg" alt="Logical Architecture System Model from Sprint 4">
 	</td>
 </tr>
 </table>
 
-<h2>Deployment</h2>
+<h2><a name="Sprint4Deploy"></a>Deployment</h2>
 
-To start/launch the containers related to the basicrobot (more correctly to the nano robot) and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project, as said in the project phase, it is necessary / suffieciente to starts/boot the raspberry. [Otherwise...]
+<h3><a name="S4_DeployRealRobot"></a>Deploy for Real Robot</h3>
+
+To launch the <tt>containers</tt> related to the <tt>nano robot</tt> and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project, as said in the project phase (<a href="./SPRINT_4.html#S4_NanoDeploy">deploy of nano robot</a> and <a href="./SPRINT_4.html#S4_RBRRaspDeploy">of rbrNode</a>), it is sufficient to boot the <tt>Raspberry</tt>.
 <br><br>
-To start the container related to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a> project it must be run in a terminal (in the folder containing the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/fridgeNode/fridgenode.yaml" target="_blank">fridgenode.yaml</a> file):
+To launch the <tt>container</tt> related to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a> project it must be run in a terminal (in the folder containing the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/fridgeNode/fridgenode.yaml" target="_blank">fridgenode.yaml</a> file):
 <pre>docker-compose -f fridgenode.yaml up</pre>
-To start the container related to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> projects it must be run in a terminal (in the folder containing the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitre.yaml" target="_blank">maitre.yaml</a> file):
+To launch the <tt>containers</tt> related to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> projects it must be run in a terminal (in the folder containing the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitre.yaml" target="_blank">maitre.yaml</a> file):
 <pre>docker-compose -f maitre.yaml up</pre>
-<br><br>
-After a first execution as illustrated above, then/after this there is the possibility/it's possible to start these containers executing in any terminal:
+<br>
+After a first execution, as illustrated above, it's possible to start these <tt>containers</tt> executing in any terminal:
 <pre>docker start <ac>CONTAINER_NAME</ac></pre>
-where <ac>CONTAINER_NAME</ac> is the name of the desired container (e.g. <ac>fridgenode-context-1</ac> for fridge container) and can be seen running in any terminal: (SCRIVERE COME IN SPRINT 1?!)
+where <ac>CONTAINER_NAME</ac> is the name of the desired <tt>container</tt> and it can be found running in any terminal:
 <pre>docker ps -a</pre>
 Instead, to stop it:
 <pre>docker stop <ac>CONTAINER_NAME</ac></pre>
+
+<h3>Deploy for Virtual Robot</h3>
+
+To execute the whole system in distributed way it must launch in different machines, as shown <a href="./SPRINT_4.html#S4_DeployRealRobot">above</a>, the <tt>containers</tt> related to <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> and <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a>, to <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a> and to <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> (reffering to the <a href="./SPRINT_4.html#S4_RBRPCDeploy">deploy of rbrNode on PC</a>) and it must launch the <tt>WEnv</tt> as illustrated in <a href="../../Sprint_1/SPRINT_1/userDocs/SPRINT_1.html#Sprint1Deploy" target="_blank">Sprint 1</a>.
 <br><br>
-It has also been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/DeployUtils/System_local.yaml" target="_blank">System_local.yaml</a> to run the whole system and the <tt>virtual robot</tt> (<k>basicrobot</k> and <tt>WEnv</tt>) in the same machine. To launch them, in a terminal containing this file, it should run:
+Otherwise, it has also been created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/DeployUtils/System_local.yaml" target="_blank">System_local.yaml</a> file to run the whole system and the <tt>virtual robot</tt> (<k>basicrobot</k> and <tt>WEnv</tt>) in the same machine. To launch them, in a terminal containing this file, it should run:
 <pre>docker-compose -f System_local.yaml up</pre>
 
 <div hidden="hidden">
-
 <h2>SCRUM Context</h2>
 
 <h3>SPRINT Sequence</h3>
@@ -304,8 +310,8 @@ It has also been created the <a href="https://raw.githubusercontent.com/bluffgnu
 <br><br>
 <div class="endpage">
 By Romeo Stefano (stefano.romeo@studio.unibo.it) and Russo Maria (maria.russo10@studio.unibo.it)<br>
-<img class="photo" src="../../../userDocs/utils/img/StefanoRomeo.png" alt="Stefano Romeo image">
-<img class="photo" src="../../../userDocs/utils/img/MariaRusso.png" alt="Maria Russo image">
+<img class="photo" src="../../userDocs/utils/img/StefanoRomeo.png" alt="Stefano Romeo image">
+<img class="photo" src="../../userDocs/utils/img/MariaRusso.png" alt="Maria Russo image">
 </div>
 
 </body>
