@@ -38,8 +38,6 @@ class Maitre ( name: String, scope: CoroutineScope  ) : ActorBasicFsm( name, sco
 				state("wait") { //this:State
 					action { //it:State
 						println("MAITRE | waiting...")
-						updateResourceRep( "waiting"  
-						)
 					}
 					 transition(edgeName="t00",targetState="sendPrepare",cond=whenDispatchGuarded("prepare",{ !Prepared  
 					}))

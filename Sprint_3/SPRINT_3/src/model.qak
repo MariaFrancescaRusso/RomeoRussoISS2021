@@ -99,7 +99,7 @@ QActor maitre context ctxsystem {
 	State wait {
 		println ("MAITRE | waiting...")
 		// Usefull in testing step
-		updateResource [# "waiting" #]
+//		updateResource [# "waiting" #]
 	}
 	Transition t0
 		whenMsg prepare and [# !Prepared #] -> sendPrepare
