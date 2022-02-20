@@ -4,8 +4,8 @@
 %% ONLY for "https://swish.swi-prolog.org/"
 %:- dynamic (robotType/1).
 
-robotType(virtual).
-%robotType(real).
+%robotType(virtual).
+robotType(real).
 
 %% To obtain the value element
 getValue(Res) :-
