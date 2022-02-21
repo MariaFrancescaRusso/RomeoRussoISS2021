@@ -185,7 +185,7 @@ To launch <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/S
 It has also created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/maitreNode/maitre.yaml" target="_blank">maitre.yaml</a> file to add the possibility to run <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> and <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreNode" target="_blank">maitreNode</a> projects together. To do this, opened a terminal in the file folder, it should run:
 <pre>docker-compose -f maitre.yaml up</pre>
 
-<h4><a name="S4_NanoDeploy"></a>Deploy Nano Robot on Raspberry</h4>
+<h4>Deploy Nano Robot on Raspberry</h4>
 
 To deploy the <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>) on the <tt>Raspberry</tt> (useful is the part related to the deploy of the real robot in <a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/basicrobot2021.html" target="_blank">basicrobot2021.html</a>), in particular, it has been:
 <pre>
@@ -201,7 +201,7 @@ docker update --restart always <ac>imageforarm-mbot-1</ac>
 docker ps -a
 </pre>
 
-<h4><a name="S4_RBRRaspDeploy"></a>Deploy RBRNode on Raspberry (useful for Real Robot)</h4>
+<h4>Deploy RBRNode on Raspberry (useful for Real Robot)</h4>
 
 To deploy the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project on the <tt>Raspberry</tt> it has been created a <tt>Docker container</tt> related to it. In particular, in a terminal opened in the folder of this project, it has been:
 <pre>
@@ -225,7 +225,7 @@ docker update --restart always <ac>rbrnode_on_rasp-context-1</ac>
 docker ps -a
 </pre>
 
-<h4>Deploy RBRNode and Nano Robot on Raspberry</h4>
+<h4><a name="S4_NanoAndRBRDeploy"></a>Deploy RBRNode and Nano Robot on Raspberry</h4>
 
 It has also created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/DeployUtils/rbrnodeAndBasic.yaml" target="_blank">rbrnodeAndBasic.yaml</a> file to add the possibility to run <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project and <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>) together. To do this, it should:
 <pre>
@@ -295,7 +295,7 @@ The tests of the communications between all the system components and the tests 
 
 <h3><a name="S4_DeployRealRobot"></a>Deploy for Real Robot</h3>
 
-To launch the <tt>containers</tt> related to the <tt>nano robot</tt> and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project, as said in the project phase (<a href="./SPRINT_4.html#S4_NanoDeploy">deploy of nano robot</a> and <a href="./SPRINT_4.html#S4_RBRRaspDeploy">of rbrNode</a>), it is sufficient to boot the <tt>Raspberry</tt>.
+To launch the <tt>containers</tt> related to the <tt>nano robot</tt> and to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project, as said in the project phase (<a href="./SPRINT_4.html#S4_NanoAndRBRDeploy">deploy of rbrNode and nano robot</a>), it is sufficient to boot the <tt>Raspberry</tt>.
 <br><br>
 To launch the <tt>container</tt> related to the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/fridgeNode" target="_blank">fridgeNode</a> project it must be run in a terminal (in the folder containing the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/fridgeNode/fridgenode.yaml" target="_blank">fridgenode.yaml</a> file):
 <pre>docker-compose -f fridgenode.yaml up</pre>
