@@ -58,10 +58,10 @@ Reply stepfail:stepfail(DURATION, CAUSE)
 
 //Context ctxsystem ip [host="localhost" port=8040]
 //192.168.1.171/211/14/40
-Context ctxmaitre ip [host="127.0.0.1" port=8070] 
-Context ctxfridge ip [host="192.168.43.157" port=8060]
+Context ctxmaitre ip [host="192.168.43.157" port=8070] 
+Context ctxfridge ip [host="192.168.43.211" port=8060]
 Context ctxrbr ip [host="localhost" port=8050]
-Context ctxbasicrobot ip [host="192.168.43.228" port=8020]  
+Context ctxbasicrobot ip [host="mbot" port=8020]  
 
 ExternalQActor basicrobot context ctxbasicrobot
 ExternalQActor pantry context ctxmaitre
@@ -754,7 +754,7 @@ QActor rbrwalker context ctxrbr {
 	State doTurn {
 		forward basicrobot -m cmd : cmd($CurrMov)
 		// If the robot is a real robot, the left and right movements are of 45° instead of 90°; 
-		// so it's necessary to turn twice 
+		// so it's necessary to turn twice
 		if [# RobotType == "real" #] {
 			forward basicrobot -m cmd : cmd($CurrMov)
 		}

@@ -9,7 +9,7 @@
 %%FHD
 %stepDuration(290).
 %%Real
-stepDuration(760).
+stepDuration(800).
 
 %% To obtain the step time element
 getValue(Res) :-

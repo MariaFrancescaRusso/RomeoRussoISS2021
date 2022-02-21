@@ -1,8 +1,16 @@
 version: '3'
 services:
-  context:
-    image: docker.io/bluffgnuff/rbrnode_on_rasp:1.1
-    ## image: webbasicrobotqakforpc:1.1
-    ports:
-      - 8050:8050/tcp
-      - 8050:8050/udp
+    mbot:
+        image: docker.io/natbodocker/imageforarm:1.1
+        ports:
+        - 8020:8020/tcp
+        - 8020:8020/udp
+        - 8080:8080
+        privileged: true
+    rbr:
+        image: docker.io/bluffgnuff/rbrnode_on_rasp:1.1
+        ports:
+        - 8050:8050/tcp
+        - 8050:8050/udp
+        depends_on:
+            - mbot
