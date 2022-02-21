@@ -195,7 +195,7 @@ scp ./basicrobotMbot.yaml pi@192.168.1.93:/home/pi/basicrobotMbot.yaml
 docker-compose -f basicrobotMbot.yaml run --service-ports mbot ./it.unibo.qak21.basicrobot
 <span class="commentCode">// 3. configured the correct json file (<a href="../DeployUtils/basicrobotConfigForNano.json" target="_blank">basicrobotConfigForNano.json</a>)</span>
 docker exec -it <ac>imageforarm-mbot-1</ac> mv basicrobotConfigForNano.json basicrobotConfig.json
-<span class="commentCode">// 4. setted up that the container starts at Raspberry boot</span>
+<span class="commentCode">// 4. setted the container to start at Raspberry boot</span>
 docker update --restart always <ac>imageforarm-mbot-1</ac>
 <span class="commentCode">// where <ac>imageforarm-mbot-1</ac> is the <ac>CONTAINER NAME</ac>, which can be found running in any terminal:</span>
 docker ps -a
@@ -219,11 +219,29 @@ docker push bluffgnuff/rbrnode_on_rasp:1.1
 scp ./rbrnodeOnRasp.yaml pi@192.168.1.93:/home/pi/rbrnodeOnRasp.yaml
 <span class="commentCode">// 7. runned the container in <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/rbrNode/rbrnodeOnRasp.yaml" target="_blank">rbrnodeOnRasp.yaml</a> file folder</span>
 docker-compose -f rbrnodeOnRasp.yaml up
-<span class="commentCode">// 8. setted up that the container starts at Raspberry boot</span>
+<span class="commentCode">// 8. setted the container to start at Raspberry boot</span>
 docker update --restart always <ac>rbrnode_on_rasp-context-1</ac>
 <span class="commentCode">// where <ac>rbrnode_on_rasp-context-1</ac> is the <ac>CONTAINER NAME</ac>, which can be found running in any terminal:</span>
 docker ps -a
 </pre>
+
+<h4>Deploy RBRNode and Nano Robot on Raspberry</h4>
+
+It has also created the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/DeployUtils/rbrnodeAndBasic.yaml" target="_blank">rbrnodeAndBasic.yaml</a> file to add the possibility to run <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/rbrNode" target="_blank">rbrNode</a> project and <tt>nano robot</tt> (<a href="https://htmlpreview.github.io/?https://raw.githubusercontent.com/anatali/issLab2021/main/it.unibo.qak21.basicrobot/userDocs/LabNanoRobot.html" target="_blank">LabNanoRobot.html</a>) together. To do this, it should:
+<pre>
+<span class="commentCode">// 1. save the <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/DeployUtils/rbrnodeAndBasic.yaml" target="_blank">rbrnodeAndBasic.yaml</a> file, provided by the customer, on the Raspberry</span>
+scp ./rbrnodeAndBasic.yaml pi@192.168.1.93:/home/pi/rbrnodeAndBasic.yaml
+<span class="commentCode">// 2. run the container in <a href="https://raw.githubusercontent.com/bluffgnuff/RomeoRussoISS2021/master/Sprint_4/DeployUtils/rbrnodeAndBasic.yaml" target="_blank">rbrnodeAndBasic.yaml</a> file folder</span>
+docker-compose -f rbrnodeAndBasic.yaml up
+<span class="commentCode">// 3. configure the correct json file (<a href="../DeployUtils/basicrobotConfigForNano.json" target="_blank">basicrobotConfigForNano.json</a>)</span>
+docker exec -it <ac>pi-mbot-1</ac> mv basicrobotConfigForNano.json basicrobotConfig.json
+<span class="commentCode">// 4. set the containers to start at Raspberry boot</span>
+docker update --restart always <ac>pi-mbot-1</ac>
+docker update --restart always <ac>pi-context-1</ac>
+<span class="commentCode">// where <ac>pi-mbot-1</ac> and <ac>pi-context-1</ac> are the <ac>CONTAINER NAMES</ac>, which can be found running in any terminal:</span>
+docker ps -a
+</pre>
+
 
 <h4><a name="S4_RBRPCDeploy"></a>Deploy RBRNode on PC (useful for Virtual Robot)</h4>
 
@@ -290,6 +308,8 @@ where <ac>CONTAINER_NAME</ac> is the name of the desired <tt>container</tt> and 
 <pre>docker ps -a</pre>
 Instead, to stop it:
 <pre>docker stop <ac>CONTAINER_NAME</ac></pre>
+<br>
+Once launched all the <tt>containers</tt>, to access the <a href="https://github.com/bluffgnuff/RomeoRussoISS2021/tree/master/Sprint_4/maitreGUI" target="_blank">maitreGUI</a> application in a browser see <a href="../../Sprint_3/SPRINT_3/userDocs/SPRINT_3.html#Sprint3Deploy" target="_blank">Sprint 3</a>.
 
 <h3>Deploy for Virtual Robot</h3>
 
